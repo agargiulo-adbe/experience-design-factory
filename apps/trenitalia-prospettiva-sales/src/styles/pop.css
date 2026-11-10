@@ -1,0 +1,248 @@
+/* I pop-in dei prodotti (components/ProdottoPop.astro).
+   Il dialog vive DENTRO una slide nel DOM: i reset di `[data-slide] p` e il
+   ribaltamento degli inchiostri lo raggiungerebbero, quindi ogni blocco dichiara
+   allineamento, larghezza e inchiostro, con `dialog.pp` davanti per specificità. */
+
+dialog.pp {
+  position: fixed; inset: 0; margin: auto; padding: 0; border: 0;
+  width: min(94vw, 112rem); height: min(92vh, 66rem);
+  border-radius: 1.1rem; overflow: hidden;
+  background: var(--color-bianco); color: var(--color-ardesia-notte);
+  font-family: var(--font-body); text-align: left;
+  box-shadow: 0 30px 90px rgba(10, 14, 24, 0.5);
+}
+dialog.pp::backdrop { background: rgba(20, 26, 38, 0.74); backdrop-filter: blur(6px); }
+dialog.pp[open] { animation: pp-entra 0.36s cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes pp-entra { from { opacity: 0; transform: translateY(1.4rem) scale(0.985); } to { opacity: 1; transform: none; } }
+
+dialog.pp p, dialog.pp h3, dialog.pp ul, dialog.pp ol, dialog.pp figure { margin: 0; padding: 0; max-width: none; text-align: left; list-style: none; color: inherit; }
+dialog.pp small { display: block; font-size: clamp(0.82rem, 0.8vw, 1.25rem); font-weight: 600; letter-spacing: 0.02em; color: var(--color-grigio-600); line-height: 1.3; }
+dialog.pp strong { font-weight: 700; }
+dialog.pp em { font-style: normal; }
+
+.pp-in { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; height: 100%; }
+
+/* ── Testata ─────────────────────────────────────────────── */
+.pp-testa { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 2.5rem; padding: 1rem 1.6rem 1rem 2rem; background: var(--color-ardesia); color: var(--color-bianco); }
+dialog.pp .pp-k { font-size: clamp(0.82rem, 0.8vw, 1.25rem); font-weight: 600; color: var(--color-grigio-200); white-space: nowrap; }
+dialog.pp .pp-h { font-family: var(--font-display); font-size: clamp(1.5rem, 1.7vw, 2.7rem); font-weight: 700; line-height: 1.15; color: var(--color-bianco); }
+dialog.pp .pp-cosa { font-size: clamp(1rem, 1vw, 1.6rem); line-height: 1.4; color: var(--color-bianco); max-width: 44rem; }
+.pp-x { width: 2.75rem; height: 2.75rem; border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 50%; background: transparent; color: var(--color-bianco); font-size: 1.5rem; line-height: 1; cursor: pointer; }
+.pp-x:hover { background: rgba(255, 255, 255, 0.14); }
+
+/* ── La scena e l'ingresso dei pezzi ─────────────────────── */
+.pp-scena { min-height: 0; display: grid; grid-template-rows: minmax(0, 1fr); align-items: center; padding: clamp(1rem, 2.4vh, 2rem) clamp(1.4rem, 2.2vw, 3rem); background: var(--color-nebbia); overflow: hidden; }
+.pp [data-da], .pp [data-a] { transition: opacity 0.42s ease, transform 0.42s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.42s; }
+.pp [data-da]:not(.pp-on), .pp [data-a]:not(.pp-on) { opacity: 0; visibility: hidden; transform: translateY(0.7rem); }
+.pp-pila { display: grid; }
+.pp-pila > * { grid-area: 1 / 1; }
+
+/* I blocchi di base */
+.pp-c { display: grid; gap: 0.3rem; padding: clamp(0.8rem, 1.5vh, 1.2rem) clamp(1rem, 1.2vw, 1.6rem); background: var(--color-bianco); border: 1px solid var(--color-grigio-200); border-radius: 0.75rem; color: var(--color-ardesia-notte); }
+dialog.pp .pp-c strong { font-size: clamp(1.1rem, 1.15vw, 1.9rem); line-height: 1.3; }
+.pp-c--ok { border-color: var(--color-verde); box-shadow: inset 0.3rem 0 0 var(--color-verde); }
+.pp-due { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(1.2rem, 2vw, 2.6rem); align-items: center; }
+.pp-due > .pp-chat { min-height: 66%; }
+.pp-due--bv { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr); }
+.pp-risultati { display: grid; gap: 0.75rem; align-content: center; min-width: 0; }
+.pp-striscia { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.9rem 1.3rem; border-radius: 0.75rem; background: var(--color-ardesia); color: var(--color-bianco); }
+dialog.pp .pp-striscia strong { font-size: clamp(1.05rem, 1.1vw, 1.8rem); }
+dialog.pp .pp-striscia span { font-size: clamp(1rem, 1vw, 1.6rem); }
+
+/* Le barre: senza cifre, perché i valori sono illustrativi */
+.pp-barre { display: grid; gap: 0.55rem; margin-top: 0.3rem; }
+dialog.pp .pp-barre p { display: grid; grid-template-columns: minmax(9rem, 1fr) 2fr; align-items: center; gap: 0.9rem; font-size: clamp(1rem, 1vw, 1.6rem); font-weight: 500; }
+.pp-barre i { display: block; height: 1.05rem; width: var(--v); border-radius: 0.3rem; background: var(--color-grigio-400); transform-origin: left; animation: pp-barra 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.pp-barre [data-on] i { background: var(--color-rosso); }
+.pp-barre [data-spento] i { background: var(--color-grigio-300); }
+.pp-on .pp-barre i { animation: pp-barra 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes pp-barra { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* ── CJA: lo strato sopra le fonti ───────────────────────── */
+.pp-cja { display: grid; gap: 0; }
+[data-scena='cja-acquisto'] .pp-f { padding: clamp(0.9rem, 2.4vh, 1.7rem) 1rem; }
+[data-scena='cja-acquisto'] .pp-strato { padding-block: clamp(1rem, 2.8vh, 2rem); gap: clamp(0.9rem, 2vh, 1.5rem); }
+[data-scena='cja-acquisto'] .pp-viaggio li { padding-block: clamp(0.7rem, 2vh, 1.4rem); }
+[data-scena='cja-acquisto'] .pp-riga { padding-block: clamp(0.7rem, 1.8vh, 1.2rem); }
+.pp-strato { display: grid; gap: 0.9rem; padding: clamp(0.9rem, 1.8vh, 1.4rem) clamp(1.2rem, 1.6vw, 2rem); border-radius: 0.9rem; background: var(--color-ardesia-notte); color: var(--color-bianco); }
+.pp-strato-t { display: flex; align-items: baseline; gap: 1.2rem; flex-wrap: wrap; }
+dialog.pp .pp-strato-t strong { font-family: var(--font-display); font-size: clamp(1.25rem, 1.4vw, 2.2rem); }
+dialog.pp .pp-strato-t span { font-size: clamp(1rem, 1vw, 1.6rem); color: var(--color-grigio-200); }
+.pp-viaggio { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.7rem; }
+.pp-viaggio li { position: relative; display: grid; gap: 0.15rem; padding: 0.7rem 1rem; border-radius: 0.55rem; background: rgba(255, 255, 255, 0.1); }
+dialog.pp .pp-viaggio small { color: var(--color-grigio-200); }
+dialog.pp .pp-viaggio strong { font-size: clamp(1.05rem, 1.1vw, 1.8rem); }
+.pp-viaggio li[data-on] { background: var(--color-rosso); }
+dialog.pp .pp-viaggio li[data-on] small { color: var(--color-bianco); }
+.pp-fili, .pp-fonti { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0.7rem; }
+.pp-fili { height: clamp(2.6rem, 7vh, 4.8rem); }
+.pp-filo { position: relative; justify-self: center; width: 2px; height: 100%; background: var(--color-grigio-400); }
+.pp-filo--poi { background: repeating-linear-gradient(to bottom, var(--color-grigio-400) 0 5px, transparent 5px 10px); }
+.pp-filo::after { content: ''; position: absolute; left: -4px; bottom: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--color-rosso); animation: pp-sale 1.7s linear infinite; }
+.pp-filo--poi::after { background: var(--color-grigio-400); }
+.pp-filo:nth-child(2)::after { animation-delay: 0.5s; }
+.pp-filo:nth-child(3)::after { animation-delay: 0.9s; }
+@keyframes pp-sale { from { bottom: 0; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } to { bottom: calc(100% - 10px); opacity: 0; } }
+.pp-f { display: grid; gap: 0.15rem; padding: 0.8rem 0.9rem; border-radius: 0.65rem; background: var(--color-bianco); border: 1.5px solid var(--color-grigio-300); }
+dialog.pp .pp-f strong { font-size: clamp(1.02rem, 1.05vw, 1.75rem); overflow-wrap: anywhere; }
+.pp-f[data-gia] { border-color: var(--color-ardesia); background: var(--color-grigio-200); }
+.pp-f--poi { border-style: dashed; background: transparent; }
+
+/* ── L'obiezione: una raccolta sola ──────────────────────── */
+dialog.pp .pp-dup-h { font-family: var(--font-display); font-size: clamp(1.45rem, 1.7vw, 2.7rem); font-weight: 700; margin-bottom: clamp(0.7rem, 1.5vh, 1.3rem); }
+.pp-tappe { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 1.6vw, 2rem); }
+.pp-tappa { display: grid; gap: 0.3rem; justify-items: stretch; }
+dialog.pp .pp-tappa-k { font-size: clamp(1.05rem, 1.1vw, 1.8rem); font-weight: 700; color: var(--color-rosso-scuro); margin-bottom: 0.3rem; }
+.pp-riga { display: grid; gap: 0.1rem; padding: 0.75rem 1rem; border-radius: 0.6rem; background: var(--color-bianco); border: 1.5px solid var(--color-grigio-300); transition: opacity 0.4s; }
+dialog.pp .pp-riga strong { font-size: clamp(1.02rem, 1.05vw, 1.75rem); line-height: 1.25; }
+dialog.pp .pp-riga span { font-size: clamp(0.95rem, 0.95vw, 1.55rem); }
+.pp-riga[data-on] { background: var(--color-ardesia-notte); border-color: var(--color-ardesia-notte); color: var(--color-bianco); }
+.pp-riga[data-gia] { background: var(--color-grigio-200); border-color: var(--color-ardesia); }
+.pp-riga[data-off] { border-style: dashed; color: var(--color-grigio-600); }
+.pp-riga[data-spento] { border-style: dashed; color: var(--color-grigio-600); background: transparent; }
+dialog.pp .pp-riga[data-spento] strong { text-decoration: line-through; }
+.pp-giu { justify-self: center; width: 2px; height: 1rem; background: var(--color-grigio-400); }
+
+/* ── Chat ────────────────────────────────────────────────── */
+.pp-chat { display: flex; flex-direction: column; gap: 0.7rem; padding: 1.1rem 1.3rem; background: var(--color-bianco); border: 1px solid var(--color-grigio-200); border-radius: 0.9rem; min-width: 0; }
+dialog.pp .pp-chat-t { font-size: clamp(0.9rem, 0.9vw, 1.45rem); font-weight: 700; color: var(--color-grigio-600); padding-bottom: 0.5rem; border-bottom: 1px solid var(--color-grigio-200); }
+dialog.pp .pp-b { font-size: clamp(1.02rem, 1.05vw, 1.75rem); line-height: 1.4; padding: 0.65rem 1rem; border-radius: 0.8rem; max-width: 90%; }
+dialog.pp .pp-b--u { align-self: flex-end; background: var(--color-ardesia); color: var(--color-bianco); }
+dialog.pp .pp-b--a { align-self: flex-start; background: var(--color-chiaro); color: var(--color-ardesia-notte); }
+.pp-mono { display: grid; justify-items: center; height: 100%; align-items: center; }
+.pp-chat--largo { width: min(100%, 56rem); min-height: 80%; }
+.pp-carta { display: grid; gap: 0.3rem; align-self: flex-start; width: 90%; padding: 1.1rem 1.3rem; border-radius: 0.8rem; background: var(--color-bianco); border: 2px solid var(--color-rosso); }
+dialog.pp .pp-carta-m { font-weight: 800; color: var(--color-rosso-scuro); font-size: clamp(1rem, 1vw, 1.6rem); }
+dialog.pp .pp-carta strong { font-size: clamp(1.25rem, 1.35vw, 2.1rem); }
+dialog.pp .pp-carta span { font-size: clamp(1rem, 1vw, 1.6rem); }
+dialog.pp .pp-cta { justify-self: start; margin-top: 0.4rem; padding: 0.5rem 1rem; border-radius: 0.5rem; background: var(--color-rosso); color: var(--color-bianco); font-weight: 600; }
+
+/* ── Real-Time Collaboration ─────────────────────────────── */
+.pp-costa { --d: clamp(11.5rem, 31vh, 22rem); display: grid; gap: 1rem; }
+.pp-venn { position: relative; height: var(--d); margin-top: 2.2rem; }
+.pp-disco { position: absolute; top: 0; box-sizing: border-box; width: var(--d); height: var(--d); border-radius: 50%; display: grid; align-content: center; justify-items: start; transition: left 0.7s cubic-bezier(0.2, 0.8, 0.2, 1), right 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
+dialog.pp .pp-disco strong { font-size: clamp(1.05rem, 1.15vw, 1.9rem); line-height: 1.2; }
+dialog.pp .pp-disco span { font-size: clamp(0.95rem, 0.95vw, 1.55rem); }
+.pp-disco--a { left: 12%; padding: 0 calc(var(--d) * 0.46) 0 calc(var(--d) * 0.09); background: rgba(47, 57, 78, 0.14); border: 2px solid var(--color-ardesia); }
+.pp-disco--b { right: 12%; padding: 0 calc(var(--d) * 0.07) 0 calc(var(--d) * 0.48); background: rgba(0, 102, 102, 0.12); border: 2px solid var(--color-verde); }
+.pp:not([data-passo='1']) .pp-disco--a { left: calc(50% - var(--d) * 0.82); }
+.pp:not([data-passo='1']) .pp-disco--b { right: calc(50% - var(--d) * 0.82); }
+.pp-stanza { position: absolute; top: -2.2rem; bottom: -0.6rem; left: calc(50% - var(--d) * 0.82 - 1.4rem); right: calc(50% - var(--d) * 0.82 - 1.4rem); border: 2px dashed var(--color-grigio-400); border-radius: 1.2rem; }
+dialog.pp .pp-stanza small { position: absolute; top: 0.35rem; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: clamp(0.95rem, 0.95vw, 1.5rem); }
+.pp-comune { position: absolute; z-index: 2; left: 50%; top: 50%; width: calc(var(--d) * 0.52); translate: -50% -50%; display: grid; justify-items: center; text-align: center; gap: 0.1rem; padding: 0.55rem 0.35rem; border-radius: 0.7rem; background: var(--color-rosso); color: var(--color-bianco); }
+dialog.pp .pp-comune strong { font-size: clamp(1rem, 1.05vw, 1.75rem); }
+dialog.pp .pp-comune span { font-size: clamp(0.9rem, 0.88vw, 1.4rem); line-height: 1.2; }
+.pp-sotto { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; align-items: center; }
+.pp-regole { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.45rem; }
+dialog.pp .pp-regole li { padding: 0.5rem 0.8rem; border-radius: 0.5rem; border: 1.5px solid var(--color-ardesia); font-size: clamp(1rem, 1vw, 1.6rem); font-weight: 600; }
+
+/* ── Brand Visibility ────────────────────────────────────── */
+.pp-domande { align-content: center; gap: 0.8rem; }
+.pp-domande ol { display: grid; gap: 0.7rem; }
+dialog.pp .pp-domande li { font-size: clamp(1.08rem, 1.15vw, 1.9rem); line-height: 1.35; padding: 0.7rem 0.9rem; background: var(--color-chiaro); border-radius: 0.55rem; }
+.pp-cifre { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+dialog.pp .pp-c strong.pp-gr { font-family: var(--font-display); font-size: clamp(2.4rem, 3vw, 4.8rem); line-height: 1.05; font-weight: 800; }
+dialog.pp .pp-gr em { font-size: 0.42em; font-weight: 600; }
+.pp-trend { display: flex; align-items: flex-end; gap: 0.4rem; height: 2.6rem; }
+.pp-trend i { flex: 1; background: var(--color-grigio-300); border-radius: 0.2rem 0.2rem 0 0; height: 30%; }
+.pp-trend i:nth-child(2) { height: 34%; } .pp-trend i:nth-child(3) { height: 38%; } .pp-trend i:nth-child(4) { height: 50%; }
+.pp-trend i:nth-child(5) { height: 62%; background: var(--color-rosso); } .pp-trend i:nth-child(6) { height: 76%; background: var(--color-rosso); } .pp-trend i:nth-child(7) { height: 92%; background: var(--color-rosso); }
+
+/* ── Workfront ───────────────────────────────────────────── */
+.pp-board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.9rem; height: 80%; }
+.pp-col { display: grid; grid-template-rows: auto 1fr; gap: 0.8rem; padding: 1rem; border-radius: 0.8rem; background: var(--color-chiaro); }
+dialog.pp .pp-col-t { font-size: clamp(1.05rem, 1.1vw, 1.8rem); font-weight: 700; }
+.pp-tk { align-self: start; display: grid; gap: 0.25rem; padding: 1rem 1.1rem; border-radius: 0.65rem; background: var(--color-bianco); box-shadow: inset 0.3rem 0 0 var(--color-rosso), 0 4px 14px rgba(27, 34, 48, 0.12); }
+dialog.pp .pp-tk strong { font-size: clamp(1.1rem, 1.15vw, 1.9rem); }
+dialog.pp .pp-tk span { font-size: clamp(1rem, 1vw, 1.6rem); line-height: 1.35; }
+
+/* ── Immagini: GenStudio, Content Analytics, Coworker ────── */
+.pp-gs { display: grid; grid-template-columns: minmax(0, 0.9fr) auto minmax(0, 2.2fr); grid-template-rows: minmax(0, 1fr) auto; gap: 0.9rem 1.2rem; align-items: center; height: 100%; }
+.pp-gs .pp-striscia { grid-column: 1 / -1; }
+.pp-fr { font-size: 2.2rem; color: var(--color-grigio-600); }
+.pp-img { display: grid; grid-template-rows: minmax(0, 1fr) auto; border-radius: 0.75rem; overflow: hidden; background: var(--color-bianco); border: 1px solid var(--color-grigio-200); min-height: 0; height: 100%; }
+.pp-img img { width: 100%; height: 100%; object-fit: cover; display: block; min-height: 0; }
+.pp-img > div, .pp-img figcaption { display: grid; gap: 0.15rem; padding: 0.7rem 0.9rem; }
+dialog.pp .pp-img strong { font-size: clamp(1.05rem, 1.1vw, 1.8rem); line-height: 1.25; }
+dialog.pp .pp-img em { font-size: clamp(0.95rem, 0.95vw, 1.5rem); font-weight: 700; color: var(--color-verde); }
+.pp-vars { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.9rem; min-height: 0; height: 100%; }
+dialog.pp .pp-tag { font-size: clamp(0.95rem, 0.95vw, 1.5rem); font-weight: 600; color: var(--color-verde); }
+.pp-ca { display: grid; grid-template-rows: minmax(0, 1fr) auto auto; gap: 0.8rem; height: 100%; min-height: 0; }
+.pp-ca .pp-vars { grid-auto-rows: minmax(0, 1fr); }
+.pp-mini { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.7rem; }
+.pp-mini li { position: relative; display: grid; gap: 0.3rem; }
+.pp-mini img { width: 100%; height: clamp(5rem, 13vh, 10rem); object-fit: cover; border-radius: 0.5rem; display: block; }
+dialog.pp .pp-mini span { font-size: clamp(1rem, 1vw, 1.6rem); font-weight: 600; }
+dialog.pp .pp-mini em { position: absolute; top: 0.4rem; right: 0.4rem; width: 1.9rem; height: 1.9rem; display: grid; place-items: center; border-radius: 50%; background: var(--color-verde); color: var(--color-bianco); font-weight: 700; }
+
+/* ── Schede e locandine ──────────────────────────────────── */
+.pp-rete { display: grid; grid-template-columns: minmax(0, 0.62fr) minmax(0, 1fr) minmax(0, 1.25fr); gap: clamp(1rem, 1.6vw, 2.2rem); align-items: center; }
+.pp-sch { display: grid; gap: 0.7rem; }
+.pp-ag { display: grid; gap: 0.7rem; }
+.pp-ag-g { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.6rem; }
+.pp-ag-g li { position: relative; height: clamp(2.8rem, 8vh, 6.5rem); border-radius: 0.4rem; background: var(--color-bianco); border: 1.5px solid var(--color-grigio-300); overflow: hidden; }
+.pp-ag-g li[data-con='si'] { border-color: var(--color-rosso); }
+.pp-ag-d { position: absolute; top: 0.35rem; left: 0.35rem; width: 0.65rem; height: 0.65rem; border-radius: 50%; background: var(--color-grigio-400); }
+[data-con='si'] > .pp-ag-d { background: var(--color-rosso); }
+.pp-ag-b { position: absolute; left: 0; right: 0; bottom: 0; height: var(--v); background: rgba(47, 57, 78, 0.22); }
+[data-con='si'] > .pp-ag-b { background: rgba(217, 24, 53, 0.3); }
+dialog.pp .pp-leg { display: flex; align-items: center; gap: 0.45rem; font-size: clamp(0.95rem, 0.95vw, 1.5rem); }
+.pp-leg span { width: 0.75rem; height: 0.75rem; border-radius: 50%; background: var(--color-grigio-400); }
+.pp-leg span[data-con='si'] { background: var(--color-rosso); }
+.pp-leg span[data-con='no'] { margin-left: 1rem; }
+.pp-ris { display: grid; gap: 0.7rem; }
+.pp-ris-pila { display: grid; }
+.pp-ris-pila > * { grid-area: 1 / 1; }
+.pp-strato--p { padding-block: 0.75rem; }
+
+/* ── Piede ───────────────────────────────────────────────── */
+.pp-piede { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.35rem 2rem; align-items: center; padding: 0.85rem 2rem 0.75rem; background: var(--color-bianco); border-top: 1px solid var(--color-grigio-200); }
+.pp-didas { display: grid; min-height: 3.6em; align-items: center; }
+dialog.pp .pp-d { grid-area: 1 / 1; display: flex; gap: 0.8rem; align-items: center; font-family: var(--font-display); font-size: clamp(1.2rem, 1.3vw, 2.1rem); font-weight: 600; line-height: 1.3; opacity: 0; visibility: hidden; transition: opacity 0.3s; }
+dialog.pp .pp-d.pp-on { opacity: 1; visibility: visible; }
+.pp-d-n { flex: none; display: grid; place-items: center; width: 2.1rem; height: 2.1rem; border-radius: 50%; background: var(--color-rosso); color: var(--color-bianco); font-size: 1rem; }
+.pp-nav { display: flex; align-items: center; gap: 0.7rem; }
+.pp-punti { display: flex; gap: 0.35rem; margin-right: 0.5rem; }
+.pp-punti span { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--color-grigio-300); transition: background 0.3s; }
+.pp-punti span.pp-on { background: var(--color-rosso); }
+.pp-b-n { min-height: 2.75rem; min-width: 2.75rem; padding: 0 1.1rem; border-radius: 0.55rem; border: 1.5px solid var(--color-ardesia); background: var(--color-bianco); color: var(--color-ardesia-notte); font: inherit; font-weight: 600; font-size: 1rem; cursor: pointer; white-space: nowrap; }
+.pp-b-n:disabled { opacity: 0.35; cursor: default; }
+.pp-b-n--av { background: var(--color-rosso); border-color: var(--color-rosso); color: var(--color-bianco); }
+dialog.pp .pp-nota { grid-column: 1 / -1; font-size: clamp(0.82rem, 0.8vw, 1.25rem); line-height: 1.35; color: var(--color-grigio-600); }
+dialog.pp .pp-nota a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; }
+
+/* Schermi bassi e telefoni: la scena può scorrere, il piede resta */
+@media (max-height: 760px) { .pp-testa .pp-cosa { display: none; } }
+@media (max-width: 900px) {
+  dialog.pp { width: 100vw; height: 100dvh; border-radius: 0; }
+  .pp-testa { grid-template-columns: minmax(0, 1fr) auto; }
+  .pp-testa .pp-cosa { display: none; }
+  .pp-scena { overflow-y: auto; align-items: start; }
+  .pp-due, .pp-rete, .pp-gs, .pp-tappe, .pp-sotto { grid-template-columns: minmax(0, 1fr); height: auto; }
+  .pp-fili { display: none; }
+  .pp-fonti, .pp-board, .pp-viaggio { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+  .pp-board { height: auto; }
+  .pp-vars { grid-template-columns: minmax(0, 1fr); height: auto; }
+  .pp-img img { height: 8rem; }
+  .pp-piede { grid-template-columns: minmax(0, 1fr); }
+  .pp-punti { display: none; }
+}
+
+/* Riduci movimento: i passi restano (li decide chi presenta), si tolgono spostamenti e cicli. */
+@media (prefers-reduced-motion: reduce) {
+  dialog.pp[open] { animation: none; }
+  .pp [data-da], .pp [data-a] { transform: none !important; transition: opacity 0.15s linear, visibility 0.15s; }
+  .pp-filo::after { display: none; }
+  .pp-barre i, .pp-on .pp-barre i { animation: none; }
+  .pp-disco { transition: none; }
+}
+
+/* La tessera che apre il pop-in */
+.tp-adobe-t[data-pop] { position: relative; padding: 0; }
+.tp-adobe-o { display: block; width: 100%; height: 100%; padding: clamp(0.4rem, 0.8vh, 0.65rem) clamp(0.55rem, 0.7vw, 0.8rem); background: transparent; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; border-radius: inherit; transition: transform 0.18s ease, box-shadow 0.18s ease; }
+.tp-adobe-o .tp-adobe-p { display: block; }
+@media (min-height: 861px) { .tp-adobe-o .tp-adobe-a { display: block; } }
+/* Il + sta in un float: toglie spazio alla sola prima riga, e un nome lungo non sborda. */
+.tp-adobe-o::before { content: '+'; float: right; width: 1.2rem; height: 1.2rem; margin: 0.05rem 0 0.1rem 0.35rem; border-radius: 50%; background: var(--color-rosso); color: var(--color-bianco); font-size: 0.95rem; font-weight: 700; line-height: 1.2rem; text-align: center; }
+.tp-adobe-o:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28); }
+.tp-adobe-o:focus-visible { outline: 3px solid var(--color-rosso); outline-offset: 2px; }

@@ -759,7 +759,7 @@ export const TEMPI = {
     { k: 'Da subito', t: 'Personalizzazione per\u00a0chi non è registrato', b: 'Customer Journey Analytics legge i dati Analytics di trenitalia.com e lefrecce.it, Target attiva la personalizzazione.', dip: 'Si aggiunge Customer Journey Analytics' },
     { k: 'Con il nuovo CRM', t: 'Personalizzazione per i clienti registrati', b: 'Il profilo resta nel CRM: qui si legge il comportamento di chi è già cliente.', dip: 'Dipende dal\u00a0nuovo CRM' }, // copy-audit-ignore V2 · «registrati» è un participio plurale, non un imperativo
     { k: 'Dopo, passo per passo', t: 'Un’esperienza unica per il cliente', b: 'Sito e sistema di vendita integrati: si propone e si compra nello stesso percorso.', dip: 'Dipende dai sistemi di vendita' },
-    { k: 'Da approfondire insieme', t: 'Le agenzie', b: 'Il venduto in agenzia, letto insieme a quello che succede online.', dip: 'Dipende dal\u00a0sistema delle agenzie' },
+    { k: 'Da approfondire insieme', t: 'Le agenzie', b: 'Quali schede e locandine fanno vendere, a partire dal venduto per agenzia che avete già.', dip: 'Serve sapere dove va ogni\u00a0scheda' },
   ],
   strato: { t: 'Contenuti su scala: si possono avviare in qualunque fase', b: 'Più personalizzazione vuol dire più varianti. La misura per contenuto arriva con Customer Journey Analytics.' },
   figura: 'Cinque fasi in sequenza, da quella che si può avviare subito a quelle che dipendono da altri sistemi',
@@ -866,6 +866,7 @@ export const DOMANDE_APERTE = [
    Il blocco vive DENTRO «Che cosa serve, concretamente», cioè dietro il
    drill-down: in sala si apre se qualcuno chiede, e intanto non appesantisce
    una slide che deve reggere da sola. */
+import type { ScenaId } from './pop';
 export type Stato = 'avete' | 'nuovo';
 /**
  * IL COLORE DI OGNI PRODOTTO — uno stabile, lo stesso ovunque compaia.
@@ -911,6 +912,8 @@ export interface Pezzo {
   stato: Stato;
   /** A che cosa serve QUI, in una riga. Non la scheda del prodotto. */
   a: string;
+  /** La scena del pop-in: prodotto × questo caso d'uso. Solo per ciò che si aggiunge. */
+  pop?: ScenaId;
 }
 
 export const LEGENDA: Record<Stato, { eti: string; spiega: string }> = {
@@ -923,7 +926,7 @@ export const SERVE: Record<
   Pezzo[]
 > = {
   visibilita: [
-    { nome: 'Adobe Brand Visibility', fonte: 'brandVisibility', stato: 'nuovo', a: 'Come comparite nelle risposte AI' },
+    { nome: 'Adobe Brand Visibility', fonte: 'brandVisibility', stato: 'nuovo', a: 'Come comparite nelle risposte AI', pop: 'bv-ricerca' },
     { nome: 'Adobe Experience Manager', fonte: 'aem', stato: 'avete', a: 'Dove le pagine già nascono' },
   ],
   canale: [
@@ -939,29 +942,29 @@ export const SERVE: Record<
        dichiarato pubblicamente, e che non possiamo nominare né sfiorare.
        Ora la riga parla di PRESENZA DI MARCA, non di vendita. */
     { nome: 'LLM Apps, dentro Adobe Experience Manager', fonte: 'llmApps', stato: 'nuovo',
-      a: 'La marca dentro gli assistenti AI' },
+      a: 'La marca dentro gli assistenti AI', pop: 'llm-ricerca' },
   ],
   acquisto: [
     { nome: 'Adobe Analytics', fonte: 'analytics', stato: 'avete', a: 'I segmenti di chi naviga' },
-    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'CartaFreccia e navigazione insieme' },
+    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'CartaFreccia e navigazione insieme', pop: 'cja-acquisto' },
     { nome: 'Adobe Target', fonte: 'target', stato: 'avete', a: 'La home per segmento' },
-    { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'Agenti AI sui segmenti' },
+    { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'Agenti AI sui segmenti', pop: 'coworker-acquisto' },
   ],
   collaborazione: [
-    { nome: 'Adobe Real-Time Collaboration', fonte: 'rtcdpCollab', stato: 'nuovo', a: 'L\u2019incrocio neutro con i partner' },
+    { nome: 'Adobe Real-Time Collaboration', fonte: 'rtcdpCollab', stato: 'nuovo', a: 'L\u2019incrocio neutro con i partner', pop: 'collab-costa' },
   ],
   contenuto: [
     { nome: 'Adobe Experience Manager Assets', fonte: 'aemAssets', stato: 'avete', a: 'Da estendere a Trenitalia' },
     { nome: 'Adobe Creative Cloud, con Firefly', fonte: 'firefly', stato: 'avete', a: 'Gli strumenti di oggi, su scala' },
-    { nome: 'Adobe Workfront', fonte: 'workfront', stato: 'nuovo', a: 'Chi chiede, produce, approva' },
-    { nome: 'Adobe GenStudio for Performance Marketing', fonte: 'genstudio', stato: 'nuovo', a: 'Le varianti per il paid media' },
-    { nome: 'Adobe Content Analytics', fonte: 'contentAnalytics', stato: 'nuovo', a: 'Quali contenuti funzionano davvero' },
-    { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'Agenti AI sulla produzione' },
+    { nome: 'Adobe Workfront', fonte: 'workfront', stato: 'nuovo', a: 'Chi chiede, produce, approva', pop: 'workfront-contenuto' },
+    { nome: 'Adobe GenStudio for Performance Marketing', fonte: 'genstudio', stato: 'nuovo', a: 'Le varianti per il paid media', pop: 'genstudio-contenuto' },
+    { nome: 'Adobe Content Analytics', fonte: 'contentAnalytics', stato: 'nuovo', a: 'Quali contenuti funzionano davvero', pop: 'ca-contenuto' },
+    { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'Agenti AI sulla produzione', pop: 'coworker-contenuto' },
   ],
   rete: [
     /* 9 nov 2026: verificato su Experience League e Fluffy. Senza tracciamento in agenzia
        si misura direttamente con CJA, e Target non identifica agenzie: fuori tutti e due. */
-    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'Quante vendite per codice' },
+    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'Quali schede fanno vendere', pop: 'cja-rete' },
   ],
 };
 

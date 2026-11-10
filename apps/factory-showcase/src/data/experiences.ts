@@ -281,12 +281,12 @@ export const EXPERIENCES: Experience[] = [
     sections: 7,
     defaultPublished: false,
     tag: {
-      en: '7 chapters · IT · scaffold',
-      it: '7 capitoli · IT · scaffold',
+      en: '7 chapters · IT · Sales Division',
+      it: '7 capitoli · IT · Direzione Sales',
     },
     desc: {
-      en: 'Generated from the «Perspective» skeleton: 7 chapters, a cover and a signature. Copy and design system still come from the brief.',
-      it: 'Generata dallo scheletro «Prospettiva»: 7 capitoli, una copertina e una firma. Copy e design system arrivano ancora dal brief.',
+      en: 'For the Sales Division: four ideas to grow sales, from AI assistants to travel agencies, each with a product mock-up that opens on demand. Design system read from trenitalia.com.',
+      it: 'Per la Direzione Sales: quattro idee per vendere di più, dagli assistenti AI alle agenzie, ciascuna con il mockup del prodotto che si apre a richiesta. Design system letto da trenitalia.com.',
     },
   },
   {

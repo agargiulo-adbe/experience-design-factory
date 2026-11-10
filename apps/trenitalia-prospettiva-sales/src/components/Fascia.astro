@@ -16,6 +16,9 @@
  * non si ricompone con il testo e i lockup non si costruiscono né si ritoccano: il
  * file è quello ufficiale, stacked perché la colonna è stretta.
  *
+ * 10 nov 2026: una tessera «si aggiunge» è un bottone e apre il pop-in del prodotto
+ * in QUESTO caso d'uso (campo `pop` in `SERVE`). Il link alla fonte sta nel pop-in.
+ *
  * ⚠️ Fondo bianco e inchiostri espliciti: la striscia sta su slide scure e chiare,
  * e `.tp-pz` eredita.
  * Dove si apre un drill-down cede il posto (`cede`): mai rimpicciolire.
@@ -23,6 +26,7 @@
 import { LEGENDA, type Pezzo, type Stato } from '../data/contenuti';
 import { SOURCES } from '../data/sources';
 import lockup from '../assets/brand/adobe-cx-enterprise-stacked.svg';
+import ProdottoPop from './ProdottoPop.astro';
 interface Props { pezzi: Pezzo[]; cede?: boolean; }
 const { pezzi, cede = true } = Astro.props as Props;
 /* Il prefisso «Adobe» lo dice già il marchio che apre la riga. */
@@ -43,10 +47,20 @@ const colonne = `minmax(0, 8rem) ${gruppi.map((g) => `minmax(0, ${g.voci.length}
         {g.voci.map((p) => {
           const url = p.fonte ? (SOURCES[p.fonte] as { url?: string }).url : undefined;
           return (
-            <li class="tp-adobe-t" data-stato={g.stato}>
-              <span class="tp-adobe-p">{url ? <a href={url} target="_blank" rel="noopener noreferrer">{breve(p.nome)}</a> : breve(p.nome)}</span>
-              <span class="tp-adobe-a">{p.a}</span>
-            </li>
+            p.pop ? (
+              <li class="tp-adobe-t" data-stato={g.stato} data-pop>
+                <button type="button" class="tp-adobe-o" data-pp-open aria-haspopup="dialog" aria-label={`${breve(p.nome)}: guarda come funziona`}>
+                  <span class="tp-adobe-p">{breve(p.nome)}</span>
+                  <span class="tp-adobe-a">{p.a}</span>
+                </button>
+                <ProdottoPop scena={p.pop} />
+              </li>
+            ) : (
+              <li class="tp-adobe-t" data-stato={g.stato}>
+                <span class="tp-adobe-p">{url ? <a href={url} target="_blank" rel="noopener noreferrer">{breve(p.nome)}</a> : breve(p.nome)}</span>
+                <span class="tp-adobe-a">{p.a}</span>
+              </li>
+            )
           );
         })}
       </ul>

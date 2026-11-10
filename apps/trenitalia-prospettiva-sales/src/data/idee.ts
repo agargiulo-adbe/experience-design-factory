@@ -132,7 +132,7 @@ export const IDEE: Idea[] = [
     slug: 'rete',
     misura: 'Venduto per agenzia attiva, e il peso dell’intermediato sul diretto',
     occhiello: 'Idea 4 di 4',
-    titolo: 'Quanto del\u00a0venduto in\u00a0agenzia nasce sul\u00a0digitale?',
+    titolo: 'Quali schede e\u00a0locandine fanno vendere di\u00a0più?',
     mock: 'rete',
     /* ⚠️ 6 nov 2026, panel: SEI personas su sei, il rilievo più corale del
        giro e il secondo che sopravvive dal 12 ottobre. La cifra grande del
@@ -143,14 +143,18 @@ export const IDEE: Idea[] = [
        non la nota. Il numero del canale è loro, è di ottobre 2025, e lo ha
        detto lui al TTG.
        9 nov 2026: su richiesta del cliente nessun numero di agenzie in questo
-       capitolo, e il capitolo diventa dichiaratamente da approfondire. */
-    cifra: { k: 'Da approfondire', v: 'il sistema con cui le agenzie vendono deve poter registrare il codice' },
+       capitolo, e il capitolo diventa dichiaratamente da approfondire.
+       10 nov 2026: il codice al banco chiedeva che il cliente lo mostrasse e
+       l'agente lo digitasse, e contava i riscatti. Ora l'unità è l'agenzia:
+       Person ID di CJA può essere qualunque identificativo (Experience League),
+       niente dati di persona, niente da digitare, sistema di vendita intatto. */
+    cifra: { k: 'Nessun intervento', v: 'sul sistema di vendita: bastano il venduto per agenzia e l’elenco di dove va ogni scheda' },
     /* ⚠️ 4 nov: la chiusa diceva «la rete vende ogni giorno, e non sapete
        chi vende che cosa». Non possiamo dirlo: di che cosa vedano della rete
        non esiste fonte, e un'affermazione di assenza su un cliente si verifica
        sulle sue pagine prima di scriverla. Qui resta quello che proponiamo,
        e la domanda la fa la slide che chiude il capitolo. */
-    chiusa: 'Il venduto per agenzia lo avete già. Il passo in più è capire quali vendite partono da una ricerca o da un’offerta vista online.',
+    chiusa: 'Il venduto per agenzia lo avete già. Con l’elenco di dove è andata ogni scheda si confrontano le agenzie con la scheda e quelle senza.',
     /* ⚠️ ERA L'UNICA DELLE QUATTRO IDEE SENZA REFERENZA, ed è quella su cui
        si fa la richiesta. Unipol è il caso più vicino che esista: la rete
        agenziale più estesa d'Italia, e lo strumento con cui l'agente vende
@@ -174,7 +178,7 @@ export const IDEE: Idea[] = [
       fonte: SOURCES.unipolRete,
       senzaRigaFonte: true,
     },
-    capability: ['Legare il venduto al percorso digitale', 'Capire quali schede e locandine si possono misurare, e come'],
+    capability: ['Capire quali schede e locandine fanno vendere', 'Legare il venduto al percorso digitale'],
     gruppi: ['rete'],
     fonte: 'Perimetro: le agenzie fisiche, le agenzie online vendono con logiche proprie. Il canale agenziale di Unipol è stato raccontato da loro ad Adobe Summit 2026: lì l’agente lavora sullo strumento della compagnia, l’agenzia di viaggi no. Vale il meccanismo.',
   },

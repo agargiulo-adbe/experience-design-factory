@@ -1,0 +1,387 @@
+---
+/**
+ * IL POP-IN DI UN PRODOTTO CHE SI AGGIUNGE — un mockup semplificato, per scena.
+ *
+ * Forma: `<dialog>` nativo. Sta nel top layer, quindi non risente di trasformazioni
+ * e `overflow` della slide; Esc e la trappola del fuoco arrivano gratis.
+ * Da chiuso è `display: none`, quindi i gate di layout non lo misurano: si misura a
+ * parte, aprendolo.
+ *
+ * Un elemento entra al passo `data-da` e, se c'è, esce dopo `data-a`. Niente testo
+ * dentro un SVG: tutto HTML, così cresce con la radice e si legge su una parete.
+ * I testi di ogni passo stanno in `data/pop.ts`; qui c'è solo la scena.
+ */
+import { Image } from 'astro:assets';
+import { SCENE, type ScenaId } from '../data/pop';
+import '../styles/pop.css';
+import fotoPuglia from '../assets/generated/sole/sole-contenuto.webp';
+import fotoFamiglia from '../assets/generated/puglia/puglia-famiglia.webp';
+import fotoCoppia from '../assets/generated/puglia/puglia-coppia.webp';
+import fotoBici from '../assets/generated/puglia/puglia-bici.webp';
+
+interface Props { scena: ScenaId; }
+const { scena } = Astro.props as Props;
+const s = SCENE[scena];
+const AGENZIE = Array.from({ length: 12 }, (_, i) => i);
+---
+<dialog class="pp" data-pp data-deck-nochrome data-tot={s.passi.length} data-scena={scena} aria-label={`${s.prodotto}: ${s.caso}`}>
+  <div class="pp-in">
+    <header class="pp-testa">
+      <div class="pp-testa-t">
+        <p class="pp-k">Si aggiunge · {s.caso}</p>
+        <h3 class="pp-h">{s.prodotto}</h3>
+      </div>
+      <p class="pp-cosa">{s.cosa}</p>
+      <button type="button" class="pp-x" data-pp-chiudi aria-label="Chiudi">×</button>
+    </header>
+
+    <div class="pp-scena">
+
+      {scena === 'cja-acquisto' && (
+        <div class="pp-pila">
+          <div class="pp-cja" data-a="5">
+            <div class="pp-strato" data-da="2">
+              <div class="pp-strato-t"><strong>Customer Journey Analytics</strong><span>Lo strato che legge tutti i canali insieme</span></div>
+              <ol class="pp-viaggio" data-da="5">
+                <li><small>trenitalia.com</small><strong>Cerca Matera</strong></li>
+                <li><small>lefrecce.it</small><strong>Sceglie il treno</strong></li>
+                <li><small>CRM</small><strong>CartaFreccia Oro</strong></li>
+                <li data-on><small>Un percorso solo</small><strong>La prossima meta</strong></li>
+              </ol>
+            </div>
+            <div class="pp-fili">
+              <span class="pp-filo" data-da="2"></span>
+              <span class="pp-filo" data-da="2"></span>
+              <span class="pp-filo" data-da="3"></span>
+              <span class="pp-filo pp-filo--poi" data-da="4"></span>
+              <span class="pp-filo pp-filo--poi" data-da="4"></span>
+              <span class="pp-filo pp-filo--poi" data-da="4"></span>
+            </div>
+            <ul class="pp-fonti">
+              <li class="pp-f" data-gia><small>Analytics</small><strong>trenitalia.com</strong></li>
+              <li class="pp-f" data-gia><small>Analytics</small><strong>lefrecce.it</strong></li>
+              <li class="pp-f" data-da="3"><small>Con il nuovo CRM</small><strong>CartaFreccia</strong></li>
+              <li class="pp-f pp-f--poi" data-da="4"><small>Domani</small><strong>App</strong></li>
+              <li class="pp-f pp-f--poi" data-da="4"><small>Domani</small><strong>Agenzie</strong></li>
+              <li class="pp-f pp-f--poi" data-da="4"><small>Domani</small><strong>Partner</strong></li>
+            </ul>
+          </div>
+
+          <div class="pp-dup" data-da="6">
+            <p class="pp-dup-h">Una raccolta sola, in ogni fase</p>
+            <ol class="pp-tappe">
+              <li class="pp-tappa">
+                <p class="pp-tappa-k">Da subito</p>
+                <div class="pp-riga" data-on><strong>Customer Journey Analytics</strong><span>legge</span></div>
+                <span class="pp-giu"></span>
+                <div class="pp-riga" data-gia><strong>I due Analytics</strong><span>raccolgono, come oggi</span></div>
+                <span class="pp-giu"></span>
+                <div class="pp-riga"><strong>trenitalia.com · lefrecce.it</strong><span>nessun tag nuovo</span></div>
+              </li>
+              <li class="pp-tappa" data-da="7">
+                <p class="pp-tappa-k">Con il nuovo sito</p>
+                <div class="pp-riga" data-on><strong>Customer Journey Analytics</strong><span>riceve direttamente</span></div>
+                <span class="pp-giu"></span>
+                <div class="pp-riga" data-off><strong>I due Analytics</strong><span>restano per lo storico</span></div>
+                <span class="pp-giu"></span>
+                <div class="pp-riga"><strong>Il nuovo sito</strong><span>una sola raccolta, Web SDK</span></div>
+              </li>
+              <li class="pp-tappa" data-da="8">
+                <p class="pp-tappa-k">Quando lo deciderete</p>
+                <div class="pp-riga" data-on><strong>Customer Journey Analytics</strong><span>l’unica misura</span></div>
+                <span class="pp-giu"></span>
+                <div class="pp-riga" data-spento><strong>I due Analytics</strong><span>spenti</span></div>
+                <span class="pp-giu"></span>
+                <div class="pp-riga"><strong>Storico e progetti</strong><span>si portano dietro</span></div>
+              </li>
+            </ol>
+          </div>
+        </div>
+      )}
+
+      {scena === 'coworker-acquisto' && (
+        <div class="pp-due">
+          <div class="pp-chat">
+            <p class="pp-chat-t">CX Enterprise Coworker</p>
+            <p class="pp-b pp-b--u">Chi ha comprato Roma-Caserta, ha cercato Matera e non ha ancora prenotato?</p>
+            <p class="pp-b pp-b--a" data-da="2">Ho letto Customer Journey Analytics e ho preparato il segmento.</p>
+            <p class="pp-b pp-b--a" data-da="3">Propongo una prova: la home su Matera a una parte di questo pubblico.</p>
+            <p class="pp-b pp-b--u" data-da="4">Va bene. Parti solo dopo l’ok del marketing.</p>
+            <p class="pp-b pp-b--a" data-da="5">La prova ha raggiunto il campione. Ecco il confronto.</p>
+          </div>
+          <div class="pp-risultati">
+            <div class="pp-c" data-da="2"><small>Segmento</small><strong>Oro · Roma-Caserta · ha cercato Matera</strong></div>
+            <div class="pp-c" data-da="3"><small>Prova in Target</small><strong>«Matera, la prossima meta» contro la home di oggi</strong></div>
+            <div class="pp-c pp-c--ok" data-da="4"><small>Decide il team</small><strong>In attesa di approvazione del marketing</strong></div>
+            <div class="pp-c" data-da="5">
+              <small>Risultato</small>
+              <div class="pp-barre">
+                <p><span>La home di oggi</span><i style="--v:58%"></i></p>
+                <p data-on><span>Home su Matera</span><i style="--v:82%"></i></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {scena === 'collab-costa' && (
+        <div class="pp-costa">
+          <div class="pp-venn" data-unito>
+            <div class="pp-disco pp-disco--a"><strong>Clienti Trenitalia</strong><span>restano vostri</span></div>
+            <div class="pp-stanza" data-da="2"><small>Ambiente neutro</small></div>
+            <div class="pp-comune" data-da="3"><strong>In comune</strong><span>si vede solo la quantità</span></div>
+            <div class="pp-disco pp-disco--b"><strong>Clienti Costa</strong><span>restano loro</span></div>
+          </div>
+          <div class="pp-sotto">
+            <div class="pp-c" data-da="4"><small>Un pubblico per una proposta comune</small><strong>Il treno fino al porto, prima della crociera</strong></div>
+            <ul class="pp-regole" data-da="5">
+              <li>Titolarità</li><li>Base giuridica</li><li>Contratto</li><li>Valutazione d’impatto</li>
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {scena === 'bv-ricerca' && (
+        <div class="pp-due pp-due--bv">
+          <div class="pp-c pp-domande">
+            <small>Le domande dei viaggiatori</small>
+            <ol>
+              <li>Come arrivo da Roma a Matera senza auto?</li>
+              <li>Come visitare la costiera amalfitana senza macchina?</li>
+              <li>How to visit Puglia without a car?</li>
+            </ol>
+          </div>
+          <div class="pp-risultati">
+            <div class="pp-cifre" data-da="2">
+              <div class="pp-c"><small>ChatGPT · trenitalia.com fra le fonti</small><strong class="pp-gr">7 <em>su 8</em></strong></div>
+              <div class="pp-c"><small>Google · trenitalia.com fra le fonti</small><strong class="pp-gr">2 <em>su 8</em></strong></div>
+            </div>
+            <div class="pp-c" data-da="3"><small>Chi viene citato al vostro posto</small><strong>Rivenditori e siti di comparazione</strong></div>
+            <div class="pp-c pp-c--ok" data-da="4"><small>Da correggere in Experience Manager</small><strong>La pagina Freccialink per Matera</strong></div>
+            <div class="pp-c" data-da="5"><small>Si misura nel tempo</small><span class="pp-trend" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+          </div>
+        </div>
+      )}
+
+      {scena === 'llm-ricerca' && (
+        <div class="pp-mono">
+          <div class="pp-chat pp-chat--largo">
+            <p class="pp-chat-t">Assistente AI</p>
+            <p class="pp-b pp-b--u">Come arrivo da Roma a Matera senza auto?</p>
+            <p class="pp-b pp-b--a" data-da="2" data-a="2">Ci sono diversi autobus e combinazioni di treno e autobus. Ecco alcune opzioni…</p>
+            <div class="pp-carta" data-da="3">
+              <span class="pp-carta-m">Trenitalia</span>
+              <strong>Frecciarossa + Freccialink per Matera</strong>
+              <span>Treno e collegamento in un solo viaggio</span>
+              <span class="pp-cta" data-da="4">Continua su trenitalia.com →</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {scena === 'workfront-contenuto' && (
+        <div class="pp-board">
+          {[
+            { t: 'Richiesta', da: 1, a: 1, b: 'Marketing' },
+            { t: 'In lavorazione', da: 2, a: 2, b: 'Studio creativo · 3 versioni' },
+            { t: 'Approvazione', da: 3, a: 3, b: 'Marketing · Legale · Marchio' },
+            { t: 'Pronta', da: 4, a: 4, b: 'In Experience Manager Assets' },
+          ].map((c) => (
+            <div class="pp-col">
+              <p class="pp-col-t">{c.t}</p>
+              <div class="pp-tk" data-da={c.da} data-a={c.a}><strong>Estate in Puglia</strong><span>{c.b}</span></div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {scena === 'genstudio-contenuto' && (
+        <div class="pp-gs">
+          <figure class="pp-img pp-img--m"><Image src={fotoPuglia} alt="" widths={[480, 800]} sizes="24vw" /><figcaption><small>Approvata</small><strong>Estate in Puglia</strong></figcaption></figure>
+          <span class="pp-fr" data-da="2">→</span>
+          <ul class="pp-vars" data-da="2">
+            <li class="pp-img"><Image src={fotoFamiglia} alt="" widths={[360, 640]} sizes="16vw" /><div><small>Famiglie</small><strong>Tutti al mare</strong><em data-da="3">Marchio ✓</em></div></li>
+            <li class="pp-img"><Image src={fotoCoppia} alt="" widths={[360, 640]} sizes="16vw" /><div><small>Coppie</small><strong>Due giorni nei borghi</strong><em data-da="3">Marchio ✓</em></div></li>
+            <li class="pp-img"><Image src={fotoBici} alt="" widths={[360, 640]} sizes="16vw" /><div><small>Da soli</small><strong>In bici fra gli ulivi</strong><em data-da="3">Marchio ✓</em></div></li>
+          </ul>
+          <div class="pp-striscia" data-da="4"><strong>Approvate dal vostro team</strong><span>Pubblicità online, per pubblico</span></div>
+        </div>
+      )}
+
+      {scena === 'ca-contenuto' && (
+        <div class="pp-ca">
+          <ul class="pp-vars">
+            <li class="pp-img"><Image src={fotoFamiglia} alt="" widths={[360, 640]} sizes="16vw" /><div><small>Famiglie</small><strong>Tutti al mare</strong><span class="pp-tag" data-da="2">bambini · spiaggia</span></div></li>
+            <li class="pp-img"><Image src={fotoCoppia} alt="" widths={[360, 640]} sizes="16vw" /><div><small>Coppie</small><strong>Due giorni nei borghi</strong><span class="pp-tag" data-da="2">borgo · tramonto</span></div></li>
+            <li class="pp-img"><Image src={fotoBici} alt="" widths={[360, 640]} sizes="16vw" /><div><small>Da soli</small><strong>In bici fra gli ulivi</strong><span class="pp-tag" data-da="2">bici · ulivi</span></div></li>
+          </ul>
+          <div class="pp-c" data-da="3">
+            <small>Che cosa porta a cercare il treno</small>
+            <div class="pp-barre">
+              <p data-on><span>Spiaggia con bambini</span><i style="--v:86%"></i></p>
+              <p><span>Borgo al tramonto</span><i style="--v:62%"></i></p>
+              <p><span>Bici fra gli ulivi</span><i style="--v:41%"></i></p>
+            </div>
+          </div>
+          <div class="pp-striscia" data-da="4"><strong>Prossima versione</strong><span>Parte da «spiaggia con bambini»</span></div>
+        </div>
+      )}
+
+      {scena === 'coworker-contenuto' && (
+        <div class="pp-due">
+          <div class="pp-chat">
+            <p class="pp-chat-t">CX Enterprise Coworker</p>
+            <p class="pp-b pp-b--u">Mi servono tre versioni di Estate in Puglia: famiglie, coppie, chi viaggia da solo.</p>
+            <p class="pp-b pp-b--a" data-da="2">Ho trovato i contenuti approvati in Experience Manager Assets.</p>
+            <p class="pp-b pp-b--a" data-da="3">Ecco una proposta per ogni pubblico.</p>
+            <p class="pp-b pp-b--a" data-da="4">Le ho controllate sulle regole del marchio.</p>
+            <p class="pp-b pp-b--u" data-da="5">Mandale in approvazione.</p>
+          </div>
+          <div class="pp-risultati">
+            <div class="pp-c" data-da="2"><small>Experience Manager Assets</small><strong>Campagna Puglia · contenuti approvati</strong></div>
+            <ul class="pp-mini" data-da="3">
+              <li><Image src={fotoFamiglia} alt="" widths={[240, 400]} sizes="10vw" /><span>Famiglie</span><em data-da="4">✓</em></li>
+              <li><Image src={fotoCoppia} alt="" widths={[240, 400]} sizes="10vw" /><span>Coppie</span><em data-da="4">✓</em></li>
+              <li><Image src={fotoBici} alt="" widths={[240, 400]} sizes="10vw" /><span>Da soli</span><em data-da="4">✓</em></li>
+            </ul>
+            <div class="pp-c pp-c--ok" data-da="5"><small>Decide il team</small><strong>In approvazione, nel vostro flusso</strong></div>
+          </div>
+        </div>
+      )}
+
+      {scena === 'cja-rete' && (
+        <div class="pp-rete">
+          <div class="pp-sch">
+            <div class="pp-c"><small>Scheda</small><strong>Matera</strong></div>
+            <div class="pp-c"><small>Locandina</small><strong>Puglia in treno</strong></div>
+            <div class="pp-c"><small>Scheda</small><strong>Frecce estate</strong></div>
+          </div>
+          <div class="pp-ag">
+            <p class="pp-col-t">Le agenzie</p>
+            <ul class="pp-ag-g">
+              {AGENZIE.map((i) => (
+                <li data-con={i % 2 === 0 ? 'si' : 'no'}>
+                  <span class="pp-ag-d"></span>
+                  <i class="pp-ag-b" data-da="2" style={`--v:${(i % 2 === 0 ? 62 : 38) + (i * 13) % 28}%`}></i>
+                </li>
+              ))}
+            </ul>
+            <p class="pp-leg"><span data-con="si"></span>con la scheda<span data-con="no"></span>senza</p>
+          </div>
+          <div class="pp-ris">
+            <div class="pp-strato pp-strato--p" data-da="3"><div class="pp-strato-t"><strong>Customer Journey Analytics</strong><span>Per agenzia, senza dati di persona</span></div></div>
+            <div class="pp-ris-pila">
+            <div class="pp-c" data-da="4" data-a="4">
+              <small>Stessa tratta, stesso periodo</small>
+              <div class="pp-barre">
+                <p data-on><span>Con la scheda</span><i style="--v:78%"></i></p>
+                <p><span>Senza</span><i style="--v:54%"></i></p>
+              </div>
+            </div>
+            <div class="pp-c" data-da="5">
+              <small>Quale fa vendere di più</small>
+              <div class="pp-barre">
+                <p data-on><span>Scheda Matera</span><i style="--v:84%"></i></p>
+                <p><span>Frecce estate</span><i style="--v:56%"></i></p>
+                <p data-spento><span>Puglia in treno</span><i style="--v:22%"></i></p>
+              </div>
+            </div>
+            </div>
+            <div class="pp-striscia" data-da="6"><strong>QR per scheda</strong><span>Chi inquadra, poi va sul sito</span></div>
+          </div>
+        </div>
+      )}
+    </div>
+
+    <footer class="pp-piede">
+      <div class="pp-didas" aria-live="polite">
+        {s.passi.map((p, i) => (<p class="pp-d" data-passo-t={i + 1}><span class="pp-d-n">{i + 1}</span>{p}</p>))}
+      </div>
+      <div class="pp-nav">
+        <div class="pp-punti" aria-hidden="true">{s.passi.map((_, i) => <span data-punto={i + 1}></span>)}</div>
+        <button type="button" class="pp-b-n" data-pp-prev aria-label="Passo precedente">←</button>
+        <button type="button" class="pp-b-n pp-b-n--av" data-pp-next>Avanti →</button>
+      </div>
+      <p class="pp-nota">
+        {s.nota}
+        {s.fonti.map((f) => <> · <a href={f.url} target="_blank" rel="noopener noreferrer">{f.label}</a></>)}
+      </p>
+    </footer>
+  </div>
+</dialog>
+
+<script>
+  /* Una delega sola sul documento: regge ai cambi di capitolo (ClientRouter) e a
+     più istanze per pagina. Lo script di un componente Astro gira una volta. */
+  const aperto = () => document.querySelector<HTMLDialogElement>('dialog.pp[open]');
+
+  function vai(d: HTMLDialogElement, n: number) {
+    const tot = Number(d.dataset.tot);
+    const p = Math.min(Math.max(1, n), tot);
+    d.dataset.passo = String(p);
+    d.querySelectorAll<HTMLElement>('[data-da],[data-a]').forEach((el) => {
+      const da = Number(el.dataset.da ?? 1);
+      const a = Number(el.dataset.a ?? 99);
+      el.classList.toggle('pp-on', p >= da && p <= a);
+    });
+    d.querySelectorAll<HTMLElement>('[data-passo-t]').forEach((el) => {
+      el.classList.toggle('pp-on', Number(el.dataset.passoT) === p);
+    });
+    d.querySelectorAll<HTMLElement>('[data-punto]').forEach((el) => {
+      el.classList.toggle('pp-on', Number(el.dataset.punto) <= p);
+    });
+    const prev = d.querySelector<HTMLButtonElement>('[data-pp-prev]');
+    const next = d.querySelector<HTMLButtonElement>('[data-pp-next]');
+    if (prev) prev.disabled = p === 1;
+    if (next) next.textContent = p === tot ? 'Chiudi' : 'Avanti →';
+  }
+
+  function avanti(d: HTMLDialogElement) {
+    const p = Number(d.dataset.passo);
+    if (p >= Number(d.dataset.tot)) d.close();
+    else vai(d, p + 1);
+  }
+
+  function apri(d: HTMLDialogElement) {
+    d.closest('[data-deck]')?.setAttribute('data-deck-lock', '');
+    d.showModal();
+    vai(d, 1);
+    d.querySelector<HTMLElement>('[data-pp-next]')?.focus();
+  }
+
+  document.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    const open = t.closest<HTMLElement>('[data-pp-open]');
+    if (open) {
+      const d = open.parentElement?.querySelector<HTMLDialogElement>('dialog.pp');
+      if (d) { e.preventDefault(); apri(d); }
+      return;
+    }
+    const d = t.closest<HTMLDialogElement>('dialog.pp');
+    if (!d) return;
+    if (t === d || t.closest('[data-pp-chiudi]')) d.close();
+    else if (t.closest('[data-pp-next]')) avanti(d);
+    else if (t.closest('[data-pp-prev]')) vai(d, Number(d.dataset.passo) - 1);
+  });
+
+  /* `close` non risale: si ascolta in cattura. Copre Esc, la ×, l'ultimo passo. */
+  document.addEventListener('close', (e) => {
+    const d = e.target as HTMLElement;
+    if (d.matches?.('dialog.pp')) d.closest('[data-deck]')?.removeAttribute('data-deck-lock');
+  }, true);
+
+  /* In cattura sul documento: a pop-in aperto i tasti non arrivano al deck, che
+     ascolta su window. Vale anche per i telecomandi, che mandano PageDown/PageUp. */
+  document.addEventListener('keydown', (e) => {
+    const d = aperto();
+    if (!d) return;
+    if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key)) {
+      if ((e.target as HTMLElement).tagName === 'A') return;
+      e.preventDefault(); e.stopPropagation(); avanti(d);
+    } else if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) {
+      e.preventDefault(); e.stopPropagation(); vai(d, Number(d.dataset.passo) - 1);
+    } else if (e.key !== 'Escape' && e.key !== 'Tab') {
+      e.stopPropagation();
+    }
+  }, true);
+</script>

@@ -16,3 +16,12 @@ export const SITE = {
   langs: ['it'] as Array<'it' | 'en'>,
   defaultLang: 'it' as 'it' | 'en',
 };
+
+/**
+ * Gli asset pesanti stanno sul Release `media`. Nella versione da portare in sala
+ * senza rete (`scripts/build-offline.sh`, PUBLIC_OFFLINE=1) stanno accanto al deck.
+ */
+const RELEASE = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media';
+export const OFFLINE = Boolean(import.meta.env.PUBLIC_OFFLINE);
+export const media = (file: string) =>
+  OFFLINE ? `${import.meta.env.BASE_URL.replace(/\/?$/, '/')}media/${file}` : `${RELEASE}/${file}`;

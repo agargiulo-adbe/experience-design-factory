@@ -443,14 +443,13 @@ export const SOURCES = {
     cosaDice: 'La biblioteca degli asset: versioni, diritti d\'uso, metadati, distribuzione ai canali. Trenitalia ha Assets oltre a Sites.',
   },
   firefly: {
-    // Il nome che il cliente riconosce è «Adobe Firefly»; la pagina pubblica che
-    // descrive l'uso su scala — generazione dentro un flusso, via API — è quella
-    // di Firefly Services. Le pagine di prodotto su adobe.com rispondono 403 a
-    // qualunque accesso automatico e non sarebbero verificabili da nessun gate.
-    url: 'https://developer.adobe.com/firefly-services/docs/guides/',
+    // 10 nov 2026, dal panel: portava alla documentazione di Firefly Services, che è
+    // un altro prodotto. La pagina di prodotto risponde 403 a un accesso automatico
+    // e finisce nella lista «da aprire a mano» di `audit:fonti`: è previsto.
+    url: 'https://www.adobe.com/products/firefly.html',
     label: 'Adobe Firefly',
     data: 'documentazione pubblica',
-    cosaDice: 'Generazione di immagini e varianti visive con modelli addestrati su contenuti licenziati, utilizzabile anche dentro un flusso di produzione tramite Firefly Services.',
+    cosaDice: 'Generazione di immagini e varianti visive con modelli addestrati su contenuti licenziati.',
   },
   workfront: {
     url: 'https://experienceleague.adobe.com/en/docs/workfront/using/home',
