@@ -24,7 +24,7 @@ export const CHAPTERS: Chapter[] = [
      «Dove ci innestiamo». CX Analytics sta dopo lo Scenario perché è il cuore
      di «Dal dato alla decisione», e non nomina Giulia prima che arrivi. */
   { slug: 'adobe', num: '01', title: { it: 'Adobe, chi siamo', en: 'Adobe, who we are' } },
-  { slug: 'scenario', num: '03', title: { it: 'Scenario', en: 'Scenario' } },
+  { slug: 'scenario', num: '03', title: { it: 'Dal dato alla decisione', en: 'From data to decision' } },
   { slug: 'analytics', num: '03', title: { it: 'CX Analytics', en: 'CX analytics' } },
   { slug: 'persona', num: '04', title: { it: 'La persona', en: 'The persona' } },
   { slug: 'momenti', num: '04', title: { it: 'I sette momenti, dai due lati', en: 'Seven moments, from both sides' } },

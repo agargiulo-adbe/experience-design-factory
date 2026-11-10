@@ -2493,27 +2493,15 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
    ══════════════════════════════════════════════════════════════════════ */
 .im-div-bg { position: absolute; inset: 0; background: var(--color-paper); }
 .im-div-bg::before {
-  content: ''; position: absolute; inset: 0 32% 0 40%;
+  content: ''; position: absolute; inset: 0 0 0 40%;
   background-image: var(--foto); background-size: cover;
   background-position: var(--fuoco, center 38%);
   filter: brightness(1.08) saturate(1.04);
   -webkit-mask-image: linear-gradient(to right, transparent, #000 22% 100%);
           mask-image: linear-gradient(to right, transparent, #000 22% 100%);
 }
-/* ⚠️ Il pannello parte al 68% mentre la colonna di testo parte al ~72%:
-   il margine non è estetico, è la tolleranza. La safe-area laterale resa
-   non è esattamente quella del token (misurata: 118px, non 80), e con il
-   confine calcolato al pelo il testo cominciava DIECI PIXEL PRIMA del
-   pannello, sopra la fotografia. Quattro punti percentuali di franco
-   costano nulla e tolgono la dipendenza da un valore che non controllo. */
-.im-div-bg::after {
-  content: ''; position: absolute; inset: 0 0 0 68%;
-  background: linear-gradient(165deg, #1f7400, #0d2901);
-  box-shadow: -18px 0 44px rgba(0, 0, 0, 0.26);
-}
-
 .im-div {
-  display: grid; grid-template-columns: 74fr 26fr;
+  display: grid; grid-template-columns: minmax(0, 1fr);
   align-items: center; width: 100%; height: 100%; gap: 0 1.6rem;
 }
 .im-div-sx { min-width: 0; display: grid; gap: 0.7rem; align-content: center; }
@@ -2530,25 +2518,7 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
   font-size: clamp(2.4rem, 4vw, 5.4rem); line-height: 1.02;
   letter-spacing: -0.025em; color: var(--color-ink); text-wrap: balance;
 }
-.im-div-dx { min-width: 0; display: grid; gap: 0.55rem; align-content: center; }
-.im-div-oc {
-  margin: 0; max-width: none; font-size: clamp(0.78rem, 0.64vw, 1.44rem);
-  font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
-  color: #e6f2e1;
-}
-.im-div-l {
-  margin: 0; max-width: none;
-  font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(1.1rem, 1.12vw, 2.24rem); line-height: 1.26; color: #ffffff;
-}
-
-/* Sotto i 1100px di larghezza il pannello diventerebbe una colonna di
-   parole singole: la foto esce e il divisore torna a due colonne. */
-@media (max-width: 1100px) {
-  .im-div { grid-template-columns: 62fr 38fr; }
-  .im-div-bg::before { inset: 0 44% 0 44%; }
-  .im-div-bg::after { inset: 0 0 0 56%; }
-}
+@media (max-width: 1100px) { .im-div-bg::before { inset: 0 0 0 52%; } }
 
 /* ══════════════════════════════════════════════════════════════════════
    01 · ADOBE PER INTESA SANPAOLO — il capitolo che viene dal deck
@@ -2675,38 +2645,20 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem;
 }
 .im-wave-i {
-  display: grid; gap: 0.22rem; min-width: 0; margin-inline: 0;
-  padding: 0.72rem 0.8rem 0.8rem; border-radius: 14px;
-  background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.16);
+  display: grid; gap: 0.45rem; min-width: 0; margin-inline: 0; align-content: start;
 }
-/* Il quadrante è un SEGNO, non una lettura: a questa misura si riconosce
-   la forma e il pallino di Adobe in alto a destra. Chi vuole leggere i
-   nomi apre il PDF — e lì l'immagine è a piena risoluzione. */
+/* Il quadrante è il contenuto della slide: abbastanza grande da leggere
+   dove sta Adobe, con il rapporto dell'immagine originale. */
 .im-wave-img {
-  width: 100%; height: clamp(5rem, 6.6vw, 10.6rem); object-fit: contain;
-  object-position: center; background: #ffffff; border-radius: 8px; padding: 0.2rem;
-}
-.im-wave-q {
-  font-size: clamp(0.72rem, 0.58vw, 1.3rem); font-weight: 700;
-  letter-spacing: 0.08em; text-transform: uppercase; color: #ffb3aa;
+  width: 100%; height: auto; aspect-ratio: 680 / 664; object-fit: contain;
+  background: #ffffff; border-radius: 8px;
 }
 .im-wave-c {
-  font-size: clamp(0.95rem, 0.82vw, 1.85rem); font-weight: 700;
-  line-height: 1.18; color: #ffffff;
+  font-size: clamp(0.98rem, 0.9vw, 2rem); font-weight: 700; line-height: 1.2;
+  color: #ffffff; text-decoration: underline;
+  text-decoration-color: rgba(159, 214, 138, 0.65); text-underline-offset: 0.18em;
 }
-.im-wave-p {
-  font-size: clamp(0.84rem, 0.7vw, 1.58rem); line-height: 1.34; color: #eaf3e7;
-}
-/* L'elemento distintivo riconosciuto da Forrester: si stacca con un
-   filetto, perché è la riga che porta l'autorità di un terzo e non la
-   nostra. */
-.im-wave-r {
-  margin-top: 0.1rem; padding-top: 0.42rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: clamp(0.78rem, 0.64vw, 1.44rem); line-height: 1.32;
-  font-style: italic; color: #cfe0ca;
-}
-
+.im-wave-c:hover, .im-wave-c:focus-visible { text-decoration-color: #9fd68a; }
 /* ── L'architettura di Adobe CX Enterprise ───────────────────────────
    Disegnata sullo schema che il team usa già: tre blocchi in alto, una
    fascia sottile che li attraversa, una fascia alta che fa da pavimento.
@@ -2809,8 +2761,6 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 .im-fonte-riga a:focus-visible { text-decoration-color: #9fd68a; }
 
 @media (max-height: 940px) {
-  .im-wave-img { height: clamp(4.4rem, 5.8vw, 9rem); }
-  .im-wave-i { padding: 0.6rem 0.65rem 0.7rem; gap: 0.2rem; }
   .im-team { gap: 0.75rem; }
   .im-team-f { width: clamp(3.4rem, 4.4vw, 7rem); margin-bottom: 0.3rem; }
   .im-num { gap: 0.7rem; }
@@ -2985,7 +2935,7 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
   letter-spacing: 0.06em; color: #9fd68a;
 }
 .im-cop-tit {
-  font-size: clamp(1rem, 0.9vw, 2rem); font-weight: 700;
+  font-size: clamp(1.1rem, 1.08vw, 2.4rem); font-weight: 700;
   line-height: 1.24; color: #ffffff;
 }
 .im-cop-cap:hover .im-cop-tit { color: #d7f0cd; }
@@ -3207,88 +3157,6 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 
 @media (max-height: 940px) {
   .im-fig { height: clamp(2.8rem, 3.5vw, 5.4rem); margin-bottom: 0.3rem; }
-}
-
-/* ══════════════════════════════════════════════════════════════════════
-   CHI È ADOBE — i due mondi, e il punto in cui si toccano
-   L'argomento non è un elenco di prodotti: è che Adobe fa gli strumenti
-   con cui il contenuto NASCE e il sistema con cui ARRIVA al cliente, e
-   che le due metà si toccano. Quindi il disegno sta al centro e il
-   testo gli sta intorno, non il contrario.
-   ══════════════════════════════════════════════════════════════════════ */
-.im-mondi {
-  position: relative; display: grid;
-  grid-template-columns: minmax(0, 1fr) 5.5rem minmax(0, 1fr);
-  align-items: stretch; gap: 0; margin-top: 0.9rem;
-}
-.im-mondo {
-  display: grid; gap: 0.5rem; align-content: start; min-width: 0;
-  padding: 1.3rem 1.5rem 1.4rem; border-radius: 16px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-}
-/* ⚠️ La RIGA va dichiarata, non lasciata all'auto-placement: con le
-   sole colonne il giunto non trovava posto in riga 1 e finiva a capo,
-   sotto le card, dove non collegava più niente. */
-.im-mondo[data-lato='crea'] { grid-column: 1; grid-row: 1; }
-/* La metà che riguarda questo incontro si marca: non è una nota a piè
-   di pagina, è il perimetro della riunione. */
-.im-mondo[data-lato='esperienza'] {
-  grid-column: 3; grid-row: 1;
-  background: rgba(37, 137, 0, 0.18); border-color: rgba(79, 194, 31, 0.55);
-}
-.im-mondo-t {
-  font-size: clamp(1.06rem, 0.96vw, 2.1rem); font-weight: 700;
-  line-height: 1.18; color: #ffffff;
-}
-.im-mondo-p {
-  list-style: none; margin: 0.1rem 0; padding: 0;
-  display: flex; flex-wrap: wrap; gap: 0.36rem;
-}
-.im-mondo-p li {
-  padding: 0.26rem 0.62rem; border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: clamp(0.8rem, 0.66vw, 1.48rem); font-weight: 700; color: #ffffff;
-}
-.im-mondo[data-lato='esperienza'] .im-mondo-p li {
-  background: rgba(79, 194, 31, 0.2); border-color: rgba(79, 194, 31, 0.5);
-}
-.im-mondo-d {
-  font-size: clamp(0.86rem, 0.72vw, 1.62rem); line-height: 1.38; color: #e3eedf;
-}
-/* Il giunto: tre linee che convergono in un punto solo. È il disegno
-   dell'argomento — due mondi, una giunzione — e non ha parole dentro. */
-/* ⚠️ Il giunto va ANCORATO all'altezza delle card: senza, l'SVG prende
-   l'altezza intrinseca del viewBox e scivola sotto, dove non collega
-   più niente. `align-self: stretch` e altezza piena dentro la cella. */
-/* Il giunto: una linea che attraversa e un punto che la interrompe.
-   ⚠️ Era un SVG con `preserveAspectRatio="none"` e `overflow: visible`:
-   deformato dalla cella, espandeva la riga della griglia e sbordava
-   sopra il testo. Due regole di CSS fanno lo stesso segno e non possono
-   uscire da nessuna parte. */
-.im-mondi-giunto {
-  grid-column: 2; grid-row: 1; align-self: center; position: relative;
-  display: grid; place-items: center; height: 2.6rem;
-}
-.im-mondi-giunto::before {
-  content: ''; position: absolute; left: 0; right: 0; top: 50%;
-  border-top: 2px dashed rgba(79, 194, 31, 0.75);
-}
-.im-mondi-giunto span {
-  position: relative; z-index: 1;
-  width: 2.1rem; height: 2.1rem; border-radius: 999px;
-  display: grid; place-items: center;
-  background: var(--color-verde-chiaro); color: #0d2901;
-  font-size: clamp(0.9rem, 0.78vw, 1.75rem); font-weight: 700; line-height: 1;
-}
-
-@media (max-width: 1100px) {
-  .im-mondi { grid-template-columns: minmax(0, 1fr); gap: 0.8rem; }
-  .im-mondo[data-lato='crea'], .im-mondo[data-lato='esperienza'] { grid-column: 1; }
-  .im-mondi-giunto { display: none; }
-}
-@media (max-height: 940px) {
-  .im-mondo { padding: 0.9rem 1rem 1rem; gap: 0.38rem; }
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -3940,12 +3808,8 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 #slide-m-03 .im-due-banda[data-lato='interno'] .im-due-t { max-width: 34ch; text-wrap: pretty; }
 
 
-/* L'agenda di copertina porta anche il sottotitolo di ogni voce. */
-.im-cop-voce { display: grid; gap: 0.08rem; min-width: 0; }
-.im-cop-riga { display: block; font-size: clamp(0.78rem, 0.66vw, 1.48rem); font-weight: 400; line-height: 1.32; color: #dfeadb; }
-
-/* I tre canali sono i titoli della slide: più grandi delle due fasce sotto. */
-#slide-cx .im-arch-su .im-arch-t { font-size: clamp(1.4rem, 1.4vw, 2.9rem); line-height: 1.16; }
+/* Cinque blocchi, un solo corpo di titolo: le due fasce valgono quanto i canali. */
+#slide-cx .im-arch-t { font-size: clamp(1.45rem, 1.55vw, 3.2rem); line-height: 1.16; }
 
 /* Slide dei blocchi: tutto centrato, e in banner e fasce il testo sta sotto
    il titolo invece che accanto (richiesta del 9 nov 2026). */
@@ -4041,3 +3905,114 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 @media (max-width: 900px) { .im-rm { grid-template-columns: minmax(0, 1fr); gap: 1rem; } .im-rm-i::after { display: none; } }
 /* A 1280×800 la riga in più del ritorno non ci sta: si taglia la nota, non il corpo. */
 @media (max-height: 880px) { #slide-ingaggio-casi .im-fonte-riga:not(:has(.im-torna)) { display: none; } }
+
+
+/* ══════════════════════════════════════════════════════════════════════
+   10 NOV 2026 — una catena, un imbuto, tre disegni al posto dei paragrafi
+   ══════════════════════════════════════════════════════════════════════ */
+#slide-chi .im-ado-t { max-width: 34ch; font-size: clamp(2.1rem, 3vw, 5.8rem); line-height: 1.08; }
+#slide-chi .im-ado-l { color: #e3eedf; font-size: clamp(1.15rem, 1.3vw, 2.7rem); }
+.im-cx-fig { --punta: clamp(1.6rem, 2.4vw, 4.6rem); display: grid; gap: clamp(1.1rem, 1.6vw, 3rem); margin-top: 0.7rem; }
+.im-cx-catena { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.im-cx-el { display: grid; gap: clamp(0.7rem, 1vw, 2rem); min-width: 0; margin-inline: 0; align-content: start; }
+.im-cx-verbo {
+  display: grid; place-items: center; height: clamp(6rem, 8.6vw, 17rem);
+  padding-inline: var(--punta);
+  font-family: var(--font-display); font-weight: 700; letter-spacing: -0.015em;
+  font-size: clamp(1.5rem, 2.05vw, 4.2rem); color: #ffffff; background: #1f7400;
+  clip-path: polygon(0 0, calc(100% - var(--punta)) 0, 100% 50%, calc(100% - var(--punta)) 100%, 0 100%, var(--punta) 50%);
+}
+.im-cx-el:first-child .im-cx-verbo { clip-path: polygon(0 0, calc(100% - var(--punta)) 0, 100% 50%, calc(100% - var(--punta)) 100%, 0 100%); }
+.im-cx-el + .im-cx-el .im-cx-verbo { margin-left: calc(var(--punta) * -0.72); }
+.im-cx-el + .im-cx-el .im-cx-prod { margin-left: calc(var(--punta) * -0.72); }
+.im-cx-el:nth-child(1) .im-cx-verbo { background: #124c00; }
+.im-cx-el:nth-child(2) .im-cx-verbo { background: #175c00; }
+.im-cx-el:nth-child(3) .im-cx-verbo { background: #1b6800; }
+.im-cx-prod { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; justify-items: center; text-align: center; }
+.im-cx-prod li { font-size: clamp(1.05rem, 1vw, 2.2rem); line-height: 1.3; color: #eef6ea; }
+.im-cx-base {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 0.3rem 1.6rem;
+  padding: clamp(0.8rem, 1.1vw, 2rem) 1.6rem; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18);
+}
+.im-cx-base-t { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.25rem, 1.35vw, 2.8rem); color: #ffffff; }
+.im-cx-base-d { font-size: clamp(1rem, 0.95vw, 2.1rem); color: #e3eedf; }
+
+.im-ado-cap--wave { max-width: 100rem; }
+@media (max-width: 900px) { .im-wave { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.im-seg { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 4vw, 8rem); align-items: center; width: 100%; }
+.im-seg-testa { display: grid; gap: 1rem; min-width: 0; }
+.im-seg-testa .im-h2 { color: #ffffff; }
+.im-seg-testa .im-sub { color: #eef6ea; font-size: clamp(1.15rem, 1.3vw, 2.7rem); }
+.im-seg-fig { margin: 0; display: grid; gap: clamp(0.9rem, 1.35vw, 2.6rem); padding: clamp(1.2rem, 1.8vw, 3.4rem); border-radius: 14px; background: rgba(6, 22, 2, 0.8); border: 1px solid rgba(255, 255, 255, 0.14); }
+.im-seg-r { display: grid; gap: 0.4rem; min-width: 0; }
+.im-seg-riga { margin: 0; max-width: none; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.9rem; }
+.im-seg-n { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.9rem, 2.5vw, 5rem); line-height: 1.05; letter-spacing: -0.02em; color: #ffffff; }
+.im-seg-l { font-size: clamp(1.05rem, 1.05vw, 2.3rem); color: #e3eedf; }
+.im-seg-b { display: block; height: clamp(0.6rem, 0.7vw, 1.3rem); border-radius: 4px; background: rgba(255, 255, 255, 0.13); }
+.im-seg-b i { display: block; height: 100%; border-radius: 4px; background: var(--color-verde-chiaro); }
+.im-seg-r[data-ultimo] .im-seg-b i { background: #ffffff; }
+@media (max-width: 900px) { .im-seg { grid-template-columns: minmax(0, 1fr); } }
+
+/* Tutti i canali entrano, un percorso solo esce. */
+.im-un { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr) minmax(0, 3fr); align-items: stretch; min-height: clamp(17rem, 22vw, 42rem); margin-top: 0.7rem; }
+.im-un-fonti { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-rows: 1fr; }
+.im-un-fonti li { display: flex; align-items: center; justify-content: center; min-width: 0; margin: 0.28rem 0; border-radius: 999px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); font-size: clamp(1.05rem, 1.08vw, 2.3rem); font-weight: 600; color: #ffffff; }
+.im-un-misura { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; min-width: 0; }
+.im-un-rami { position: relative; align-self: stretch; }
+.im-un-rami svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.im-un-rami path { fill: none; stroke: #9fd68a; stroke-width: 2; vector-effect: non-scaling-stroke; }
+.im-un-hub { width: clamp(9rem, 10.6vw, 20rem); aspect-ratio: 1; border-radius: 50%; display: grid; place-content: center; gap: 0.2rem; padding: 0.8rem; text-align: center; background: #1f7400; }
+.im-un-hub-t { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.3rem, 1.4vw, 2.9rem); line-height: 1.1; color: #ffffff; }
+.im-un-hub-d { font-size: clamp(0.8rem, 0.72vw, 1.6rem); line-height: 1.25; color: #ffffff; }
+.im-un-esito { display: grid; grid-template-columns: clamp(2rem, 3vw, 6rem) minmax(0, 1fr); align-items: center; min-width: 0; }
+.im-un-ponte { height: 2px; background: #9fd68a; }
+.im-un-pers { display: grid; gap: clamp(1.2rem, 1.8vw, 3.4rem); padding: clamp(1.2rem, 1.8vw, 3.4rem); border-radius: 14px; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.16); }
+.im-un-pers-t { margin: 0; max-width: none; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.35rem, 1.5vw, 3.1rem); line-height: 1.15; color: #ffffff; }
+.im-un-linea { position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.im-un-linea::before { content: ''; position: absolute; left: 10%; right: 10%; top: 0.6rem; height: 2px; background: #9fd68a; }
+.im-un-linea li { position: relative; display: grid; justify-items: center; gap: 0.7rem; min-width: 0; margin-inline: 0; text-align: center; font-size: clamp(1.05rem, 1.05vw, 2.3rem); color: #ffffff; }
+.im-un-punto { width: 1.3rem; height: 1.3rem; border-radius: 50%; background: var(--color-verde-chiaro); }
+.im-un-linea li:last-child { font-weight: 700; }
+.im-un-linea li:last-child .im-un-punto { background: #ffffff; }
+@media (max-width: 900px) {
+  .im-un { grid-template-columns: minmax(0, 1fr); gap: 0.8rem; }
+  .im-un-misura { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+  .im-un-rami, .im-un-ponte { display: none; }
+  .im-un-esito { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Da Adobe Analytics a CJA: una riga per voce, si legge in colonna. */
+.im-pas { --pas-e: clamp(8.5rem, 10vw, 20rem); display: grid; gap: 0.45rem; margin-top: 0.4rem; }
+.im-pas-testa, .im-pas-g { display: grid; grid-template-columns: var(--pas-e) minmax(0, 1fr); align-items: center; padding-inline: clamp(0.8rem, 1.1vw, 2.2rem); }
+.im-pas-g { padding-block: 0.32rem; border-radius: 12px; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.15); }
+.im-pas-g[data-stato='nuovo'] { background: rgba(79, 194, 31, 0.2); border-color: rgba(159, 214, 138, 0.6); }
+.im-pas-k { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.15rem, 1.15vw, 2.5rem); color: #ffffff; }
+.im-pas-r { display: grid; grid-template-columns: minmax(0, 1fr) 3rem minmax(0, 1fr); align-items: center; min-height: clamp(2.35rem, 2.5vw, 5rem); font-size: clamp(1.08rem, 1.08vw, 2.35rem); color: #ffffff; }
+.im-pas-testa .im-pas-r { min-height: 0; font-weight: 700; color: #c9e6bb; font-size: clamp(1rem, 0.95vw, 2.1rem); }
+.im-pas-fr { width: 1.7rem; height: 0.9rem; justify-self: center; fill: none; stroke: #9fd68a; stroke-width: 2; }
+.im-pas-vuoto { display: block; width: 62%; border-top: 1px dashed rgba(255, 255, 255, 0.4); }
+.im-pas-r > span { min-width: 0; }
+
+/* Quanto del digitale arriva in filiale: due file di barre, stesso percorso. */
+.im-att { --att-e: clamp(12rem, 15vw, 30rem); display: grid; gap: clamp(0.5rem, 0.8vw, 1.6rem); margin-top: 0.5rem; }
+.im-att-r { display: grid; grid-template-columns: var(--att-e) minmax(0, 1fr); gap: 1.5rem; align-items: end; }
+.im-att-e { display: grid; gap: 0.25rem; align-self: center; min-width: 0; }
+.im-att-t { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.2rem, 1.25vw, 2.6rem); line-height: 1.15; color: #ffffff; }
+.im-att-d { font-size: clamp(0.98rem, 0.92vw, 2rem); line-height: 1.32; color: #e3eedf; }
+.im-att-barre { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); align-items: end; height: clamp(5.4rem, 7.6vw, 15rem); border-bottom: 1px solid rgba(255, 255, 255, 0.35); }
+.im-att-b { justify-self: center; width: min(52%, 5rem); height: var(--h); border-radius: 4px 4px 0 0; background: var(--color-verde-chiaro); }
+.im-att-b[data-filiale] { background: #ffffff; }
+.im-att-no { justify-self: center; align-self: end; display: grid; place-items: center; width: 86%; height: 62%; border: 1px dashed rgba(255, 255, 255, 0.6); border-bottom: 0; border-radius: 4px 4px 0 0; text-align: center; font-size: clamp(0.88rem, 0.82vw, 1.8rem); line-height: 1.15; color: #ffffff; }
+.im-att-asse { display: grid; grid-template-columns: var(--att-e) minmax(0, 1fr); gap: 1.5rem; }
+.im-att-asse ol { grid-column: 2; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.im-att-asse li { margin-inline: 0; text-align: center; font-size: clamp(1rem, 0.98vw, 2.1rem); color: #ffffff; }
+.im-att-asse li:last-child { font-weight: 700; }
+@media (max-width: 900px) { .im-att-r, .im-att-asse { grid-template-columns: minmax(0, 1fr); gap: 0.5rem; } .im-att-asse ol { grid-column: 1; } }
+
+/* Aperto «Scopri come», il dettaglio prende il posto del disegno: i due
+   insieme non stanno in una slide e il titolo uscirebbe dall'alto. */
+#slide-passaggio:has([data-hiw][data-hiw-on]) .im-pas,
+#slide-attribuzione:has([data-hiw][data-hiw-on]) .im-att,
+#slide-attribuzione:has([data-hiw][data-hiw-on]) .im-ado-l { display: none; }

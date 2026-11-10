@@ -9,18 +9,18 @@ export const PAGE_REGISTRY: PageEntry[] = [
   { slug: 'adobe', label: 'Adobe per Intesa Sanpaolo (01)', slides: [
     { id: 'slide-cover',     label: 'Cover: Adobe per Intesa Sanpaolo' },
     { id: 'slide-team',      label: 'Il team Adobe in sala' },
-    { id: 'slide-chi',       label: 'Chi è Adobe: le due aree, e quella di oggi' },
-    { id: 'slide-fsi',       label: 'Adobe nei servizi finanziari: quattro numeri e i quattro Forrester Wave' },
+    { id: 'slide-chi',       label: 'Una piattaforma unica: comprendere, decidere, creare, attivare' },
+    { id: 'slide-fsi',       label: 'Adobe nei servizi finanziari: i numeri e i quattro Forrester Wave' },
     { id: 'slide-cx',        label: 'Adobe CX Enterprise: i blocchi, le tre cose di cui si parla, e i nomi' },
   ]},
   { slug: 'scenario', label: 'Dal dato alla decisione · Scenario (03)', slides: [
-    { id: 'slide-cover',      label: 'Cover: il mutuo è l’acquisizione più lunga' },
-    { id: 'slide-segnale',    label: 'Il segnale c’è già: l’imbuto e le quattro candidate' },
+    { id: 'slide-cover',      label: 'Cover: Dal dato alla decisione' },
+    { id: 'slide-segnale',    label: 'Il segnale c’è già: l’imbuto' },
   ]},
   { slug: 'analytics', label: 'Dal dato alla decisione · CX Analytics (03)', slides: [
-    { id: 'slide-cover',  label: 'Cover: CX Analytics' },
-    { id: 'slide-passaggio', label: 'Da Adobe Analytics a CJA: che cosa cambia per chi lo usa oggi' },
-    { id: 'slide-attribuzione', label: 'L’attribuzione dopo l’ultimo clic, e la riga della filiale' },
+    { id: 'slide-unifica', label: 'Tutti i canali in un percorso solo' },
+    { id: 'slide-passaggio', label: 'Da Adobe Analytics a CJA: che cosa resta, cambia, si aggiunge' },
+    { id: 'slide-attribuzione', label: 'Quanto del digitale arriva in filiale' },
   ]},
   { slug: 'persona', label: 'Dove ci innestiamo · La persona (04)', slides: [
     { id: 'slide-cover',  label: 'Cover: Giulia, 34 anni, non è vostra cliente' },

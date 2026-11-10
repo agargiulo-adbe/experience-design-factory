@@ -21,22 +21,22 @@ export const NOTE: Record<string, Record<string, Nota>> = {
   adobe: {
     'slide-cover': { dire: 'Chi siamo, in pochi minuti: il tema dell’incontro viene dopo.' },
     'slide-team': { dire: 'Si presentano le persone, con il ruolo di ciascuno.' },
-    'slide-chi': { dire: 'Adobe produce il contenuto e lo porta al cliente. Oggi si guarda la seconda parte.', seChiedono: 'Experience Cloud oggi si chiama CX Enterprise: il prodotto è lo stesso che conoscono.' },
+    'slide-chi': { dire: 'Quattro verbi, una piattaforma: comprendere, decidere, creare, attivare.', seChiedono: 'Experience Cloud oggi si chiama CX Enterprise: il prodotto è lo stesso che conoscono.' },
     'slide-fsi': { dire: 'I numeri sono nostri, il giudizio è di Forrester: quattro report, con il link.' },
-    'slide-cx': { dire: 'Tre canali, una sola misura e, sotto, il lavoro chiesto a parole.', seChiedono: 'Decisioning è il modulo di Journey Optimizer che nei casi pubblici si chiama ancora Offer Decisioning.' },
+    'slide-cx': { dire: 'Con la freccia giù un blocco alla volta: tre canali, una sola misura e, sotto, il lavoro chiesto a parole.', seChiedono: 'Decisioning è il modulo di Journey Optimizer che nei casi pubblici si chiama ancora Offer Decisioning.' },
   },
   scenario: {
-    'slide-cover': { dire: 'Il mutuo è l’acquisizione più lunga, e spesso riguarda chi è cliente di un’altra banca.' },
-    'slide-segnale': { dire: 'Le domande sono vere domande: si fanno e si aspetta la risposta.', attenzione: 'I numeri dell’imbuto sono illustrativi, non sono i loro: dirlo.' },
+    'slide-cover': { dire: 'Si parte dal dato che c’è. Il mutuo è l’acquisizione più lunga, e spesso riguarda chi è cliente di un’altra banca.' },
+    'slide-segnale': { dire: 'Quanto tempo passa oggi fra il gesto e la decisione? La domanda si fa e si aspetta la risposta.', attenzione: 'I numeri dell’imbuto sono illustrativi, non sono i loro: dirlo.' },
   },
   analytics: {
-    'slide-cover': { dire: 'La misura che tiene insieme il percorso. È il tema che ci è stato chiesto.' },
-    'slide-passaggio': { dire: 'Adobe Analytics e Customer Journey Analytics convivono finché serve. Cambiano le domande possibili sul dato.' },
+    'slide-unifica': { dire: 'La misura che tiene insieme il percorso: è il tema chiesto dal cliente. Con la freccia giù: i canali, la misura, il percorso.', attenzione: 'Filiale e contact center entrano nel dato solo se si decide di portarceli.' },
+    'slide-passaggio': { dire: 'Adobe Analytics e Customer Journey Analytics convivono finché serve. Che cosa resta, che cosa cambia nome, che cosa si aggiunge.', attenzione: 'È un’ipotesi sul loro installato: si corregge in sala.' },
     'slide-attribuzione': { dire: 'Si va oltre l’ultimo clic, fino a quanto il digitale porta in filiale.', attenzione: 'L’attribuzione si ferma ai canali osservati: dirlo subito.' },
   },
   persona: {
     'slide-cover': { dire: 'Giulia, 34 anni, non è ancora cliente: tutto il racconto è su di lei.' },
-    'slide-giro-di-giulia': { dire: 'Sette momenti in tre settimane: con la freccia giù si costruisce il giro, una fermata alla volta.' },
+    'slide-giro-di-giulia': { dire: 'Sette momenti in tre settimane: con la freccia giù si costruisce il giro, una fermata alla volta. L’ultima freccia chiude il cerchio, perché quello che si impara da Giulia serve per la prossima.' },
   },
   momenti: { 'slide-cover': { dire: 'In ogni slide, sopra la sua vista, sotto la vostra nello stesso istante.' } },
   'messa-a-terra': {

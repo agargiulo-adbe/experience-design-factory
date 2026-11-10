@@ -1,25 +1,10 @@
 ---
 /**
- * Scenario — da dove nasce questa storia. UNA slide di contenuto.
+ * Dal dato alla decisione — l'apertura del capitolo.
  *
- * Formato: SLIDE SEQUENZIALI. Si avanza con le frecce, non si scorre.
- *
- * ⚠️ PERCHÉ UNA E NON DUE (revisione critica, 30 ott 2026).
- * Qui c'erano due slide: «Il segnale c'è già, e si spegne da solo» (il
- * dato esiste e resta sparso) e «Chi decide che cosa dire, e quando»
- * (le proposte esistono e non c'è un arbitro). Sono due metà dello
- * STESSO problema, e separarle costava due slide di premessa prima che
- * Giulia entri in scena — su un documento che ne ha trenta.
- * Di più: la seconda metà il deck la riprende per intero più avanti,
- * dove c'è anche la risposta — «L'arbitro» fra i quattro componenti
- * dell'ingaggio, e «Come ragiona una decisione» nell'approfondimento.
- * Detta due volte, la prima volta è una premessa; detta una volta qui e
- * risolta là, diventa una domanda che il documento chiude.
- *
- * Quello che NON si è buttato sono le due figure: l'imbuto dice in un
- * secondo dove si perde chi non vi conosce, la lista delle candidate
- * dice che senza un arbitro decide l'ordine delle campagne. Stanno
- * affiancate, ognuna con la sua ancora e una riga sola di verdetto.
+ * Una slide, un disegno. Il 10 nov 2026 il team l'ha chiesta «decomplicata
+ * completamente»: restano il titolo, una riga e l'imbuto. Il tema di chi
+ * decide fra le proposte sta dove il deck ha anche la risposta, l'arbitro.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
@@ -41,20 +26,8 @@ const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-/* L'imbuto di chi NON vi conosce ancora: dalla FONTE UNICA
-   `data/imbuto.ts`, la stessa del mock di CJA nel momento 07. Qui si
-   mostrano le quattro righe digitali; la filiale entra nel mock, dove
-   l'argomento è la misura. Numeri illustrativi, dichiarati tali. */
+/* L'imbuto: dalla FONTE UNICA `data/imbuto.ts`. Numeri illustrativi. */
 const IMBUTO_SCENA = IMBUTO.filter((r) => !r.offline);
-
-/* Le candidate per la stessa persona, e il vincolo che le taglia.
-   Quattro ovunque (qui, nel mock del momento 04, nell'approfondimento). */
-const CANDIDATE = [
-  { l: { it: 'Promemoria documenti', en: 'Document reminder' }, s: 'scelta' },
-  { l: { it: 'Invito in filiale', en: 'Branch invitation' }, s: 'non-ora' },
-  { l: { it: 'Contatto dal contact center', en: 'Contact-centre call' }, s: 'non-ora' },
-  { l: { it: 'Sconto prima casa under 36', en: 'Under-36 first-home discount' }, s: 'fuori' },
-];
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -66,74 +39,25 @@ const CANDIDATE = [
     <Slide id="slide-cover" bg="secondary" align="left">
       <div slot="backdrop" class="im-div-bg" style={`--foto: url(${fondo.src}); --fuoco: center 46%`}></div>
       <Divisore num={ch.num}
-        tIt="Un mutuo a 25 anni è l’acquisizione più lunga che una banca fa" tEn="A 25-year mortgage is the longest acquisition a bank makes"
-        lIt="Chi chiede un mutuo spesso è cliente di un’altra banca. Seguiamo una di queste persone, Giulia, in sette momenti, fino alla firma." lEn="People asking for a mortgage often bank elsewhere. We follow one of them, Giulia, through seven moments, up to signing." />
+        tIt="Dal dato alla decisione" tEn="From data to decision" />
     </Slide>
 
     <Slide id="slide-segnale" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-scena" style={`--bg: url(${tracce.src})`}></div>
-      <div class="im-sl" data-reveal>
-        <div class="im-sl-head">
-          <T as="p" class="im-n" it="Il punto di partenza" en="The starting point" />
-          <T as="h2" class="im-h2" it="Il segnale c’è già, e si spegne da solo" en="The signal already exists, and fades on its own" />
-          <T as="p" class="im-sub" it="Chi cerca un mutuo non vi conosce e lascia tracce su canali separati. Sui clienti decidete già. Su di lei, chi decide oggi?" en="Whoever is shopping for a mortgage does not know you and leaves traces on separate channels. On customers you already decide. On her, who decides today?" />
+      <div class="im-seg" data-reveal>
+        <div class="im-seg-testa">
+          <T as="h2" class="im-h2" it="Il segnale c’è già e si spegne da solo" en="The signal already exists and fades on its own" />
+          <T as="p" class="im-sub" it="Chi cerca un mutuo non vi conosce e lascia tracce su canali separati." en="Whoever is shopping for a mortgage does not know you and leaves traces on separate channels." />
         </div>
-
-        <div class="im-pb">
-          <section class="im-pb-i" data-substep data-side="in">
-            <T as="p" class="im-pb-k" it="01 · Il dato esiste" en="01 · The data exists" />
-            <figure class="im-imbuto">
-              {/* Giro 0 (6 nov 2026): l'etichetta «illustrativo» stava
-                  solo nella riga di fonte, a 12px. Quattro numeri grandi
-                  con le barre, in un deck per una banca, si leggono come
-                  i SUOI numeri — e chi lo scopre dopo non si fida più del
-                  resto. La dichiarazione va dove guarda l'occhio, come fa
-                  già il mock di Brand Visibility. La spiegazione intera
-                  resta nella nota: lì è provenienza, ed è il suo posto. */}
-              <T as="figcaption" class="im-imbuto-cap" it="Dove si perde chi non vi conosce · illustrativo" en="Where the people who do not know you are lost · illustrative" />
-              {IMBUTO_SCENA.map((f, i) => (
-                <div class="im-imbuto-r" data-ultimo={i === IMBUTO_SCENA.length - 1 ? '' : null}>
-                  <span class="im-imbuto-t"><i style={`width:${f.v}%`}></i></span>
-                  <span class="im-imbuto-n">{f.n}</span>
-                  <T as="span" class="im-imbuto-l" it={f.l.it} en={f.l.en} />
-                </div>
-              ))}
-            </figure>
-            <T as="p" class="im-pb-v" it="Il dato c’è. Quanto tempo passa oggi fra il gesto e la decisione?" en="The data exists. How long passes today between the action and the decision?" />
-          </section>
-
-          <section class="im-pb-i" data-substep data-side="in">
-            <T as="p" class="im-pb-k" it="02 · Su chi non è cliente, chi decide?" en="02 · On a non-customer, who decides?" />
-            <figure class="im-cand">
-              <T as="figcaption" class="im-cand-cap" it="Quattro proposte per la stessa persona, stasera · illustrativo" en="Four proposals for the same person, tonight · illustrative" />
-              <ul class="im-cand-l">
-                {CANDIDATE.map((c) => (
-                  <li data-stato={c.s}>
-                    <T as="span" class="im-cand-n" it={c.l.it} en={c.l.en} />
-                    <span class="im-cand-e">
-                      <span data-lang-it>{c.s === 'scelta' ? 'parte' : c.s === 'fuori' ? 'oltre il limite' : 'non ora'}</span>
-                      <span data-lang-en>{c.s === 'scelta' ? 'goes' : c.s === 'fuori' ? 'over cap' : 'not now'}</span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </figure>
-            <T as="p" class="im-pb-v" it="Su chi è già cliente un messaggio sbagliato si assorbe. Su chi vi sta valutando, no." en="With an existing customer a wrong message is absorbed. With someone still evaluating you, it is not." />
-          </section>
-        </div>
-
-        <T as="p" class="im-chiusa" it="Su chi non è cliente, oggi sceglie una regola o l’ordine in cui le campagne sono state costruite?" en="On non-customers, does a rule choose today, or the order in which the campaigns were built?" data-substep data-side="in" />
-
-        {/* ⚠️ Le due dichiarazioni stavano dentro le rispettive figure, e
-            a 1280×800 valevano cento pixel che la slide non aveva. Una
-            riga sola le tiene entrambe, ed è anche la forma giusta: una
-            riga di fonte per slide, come negli approfondimenti. */}
-        {/* ⚠️ Diceva «il tetto di contatto è un vincolo dell'offerta»: vale
-            solo per il limite per offerta della decisione. La politica di
-            contatto per canale è una regola applicata all'invio (Experience
-            League, rule sets), e «tetto di contatto» non è la parola della
-            banca (panel, 30 ott 2026). */}
-        <T as="p" class="im-fonte-riga" it={`${IMBUTO_NOTA.it} Il limite per offerta si valuta nella decisione; la politica di contatto per canale è una regola applicata all’invio: in Adobe si chiama frequency cap.`} en={`${IMBUTO_NOTA.en} The per-offer limit is weighed in the decision; the per-channel contact policy is a rule applied at send time: in Adobe it is called frequency cap.`} />
+        <figure class="im-seg-fig">
+          {IMBUTO_SCENA.map((f, i) => (
+            <div class="im-seg-r" data-ultimo={i === IMBUTO_SCENA.length - 1 ? '' : null}>
+              <p class="im-seg-riga"><span class="im-seg-n">{f.n}</span><T as="span" class="im-seg-l" it={f.l.it} en={f.l.en} /></p>
+              <span class="im-seg-b"><i style={`width:${f.v}%`}></i></span>
+            </div>
+          ))}
+          <T as="figcaption" class="im-fonte-riga" it={IMBUTO_NOTA.it} en={IMBUTO_NOTA.en} />
+        </figure>
       </div>
     </Slide>
 

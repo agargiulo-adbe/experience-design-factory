@@ -1,63 +1,73 @@
 ---
 /**
- * 08 · CX ANALYTICS — da Adobe Analytics, che hanno, a quello che cambia.
+ * DAL DATO ALLA DECISIONE — la parte su CX Analytics.
  *
- * ⚠️ ERA UN SEGNAPOSTO, ed era il tema per cui la Divisione ha
- * convocato («con una particolare attenzione al mondo della Web
- * Analytics»): tutte e sei le personas del panel del 30 ott 2026 ne
- * hanno fatto una condizione, e Adobe Analytics — che il cliente ha in
- * casa — non era nominato in 49 slide.
- * Due slide, scritte dalla documentazione pubblica e marcate come
- * IPOTESI sul loro installato, da correggere in sala: (1) che cosa si
- * riusa, che cosa cambia nome, che cosa si aggiunge per chi usa oggi
- * Adobe Analytics e Analysis Workspace; (2) l'attribuzione dopo
- * l'ultimo clic, con la riga «quanto il digitale porta in filiale».
- * Quando arriva il materiale di prodotto si arricchisce, non si rifà.
+ * Il capitolo aveva due copertine, tre colonne di paragrafi e un titolo che
+ * parlava d'altro. Dal 10 nov 2026 sono tre disegni, una riga ciascuno:
+ *   1. tutti i canali entrano, un percorso solo esce;
+ *   2. che cosa resta, che cosa cambia nome, che cosa si aggiunge;
+ *   3. dove va il merito con l'ultimo clic, e dove con il percorso intero.
+ *
+ * Il filo «sorgenti → Customer Journey Analytics → azione» è quello dei pitch
+ * Adobe su Customer Journey Analytics e del «Summit 2026 Analytics Track
+ * MEGA DECK», slide 128. Le fonti pubbliche restano in calce, i dettagli
+ * dentro «Scopri come». Prima ipotesi sul loro installato: si corregge in sala.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
+import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import Divisore from '../components/Divisore.astro';
 import FiguraCap from '../components/FiguraCap.astro';
-import fondo from '../assets/generated/lavoro-03-dati.webp';
 import lavoro from '../assets/generated/lavoro-07-misura.webp';
 
-/* Che cosa cambia per chi usa Adobe Analytics oggi. Fonti pubbliche,
-   lette il 30 ott 2026: Experience League, «Customer Journey Analytics
-   feature support», «FAQ», «Use Adobe Analytics report suite data»,
-   «Quick start guide». */
-const PASSAGGIO = [
-  { stato: 'riusa', fig: 'archivio', t: { it: 'Si riusa', en: 'Gets reused' }, v: [
-    { it: 'Il dato della report suite entra via connettore, senza rifare il tagging per la misura', en: 'Report suite data comes in via connector, without redoing the tagging for measurement' },
-    { it: 'Analysis Workspace è la stessa interfaccia', en: 'Analysis Workspace is the same interface' },
-    { it: 'Progetti, segmenti e metriche calcolate si migrano con lo strumento di migrazione, mappando dimensioni e metriche', en: 'Projects, segments and calculated metrics migrate with the migration tool, mapping dimensions and metrics' },
+const FONTI = [
+  { it: 'Sito', en: 'Website' },
+  { it: 'App', en: 'App' },
+  { it: 'Contact center', en: 'Contact centre' },
+  { it: 'Filiale', en: 'Branch' },
+  { it: 'CRM', en: 'CRM' },
+];
+const TAPPE = [
+  { it: 'Sito', en: 'Website' },
+  { it: 'App', en: 'App' },
+  { it: 'Contact center', en: 'Contact centre' },
+  { it: 'Filiale', en: 'Branch' },
+  { it: 'Firma', en: 'Signing' },
+];
+
+/* Experience League, lette il 30 ott 2026: «feature support», «FAQ», «Use
+   Adobe Analytics report suite data». `da: null` = oggi non c'è. */
+type Voce = { da: { it: string; en: string } | null; a: { it: string; en: string } };
+const AW = { it: 'Analysis Workspace', en: 'Analysis Workspace' };
+const SM = { it: 'Segmenti e metriche calcolate', en: 'Segments and calculated metrics' };
+const PASSAGGIO: { stato: string; t: { it: string; en: string }; v: Voce[] }[] = [
+  { stato: 'resta', t: { it: 'Resta', en: 'Stays' }, v: [
+    { da: { it: 'Dati della report suite', en: 'Report suite data' }, a: { it: 'Entrano via connettore', en: 'Come in via connector' } },
+    { da: AW, a: AW },
+    { da: SM, a: SM },
   ] },
-  { stato: 'cambia', fig: 'flusso', t: { it: 'Cambia nome, o forma', en: 'Changes name, or shape' }, v: [
-    { it: 'Report suite → data view; eVar e prop → dimensioni e metriche senza limiti', en: 'Report suite → data view; eVars and props → unlimited dimensions and metrics' },
-    { it: 'Persistenza e attribuzione si applicano al momento del report, e sono retroattive', en: 'Persistence and attribution apply at report time, and are retroactive' },
-    { it: 'Data Feeds e Data Warehouse → Full Table Export; Activity Map non ancora', en: 'Data Feeds and Data Warehouse → Full Table Export; Activity Map not yet' },
+  { stato: 'cambia', t: { it: 'Cambia nome', en: 'Gets renamed' }, v: [
+    { da: { it: 'Report suite', en: 'Report suite' }, a: { it: 'Data view', en: 'Data view' } },
+    { da: { it: 'eVar e prop', en: 'eVars and props' }, a: { it: 'Dimensioni senza limiti', en: 'Unlimited dimensions' } },
   ] },
-  { stato: 'nuovo', fig: 'canali', t: { it: 'Si aggiunge', en: 'Gets added' }, v: [
-    { it: 'Filiale, contact center e CRM nello stesso dato del sito e dell’app', en: 'Branch, contact centre and CRM in the same dataset as site and app' },
-    { it: 'La ricucitura fra anonimo e noto, e l’attribuzione su eventi di tutti i canali', en: 'Stitching between anonymous and known, and attribution on events from every channel' },
-    { it: 'Lo storico: quanto se ne porta con il backfill si decide con voi', en: 'History: how much of it to bring with the backfill is decided with you' },
+  { stato: 'nuovo', t: { it: 'Si aggiunge', en: 'Gets added' }, v: [
+    { da: null, a: { it: 'Filiale, contact center e CRM', en: 'Branch, contact centre and CRM' } },
+    { da: null, a: { it: 'Anonimo e noto ricuciti', en: 'Anonymous and known stitched' } },
   ] },
 ];
 
-/* L'attribuzione dopo l'ultimo clic: la riga che manca oggi è la
-   filiale. Modelli da Experience League, «Attribution models». */
-const ATTRIB = [
-  { fig: 'serie', t: { it: 'Oggi, da verificare con voi', en: 'Today, to check with you' },
-    d: { it: 'Quale modello usate in Adobe Analytics, e su quali canali: il sito e l’app, o anche filiale e contact center? Il punto non è il modello, è che cosa c’è nel dato.', en: 'Which model you use in Adobe Analytics, and on which channels: site and app, or branch and contact centre too? The point is not the model, it is what is in the data.' } },
-  { fig: 'grafo', t: { it: 'Con Customer Journey Analytics', en: 'With Customer Journey Analytics' },
-    d: { it: 'Modelli regolati o algoritmici su eventi di tutti i canali, con la finestra di osservazione dichiarata; si cambiano al momento del report, senza ricaricare.', en: 'Rule-based or algorithmic models on events from every channel, with the lookback window stated; switched at report time, without reloading.' } },
-  { fig: 'esito', t: { it: 'La riga che manca', en: 'The missing row' },
-    d: { it: 'Quanto il digitale porta in filiale: appuntamenti nati dal percorso online e chiusi allo sportello, richieste firmate, tempo alla delibera.', en: 'How much digital brings into the branch: appointments born online and closed at the counter, signed applications, time to approval.' } },
+/* Altezze schematiche, senza valori: dicono la forma, e la slide lo dichiara. */
+const TOCCHI = [
+  { it: 'Ricerca', en: 'Search' }, { it: 'Social', en: 'Social' }, { it: 'Sito', en: 'Website' },
+  { it: 'App', en: 'App' }, { it: 'Email', en: 'Email' }, { it: 'Filiale', en: 'Branch' },
 ];
+const PERCORSO = [34, 44, 92, 62, 30, 72];
 
 const SLUG = 'analytics';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -71,38 +81,102 @@ const currentPath = Astro.url.pathname;
 
   <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <Slide id="slide-cover" bg="secondary" align="left">
-      <div slot="backdrop" class="im-div-bg" style={`--foto: url(${fondo.src}); --fuoco: center 40%`}></div>
-      <Divisore num={ch.num}
-        tIt="CX Analytics" tEn="CX analytics"
-        lIt="La misura che tiene insieme tutto il percorso. Che cosa cambia per chi usa Adobe Analytics ogni giorno, e l’attribuzione dopo l’ultimo clic."
-        lEn="From Adobe Analytics, which you have, to what changes for whoever uses it every day. And attribution after the last click." />
+    <Slide id="slide-unifica" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Tutti i canali in un percorso solo" en="Every channel in one single journey" />
+        <T as="p" class="im-ado-l" it="Ogni canale oggi si misura per conto suo. Qui si leggono insieme." en="Today each channel is measured on its own. Here they are read together." />
+        <div class="im-un">
+          <ul class="im-un-fonti">
+            {FONTI.map((f) => <T as="li" it={f.it} en={f.en} />)}
+          </ul>
+          <div class="im-un-misura" data-substep>
+            <div class="im-un-rami" aria-hidden="true">
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                {[10, 30, 50, 70, 90].map((y) => <path d={`M0 ${y} C 55 ${y}, 45 50, 100 50`} />)}
+              </svg>
+            </div>
+            <div class="im-un-hub">
+              <span class="im-un-hub-t">CX Analytics</span>
+              <span class="im-un-hub-d">Customer Journey Analytics</span>
+            </div>
+          </div>
+          <div class="im-un-esito" data-substep>
+            <span class="im-un-ponte" aria-hidden="true"></span>
+            <div class="im-un-pers">
+              <T as="p" class="im-un-pers-t" it="Una persona, dal primo contatto alla firma" en="One person, from first contact to signing" />
+              <ol class="im-un-linea">
+                {TAPPE.map((t) => (
+                  <li><span class="im-un-punto" aria-hidden="true"></span><T as="span" it={t.it} en={t.en} /></li>
+                ))}
+              </ol>
+            </div>
+          </div>
+        </div>
+        <p class="im-fonte-riga">
+          <span data-lang-it>Filiale, contact center e CRM entrano se si decide di portarli nel dato. Fonte: </span><span data-lang-en>Branch, contact centre and CRM come in if the decision is made to bring them into the data. Source: </span>
+          <a href="https://business.adobe.com/solutions/cx-analytics.html" target="_blank" rel="noopener">Adobe CX Analytics</a>
+        </p>
+      </div>
     </Slide>
 
     <Slide id="slide-passaggio" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="p" class="im-ado-occ" it="Ipotesi sul vostro installato, da correggere in sala" en="Hypothesis on your installed base, to correct in the room" />
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Da Adobe Analytics a Customer Journey Analytics: che cosa cambia per chi lo usa oggi" en="From Adobe Analytics to Customer Journey Analytics: what changes for the people who use it today" />
-        <T as="p" class="im-ado-l" it="CX Analytics è la famiglia, e dentro stanno Customer Journey Analytics e Adobe Analytics, che avete. Qui si parla del passaggio dal secondo al primo; i due convivono per il tempo che serve." en="CX Analytics is the family, and inside it sit Customer Journey Analytics and Adobe Analytics, which you have. This is about moving from the second to the first; the two coexist for as long as needed." />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Da Adobe Analytics a Customer Journey Analytics non si riparte da zero" en="Moving from Adobe Analytics to Customer Journey Analytics is not a fresh start" />
 
-        <div class="im-mappa im-mappa--tre">
-          {PASSAGGIO.map((col) => (
-            <section class="im-mappa-c" data-stato={col.stato} data-substep data-side="in">
-              <FiguraCap segno={col.fig} class="im-mappa-fig" />
-              <T as="p" class="im-mappa-k" it={col.t.it} en={col.t.en} />
-              <ul class="im-mappa-l im-mappa-l--righe">
-                {col.v.map((x) => <li><T as="span" class="im-mappa-d" it={x.it} en={x.en} /></li>)}
-              </ul>
+        <div class="im-pas">
+          <div class="im-pas-testa">
+            <span></span>
+            <div class="im-pas-r"><span>Adobe Analytics</span><span></span><span>Customer Journey Analytics</span></div>
+          </div>
+          {PASSAGGIO.map((g) => (
+            <section class="im-pas-g" data-stato={g.stato} data-substep>
+              <T as="p" class="im-pas-k" it={g.t.it} en={g.t.en} />
+              <div>
+                {g.v.map((x) => (
+                  <div class="im-pas-r">
+                    {x.da ? <T as="span" it={x.da.it} en={x.da.en} /> : <span class="im-pas-vuoto" aria-hidden="true"></span>}
+                    <svg class="im-pas-fr" viewBox="0 0 28 14" aria-hidden="true"><path d="M1 7h24M19 1l6 6-6 6" /></svg>
+                    <T as="span" it={x.a.it} en={x.a.en} />
+                  </div>
+                ))}
+              </div>
             </section>
           ))}
         </div>
 
+        <HowItWorks title="I dettagli del passaggio" tone="onDark" class="ex-dett">
+          <Dettaglio>
+            <DettaglioVoce>
+              <FiguraCap segno="archivio" />
+              <T slot="ancora" as="p" it="Migrazione" en="Migration" />
+              <T slot="riga" as="p" it="Progetti, segmenti e metriche si migrano con lo strumento dedicato, mappando dimensioni e metriche." en="Projects, segments and metrics migrate with the dedicated tool, mapping dimensions and metrics." />
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <FiguraCap segno="flusso" />
+              <T slot="ancora" as="p" it="Al momento del report" en="At report time" />
+              <T slot="riga" as="p" it="Persistenza e attribuzione si applicano al report e sono retroattive." en="Persistence and attribution apply at report time and are retroactive." />
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <FiguraCap segno="esito" />
+              <T slot="ancora" as="p" it="Esportazioni" en="Exports" />
+              <T slot="riga" as="p" it="Data Feeds e Data Warehouse passano a Full Table Export. Activity Map non c’è ancora." en="Data Feeds and Data Warehouse move to Full Table Export. Activity Map is not there yet." />
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <FiguraCap segno="canali" />
+              <T slot="ancora" as="p" it="Storico e tempi" en="History and timing" />
+              <T slot="riga" as="p" it="Il backfill si decide con voi. Per le differenze di Workspace la guida dà da tre a sei mesi." en="The backfill is decided with you. For Workspace differences the guide gives three to six months." />
+            </DettaglioVoce>
+          </Dettaglio>
+        </HowItWorks>
+
         <p class="im-fonte-riga">
-          <span data-lang-it>Agli analisti la guida di avvio dà da tre a sei mesi per prendere confidenza con le differenze di Workspace (</span><span data-lang-en>The quick start guide gives analysts three to six months to get used to the Workspace differences (</span><a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-overview/cja-b2c-overview/cja-getting-started" target="_blank" rel="noopener">quick start</a><span data-lang-it>). Le tre colonne, verificate il 30 ott 2026: </span><span data-lang-en>). The three columns, verified 30 Oct 2026: </span>
+          <span data-lang-it>Ipotesi sul vostro installato, da correggere in sala. Verificato il 30 ott 2026: </span><span data-lang-en>Hypothesis on your installed base, to correct in the room. Verified 30 Oct 2026: </span>
           <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/compare-aa-cja/cja-aa-comparison/cja-aa" target="_blank" rel="noopener">feature support</a><span> · </span>
           <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-overview/cja-b2c-overview/cja-faq" target="_blank" rel="noopener">FAQ</a><span> · </span>
-          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/compare-aa-cja/cja-aa-comparison/aa-data-in-cja" target="_blank" rel="noopener">report suite data in CJA</a>
+          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/compare-aa-cja/cja-aa-comparison/aa-data-in-cja" target="_blank" rel="noopener">report suite data in CJA</a><span> · </span>
+          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-overview/cja-b2c-overview/cja-getting-started" target="_blank" rel="noopener">quick start</a>
         </p>
       </div>
     </Slide>
@@ -110,20 +184,59 @@ const currentPath = Astro.url.pathname;
     <Slide id="slide-attribuzione" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-doppia" style={`--bg: url(${lavoro.src})`}></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="p" class="im-ado-occ" it="La misura che oggi manca" en="The measurement missing today" />
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="L’attribuzione dopo l’ultimo clic, e quanto il digitale porta in filiale" en="Attribution after the last click, and how much digital brings into the branch" />
-        <div class="im-esec im-fasi">
-          {ATTRIB.map((a) => (
-            <section class="im-esec-i" data-substep data-side="in">
-              <FiguraCap segno={a.fig} class="im-esec-fig" />
-              <T as="span" class="im-bv-t" it={a.t.it} en={a.t.en} />
-              <T as="span" class="im-bv-d" it={a.d.it} en={a.d.en} />
-            </section>
-          ))}
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quanto del digitale arriva in filiale?" en="How much of digital reaches the branch?" />
+        <T as="p" class="im-ado-l" it="Si vede soltanto se la filiale entra nel dato." en="It only shows if the branch is in the data." />
+
+        <div class="im-att">
+          <div class="im-att-r" data-substep>
+            <div class="im-att-e">
+              <T as="span" class="im-att-t" it="Ultimo clic" en="Last click" />
+              <T as="span" class="im-att-d" it="Il merito va a un canale solo" en="One channel gets the credit" />
+            </div>
+            <div class="im-att-barre">
+              {TOCCHI.map((_, i) => i === 4
+                ? <span class="im-att-b" style="--h:100%"></span>
+                : i === 5
+                  ? <T as="span" class="im-att-no" it="Non si vede" en="Not visible" />
+                  : <span></span>)}
+            </div>
+          </div>
+          <div class="im-att-r" data-substep>
+            <div class="im-att-e">
+              <T as="span" class="im-att-t" it="Tutto il percorso" en="The whole journey" />
+              <T as="span" class="im-att-d" it="Il merito si divide, filiale compresa" en="The credit is shared, branch included" />
+            </div>
+            <div class="im-att-barre" aria-hidden="true">
+              {PERCORSO.map((h, i) => <span class="im-att-b" style={`--h:${h}%`} data-filiale={i === 5 ? '' : null}></span>)}
+            </div>
+          </div>
+          <div class="im-att-asse">
+            <ol>{TOCCHI.map((t) => <T as="li" it={t.it} en={t.en} />)}</ol>
+          </div>
         </div>
+
+        <HowItWorks title="Come si misura" tone="onDark" class="ex-dett">
+          <Dettaglio>
+            <DettaglioVoce>
+              <FiguraCap segno="serie" />
+              <T slot="ancora" as="p" it="Oggi, da verificare" en="Today, to check" />
+              <T slot="riga" as="p" it="Quale modello usate in Adobe Analytics, e su quali canali." en="Which model you use in Adobe Analytics, and on which channels." />
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <FiguraCap segno="grafo" />
+              <T slot="ancora" as="p" it="I modelli" en="The models" />
+              <T slot="riga" as="p" it="Regolati o algoritmici, con la finestra dichiarata. Si cambiano al report, senza ricaricare." en="Rule-based or algorithmic, with the window stated. Switched at report time, without reloading." />
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <FiguraCap segno="esito" />
+              <T slot="ancora" as="p" it="La riga della filiale" en="The branch row" />
+              <T slot="riga" as="p" it="Appuntamenti nati online e chiusi allo sportello, richieste firmate, tempo alla delibera." en="Appointments born online and closed at the counter, signed applications, time to approval." />
+            </DettaglioVoce>
+          </Dettaglio>
+        </HowItWorks>
+
         <p class="im-fonte-riga">
-          <span data-lang-it>Il limite si dichiara: l’attribuzione non misura quello che succede fuori dai canali osservati, e la finestra è una scelta. Modelli: </span>
-          <span data-lang-en>The limit is stated: attribution does not measure what happens outside the observed channels, and the window is a choice. Models: </span>
+          <span data-lang-it>Esempio illustrativo. L’attribuzione non misura quello che succede fuori dai canali osservati. Modelli: </span><span data-lang-en>Illustrative example. Attribution does not measure what happens outside the observed channels. Models: </span>
           <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-workspace/attribution/models" target="_blank" rel="noopener">Customer Journey Analytics · attribution</a>
         </p>
       </div>
