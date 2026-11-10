@@ -81,7 +81,7 @@ export const TESTE = {
     // due righe che facevano sforare la safe-area. La seconda metà — «se
     // uno solo vi interessa si va diretti lì» — è un'istruzione d'uso: sta
     // nel blocco che si apre, non addosso a chi parla.
-    lead: 'Per ciascuna idea, i prodotti Adobe già disponibili nel Gruppo FS e le tecnologie da aggiungere, pensate per\u00a0integrarsi con\u00a0la\u00a0piattaforma del dato di\u00a0cliente annunciata a\u00a0marzo.',
+    lead: 'Per ciascuna idea, i prodotti Adobe già disponibili nel Gruppo FS e le tecnologie da aggiungere, pensate per\u00a0integrarsi con\u00a0la\u00a0piattaforma cliente annunciata a\u00a0marzo.',
     leadBreve: 'Nel percorso intero sono quattro capitoli, uno per punto.',
   },
 };
