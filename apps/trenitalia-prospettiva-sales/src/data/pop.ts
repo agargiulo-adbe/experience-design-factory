@@ -4,7 +4,7 @@
  * 10 nov 2026, richiesta dell'owner: al clic su una tessera «si aggiunge» parte un
  * mockup semplificato del prodotto nel contesto Trenitalia. La chiave è la coppia
  * prodotto × idea e non il prodotto: Customer Journey Analytics sul percorso
- * d'acquisto e Customer Journey Analytics sulle schede in agenzia sono due storie.
+ * d'acquisto e Customer Journey Analytics sulle campagne fra i canali sono due storie.
  * Il collegamento sta nel campo `pop` di ogni voce di `SERVE`.
  *
  * I PASSI SI SCOPRONO A MANO: chi presenta decide con → o ↓ (telecomando compreso)
@@ -19,9 +19,8 @@
  *   sa farlo in chat. ⚠️ Il pannello A4T non si migra: da dire a chi gestisce Target.
  * · Coworker su Target: legge i risultati, diagnostica le varianti perdenti,
  *   dimensiona la durata dei test. Rilascio per modulo e per coorte ancora in corso.
- * · Schede in agenzia: il pannello degli esperimenti NON si usa. Senza assegnazione
- *   casuale «does not have a causal interpretation» e non prende dati di sintesi.
- *   Il confronto si progetta prima di spedire; CJA lo mostra accanto a sito e app.
+ * · Agenzie: si uniscono canali diversi solo con un identificativo comune. Senza, il
+ *   confronto resta per agenzia e zona.
  *
  * ⚠️ Nessun numero inventato: le barre sono senza cifre e la nota lo dichiara. Le
  * uniche cifre sono quelle della misura Adobe di ottobre, già nel capitolo ricerca.
@@ -183,20 +182,19 @@ export const SCENE: Record<ScenaId, Scena> = {
   },
   'cja-rete': {
     prodotto: 'Customer Journey Analytics',
-    caso: 'Schede e locandine in agenzia',
-    cosa: 'Provare su una campagna se una scheda fa vendere, senza toccare il sistema di vendita.',
+    caso: 'Una campagna, tutti i canali',
+    cosa: 'Campagne, sito, app e venduto per agenzia nella stessa analisi.',
     passi: [
-      'La scheda Matera parte in due ondate, con le agenzie assegnate a sorte fra gruppi simili.',
-      'Serve il venduto del prodotto per agenzia e per settimana, dai vostri sistemi.',
-      'Customer Journey Analytics mette il confronto accanto a quello che succede su sito e app.',
-      'Si confronta quanto crescono i due gruppi, finché la seconda ondata non parte.',
-      'Si controlla il diretto nella stessa zona: una vendita spostata dall’app non è una vendita in più.',
-      'Un QR per agenzia dice se la scheda viene guardata. Il metro resta il venduto.',
+      'Si parte dalla campagna: quanto si è speso, e dove.',
+      'Sito e app dicono quali annunci hanno portato vendite.',
+      'Il venduto per agenzia e zona si affianca, senza toccare il sistema di vendita.',
+      'Si vede se la campagna ha aggiunto vendite o le ha spostate fra canali.',
+      'Se il biglietto in agenzia porta un identificativo, si segue la persona fino al banco.',
     ],
-    nota: 'Ipotesi da verificare sui vostri dati. Si misura chi riceve la scheda, non chi la espone, e un esito incerto si dichiara tale. Nessun dato di viaggiatori o addetti. Valori illustrativi.',
+    nota: 'Schema illustrativo, da verificare sui vostri dati. Senza identificativo il confronto è per agenzia e zona, non per persona. Nessun dato di addetti.',
     fonti: [
-      { label: 'Dati di sintesi in Customer Journey Analytics', url: `${EL}/analytics-platform/using/cja-dataviews/summary-data` },
-      { label: 'Codici di tracciamento in Analytics', url: `${EL}/analytics/components/dimensions/tracking-code` },
+      { label: 'Analisi fra canali in Customer Journey Analytics', url: `${EL}/analytics-platform/using/cja-usecases/cross-channel/cross-channel` },
+      { label: 'Identificativo comune fra i dati', url: `${EL}/analytics-platform/using/stitching/overview` },
     ],
   },
 };

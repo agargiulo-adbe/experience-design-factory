@@ -43,7 +43,7 @@ export const CHAPTERS: Chapter[] = [
   { slug: 'contenuto', num: '05', title: { it: 'Il contenuto a supporto dell’offerta personalizzata', en: 'Il contenuto a supporto dell’offerta personalizzata' }, short: 'Il contenuto',
     punto: 'La squadra è una e i prodotti sono tre: ogni campagna si moltiplica per\u00a0mercato e per\u00a0canale.', foto: 'paper-grid' },
   { slug: 'rete', num: '06', title: { it: 'Il canale delle agenzie', en: 'Il canale delle agenzie' }, short: 'Le agenzie',
-    punto: 'Un canale che vende ogni giorno: alla prossima campagna si prova che cosa lo muove.', foto: 'network' },
+    punto: 'Un canale che vende ogni giorno, da leggere insieme al digitale.', foto: 'network' },
   { slug: 'rotta', num: '07', title: { it: 'La Roadmap', en: 'La Roadmap' }, short: 'La Roadmap',
     punto: 'Quattro direzioni sono troppe per\u00a0aprirle tutte: ci aiutate a capire quali sono le vostre priorità?', foto: 'chapter' },
 ];

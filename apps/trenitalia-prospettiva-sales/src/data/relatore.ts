@@ -129,9 +129,9 @@ export const NOTE: Record<string, NotaSlide[]> = {
   rete: [
     { id: 'slide-cover', dire: 'Ultimo punto, e lo diciamo subito: è tutto da approfondire.' },
     { id: 'slide-idea',
-      dire: 'Il venduto per agenzia lo avete già. Alla prossima campagna la scheda parte in due ondate, decise prima, e si guarda se il primo gruppo cresce più del secondo. Il sistema di vendita resta com’è, e nessuno deve digitare un codice.',
-      fatto: 'Unipol porta agenzie e sito nella stessa analisi. Settore diverso, e sulla carta non è una prova.',
-      attenzione: 'Nessun numero di agenzie. Le agenzie online restano fuori. Nessun dato di viaggiatori o addetti, e le ditte individuali passano dal DPO. Si misura la scheda ricevuta, non quella esposta: l’elenco nasce dall’assegnazione a sorte, e nessuna agenzia resta senza. Il lavoro dei consulenti va tenuto uguale nei due gruppi. Il diretto della stessa zona dice se la vendita si è solo spostata. Una scheda sola può non muovere abbastanza: «non si può concludere» è un esito previsto, e la soglia si scrive prima. Per questa sola domanda Customer Journey Analytics non serve: ha senso insieme al caso sito e app. Prima si decide che cosa si dice alla rete: nessuna classifica.',
+      dire: 'Il venduto per agenzia lo avete già. Lo mettiamo accanto a campagne, sito e app: si vede che cosa muove le vendite e in quale canale, e se una campagna ha aggiunto vendite o le ha solo spostate. Il sistema di vendita resta com’è.',
+      fatto: 'Unipol ha portato sito, app, strumento degli agenti e polizze nella stessa analisi, con le campagne misurate anche sulle vendite offline. Ci sono voluti circa due anni, e la polizza è nominativa.',
+      attenzione: 'Nessun numero di agenzie. Le agenzie online restano fuori. Nessun dato di addetti. Non citare Dynatrace: in Unipol misura la performance di sistema. Senza identificativo il confronto è per agenzia e zona. È un’analisi, non il dato unico del cliente. Due domande da fare: il biglietto in agenzia porta un identificativo? Il venduto esiste per prodotto e per settimana?',
       // ⚠️ 9 nov 2026: la frase di prima lasciava intendere che bastasse far
       // arrivare i consensi su Experience Platform. La documentazione chiede
       // Shield e un dataset Profile già popolato, e Customer Journey Analytics

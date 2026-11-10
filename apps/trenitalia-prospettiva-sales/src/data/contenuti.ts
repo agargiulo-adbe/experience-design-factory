@@ -754,7 +754,7 @@ export const TEMPI = {
     { k: 'Da subito', t: 'Personalizzazione per\u00a0chi non è registrato', b: 'Customer Journey Analytics legge i dati Analytics di trenitalia.com, Le Frecce e app. Target attiva la personalizzazione su trenitalia.com.', dip: 'Si aggiunge Customer Journey Analytics' },
     { k: 'Con il nuovo CRM', t: 'Personalizzazione per i clienti registrati', b: 'Il profilo resta nel CRM: qui si legge il comportamento di chi è già cliente.', dip: 'Dipende dal\u00a0nuovo CRM' }, // copy-audit-ignore V2 · «registrati» è un participio plurale, non un imperativo
     { k: 'Dopo, passo per passo', t: 'Un’esperienza unica per il cliente', b: 'Sito e sistema di vendita integrati: si propone e si compra nello stesso percorso.', dip: 'Dipende dai sistemi di vendita' },
-    { k: 'Da approfondire insieme', t: 'Le agenzie', b: 'Alla prossima campagna si prova quali schede e locandine fanno vendere, in due ondate.', dip: 'Serve decidere prima a\u00a0chi va ogni\u00a0scheda' },
+    { k: 'Da approfondire insieme', t: 'Le agenzie', b: 'Campagne, digitale e venduto per agenzia nella stessa analisi.', dip: 'Serve l’esportazione del venduto per\u00a0agenzia' },
   ],
   strato: { t: 'Contenuti su scala: si possono avviare in qualunque fase', b: 'Più personalizzazione vuol dire più varianti. La misura per contenuto arriva con Customer Journey Analytics.' },
   figura: 'Cinque fasi in sequenza, da quella che si può avviare subito a quelle che dipendono da altri sistemi',
@@ -995,10 +995,9 @@ export const SERVE: Record<
     { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'Agenti AI sulla produzione', pop: 'coworker-contenuto' },
   ],
   rete: [
-    /* 10 nov 2026: Analytics esce dalla striscia. La verifica del 9 nov diceva che per le
-       agenzie serve solo CJA; il QR è un di più del test, sta nel mockup e nel pop-in, e
-       metterlo qui faceva sembrare che Analytics misurasse le agenzie. */
-    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'Le due ondate accanto a sito e app', pop: 'cja-rete' },
+    /* 10 nov 2026: la striscia porta solo CJA, che qui fa il lavoro: unisce campagne,
+       digitale e venduto per agenzia. */
+    { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'Campagne, sito, app e agenzie insieme', pop: 'cja-rete' },
   ],
 };
 

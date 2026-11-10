@@ -130,9 +130,9 @@ export const IDEE: Idea[] = [
   },
   {
     slug: 'rete',
-    misura: 'Venduto del prodotto per agenzia, al netto di quanto si sposta dal diretto',
+    misura: 'Vendite per campagna e per canale, agenzie comprese',
     occhiello: 'Idea 4 di 4',
-    titolo: 'Quali schede e\u00a0locandine fanno vendere? Si\u00a0prova alla prossima campagna',
+    titolo: 'Quanto vende davvero una\u00a0campagna, dal\u00a0sito fino\u00a0all’agenzia',
     mock: 'rete',
     /* ⚠️ 6 nov 2026, panel: SEI personas su sei, il rilievo più corale del
        giro e il secondo che sopravvive dal 12 ottobre. La cifra grande del
@@ -144,18 +144,18 @@ export const IDEE: Idea[] = [
        detto lui al TTG.
        9 nov 2026: su richiesta del cliente nessun numero di agenzie in questo
        capitolo, e il capitolo diventa dichiaratamente da approfondire.
-       10 nov 2026: il codice al banco contava i riscatti, e il confronto fra
-       agenzie con e senza scheda non prova niente, perché chi riceve più carta
-       vende già di più. La storia che regge è un test deciso prima: due ondate
-       assegnate a sorte fra agenzie simili. Si misura la scheda ricevuta, non
-       quella esposta. */
-    cifra: { k: 'Nessun intervento', v: 'sul sistema di vendita: bastano il venduto per agenzia e la scelta, prima di spedire, di chi riceve la scheda' },
+       10 nov 2026, sera: il test delle schede in due ondate esce. Era macchinoso e per
+       quella domanda CJA non serviva. L'idea diventa quella di Unipol: campagne, digitale
+       e venduto per agenzia nella stessa analisi. Senza un identificativo al banco il
+       confronto resta per agenzia e zona. Dynatrace non si cita: in Unipol misura la
+       performance di sistema. */
+    cifra: { k: 'Una sola analisi', v: 'dall’annuncio al biglietto, compreso il venduto per agenzia' },
     /* ⚠️ 4 nov: la chiusa diceva «la rete vende ogni giorno, e non sapete
        chi vende che cosa». Non possiamo dirlo: di che cosa vedano della rete
        non esiste fonte, e un'affermazione di assenza su un cliente si verifica
        sulle sue pagine prima di scriverla. Qui resta quello che proponiamo,
        e la domanda la fa la slide che chiude il capitolo. */
-    chiusa: 'Il venduto per agenzia lo avete già. Basta decidere prima a chi va ogni scheda, in due ondate, e il confronto regge.',
+    chiusa: 'Il venduto per agenzia lo avete già. Accanto a campagne e digitale, dice che cosa muove le vendite e in quale canale.',
     /* ⚠️ ERA L'UNICA DELLE QUATTRO IDEE SENZA REFERENZA, ed è quella su cui
        si fa la richiesta. Unipol è il caso più vicino che esista: la rete
        agenziale più estesa d'Italia, e lo strumento con cui l'agente vende
@@ -175,13 +175,13 @@ export const IDEE: Idea[] = [
     prova: {
       chi: 'Unipol',
       settore: 'assicurazioni, Italia',
-      fatto: '17,6 milioni di clienti e +2.000 agenzie: lo strumento con cui l’agente vende e le polizze emesse stanno nella stessa analisi del sito.',
+      fatto: '17,6 milioni di clienti e +2.000 agenzie: agenzie, sito, app e polizze nella stessa analisi, con le campagne misurate anche sulle vendite offline.',
       fonte: SOURCES.unipolRete,
       senzaRigaFonte: true,
     },
-    capability: ['Provare se una scheda sposta il venduto', 'Legare il venduto al percorso digitale'],
+    capability: ['Leggere agenzie e digitale insieme', 'Attribuire le vendite alle campagne'],
     gruppi: ['rete'],
-    fonte: 'Perimetro: le agenzie fisiche, le agenzie online vendono con logiche proprie. Il canale agenziale di Unipol è stato raccontato da loro ad Adobe Summit 2026: lì l’agente lavora sullo strumento della compagnia, l’agenzia di viaggi no. Vale il meccanismo dell’analisi unica, non una prova sulla carta.',
+    fonte: 'Perimetro: le agenzie fisiche, le agenzie online vendono con logiche proprie. Il canale agenziale di Unipol è stato raccontato da loro ad Adobe Summit 2026: lì l’agente lavora sullo strumento della compagnia e la polizza è nominativa. Da voi il legame fra\u00a0banco e\u00a0persona è da verificare.',
   },
 ];
 
