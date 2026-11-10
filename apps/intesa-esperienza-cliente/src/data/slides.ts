@@ -32,12 +32,10 @@ export const PAGE_REGISTRY: PageEntry[] = [
   ]},
   { slug: 'messa-a-terra', label: 'Dove ci innestiamo · Come si mette a terra (04)', slides: [
     { id: 'slide-cover', label: 'Cover: Dove ci innestiamo' },
-    { id: 'slide-innesto', label: 'L’innesto: SAS a monte, Real-Time CDP, Journey Optimizer · Decisioning e CJA' },
+    { id: 'slide-innesto', label: 'L’innesto: SAS a monte, Real-Time CDP, Journey Optimizer · AI Decisioning e CJA' },
     { id: 'slide-capacita', label: 'Che cosa porta ciascun componente: le capability' },
-    { id: 'slide-unifica', label: 'Tutti i canali in un percorso solo' },
     { id: 'slide-cja-banca', label: 'Quattro risposte che una banca ottiene da CJA' },
     { id: 'slide-attribuzione', label: 'Quanto del digitale arriva in filiale' },
-    { id: 'slide-motore', label: 'Il motore di targeting resta: che cosa entra nell’arbitro, che cosa esce' },
     { id: 'slide-ritorno', label: 'Che cosa il percorso lascia a Giulia e al prospect successivo' },
   ]},
   { slug: 'approfondimenti', label: 'Approfondimenti (fuori percorso)', slides: [

@@ -23,7 +23,7 @@ export const NOTE: Record<string, Record<string, Nota>> = {
     'slide-team': { dire: 'Si presentano le persone, con il ruolo di ciascuno.' },
     'slide-chi': { dire: 'Quattro verbi, una piattaforma: comprendere, decidere, creare, attivare.', seChiedono: 'Experience Cloud oggi si chiama CX Enterprise: il prodotto è lo stesso che conoscono.' },
     'slide-fsi': { dire: 'I numeri sono nostri, il giudizio è di Forrester. Passando il mouse su un quadrante, si ingrandisce.' },
-    'slide-cx': { dire: 'Con la freccia giù un blocco alla volta: tre canali, una sola misura e, sotto, il lavoro chiesto a parole.', seChiedono: 'Decisioning è il modulo di Journey Optimizer che nei casi pubblici si chiama ancora Offer Decisioning.' },
+    'slide-cx': { dire: 'Con la freccia giù un blocco alla volta: tre canali, una sola misura e, sotto, il lavoro chiesto a parole.', seChiedono: 'AI Decisioning è il modulo di Journey Optimizer che nei casi pubblici si chiama ancora Offer Decisioning.' },
   },
   scenario: {
     'slide-cover': { dire: 'Si parte dal dato che c’è, e spesso riguarda chi è cliente di un’altra banca.' },
@@ -35,12 +35,10 @@ export const NOTE: Record<string, Record<string, Nota>> = {
   },
   'messa-a-terra': {
     'slide-cover': { dire: 'Si esce dalla storia: da qui si guarda la loro architettura.' },
-    'slide-innesto': { dire: 'Si parte da quello che c’è: SAS a monte, le campagne e gli invii restano dove sono. Freccia giù: Real-Time CDP sui prospect, poi Journey Optimizer con Decisioning, poi Customer Journey Analytics. Un clic su ciascuno apre il mockup a passi.', attenzione: 'L’architettura attuale è una nostra ipotesi: si chiede di correggerla.', seChiedono: 'Due strumenti di campagna? No: Journey Optimizer parte dagli eventi in tempo reale, e il messaggio può uscire dallo strumento che avete. Si parte da pochi momenti. Customer Journey Analytics sostituisce il BI? No, gli si affianca.' },
+    'slide-innesto': { dire: 'Si parte da quello che c’è: SAS a monte, le campagne e gli invii restano dove sono. Freccia giù: Real-Time CDP sui prospect, poi Journey Optimizer con AI Decisioning, poi Customer Journey Analytics. Un clic su ciascuno apre il mockup a passi.', attenzione: 'L’architettura attuale è una nostra ipotesi: si chiede di correggerla.', seChiedono: 'Il motore di targeting? Resta dov’è: score, eleggibilità e politica di contatto entrano nella decisione. Chi segue oggi chi non è ancora nel CRM si chiede, non si dà per scontato. Due strumenti di campagna? No: Journey Optimizer parte dagli eventi in tempo reale, e il messaggio può uscire dallo strumento che avete. Si parte da pochi momenti. Customer Journey Analytics sostituisce il BI? No, gli si affianca.' },
     'slide-capacita': { dire: 'Una colonna per componente, con la freccia giù: tre capability ciascuno, nell’ordine dello schema. Si sceglie la colonna che interessa e si apre la demo da lì.', attenzione: 'Sono capability documentate: i link sono in fondo. Disponibilità e licenze si verificano sul loro contratto.' },
-    'slide-unifica': { dire: 'La misura che tiene insieme il percorso: è il tema chiesto dal cliente. Con la freccia giù: i canali, la misura, il percorso.', attenzione: 'Filiale e contact center entrano nel dato solo se si decide di portarceli.' },
     'slide-cja-banca': { dire: 'Quattro risposte, una per freccia giù. Il dettaglio del passaggio da Analytics è negli approfondimenti.' },
-    'slide-attribuzione': { dire: 'Si va oltre l’ultimo clic, fino a quanto il digitale porta in filiale.', attenzione: 'L’attribuzione si ferma ai canali osservati: dirlo subito.' },
-    'slide-motore': { dire: 'Tre cose loro entrano, l’arbitro sceglie, ne esce una. Il motore non si tocca.', seChiedono: 'Nel dettaglio a richiesta: il cliente, la firma, il tetto per persona, perché non costruirlo in casa. Sul CDP già in casa: il CRM resta dov’è e si legge. Si aggiunge il comportamento sul sito, anche prima del consenso. Chi segue oggi il prospect si chiede, non si dà per scontato.' },
+    'slide-attribuzione': { dire: 'Si va oltre l’ultimo clic, fino a quanto il digitale porta in filiale.', seChiedono: 'Da chiedere: quale modello di attribuzione usate oggi in Adobe Analytics, e su quali canali?', attenzione: 'L’attribuzione si ferma ai canali osservati: dirlo subito.' },
     'slide-ritorno': { dire: 'Una riga alla volta con la freccia giù: che cosa si impara da Giulia, e dove torna per il prossimo cliente. In fondo, il secondo giro: Giulia da cliente.' },
   },
   approfondimenti: {

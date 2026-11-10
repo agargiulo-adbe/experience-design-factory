@@ -26,8 +26,8 @@ export const FONTI = {
    nominato»: falso — la pagina di U.S. Bank nomina «the offer decisioning
    capability of Adobe Journey Optimizer». Corretto il 30 ott 2026. */
 export const TSB_SUB = {
-  it: 'Prima banca britannica su Experience Platform e una delle poche referenze pubbliche che nominano Offer Decisioning. Porta un caso di mutuo. Una pratica lasciata a metà in app, ripresa in tempo reale: parole loro.',
-  en: 'The first UK bank on Experience Platform and one of the few public references naming Offer Decisioning. It carries a mortgage case. An application left half-done in the app, resumed in real time: their words.',
+  it: 'Prima banca britannica su Experience Platform. Una pratica di mutuo lasciata a metà in app, ripresa in tempo reale.',
+  en: 'The first UK bank on Experience Platform. A mortgage application left half-done in the app, resumed in real time.',
 };
 /* Il «prima», perché una referenza senza il prima non pesa: scala,
    canali, stack di partenza. */
@@ -97,8 +97,8 @@ export const MISURE = [
 /* Le condizioni del trimestre, sotto l'ask: un pilota senza soglia si
    dichiara riuscito sempre. */
 export const TRIMESTRE = {
-  it: 'Il trimestre parte dal primo invio, con la soglia dichiarata prima. Dentro, i KPI intermedi: riprese, appuntamenti, richieste firmate; le erogazioni dopo. Gruppo di controllo e aggancio della firma in filiale si decidono al primo tavolo; il costo per canale lo caricate voi. Dopo il trimestre viene il cross-sell dopo la firma, su clienti che nel CRM ci sono, come secondo giro.',
-  en: 'The quarter starts at the first send, with the threshold declared beforehand. Inside, the intermediate KPIs: resumptions, appointments, signed applications; approvals later. Control group and the branch-signature link get decided at the first table; channel cost is loaded by you. After the quarter comes cross-sell after signature, on customers the CRM does know, as a second loop.',
+  it: 'Il trimestre parte dal primo invio, con la soglia dichiarata prima. Gruppo di controllo e costo per canale si decidono al primo tavolo.',
+  en: 'The quarter starts at the first send, with the threshold declared beforehand. Control group and channel cost get decided at the first table.',
 };
 
 /* L'ASK, in un posto solo. */

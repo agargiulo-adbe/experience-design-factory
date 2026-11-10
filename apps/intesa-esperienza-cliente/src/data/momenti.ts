@@ -207,7 +207,7 @@ export const MOMENTI: Momento[] = [
     canale: { it: 'Sito', en: 'Website' },
     gruppo: 'engagement',
     verifica: { it: 'Oggi la politica di contatto si valuta quando si sceglie, o si applica all’invio?', en: 'Today, is the contact policy weighed when choosing, or applied at send time?' },
-    prodotto: 'Journey Optimizer · Decisioning',
+    prodotto: 'Journey Optimizer · AI Decisioning',
     cliente: {
       chrome: 'sito', scena: 'scena-04-documenti',
       titolo: { it: 'Si ferma perché le manca un documento', en: 'She stops because a document is missing' },
