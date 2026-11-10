@@ -81,7 +81,7 @@ export const TESTE = {
     // due righe che facevano sforare la safe-area. La seconda metà — «se
     // uno solo vi interessa si va diretti lì» — è un'istruzione d'uso: sta
     // nel blocco che si apre, non addosso a chi parla.
-    lead: 'Per ognuna, i prodotti già nel Gruppo e quelli da aggiungere, in\u00a0ottica di integrazione con\u00a0la\u00a0piattaforma del dato di cliente annunciata a\u00a0marzo.',
+    lead: 'Ogni idea dice che cosa c’è già nel Gruppo e che cosa si aggiunge, per\u00a0lavorare insieme alla piattaforma del dato di\u00a0cliente annunciata a\u00a0marzo.',
     leadBreve: 'Nel percorso intero sono quattro capitoli, uno per punto.',
   },
 };
