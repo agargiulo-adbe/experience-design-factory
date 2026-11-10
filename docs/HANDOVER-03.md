@@ -5,6 +5,16 @@
 
 ## 11. Change log recente
 
+### 2026-11-10 (mattina) · Prospettiva Sales: pop-in dei prodotti, test sulle schede, versione senza rete
+
+Dieci commit da `b23baee` a `34dbb4b`. Dettaglio in §37.19 (Parte 19).
+
+- **Pop-in a passi** su ogni prodotto che si aggiunge: dieci scene, prodotto × caso d'uso.
+- **Agenzie:** il confronto con e senza scheda diventa un test in due ondate assegnate a sorte. Via il pannello degli esperimenti.
+- **Figura a tre finestre** su `slide-momenti`; `slide-collab` spenta e assorbita dalla slide Costa.
+- **Rifiniture chiuse:** link Firefly, vetrina con cover, letto sonoro. I lockup mancanti non esistono su Brand Center: restano in testo.
+- **Versione senza rete:** `scripts/build-offline.sh`.
+
 ### 2026-11-10 (notte) · Prospettiva Sales: panel, mockup, Brand Center, contenuto chiaro
 
 Sei commit da `5e98621` a `264b4e0`, tutti su `apps/trenitalia-prospettiva-sales`. Dettaglio e verdetto in §37.18 (Parte 19).
