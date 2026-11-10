@@ -45,8 +45,11 @@ interface Props {
    *  portava il blocco aperto fuori dalla safe-area — check `c` dentro `exp`,
    *  che è HARD, misurato il 6 novembre 2026. */
   soloPezzi?: boolean;
+  /** 10 nov 2026: `righe` è la ripresa in chiusura. Il binario numerato è della Roadmap che
+   *  segue: qui si sceglie fra quattro idee, e una riga per idea non suggerisce un ordine. */
+  forma?: 'binario' | 'righe';
 }
-const { soloPezzi = false, soloCapability = false } = Astro.props as Props;
+const { soloPezzi = false, soloCapability = false, forma = 'binario' } = Astro.props as Props;
 const corto = (slug: string) => CHAPTERS.find((c) => c.slug === slug)!;
 
 /* 9 nov 2026, review: quattro colonne di elenchi facevano muro. In tabella ogni
@@ -58,7 +61,12 @@ const link = (p: Pezzo) => (p.fonte ? (SOURCES[p.fonte] as { url?: string }).url
 {/* 9 nov 2026: niente più tabella su pannello bianco, che sembrava incollata. Le quattro
     idee sono un percorso: lo stesso binario numerato della roadmap. */}
 {!soloCapability && (
-  <div class="tp-rt-w">
+  <div class="tp-rt-w" data-forma={forma}>
+    {forma === 'righe' && (
+      <div class="tp-rt-testa" aria-hidden="true">
+        <span>L’idea</span><span>Che cosa permette</span><span>Già nel Gruppo</span><span>Si aggiunge</span><span>Il numero</span>
+      </div>
+    )}
     <ol class="tp-rt" data-capability={soloPezzi ? undefined : ''}>
       {IDEE.map((i, n) => (
         <li>

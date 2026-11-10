@@ -81,7 +81,7 @@ export const TESTE = {
     // due righe che facevano sforare la safe-area. La seconda metà — «se
     // uno solo vi interessa si va diretti lì» — è un'istruzione d'uso: sta
     // nel blocco che si apre, non addosso a chi parla.
-    lead: 'Ogni idea dice che cosa c’è già nel Gruppo e che cosa si aggiunge, per\u00a0lavorare insieme alla piattaforma del dato di\u00a0cliente annunciata a\u00a0marzo.',
+    lead: 'Per ciascuna idea, i prodotti Adobe già disponibili nel Gruppo FS e le tecnologie da aggiungere, pensate per\u00a0integrarsi con\u00a0la\u00a0piattaforma del dato di\u00a0cliente annunciata a\u00a0marzo.',
     leadBreve: 'Nel percorso intero sono quattro capitoli, uno per punto.',
   },
 };
@@ -749,18 +749,15 @@ export const TEMPI = {
   eyebrow: 'Una possibile sequenza',
   titolo: 'Prima quello che si può avviare subito',
   sub: 'Una proposta da riordinare con le vostre priorità, nel rispetto dei processi di FS Technology e del Gruppo.',
-  /* 10 nov 2026: da binario a barre. `da` è la colonna in cui la barra parte, `stato` il
-     colore: rossa si avvia subito, ardesia dipende da altro, tratteggiata è da approfondire. */
-  orizzonti: ['Da subito', 'Con il nuovo CRM', 'Dopo, con i sistemi di vendita'],
   voci: [
-    { k: 'Da subito', da: 0, stato: 'ora', t: 'Governo della presenza negli assistenti AI', b: 'Misura continua di marchio e fonti, con impatto minimo sui sistemi.' },
-    { k: 'Da subito', da: 0, stato: 'ora', t: 'Personalizzazione per\u00a0chi non è registrato', b: 'Si aggiunge Customer Journey Analytics, Target lavora su trenitalia.com.' },
-    { k: 'Con il nuovo CRM', da: 1, stato: 'dopo', t: 'Personalizzazione per i clienti registrati', b: 'Il profilo resta nel CRM.' }, // copy-audit-ignore V2 · «registrati» è un participio plurale, non un imperativo
-    { k: 'Dopo, con i sistemi di vendita', da: 2, stato: 'dopo', t: 'Un’esperienza unica per il cliente', b: 'Si propone e si compra nello stesso percorso.' },
-    { k: 'Da approfondire insieme', da: 0, stato: 'aperto', t: 'Le agenzie', b: 'Campagne, digitale e venduto per agenzia nella stessa analisi.' },
+    { k: 'Da subito', t: 'Governo della presenza negli assistenti AI', b: 'Misura continua di come compare il marchio e di quali fonti vengono citate.', dip: 'Impatto minimo sui sistemi' },
+    { k: 'Da subito', t: 'Personalizzazione per\u00a0chi non è registrato', b: 'Customer Journey Analytics legge i dati Analytics di trenitalia.com, Le Frecce e app. Target attiva la personalizzazione su trenitalia.com.', dip: 'Si aggiunge Customer Journey Analytics' },
+    { k: 'Con il nuovo CRM', t: 'Personalizzazione per i clienti registrati', b: 'Il profilo resta nel CRM: qui si legge il comportamento di chi è già cliente.', dip: 'Dipende dal\u00a0nuovo CRM' }, // copy-audit-ignore V2 · «registrati» è un participio plurale, non un imperativo
+    { k: 'Dopo, passo per passo', t: 'Un’esperienza unica per il cliente', b: 'Sito e sistema di vendita integrati: si propone e si compra nello stesso percorso.', dip: 'Dipende dai sistemi di vendita' },
+    { k: 'Da approfondire insieme', t: 'Le agenzie', b: 'Campagne, digitale e venduto per agenzia nella stessa analisi.', dip: 'Serve l’esportazione del venduto per\u00a0agenzia' },
   ],
   strato: { t: 'Contenuti su scala: si possono avviare in qualunque fase', b: 'Più personalizzazione vuol dire più varianti. La misura per contenuto arriva con Customer Journey Analytics.' },
-  figura: 'Sei attività su tre orizzonti: da quelle che si avviano subito a quelle che dipendono da altri sistemi',
+  figura: 'Cinque fasi in sequenza, da quella che si può avviare subito a quelle che dipendono da altri sistemi',
 };
 
 /* ── Capitolo 07 · che cosa va previsto ────────────────────────────────────

@@ -3,31 +3,28 @@
  * LA ROADMAP — la stessa nel percorso intero e nel taglio corto.
  * Una fonte sola (`TEMPI` in `contenuti.ts`).
  *
- * 10 nov 2026: era un binario a cerchi numerati, lo stesso disegno della mappa che la
- * precede, e le due slide si confondevano. La mappa dice CHE COSA, questa dice QUANDO:
- * barre che partono da orizzonti diversi, senza date. La forma a gradini è il messaggio.
- * I contenuti occupano tutta la larghezza perché si avviano in qualunque fase.
+ * Il disegno dice la cosa che la slide afferma: un binario in posa. Dove il tratto
+ * dipende solo da quello che c'è, il binario è posato e rosso; dove dipende da altri
+ * sistemi è tratteggiato, ancora da costruire. I numeri servono: sono una sequenza.
+ * Il binario è CSS e il testo è HTML, così crescono con la radice sulla parete.
  *
- * Ogni barra entra con ↓: chi parla decide il ritmo. Con «Riduci movimento» sono tutte
- * visibili, ed è lo stato che i gate misurano.
+ * Ogni passo e la fascia dei contenuti entrano con ↓: chi parla decide il ritmo.
+ * Con «Riduci movimento» sono tutti visibili, ed è lo stato che i gate misurano.
  */
 import { TEMPI } from '../data/contenuti';
 ---
-<div class="tp-g">
-  <div class="tp-g-h" aria-hidden="true">
-    {TEMPI.orizzonti.map((o) => <span>{o}</span>)}
-  </div>
-  <ol class="tp-g-l" aria-label={TEMPI.figura}>
-    {TEMPI.voci.map((v) => (
-      <li data-substep data-stato={v.stato} style={`--da:${v.da}`}>
-        <span class="tp-g-k">{v.k}</span>
-        <span class="tp-g-t">{v.t}</span>
-        <span class="tp-g-b">{v.b}</span>
-      </li>
-    ))}
-    <li data-substep data-stato="ora" style="--da:0">
-      <span class="tp-g-t">{TEMPI.strato.t}</span>
-      <span class="tp-g-b">{TEMPI.strato.b}</span>
+<ol class="tp-rm" aria-label={TEMPI.figura}>
+  {TEMPI.voci.map((v, i) => (
+    <li data-substep data-tratto={i === 0 ? 'posato' : i === 1 ? 'pronto' : 'da-posare'}>
+      <span class="tp-rm-n">{i + 1}</span>
+      <p class="tp-rm-q">{v.k}</p>
+      <p class="tp-rm-t">{v.t}</p>
+      <p class="tp-rm-b">{v.b}</p>
+      <p class="tp-rm-d">{v.dip}</p>
     </li>
-  </ol>
+  ))}
+</ol>
+<div class="tp-rm-strato" data-substep>
+  <strong>{TEMPI.strato.t}</strong>
+  <span>{TEMPI.strato.b}</span>
 </div>
