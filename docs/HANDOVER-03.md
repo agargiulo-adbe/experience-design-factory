@@ -7,13 +7,14 @@
 
 ### 2026-11-10 (mattina) · Prospettiva Sales: pop-in dei prodotti, test sulle schede, versione senza rete
 
-Dieci commit da `b23baee` a `34dbb4b`. Dettaglio in §37.19 (Parte 19).
+Dodici commit da `b23baee` in avanti. Dettaglio in §37.19 (Parte 19).
 
 - **Pop-in a passi** su ogni prodotto che si aggiunge: dieci scene, prodotto × caso d'uso.
 - **Agenzie:** il confronto con e senza scheda diventa un test in due ondate assegnate a sorte. Via il pannello degli esperimenti.
 - **Figura a tre finestre** su `slide-momenti`; `slide-collab` spenta e assorbita dalla slide Costa.
 - **Rifiniture chiuse:** link Firefly, vetrina con cover, letto sonoro. I lockup mancanti non esistono su Brand Center: restano in testo.
 - **Versione senza rete:** `scripts/build-offline.sh`.
+- **Perimetro visibile:** pillole per Analytics e Target da una definizione sola; l'app esce dalle fonti future del pop-in CJA.
 
 ### 2026-11-10 (notte) · Prospettiva Sales: panel, mockup, Brand Center, contenuto chiaro
 

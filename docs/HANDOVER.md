@@ -10,7 +10,7 @@
 > `.md` costa ~40k token su 21 parti (ok). **Non** aprire mai i `.pptx`/`.mp4` in `docs/` (binari giganti,
 > git-ignored, non presenti in un clone pulito) — i fatti utili sono già distillati qui (§5.3).
 >
-> 🚄 **Il 10 novembre la Prospettiva Sales prende i pop-in dei prodotti e una versione senza rete** (§37.18-19, Parte 19): schede in agenzia come test in due ondate, data collaboration dentro la slide Costa. ⚠️ Panel fermo al 9 nov, e il perimetro Analytics/Target è verificato ma non ancora nel deck. **La stanza è il 10 novembre alle 14:30.**
+> 🚄 **Il 10 novembre la Prospettiva Sales prende i pop-in dei prodotti e una versione senza rete** (§37.18-19, Parte 19): schede in agenzia come test in due ondate, data collaboration dentro la slide Costa. Perimetro Analytics e Target verificato e nel deck. ⚠️ Panel fermo al 9 nov. **La stanza è il 10 novembre alle 14:30.**
 >
 > 🚄 **La sera del 9 novembre la Prospettiva Sales passa da 38 a 25 slide, dopo due call di revisione** (change log, Parte 3): personalizzazione al posto dell'intermodale, agenzie come ipotesi, roadmap a cinque fasi, design unificato. ⚠️ **Niente è committato e il panel non lo copre, e la stanza è il 10 novembre alle 14:30**: i due P0 in testa alla Parte 2.
 >
