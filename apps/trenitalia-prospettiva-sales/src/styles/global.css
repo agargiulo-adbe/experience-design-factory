@@ -1728,40 +1728,26 @@ body:has(.rel) { background: #f7f8fa; }
 .tp-adobe-g { grid-template-rows: auto 1fr; align-content: stretch; }
 .tp-adobe-l { align-items: stretch; }
 
-/* ── LA ROADMAP: un binario in posa ───────────────────────────────────────────
-   Rotaie e traverse sono due bordi e un gradiente ripetuto. Posato = rosso pieno,
-   ancora da posare = tratteggiato. Il dettaglio di ogni fase resta a bandiera, e la
-   riga sulla dipendenza chiude tutte le colonne alla stessa quota. */
-.tp-rm { --s: clamp(2.8rem, 3.2vw, 5.4rem); --gap: clamp(1rem, 1.5vw, 2.6rem); --r: clamp(0.7rem, 0.72vw, 1.2rem); list-style: none; margin: clamp(0.5rem, 1.4vh, 1.2rem) 0 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: 0; width: 100%; margin-bottom: clamp(0.6rem, 1.4vh, 1.1rem); }
-.tp-rm li { position: relative; padding-right: var(--gap); display: grid; grid-template-rows: var(--s) auto auto 1fr auto; justify-items: start; min-width: 0; margin-inline: 0; text-align: left; }
-.tp-rm li::after { content: ''; position: absolute; z-index: 0; top: calc((var(--s) - var(--r)) / 2); left: var(--s); right: 0; height: var(--r); box-sizing: border-box; border-block: 2px solid var(--c); background: repeating-linear-gradient(90deg, var(--c) 0 2px, transparent 2px 13px); }
-.tp-rm li:last-child::after { right: 0; -webkit-mask-image: linear-gradient(to right, #000 35%, transparent); mask-image: linear-gradient(to right, #000 35%, transparent); }
-.tp-rm li[data-tratto='posato'] { --c: var(--accent-primary); }
-.tp-rm li[data-tratto='pronto'], .tp-rm li[data-tratto='da-posare'] { --c: var(--ink-note); }
-.tp-rm li[data-tratto='pronto']::after, .tp-rm li[data-tratto='da-posare']::after { border-block-style: dashed; }
-.tp-rm-n { position: relative; z-index: 1; display: grid; place-items: center; width: var(--s); height: var(--s); border-radius: 50%; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.35rem, 1.5vw, 2.5rem); line-height: 1; font-variant-numeric: lining-nums; color: var(--color-bianco); background: var(--accent-primary); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.34); }
-.tp-rm li[data-tratto='da-posare'] .tp-rm-n { background: var(--color-ardesia-notte); box-shadow: inset 0 0 0 2px var(--ink-note), 0 8px 22px rgba(0, 0, 0, 0.34); }
-.tp-rm-q { margin: clamp(0.75rem, 1.4vh, 1.1rem) 0 0; max-width: none; font-size: clamp(0.8rem, 0.72vw, 1.4rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.3; color: var(--ink-note); }
-.tp-rm-t { margin: 0.3rem 0 0; max-width: none; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.12rem, 1.28vw, 2.2rem); line-height: 1.24; letter-spacing: -0.01em; color: var(--ink-primary); text-wrap: balance; }
-.tp-rm-b { margin: 0.45rem 0 0; max-width: none; font-size: clamp(0.95rem, 0.92vw, 1.65rem); line-height: 1.5; color: var(--ink-body); }
-.tp-rm-d { margin: 0.7rem 0 0; max-width: none; display: flex; align-items: center; gap: 0.45rem; font-size: clamp(0.86rem, 0.8vw, 1.45rem); font-weight: 700; line-height: 1.3; color: var(--ink-accent); }
-.tp-rm-d::before { content: ''; flex: none; width: 0.6em; height: 0.6em; border-radius: 50%; background: currentColor; }
-.tp-rm li[data-tratto='da-posare'] .tp-rm-d::before { background: transparent; box-shadow: inset 0 0 0 2px currentColor; }
-@media (max-height: 860px) { .tp-rm { --s: 2.7rem; } .tp-rm-b { line-height: 1.38; } }
+/* La Roadmap: barre su tre orizzonti, nessun cerchio e nessun binario (quelli sono della mappa). */
+.tp-g { width: 100%; margin-top: clamp(0.6rem, 1.8vh, 1.5rem); }
+.tp-g-h, .tp-g-l { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.tp-g-h span { padding: 0 0 clamp(0.35rem, 0.8vh, 0.6rem) 0.75rem; border-left: 1px solid var(--color-grigio-300); font-size: clamp(0.86rem, 0.84vw, 1.5rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1.3; color: var(--ink-note); }
+.tp-g-l { list-style: none; margin: 0; padding: 0; row-gap: clamp(0.35rem, 0.9vh, 0.75rem); background: repeating-linear-gradient(90deg, var(--color-grigio-300) 0 1px, transparent 1px 33.333%); }
+.tp-g-l li { grid-column: calc(var(--da) + 1) / -1; margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.05rem 1rem; min-width: 0; padding: clamp(0.5rem, 1.15vh, 0.95rem) clamp(0.85rem, 1.05vw, 1.5rem); border: 2px solid transparent; border-radius: 0.6rem; color: var(--color-bianco); text-align: left; }
+.tp-g-l li[data-stato='ora'] { background: var(--color-rosso); }
+.tp-g-l li[data-stato='dopo'] { background: var(--color-ardesia-notte); }
+.tp-g-l li[data-stato='aperto'] { background: var(--color-bianco); border: 2px dashed var(--color-ardesia); color: var(--color-ardesia-notte); }
+.tp-g-t { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.12rem, 1.28vw, 2.2rem); line-height: 1.24; letter-spacing: -0.01em; }
+.tp-g-b { font-size: clamp(0.95rem, 0.92vw, 1.65rem); line-height: 1.4; }
+.tp-g-k { display: none; font-size: clamp(0.86rem, 0.8vw, 1.4rem); font-weight: 700; line-height: 1.3; }
+.tp-g-l li[data-stato='aperto'] .tp-g-k { display: block; order: 3; margin-left: auto; }
 @media (max-width: 900px) {
-  .tp-rm { grid-template-columns: minmax(0, 1fr); row-gap: 1.5rem; }
-  .tp-rm li { grid-template-rows: none; padding-right: 0; padding-left: calc(var(--s) + 0.9rem); }
-  .tp-rm-n { position: absolute; left: 0; top: 0; }
-  .tp-rm-q { margin-top: 0; }
-  .tp-rm li::after { top: var(--s); bottom: -1.5rem; left: calc((var(--s) - var(--r)) / 2); right: auto; width: var(--r); height: auto; border-block: 0; border-inline: 2px solid var(--c); background: repeating-linear-gradient(180deg, var(--c) 0 2px, transparent 2px 13px); }
-  .tp-rm li[data-tratto='pronto']::after, .tp-rm li[data-tratto='da-posare']::after { border-inline-style: dashed; }
-  .tp-rm li:last-child::after { display: none; }
+  .tp-g-h { display: none; }
+  .tp-g-l { grid-template-columns: minmax(0, 1fr); background: none; }
+  .tp-g-l li { grid-column: 1; flex-direction: column; }
+  .tp-g-k { display: block; }
+  .tp-g-l li[data-stato='aperto'] .tp-g-k { order: 0; margin-left: 0; }
 }
-
-/* La fascia trasversale della roadmap: i contenuti non sono una fase, valgono per tutte. */
-.tp-rm-strato { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.2rem; width: 100%; margin-inline: 0; padding: clamp(0.7rem, 1.4vh, 1.1rem) clamp(1rem, 1.4vw, 1.7rem); border-radius: 12px; background: var(--accent-primary); color: var(--color-bianco); box-shadow: 0 10px 26px rgba(0, 0, 0, 0.3); text-align: left; }
-.tp-rm-strato strong { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.15rem, 1.4vw, 2.4rem); line-height: 1.2; color: var(--color-bianco); }
-.tp-rm-strato span { font-size: clamp(0.95rem, 0.95vw, 1.7rem); line-height: 1.4; color: var(--color-bianco); }
 
 /* Slide dell'idea: mockup e riquadri iniziano e finiscono alla stessa quota. */
 .tp-idea-sx { align-content: stretch; }
@@ -1843,7 +1829,6 @@ body:has(.rel) { background: #f7f8fa; }
 
 /* Il mockup parte dallo stesso bordo del titolo e chiude a filo della colonna. */
 .tp-idea-sx .mk-schermo { max-width: none; }
-@media (max-height: 860px) { .tp-rm-strato { padding-block: 0.5rem; } }
 
 /* ── I mockup delle quattro idee: la schermata è la protagonista ───────────────
    9 nov 2026, notte. Erano elenchi larghi quanto il testo accanto, al 27-35% della
@@ -2001,7 +1986,6 @@ li[data-trenitalia] .mk-ordine-n { background: var(--color-rosso-scuro); }
 [data-slide] .xd-ref-b .xd-ref-n, [data-slide] .xd-ref-b .xd-marchio--testo { color: var(--xd-dark-ink); }
 [data-slide] .xd-ref-b .xd-ref-f, [data-slide] .xd-ref-b .tp-ref-set { color: var(--xd-dark-body); }
 [data-slide] .tp-ask-t { max-width: none; }
-@media (max-height: 860px) and (min-width: 901px) { .tp-rm-b { display: none; } }
 
 /* ── La concorrenza: l'unica tessera rossa, poi il riflettore ──────────────────
    Il suo rosso è lo stesso della slide dopo: con → la tessera si allarga e la diventa.
