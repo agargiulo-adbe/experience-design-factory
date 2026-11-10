@@ -756,7 +756,7 @@ export const TEMPI = {
   sub: 'Una proposta da riordinare con le vostre priorità, nel rispetto dei processi di FS Technology e del Gruppo.',
   voci: [
     { k: 'Da subito', t: 'Governo della presenza negli assistenti AI', b: 'Misura continua di come compare il marchio e di quali fonti vengono citate.', dip: 'Impatto minimo sui sistemi' },
-    { k: 'Da subito', t: 'Personalizzazione per\u00a0chi non è registrato', b: 'Customer Journey Analytics legge i dati Analytics di trenitalia.com e lefrecce.it, Target attiva la personalizzazione.', dip: 'Si aggiunge Customer Journey Analytics' },
+    { k: 'Da subito', t: 'Personalizzazione per\u00a0chi non è registrato', b: 'Customer Journey Analytics legge i dati Analytics di trenitalia.com, Le Frecce e app. Target attiva la personalizzazione su trenitalia.com.', dip: 'Si aggiunge Customer Journey Analytics' },
     { k: 'Con il nuovo CRM', t: 'Personalizzazione per i clienti registrati', b: 'Il profilo resta nel CRM: qui si legge il comportamento di chi è già cliente.', dip: 'Dipende dal\u00a0nuovo CRM' }, // copy-audit-ignore V2 · «registrati» è un participio plurale, non un imperativo
     { k: 'Dopo, passo per passo', t: 'Un’esperienza unica per il cliente', b: 'Sito e sistema di vendita integrati: si propone e si compra nello stesso percorso.', dip: 'Dipende dai sistemi di vendita' },
     { k: 'Da approfondire insieme', t: 'Le agenzie', b: 'Alla prossima campagna si prova quali schede e locandine fanno vendere, in due ondate.', dip: 'Serve decidere prima a\u00a0chi va ogni\u00a0scheda' },
@@ -924,6 +924,25 @@ export const nomeBreve = (nome: string) => {
   if (n.startsWith('LLM Apps')) return 'LLM Apps';
   if (n.includes('GenStudio')) return 'GenStudio';
   return n.replace(/^Adobe /, '').replace(/,\s*con\s+/, ' con ');
+};
+
+/**
+ * DOVE LAVORA OGGI CIÒ CHE È GIÀ NEL GRUPPO. Una definizione sola: striscia e mappa
+ * la leggono da qui, così il perimetro non può divergere.
+ * Verificato il 10 nov 2026 su estratto d'uso e tag caricati dal vivo. Analytics: due
+ * report suite distinte, e le chiamate mobile stanno in quella delle Frecce. Target:
+ * parte sulle pagine di trenitalia.com e non su lefrecce.it. «Prima del login» viene
+ * dall'account: da fuori non si vede l'area riservata.
+ */
+export const PERIMETRO: Record<string, string[]> = {
+  'Adobe Analytics': ['trenitalia.com', 'Le Frecce', 'App'],
+  'Adobe Target': ['trenitalia.com', 'prima del login'],
+};
+
+/** La stessa cosa in poco spazio, per le pillole della mappa: una riga sola anche a 1280. */
+export const PERIMETRO_CORTO: Record<string, string> = {
+  'Adobe Analytics': 'sito · Frecce · app',
+  'Adobe Target': 'sito, prima del login',
 };
 
 export const LEGENDA: Record<Stato, { eti: string; spiega: string }> = {

@@ -53,9 +53,9 @@ export const SCENE: Record<ScenaId, Scena> = {
   'cja-acquisto': {
     prodotto: 'Customer Journey Analytics',
     caso: 'Personalizzazione su larga scala',
-    cosa: 'Uno strato di lettura sopra i canali: i due Analytics prima, le altre fonti dopo.',
+    cosa: 'Uno strato di lettura sopra i canali: prima quello che Analytics misura già, poi le altre fonti.',
     passi: [
-      'Oggi trenitalia.com e lefrecce.it si leggono in due analisi separate.',
+      'Oggi trenitalia.com da una parte, Le Frecce e l’app dall’altra: due analisi separate.',
       'Customer Journey Analytics si appoggia sopra, e legge quello che Analytics raccoglie già.',
       'Poi entra il CRM con CartaFreccia, quando sarà pronto.',
       'Domani altre fonti, una alla volta, quando serviranno.',
@@ -77,7 +77,7 @@ export const SCENE: Record<ScenaId, Scena> = {
     passi: [
       'Il team fa una domanda con le sue parole.',
       'Coworker legge Customer Journey Analytics e propone il segmento.',
-      'Prepara la prova in Target: la home su Matera, contro quella di oggi.',
+      'Prepara la prova in Target su trenitalia.com: la home su Matera, contro quella di oggi.',
       'Decide il team. Senza approvazione non si pubblica niente.',
       'Alla fine legge i risultati e dice se la prova ha dato una risposta.',
     ],

@@ -107,7 +107,7 @@ export const NOTE: Record<string, NotaSlide[]> = {
       attenzione: 'Il primo ↓ cambia la schermata da «prima» a «dopo». Se chiedono del disservizio: con circolazione perturbata o rimborso in corso la proposta si sospende, e chi assiste lo decide chi possiede il servizio. Si propone solo ciò che si può comprare: composizione, prezzo e acquisto restano nei loro sistemi. Il Freccialink oggi non si aggiunge a un Frecciarossa già acquistato. Non aprire il tema del pop-up di geolocalizzazione, se non lo aprono loro.' },
     { id: 'slide-momenti',
       dire: 'Tre ↓, la stessa homepage vista da tre persone. Chi non è registrato: posizione e navigazione, dove c’è il consenso. Con il nuovo CRM si aggiunge la storia del cliente. E la proposta deve sapere quando fermarsi.',
-      attenzione: 'Bari è un esempio di proposta per città. Se chiedono di CartaFreccia dopo la fine del 2026: la logica per livello vale per qualunque programma fedeltà. I tempi del nuovo CRM li dice il cliente, non noi.',
+      attenzione: 'Target oggi lavora su trenitalia.com prima del login; Analytics anche su Le Frecce e app. Bari è un esempio di proposta per città. Se chiedono di CartaFreccia dopo la fine del 2026: la logica per livello vale per qualunque programma fedeltà. I tempi del nuovo CRM li dice il cliente, non noi.',
       seChiedono: { d: 'E la geolocalizzazione?', r: 'Si apre la pagina /appendice/: una slide, solo perimetro e che cosa dimostra, senza numeri.' } },
     { id: 'slide-prima',
       dire: 'La personalizzazione comincia prima, e altrove. Chi ha prenotato una crociera da Genova sta ancora decidendo come arrivarci: conoscendolo, gli si fa una proposta vantaggiosa prima del confronto con Italo.',
