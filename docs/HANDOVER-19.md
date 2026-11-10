@@ -202,4 +202,4 @@ Diciassette commit da `65745cf` a `3942b9a`, tutti su `apps/trenitalia-prospetti
 
 **Immagini e testi.** Famiglia e coppia della Puglia rigenerate in quadrato: le figure erano allungate dalla generazione, non dal CSS. «Workfront: Richieste e approvazioni», «GenStudio for PeM», link Workfront alla pagina business.
 
-⚠️ **Online indietro.** Alle 14:27 il deploy di `3942b9a` era in corso da venti minuti e quello di `e1bed67` annullato: online era a `115b8e8`. La versione senza rete (`localhost:4827`) e `localhost:4471` erano identiche all'ultimo commit. Il confronto si rifà pagina per pagina (testo e asset `_astro`).
+⚠️ **Online indietro.** Alle 14:27 il deploy di `3942b9a` era in corso da venti minuti e quello di `e1bed67` annullato: online era a `115b8e8`. La versione senza rete (`localhost:4827`) e `localhost:4471` erano identiche all'ultimo commit. Il deploy di un commit successivo (`7a43b22`) ha portato online anche queste modifiche: alle 14:35 testo e asset `_astro` delle 11 pagine coincidevano fra online e `localhost:4827`. Da confermare restano l'identificativo di login nei dati Analytics e il passaggio CJA→Target.
