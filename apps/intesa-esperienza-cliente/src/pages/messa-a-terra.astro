@@ -91,10 +91,10 @@ const TAPPE = [
 ];
 
 const BANCA = [
-  { fig: 'flusso', t: { it: 'Il percorso in sequenza', en: 'The journey in sequence' }, d: { it: 'Una persona, tutti i canali', en: 'One person, every channel' } },
-  { fig: 'esito', t: { it: 'Il digitale fino allo sportello', en: 'Digital through to the counter' }, d: { it: 'Le firme in filiale, attribuite', en: 'Branch signatures, attributed' } },
-  { fig: 'serie', t: { it: 'Dove si rompe la pratica', en: 'Where the application breaks' }, d: { it: 'Abbandoni e chiamate evitabili', en: 'Drop-offs and avoidable calls' } },
-  { fig: 'regia', t: { it: 'Dalla lettura all’azione', en: 'From reading to action' }, d: { it: 'Chi si ferma diventa un pubblico', en: 'Whoever stalls becomes an audience' } },
+  { k: 'sequenza', q: { it: 'In che ordine si muove il cliente?', en: 'In what order does the customer move?' }, t: { it: 'Un percorso solo, tutti i canali', en: 'One journey, every channel' } },
+  { k: 'sportello', q: { it: 'Quanto del digitale firma in filiale?', en: 'How much digital signs in branch?' }, t: { it: 'Le firme in filiale, attribuite', en: 'Branch signatures, attributed' } },
+  { k: 'rottura', q: { it: 'Dove si ferma la richiesta?', en: 'Where does the application stop?' }, t: { it: 'Abbandoni e chiamate evitabili', en: 'Drop-offs and avoidable calls' } },
+  { k: 'azione', q: { it: 'Che cosa si fa con chi si ferma?', en: 'What happens to those who stop?' }, t: { it: 'Diventa un pubblico per il percorso', en: 'They become an audience for the journey' } },
 ];
 
 /* Altezze schematiche, senza valori: dicono la forma, e la slide lo dichiara. */
@@ -238,14 +238,19 @@ const RITORNO = [
     <Slide id="slide-cja-banca" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quattro risposte che una banca ottiene da Customer Journey Analytics" en="Four answers a bank gets from Customer Journey Analytics" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quattro domande a cui Customer Journey Analytics risponde" en="Four questions Customer Journey Analytics answers" />
         <T as="p" class="im-ado-l" it="Si affianca a SAS e al BI che avete, e li lascia dove sono." en="It sits alongside SAS and your BI, and leaves them where they are." />
         <ul class="im-banca">
           {BANCA.map((b) => (
-            <li class="im-banca-i" data-substep>
-              <FiguraCap segno={b.fig} class="im-banca-fig" />
+            <li class="im-banca-i" data-substep data-k={b.k}>
+              <T as="span" class="im-banca-q" it={b.q.it} en={b.q.en} />
+              <svg class="im-banca-fig" viewBox="0 0 160 90" aria-hidden="true">
+                {b.k === 'sequenza' && <><path d="M18 45h124" class="tr" /><circle cx="18" cy="45" r="8" class="pi" /><circle cx="59" cy="45" r="8" class="pi" /><circle cx="100" cy="45" r="8" class="pi" /><circle cx="142" cy="45" r="11" class="acf" /><path d="m137 45 4 4 7-8" class="ok" /></>}
+                {b.k === 'sportello' && <><rect x="14" y="20" width="30" height="52" rx="5" class="tr" /><path d="M24 64h10" class="tr" /><path d="M54 46h40M86 38l8 8-8 8" class="ac" /><path d="M106 34 128 20l22 14z" class="acf" /><path d="M110 38v30M122 38v30M134 38v30M146 38v30M104 72h46" class="ac" /></>}
+                {b.k === 'rottura' && <><rect x="14" y="14" width="24" height="62" rx="3" class="pi" /><rect x="48" y="30" width="24" height="46" rx="3" class="pi" /><rect x="82" y="52" width="24" height="24" rx="3" class="pi" /><rect x="116" y="66" width="24" height="10" rx="3" class="pi" /><path d="M10 76h134" class="tr" /><path d="M86 22l14 14M100 22 86 36" class="ko" /></>}
+                {b.k === 'azione' && <><circle cx="34" cy="40" r="16" class="tr" /><path d="m46 52 12 12" class="tr" /><path d="M66 45h26M84 37l8 8-8 8" class="ac" /><circle cx="110" cy="34" r="6" class="acf" /><circle cx="128" cy="34" r="6" class="acf" /><circle cx="146" cy="34" r="6" class="acf" /><circle cx="119" cy="56" r="6" class="acf" /><circle cx="137" cy="56" r="6" class="acf" /></>}
+              </svg>
               <T as="span" class="im-banca-t" it={b.t.it} en={b.t.en} />
-              <T as="span" class="im-banca-d" it={b.d.it} en={b.d.en} />
             </li>
           ))}
         </ul>
