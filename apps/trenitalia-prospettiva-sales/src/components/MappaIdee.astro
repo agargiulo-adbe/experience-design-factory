@@ -25,7 +25,7 @@ import { IDEE, pezziDi } from '../data/idee';
 import { CHAPTERS } from '../data/chapters';
 import PezziPerStato from './PezziPerStato.astro';
 import { SOURCES } from '../data/sources';
-import { nomeBreve, PERIMETRO_CORTO, type Pezzo } from '../data/contenuti';
+import { ALTROVE, nomeBreve, PERIMETRO_CORTO, type Pezzo } from '../data/contenuti';
 
 interface Props {
   /** ⚠️ 6 nov 2026, SECONDO GIRO DEL PANEL, ed è l'obiezione che per
@@ -68,7 +68,7 @@ const link = (p: Pezzo) => (p.fonte ? (SOURCES[p.fonte] as { url?: string }).url
           {(['avete', 'nuovo'] as const).map((st) => (
             <ul class="tp-rt-g" data-stato={st} aria-label={st === 'avete' ? 'Già nel Gruppo' : 'Da aggiungere'}>
               {pezziDi(i.slug).filter((p) => p.stato === st).map((p) => (
-                <li><span>{link(p) ? <a href={link(p)} target="_blank" rel="noopener noreferrer">{breve(p.nome)}</a> : breve(p.nome)}</span>{st === 'avete' && PERIMETRO_CORTO[p.nome] && <small class="tp-rt-per">{PERIMETRO_CORTO[p.nome]}</small>}</li>
+                <li data-altrove={ALTROVE.has(p.nome) ? '' : undefined}><span>{link(p) ? <a href={link(p)} target="_blank" rel="noopener noreferrer">{breve(p.nome)}</a> : breve(p.nome)}</span>{st === 'avete' && PERIMETRO_CORTO[p.nome] && <small class="tp-rt-per">{PERIMETRO_CORTO[p.nome]}</small>}</li>
               ))}
             </ul>
           ))}

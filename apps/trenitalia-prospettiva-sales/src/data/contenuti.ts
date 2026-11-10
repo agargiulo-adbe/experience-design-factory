@@ -30,6 +30,8 @@ export interface Card {
   k: string;
   t: string;
   b: string;
+  /** La riga che si proietta sotto la finestra, quando quella del drill-down è troppo lunga. */
+  bSlide?: string;
   /**
    * L'ancora della voce dentro il «Scopri come»: nomina il MECCANISMO che la
    * figura mostra, non il concetto della slide. Se ripetesse `t` il dettaglio
@@ -79,7 +81,7 @@ export const TESTE = {
     // due righe che facevano sforare la safe-area. La seconda metà — «se
     // uno solo vi interessa si va diretti lì» — è un'istruzione d'uso: sta
     // nel blocco che si apre, non addosso a chi parla.
-    lead: 'Per ognuna, i prodotti già nel Gruppo e quelli da aggiungere. Nessuna sostituisce la\u00a0piattaforma del dato di cliente annunciata a marzo.',
+    lead: 'Per ognuna, i prodotti già nel Gruppo e quelli da aggiungere, in\u00a0ottica di integrazione con\u00a0la\u00a0piattaforma del dato di cliente annunciata a\u00a0marzo.',
     leadBreve: 'Nel percorso intero sono quattro capitoli, uno per punto.',
   },
 };
@@ -452,15 +454,8 @@ export const DOMANDE: { n: number; t: string; lang: 'IT' | 'EN' }[] = [
   { n: 8, t: 'come andare da Torino a Bologna in giornata senza auto', lang: 'IT' },
 ];
 
-export const REFERTO: Stat[] = [
-  { v: '7', su: 'su 8', l: 'Fonte citata · ChatGPT', s: 'trenitalia.com fra le fonti: va a prendere la risposta sui siti ufficiali, e il link dice «prenota con Trenitalia»' },
-  { v: '2', su: 'su 8', l: 'Fonte citata · Google', s: 'trenitalia.com fra le fonti della risposta generata dentro la ricerca, che si costruisce su rivenditori e aggregatori (Trainline, Rome2Rio, Omio)' },
-  { v: '0', su: 'su 8', l: 'Errori sul marchio · ChatGPT', s: 'Frecciarossa e Intercity attribuiti a\u00a0Trenitalia, sempre' },
-  { v: '2', su: 'su 8', l: 'Errori sul marchio · Google', s: 'nella risposta generata dentro la ricerca, le Frecce elencate come se fossero aziende in concorrenza con voi' },
-];
-
 export const KPI: Card[] = [
-  { k: 'Presenza', t: 'Su quante domande comparite',
+  { k: 'Presenza', t: 'Su quante domande comparite', bSlide: 'Google sbaglia 2 volte su 8: elenca le Frecce come aziende in\u00a0concorrenza. ChatGPT mai.',
     anc: 'Chi viene citato, e da dove', b: 'Un punteggio nel tempo, per mercato e per lingua, invece di una fotografia sola.' },
   /* 16 ott, SECONDA versione. La prima diceva che i rivenditori «si prendono la
      relazione», cioè li trattava da minaccia. La verifica ha smontato la
@@ -477,7 +472,7 @@ export const KPI: Card[] = [
      Quello che resta vero, e che è un argomento di margine e non di furto: se
      nella risposta generata comparite tramite un rivenditore invece che da voi,
      quella vendita la pagate in commissione. */
-  { k: 'Costo di distribuzione', t: 'Attraverso chi passate',
+  { k: 'Fonti', t: 'Da quale sito arriva la risposta', bSlide: 'Su Google soprattutto rivenditori, come Trainline e Omio. Se\u00a0la\u00a0vendita passa da loro, si paga in commissione.',
     anc: 'Il passaggio che costa commissione', b: 'Comparire tramite un rivenditore è pagare in commissione una vendita che poteva arrivare diretta.' },
   /* ⚠️ 6 nov 2026, panel: la riga diceva «le visite che nascono da una
      risposta generata, oggi indistinte dal resto del traffico». È
@@ -486,7 +481,7 @@ export const KPI: Card[] = [
      capacità che sembra mancare si verifica sulle loro pagine prima di
      scriverla; qui diventa la domanda. In coda il costo del contatto, che
      quattro personas hanno chiesto e che è la misura di chi assiste. */
-  { k: 'Traffico', t: 'Quanto arriva davvero dagli assistenti AI',
+  { k: 'Traffico', t: 'Quanto arriva davvero dagli assistenti AI', bSlide: 'Persone distinte dagli agenti, per sapere quanto vale il\u00a0canale.',
     anc: 'Tracciare, distinguere, governare', b: 'Il traffico che arriva dagli assistenti AI si riesce oggi a isolare? Serve distinguere le persone dagli agenti e sapere quali fonti gli assistenti considerano autorevoli: una risposta sbagliata è una chiamata in più all’assistenza.' },
 ];
 
@@ -872,7 +867,7 @@ export type Stato = 'avete' | 'nuovo';
  * IL COLORE DI OGNI PRODOTTO — uno stabile, lo stesso ovunque compaia.
  *
  * PERCHÉ SERVE. Sulla mappa delle quattro idee gli stessi prodotti tornano in
- * colonne diverse — Analytics e Target stanno sia nel viaggio sia nelle
+ * colonne diverse — Customer Journey Analytics sta sia nel viaggio sia nelle
  * agenzie — e leggendo nomi lunghi in quattro colonne quella ricorrenza non si
  * vede. Il colore la rende immediata: lo stesso punto, nella stessa tinta, in
  * due colonne lontane.
@@ -898,7 +893,7 @@ export const COLORE_PEZZO: Record<string, string> = {
   'Customer Journey Analytics': '#38b6c4',
   'Adobe Target': '#2fae6b',
   'Adobe Real-Time Collaboration': '#7a8cf0',
-  'Adobe Creative Cloud, con Firefly': '#e05b9a',
+  'Adobe Creative Cloud': '#e05b9a',
   'Adobe Workfront': '#c9a227',
   'Adobe GenStudio for Performance Marketing': '#5fb3a3',
   'CX Enterprise Coworker': '#8aa0c9',
@@ -917,12 +912,12 @@ export interface Pezzo {
 }
 
 /** Il nome sulle pillole: il prefisso «Adobe» lo dice già il marchio che apre la riga.
- *  GenStudio si accorcia perché il nome intero allargava la sua colonna; per esteso
+ *  GenStudio si accorcia in «for PeM» perché il nome intero allargava la sua colonna; per esteso
  *  resta nel pop-in. Una funzione sola, così striscia e mappa non divergono. */
 export const nomeBreve = (nome: string) => {
   const n = nome.replace(/\u00a0/g, ' ');
   if (n.startsWith('LLM Apps')) return 'LLM Apps';
-  if (n.includes('GenStudio')) return 'GenStudio';
+  if (n.includes('GenStudio')) return 'GenStudio for PeM';
   return n.replace(/^Adobe /, '').replace(/,\s*con\s+/, ' con ');
 };
 
@@ -937,12 +932,19 @@ export const nomeBreve = (nome: string) => {
 export const PERIMETRO: Record<string, string[]> = {
   'Adobe Analytics': ['trenitalia.com', 'Le Frecce', 'App'],
   'Adobe Target': ['trenitalia.com', 'prima del login'],
+  'Adobe Experience Manager Assets': ['Fondazione FS'],
 };
+
+/** 10 nov 2026, conferma dell'account: nel Gruppo c'è, ma lavora altrove. Si vede dalla
+ *  forma: filetto tratteggiato invece che continuo, con il nome di dove sta. Per usarlo
+ *  in Trenitalia serve un nuovo acquisto, e si dice a voce. */
+export const ALTROVE = new Set(['Adobe Experience Manager Assets']);
 
 /** La stessa cosa in poco spazio, per le pillole della mappa: una riga sola anche a 1280. */
 export const PERIMETRO_CORTO: Record<string, string> = {
   'Adobe Analytics': 'sito · Frecce · app',
   'Adobe Target': 'sito, prima del login',
+  'Adobe Experience Manager Assets': 'Fondazione FS',
 };
 
 export const LEGENDA: Record<Stato, { eti: string; spiega: string }> = {
@@ -984,16 +986,18 @@ export const SERVE: Record<
   ],
   contenuto: [
     { nome: 'Adobe Experience Manager Assets', fonte: 'aemAssets', stato: 'avete', a: 'Da estendere a Trenitalia' },
-    { nome: 'Adobe Creative Cloud, con Firefly', fonte: 'firefly', stato: 'avete', a: 'Gli strumenti di oggi, su scala' },
-    { nome: 'Adobe Workfront', fonte: 'workfront', stato: 'nuovo', a: 'Chi chiede, produce, approva', pop: 'workfront-contenuto' },
+    /* 10 nov 2026, dall'account: in uso in Trenitalia, non per la produzione di contenuti; Firefly
+       non è un prodotto loro, ci sono i crediti inclusi in Creative Cloud. */
+    { nome: 'Adobe Creative Cloud', fonte: 'firefly', stato: 'avete', a: 'Con crediti Firefly inclusi' },
+    { nome: 'Adobe Workfront', fonte: 'workfront', stato: 'nuovo', a: 'Richieste e approvazioni', pop: 'workfront-contenuto' },
     { nome: 'Adobe GenStudio for Performance Marketing', fonte: 'genstudio', stato: 'nuovo', a: 'Le varianti per il paid media', pop: 'genstudio-contenuto' },
     { nome: 'Adobe Content Analytics', fonte: 'contentAnalytics', stato: 'nuovo', a: 'Quali contenuti funzionano davvero', pop: 'ca-contenuto' },
     { nome: 'CX Enterprise Coworker', fonte: 'coworker', stato: 'nuovo', a: 'Agenti AI sulla produzione', pop: 'coworker-contenuto' },
   ],
   rete: [
-    /* 10 nov 2026: per la sola domanda sulle schede CJA non serve, e si dice. Ha senso
-       perché mette il confronto accanto a sito e app. Il QR gira su Analytics, già nel Gruppo. */
-    { nome: 'Adobe Analytics', fonte: 'analytics', stato: 'avete', a: 'Il QR delle schede' },
+    /* 10 nov 2026: Analytics esce dalla striscia. La verifica del 9 nov diceva che per le
+       agenzie serve solo CJA; il QR è un di più del test, sta nel mockup e nel pop-in, e
+       metterlo qui faceva sembrare che Analytics misurasse le agenzie. */
     { nome: 'Customer Journey Analytics', fonte: 'cja', stato: 'nuovo', a: 'Le due ondate accanto a sito e app', pop: 'cja-rete' },
   ],
 };
@@ -1022,8 +1026,8 @@ export const CHI_SIAMO = {
   offerta: {
     k: 'L’offerta Adobe, end to end', // copy-audit-ignore · «end to end» è la parola chiesta dall'owner
     fasi: [
-      { k: 'Farsi trovare', p: 'Brand Visibility · LLM Apps' },
-      { k: 'Creare', p: 'Creative Cloud con Firefly · GenStudio · Workfront' },
+      { k: 'Farsi trovare nell\u2019era dell\u2019AI', p: 'Brand Visibility · LLM Apps' },
+      { k: 'Creare', p: 'Creative Cloud con Firefly · GenStudio for PeM · Workfront' },
       { k: 'Pubblicare', p: 'Experience Manager · Assets' },
       { k: 'Personalizzare', p: 'Target' },
       { k: 'Misurare', p: 'Analytics · Customer Journey Analytics · Content Analytics' },

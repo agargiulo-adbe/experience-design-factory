@@ -452,7 +452,7 @@ export const SOURCES = {
     cosaDice: 'Generazione di immagini e varianti visive con modelli addestrati su contenuti licenziati.',
   },
   workfront: {
-    url: 'https://experienceleague.adobe.com/en/docs/workfront/using/home',
+    url: 'https://business.adobe.com/it/products/workfront.html',
     label: 'Adobe Workfront',
     data: 'documentazione pubblica',
     cosaDice: 'Il governo del lavoro: richieste, assegnazioni, scadenze, approvazioni e stato di avanzamento su campagne e contenuti. È il pezzo che tiene insieme chi chiede e chi produce.',

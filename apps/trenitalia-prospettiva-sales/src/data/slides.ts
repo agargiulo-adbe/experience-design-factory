@@ -49,10 +49,8 @@ export const PAGE_REGISTRY: PageEntry[] = [
       agenda: 'Otto domande, due assistenti' },
     { id: 'slide-idea', label: 'L’idea · la domanda su Matera, cifra, prodotti',
       agenda: 'Una delle otto, da vicino' },
-    { id: 'slide-referto', label: 'Gli esiti · il referto e l’errore sul marchio',
+    { id: 'slide-leva', label: 'Che cosa abbiamo osservato: presenza, fonti, traffico',
       agenda: 'Che cosa abbiamo osservato' },
-    { id: 'slide-leva', label: 'Che cosa si misura, e il secondo tempo del canale',
-      agenda: 'Che cosa si misura, e si cambia' },
   ]},
   { slug: 'viaggio', label: 'Personalizzare su larga scala (04)', slides: [
     { id: 'slide-cover', label: 'Cover del capitolo' },

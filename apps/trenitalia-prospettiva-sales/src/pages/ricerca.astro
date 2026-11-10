@@ -9,7 +9,7 @@ import Fascia from '../components/Fascia.astro';
 import { href } from '@edf/core/utils/url.js';
 import bg_sole from '../assets/generated/sole/sole-ricerca.webp';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { REFERTO, DOMANDE, KPI } from '../data/contenuti';
+import { DOMANDE, KPI } from '../data/contenuti';
 import { pezziDi } from '../data/idee';
 import { SOURCES } from '../data/sources';
 
@@ -43,11 +43,6 @@ const SLUG = 'ricerca';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
-/** La domanda citata su `slide-frecce` viene DALLA FONTE UNICA, non riscritta a
- *  mano: era copiata, e `audit:taglio` la segnava c1 (HARD). Una domanda della
- *  misura trascritta a mano è anche il modo di far divergere il verbatim dal
- *  grezzo — ed è un verbatim, minuscole e assenza di punto interrogativo comprese. */
-const domandaCitata = DOMANDE.find((d) => d.n === 8)!;
 
 
 ---
@@ -103,88 +98,47 @@ const domandaCitata = DOMANDE.find((d) => d.n === 8)!;
          `data/idee.ts`: una sola fonte per tutte e quattro. -->
     <SlideIdea slug="ricerca" />
 
-    <!-- ── Il referto ────────────────────────────────────────────────────── -->
-    <Slide id="slide-referto" data-stretto bg="primary" align="left">
+    <!-- ── Che cosa abbiamo osservato, che cosa si misura ───────────────────
+         10 nov 2026: il referto e «che cosa si misura» diventano una slide sola.
+         Il pop-in di Brand Visibility ripeteva gli stessi numeri e le tre misure
+         sono le stesse tre colonne: una misura, la sua finestra, un ↓ a testa.
+         ⚠️ Google 6 e 2, ChatGPT 7 e 7: dalla tabella del documento di misura.
+         L'errore è di UN assistente: «gli assistenti sbagliano» sarebbe falso. -->
+    <Slide id="slide-leva" data-stretto bg="primary" align="left">
       <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
           <p class="xd-n">Che cosa abbiamo osservato</p>
-          <h2 class="xd-h2">Le stesse otto domande, due assistenti, due risposte diverse</h2>
-          <!-- Lead accorciato quando è arrivato il blocco sul metodo: diceva le stesse
-               cose, e una slide che ripete sé stessa due centimetri più sotto non è
-               densa, è ridondante. Qui resta il fatto; il come sta nel blocco. -->
-          {/* ⚠️ NIENTE <strong> QUI. Due <strong> che vanno a capo dentro lo
-              stesso paragrafo hanno riquadri che si intersecano, e il check
-              `e` li legge come testo sopra testo: è HARD, ed è la stessa
-              trappola già annotata sulla slide d'apertura. */}
-          {/* Il lead dice UNA cosa; il resto — che Trenitalia è quasi sempre
-              nominata su entrambi — sta nelle cifre qui sotto e nel referto
-              per intero, dove si verifica invece di essere raccontato. */}
-          {/* ⚠️ 6 nov 2026, panel, dal seggio del marketing: il titolo dà
-              ChatGPT per la buona notizia, e la tabella del referto — tre
-              centimetri sotto — dice che su ChatGPT il concorrente compare
-              più spesso. Non è una contraddizione, sono due misure diverse;
-              ma finché il documento non dichiara quale conta per la vendita,
-              chi legge trova da solo il numero che lo smentisce. La riga sta
-              nel lead, dove si proietta e dove non costa altezza al blocco
-              che si apre (`exp` è HARD, e lì il margine era di 52 px). */}
+          <h2 class="xd-h2">Presenza, fonti e traffico dicono se&nbsp;la&nbsp;risposta sta cambiando</h2>
           <p class="xd-sub">
-            Il marchio compare nella maggior parte delle risposte (6 e 7 su 8). Quella che conta per la vendita è un’altra misura: da quale
-            sito arriva la risposta, perché è da lì che può partire il clic.
+            <strong>Conta da quale sito arriva la risposta, perché è da lì che può partire il&nbsp;clic.</strong> Un lavoro ricorrente, non un intervento una tantum.
           </p>
         </div>
-        <div class="tp-stats" data-stagger="0.1" data-reveal data-reveal-delay="0.14">
-          {REFERTO.map((r) => (
-            <div class="tp-stat">
-              <!-- NIENTE conteggio animato su questi numeri, ed è una decisione, non una
-             dimenticanza: mentre contava, la slide diceva «0 su 8 risposte nominano
-             Trenitalia» — l'esatto contrario del fatto — e il 70.000 passava da
-             «0.000». Su un capitolo che porta una misura, due secondi di numero
-             falso costano più di quanto renda l'effetto. Il movimento resta dove
-             non afferma niente: rivelazione, scaglionamento, parallasse, clip. -->
-        <p class="tp-stat-v" data-display>{r.v}<span class="tp-stat-su">{r.su}</span></p>
-              <p class="tp-stat-l">{r.l}</p>
-              <p class="tp-stat-s">{r.s}</p>
+        <div class="tp-ancore tp-trittico">
+          {KPI.map((x, n) => (
+            <div class="tp-mom">
+              <div class="tp-fin" data-substep aria-hidden="true">
+                <p class="tp-fin-b">{['Trenitalia nominata', 'trenitalia.com fra le fonti', 'Visite dagli assistenti AI · esempio'][n]}</p>
+                {n < 2 ? (
+                  <div class="tp-fin-num">
+                    <div><small>ChatGPT</small><strong>7<span> su 8</span></strong></div>
+                    <div data-acceso={n === 1 ? '' : undefined}><small>Google</small><strong>{n === 0 ? '6' : '2'}<span> su 8</span></strong></div>
+                  </div>
+                ) : (
+                  <div class="tp-fin-barre"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                )}
+              </div>
+              <div class="tp-anc">
+                <p class="tp-anc-k">{x.k}</p>
+                <p class="tp-anc-n">{x.t}</p>
+                <p class="tp-anc-b">{x.bSlide}</p>
+              </div>
             </div>
           ))}
-        </div>
-        <div class="tp-ask tp-cede" data-reveal data-reveal-delay="0.2">
-          <p class="tp-ask-k">Esempio · domanda {domandaCitata.n}, risposta generata di Google</p>
-          <p class="tp-ask-t">«Le principali compagnie che operano su questa tratta sono Frecciarossa, Italo, Trenitalia e Intercity.» Quattro nomi sullo&nbsp;stesso piano, come fossero aziende in&nbsp;concorrenza.</p>
-        </div>
-        <p class="xd-fonte" data-reveal data-reveal-delay="0.32">{SOURCES.misura.label}.</p>
-      </div>
-    </Slide>
-
-    <!-- ── Che cosa si misura, che cosa si cambia ────────────────────────── -->
-    <Slide id="slide-leva" bg="primary" align="left">
-      <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl" data-reveal>
-        <div class="xd-sl-head">
-          <p class="xd-n">Che cosa si misura</p>
-          <h2 class="xd-h2">Si cambia la pagina e si vede se la risposta cambia</h2>
-          {/* Il lead è UNA riga: il punto della slide, non il paragrafo che lo spiega.
-              La prova — la risposta sulla Puglia che è quasi un testo loro — sta
-              nella riga sotto le ancore, dove chi presenta la può indicare. */}
-          <p class="xd-sub">
-            <strong>Da intervento una tantum a lavoro ricorrente:</strong> molte domande, misurate spesso, e&nbsp;pagine che si aggiornano di conseguenza.
-          </p>
-        </div>
-        <div class="tp-ancore" data-stagger>
-          {KPI.map((x) => (
-            <div class="tp-anc">
-              <p class="tp-anc-k">{x.k}</p>
-              <p class="tp-anc-n">{x.t}</p>
-            </div>
-          ))}
-        </div>
-        <div class="tp-ask tp-cede" data-reveal data-reveal-delay="0.2">
-          <p class="tp-ask-k">Il secondo tempo dello stesso canale</p>
-          <p class="tp-ask-t">Oggi la risposta rimanda al vostro sito, domani l’acquisto potrebbe spostarsi nella conversazione. LLM Apps, annunciata e non ancora disponibile, potrà presidiare anche quel passaggio.</p>
         </div>
         <Fascia pezzi={pezziDi('ricerca')} />
         <p class="xd-fonte" data-reveal data-reveal-delay="0.26">
-          Su LLM Apps: <a href={SOURCES.llmApps.url} target="_blank" rel="noopener noreferrer">{SOURCES.llmApps.label}</a>
+          {SOURCES.misura.label}. Il traffico è un esempio. LLM Apps è annunciata e non ancora disponibile: <a href={SOURCES.llmApps.url} target="_blank" rel="noopener noreferrer">{SOURCES.llmApps.label}</a>
         </p>
       </div>
     </Slide>
