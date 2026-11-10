@@ -7,13 +7,17 @@
 
 > Ordinato per priorità (P0 blocca/adesso · P1 prossimo · P2 dopo/nice-to-have). Questa è la
 > fonte di verità **persistente** delle cose da fare; `/handover` la mantiene e ne proietta le
-> voci P0/P1 nella task list di sessione (effimera). Aggiornato **2026-11-10**: 18 P0 e 34 P1 qui,
-> più 27 P1 di fondo e 48 P2 nella Parte 10.
+> voci P0/P1 nella task list di sessione (effimera). Aggiornato **2026-11-10**: 19 P0 e 37 P1 qui,
+> più 27 P1 di fondo e 49 P2 nella Parte 10.
 > Le voci chiuse non restano qui: diventano una riga nel change log datato (§11).
 
 **P0 — adesso**
 
-- **[P0] `intesa-esperienza-cliente` — panel review mancante per lo stato corrente** — `/panel-review apps/intesa-esperienza-cliente` · **§42.11 (Parte 18)** · l'ultimo verdetto è del 30 ott; dopo sono entrati i giri del 6-7 nov e la riorganizzazione del 9 nov, già in rete (`5cea9f3`), gate a 0 HARD. Da chiudere prima del dry run dell'11 novembre, 14:15 (agg. 2026-11-10)
+- **[P0] `intesa-esperienza-cliente` — panel review mancante per lo stato corrente** — `/panel-review apps/intesa-esperienza-cliente` · **§42.11-42.12 (Parte 18)** · l'ultimo verdetto è del 30 ott; dopo sono entrati i giri del 6-7 nov, la riorganizzazione del 9 nov (in rete) e il giro del 10 nov (locale: CX Analytics dentro «Dove ci innestiamo», Scenario sul dato Nomisma, momenti rifatti). Gate verdi. Da chiudere prima del check dell'11 nov, 14:15; stanza il 19 (agg. 2026-11-10)
+- **[P0] `intesa-esperienza-cliente` — commit e pubblicazione del giro del 10 nov, quando l'owner lo chiede** — §42.12 · lavoro solo locale, in rete `6cd6c58`. Prima: rilanciare `audit:taglio` (ultimo giro in timeout di rete), build, `audit:deck` 0 HARD, `audit:og`. Stage esplicito (`/commit`), mai `git add -A` (agg. 2026-11-10)
+- **[P1] Intesa — correggere il registro d'account sull'installato CRM/campagne** — `docs/Intesa Sanpaolo/ACCOUNT.md` (riservato) · tre punti sul perimetro dell'installato per società del gruppo, più il prospect da segnare **non confermato**. Il dettaglio sta solo nel registro (agg. 2026-11-10)
+- **[P1] Intesa — benchmark di acquisizione bancaria dal connettore «Adobe Goldmine»** — §42.12 · da interrogare prima di mettere un ordine di grandezza in slide; se non c'è, la slide resta sul dato Nomisma (agg. 2026-11-10)
+- **[P1] Intesa — fonti pubbliche per i casi FSI prima di citarli** — §42.12 · NatWest, TSB, Crédit Agricole, Sabadell: pagina pubblica che dica il fatto, con link che risponde (`audit:fonti`), altrimenti non entrano (agg. 2026-11-10)
 - **[P1] `intesa-esperienza-cliente` — decisioni dopo il giro del 9 nov** — §42.11 · lettura di «4 e 5 nel punto 4» dell'agenda da confermare; «entro novembre» sulla prima tappa; «prospetto» o «scheda»; dieci slide col referente l'11 (agg. 2026-11-10)
 - **[P1] Trenitalia Prospettiva — quattro difetti visti il 9 nov, da riverificare dopo gli ultimi commit** — `viaggio/slide-idea` a 1280×800 (fonte sotto i comandi) · `dieci-minuti/slide-mappa` in forma vecchia · `slide-contributi` numerata 03-06 · `/relatore/` senza la nota dell'appendice (da verificare) (agg. 2026-11-10)
 - **[P0] Trenitalia Prospettiva — panel mancante per lo stato corrente** — `/panel-review apps/trenitalia-prospettiva-sales` · §37.19 (Parte 19) · l'ultimo verdetto è del 9 nov (§37.18). Dopo sono entrati pop-in, test sulle schede, figura a tre finestre e slide Costa: nessuna persona li ha visti. Stanza il **10 nov alle 14:30**: dopo la stanza va registrato l'esito e deciso se il giro serve ancora. (agg. 2026-11-10)

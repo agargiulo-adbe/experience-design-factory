@@ -29,6 +29,9 @@ Sei commit da `5e98621` a `264b4e0`, tutti su `apps/trenitalia-prospettiva-sales
 - **CI rossa da `5e98621`** per due errori di typecheck: corretta in `98740de`.
 - ⚠️ Trappola del giro: `object-view-box` al posto di `transform: scale` sulle foto, perché lo scale è letto come scorrimento nascosto e testo su immagine (check `k` e `d`).
 
+### 2026-11-10 · Intesa «Adobe × Intesa Sanpaolo»: CX Analytics dentro «Dove ci innestiamo»
+Locale, **non committato** (in rete `6cd6c58`). Innesto con pop-in, Scenario sul dato Nomisma, persona con esito, momenti rifatti, sei copertine Firefly. Gate verdi, panel no. Dettaglio in §42.12 (Parte 18).
+
 ### 2026-11-09 (notte) · Intesa «Adobe × Intesa Sanpaolo»: revisione del team e agenda a sette voci
 `1bfd653`, `0fcb92f`, `5cea9f3`. Capitolo «Come si mette a terra», approfondimenti fuori percorso, barra sull'agenda, CX Analytics dopo lo Scenario, `/relatore/`. Dettaglio in §42.11 (Parte 18). In rete senza panel.
 
