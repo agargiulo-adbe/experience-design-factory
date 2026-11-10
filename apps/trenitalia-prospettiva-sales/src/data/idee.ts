@@ -93,7 +93,7 @@ export const IDEE: Idea[] = [
        oggi si prenotano una per una», e la combinazione esiste: l'idea non è
        farla, è capire quale proporre a chi. Il 96% è suo, ottobre 2025. */
     cifra: { k: 'CartaFreccia', v: 'la proposta cambia con il livello: stessa tratta, vantaggi diversi per chi viaggia di più' },
-    chiusa: 'Il cliente CartaFreccia trova in homepage la meta giusta e un vantaggio legato al suo livello. Con chi non è registrato si parte da posizione e navigazione.',
+    chiusa: 'Il cliente CartaFreccia trova in homepage la meta giusta e un vantaggio legato al suo livello. Con chi non è registrato si parte dalla città di accesso, come nel test già fatto in homepage.',
     prova: {
       chi: 'Brightline',
       settore: 'alta velocità ferroviaria, Florida',
