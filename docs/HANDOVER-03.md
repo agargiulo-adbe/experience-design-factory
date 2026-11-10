@@ -1,9 +1,21 @@
-# Handover — Parte 3 di 21
+# Handover — Parte 3 di 22
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
 
 ## 11. Change log recente
+
+### 2026-11-10 (sera) e 11-11 · Storia di Intesa: «Dove ci innestiamo» a sei slide, una scala tipografica sola, la rotta delle campagne
+
+Sei commit dopo `a504124`, tutti **pubblicati** (deploy riuscito): `7a43b22`, `376d7a8`, `ee00a1a`, `fdd61f5`, `ae91ab3`, `685832b`. Dettaglio in §42.13 (Parte 19).
+
+- **«Dove ci innestiamo» a sei slide** (`7a43b22`): tolte «unifica» e «motore», che ripetevano schema, pop-in e capability; tre componenti col «+» per i deep dive (Real-Time CDP a 5 passi); «Decisioning» → «AI Decisioning» ovunque; capability su riconosce/sceglie/agisce/misura; ritorno a mappa. **«Quattro domande a cui CJA risponde»** con un disegno per meccanismo (`376d7a8`).
+- **Revisione dell'intero deck**: una sola superficie scura, un solo occhiello verde, corpi leggibili nei capitoli 05-07, Coworker a disegno, demo a griglia, cifre TSB in grande, blu di «Farsi trovare» a `#5b9bff` per il contrasto.
+- **Sette misure di titolo diventano una** (`ee00a1a`): a 1920 i titoli andavano da 29 a 58 px; ora titolo ≈ 48 e sottotitolo ≈ 24 in `clamp`. A capo armoniosi (`text-wrap` pretty/balance) su tutte le slide.
+- **La proposta esclusa non reggeva** (`fdd61f5`): AI Decisioning escludeva lo sconto under 36, ma **Giulia ha 34 anni e ne ha diritto** — al suo posto la polizza casa, «solo dopo la firma». Scenario con titolo sul dato Nomisma/MutuiSupermarket (mag 2026) e frase chiave evidenziata; momenti con mockup più larghi e copy da annuncio; attribuzione con «Solo canali digitali» / «Con Customer Journey Analytics» e legenda.
+- **La rotta delle campagne** (`685832b`): verificato che le *orchestrated campaigns* di Journey Optimizer sono documentate da ago 2025, quindi AJO può prendere anche le campagne pianificate. Tre fasi a `data-substep` sotto lo schema — accanto, una famiglia alla volta, una sola piattaforma — e alla terza il riquadro «Campagne» si spegne. Lo strumento di oggi **non si nomina**; la consegna da strumenti terzi, non nativa, sta nelle note del relatore come domanda.
+- **Un difetto che esisteva solo in locale** (`ae91ab3`): URL degli sfondi senza virgolette, dove il percorso della cartella ha spazi.
+- **Gate**: `copy-audit` 0 HARD / 0 SOFT · `audit:deck` 0 HARD a 1920, 1440, 1280 e 2560 · `audit:ink` pulito. ⚠️ A 3840 sette slide dei momenti con rilievi preesistenti (`wallScale` spento); non rilanciati `audit:fonti` (timeout) e `audit:og`. ⚠️ **Panel ancora fermo al 30 ott.**
 
 ### 2026-11-10 (pomeriggio) · Prospettiva Sales: agenzie, misure, registrati e mappa dopo il dry run
 
@@ -535,38 +547,3 @@ creato uno nuovo, perché due documenti che preparano la stessa stanza divergono
 esisteva**, ed è per questo che la Console non mostrava la card. Applicate il 30 ott. ⚠️ La CLI
 non partiva: il binario aveva la **firma non valida** e macOS lo uccideva con SIGKILL — non era
 il sandbox (`brew reinstall supabase`, 2.107 → 2.122).
-
-
-### Change log — Unipol «Cinque domande»: registrata, ripulita dai nomi, e due giri di panel (2026-10-29) → §41 (Parte 18)
-
-**L'experience c'era dalla notte prima e non era registrata da nessuna parte**: nessuna rotta
-per l'audit, nessuna card su hub e showcase, nessuna riga nel deploy. Un deck che la CI non
-pubblica e che nessun gate misura, di fatto, non esiste. Ora ci sono tutte e sei le
-registrazioni, più il seed `0032` che smette di descriversi come uno scheletro da scrivere;
-sullo showcase nasce **spenta**, perché nasce da materiale di preparazione riservato.
-
-**Dentro c'era un difetto più serio**: `src/data/domande.ts` nominava **due referenti reali del
-cliente**, in un file tracciato su un repo pubblico e in copia che va in slide. Ora portano il
-ruolo, verificato sul registro d'account. La regola sta scritta nel commento di testa del file,
-non affidata alla memoria di chi modifica.
-
-**Due giri di panel, tutti e cinque gli assi in salita** (dettaglio e tabella in §41.4): il
-primo ha trovato la **copertina con la copia del generatore** e **la slide dell'ask vuota**,
-cioè i due punti che un gate non guarda mai; il secondo ha trovato che il deck citava due
-pagine di Experience League e **faceva i conti solo sulla prima**. Il fact‑check ha corretto
-dodici fatti nel primo giro e cinque nel secondo, e ha aggiunto quello che mancava — una skill
-documentata che **ingerisce il foglio dei test passati**, cioè la risposta letterale alla
-seconda domanda del cliente.
-
-**Due cose non sono diventate testo in slide, e la ragione conta.** La soglia di confidenza del
-verdetto non è pubblicata da nessuna parte: è una voce di registro con titolare e scadenza, non
-un numero inventato. E un rilievo del fact‑checker è stato **respinto con la fonte** — «il
-contesto vive in Notion» è detto dal cliente nel registro d'account. Anche un agente è
-un'ipotesi, non un oracolo.
-
-Gate: `audit:deck` 0 HARD su 9 rotte · `audit:ink` PULITO su 329 blocchi · `audit:wrap` PULITO ·
-`copy-audit` 0 HARD e 0 SOFT su 463 stringhe · `audit:fonti` nessun link rotto · `audit:og` PASS ·
-typecheck 0. In più `pnpm lint` torna a **0 errori**: due `prefer-const` preesistenti in
-`scripts/accounts.ts` e `scripts/og-images.ts`.
-
-⚠️ Tutto su `publish/intesa-esperienza-cliente`, che il deploy non pubblica: va su `main` quando si decide.

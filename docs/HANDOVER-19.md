@@ -1,4 +1,4 @@
-# Handover — Parte 19 di 21
+# Handover — Parte 19 di 22
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
@@ -203,3 +203,59 @@ Diciassette commit da `65745cf` a `3942b9a`, tutti su `apps/trenitalia-prospetti
 **Immagini e testi.** Famiglia e coppia della Puglia rigenerate in quadrato: le figure erano allungate dalla generazione, non dal CSS. «Workfront: Richieste e approvazioni», «GenStudio for PeM», link Workfront alla pagina business.
 
 ⚠️ **Online indietro.** Alle 14:27 il deploy di `3942b9a` era in corso da venti minuti e quello di `e1bed67` annullato: online era a `115b8e8`. La versione senza rete (`localhost:4827`) e `localhost:4471` erano identiche all'ultimo commit. Il deploy di un commit successivo (`7a43b22`) ha portato online anche queste modifiche: alle 14:35 testo e asset `_astro` delle 11 pagine coincidevano fra online e `localhost:4827`. Da confermare restano l'identificativo di login nei dati Analytics e il passaggio CJA→Target.
+
+---
+
+<!-- §42 vive nella Parte 18; questa sotto-sezione è nata qui l'11 nov 2026 perché la Parte 18
+     era a 1,9 KB dal tetto. Stesso schema di 37.18-37.20, che stanno qui e non nella Parte 16 -->
+
+## 42.13 Storia di Intesa · la sera del 10 novembre e la rotta delle campagne (11 novembre)
+
+**Sei commit dopo l'handover del 10** (`a504124`), dalle 22:30 del 10 alle 00:09 dell'11, **tutti pubblicati** (deploy riuscito): `7a43b22`, `376d7a8`, `ee00a1a`, `fdd61f5`, `ae91ab3`, `685832b`. Il panel resta fermo al **30 ottobre** — non copre né questo giro né i due precedenti, e il check col referente è l'**11 nov alle 14:15**.
+
+### «Dove ci innestiamo» a sei slide, e la revisione dell'intero deck (`7a43b22`, `376d7a8`)
+
+- **Tolte «unifica» e «motore»**: ripetevano schema, pop-in e capability (canali in un percorso solo, motore di targeting). Il capitolo resta a **sei slide**.
+- **Schema a tre componenti con il «+»** che apre i deep dive; **Real-Time CDP ha il suo pop-in a 5 passi**. L'architettura dice chi fa cosa: lo strumento di campagna di oggi tiene campagne pianificate e invii massivi, Journey Optimizer · AI Decisioning i percorsi a evento.
+- **«Decisioning» → «AI Decisioning» ovunque.** Slide delle capability su quattro verbi: **riconosce · sceglie · agisce · misura**.
+- **«Quattro domande a cui CJA risponde»** (`376d7a8`): due figure quasi identiche (due linee che salgono) diventano **un disegno per meccanismo** — tappe in fila, telefono → filiale, barre che calano col punto di rottura, lente → pubblico — con la domanda della banca sopra e la risposta sotto, domande allineate fra le card.
+- **Attribuzione** con il linguaggio dello strumento («attribuzione delle firme»); lo «Scopri come» è diventato due ancore in slide e una domanda nelle note del relatore. **Slide di ritorno a mappa** in chiusura di capitolo.
+- **Revisione dell'intero deck**: **una sola superficie scura** (Crédit Agricole e Santander era l'unica chiara), **un solo occhiello verde** (il rosso Adobe resta nella firma), corpi leggibili nei capitoli 05-07, card di Coworker a disegno e ancora, demo a griglia su tutta la larghezza, **cifre TSB in grande**, blu di «Farsi trovare» portato a **`#5b9bff`** per il contrasto, note accorciate. Lo Scenario non mescola più il nostro schema con i dati della ricerca.
+- **Scenario**: titolo **«Quasi una famiglia su due vuole simulare la rata prima di lasciare il nome»** (fonte Nomisma/MutuiSupermarket, maggio 2026).
+
+### La sera del 10 (`ee00a1a`, `fdd61f5`, `ae91ab3`)
+
+- **Una scala tipografica sola** (`ee00a1a`). Misurati a 1920, i titoli delle slide di contenuto andavano da **29 a 58 px** — sette misure diverse — e i sottotitoli da 19 a 25. Ora titolo ≈ **48 px** e sottotitolo ≈ **24 px** ovunque, in `clamp` sul viewport; un gradino sotto dove il titolo divide la slide con un disegno grande (il giro di Giulia, il banner, i momenti) e su `approfondimenti`, che a 1280 sbordava. Copertine invariate.
+- **Scenario.** La frase chiave entra **dopo** il dato, con evidenziatore e tre pulsazioni che si fermano; con «Riduci movimento» la frase si mostra già evidenziata (niente pulsazioni, niente attesa) — la regola del guscio sensoriale applicata anche qui.
+- **Momenti.** Riga di apertura (quando · dove) più grande, i mockup riempiono la colonna di destra, e gli annunci portano **copy da annuncio vero** con un verbo d'azione, non testo segnaposto. Il richiamo resta su email, sito e social.
+- **Copertine.** Movimento lento sulle immagini (scala 1 → 1,06 in 14 s, **una volta**, non in loop); ritratto di Giulia intero sugli schermi 21:9.
+- **AI Decisioning: la proposta esclusa cambia ragione.** Era lo sconto under 36, escluso «per esposizione»; non reggeva, perché **Giulia ha 34 anni e ne ha diritto** — un cliente che guarda la slide se ne accorge. Adesso la proposta esclusa è la **polizza casa**, «solo dopo la firma».
+- **Innesto, nelle note del relatore.** «Campagne» è lo strumento di oggi, e Journey Optimizer può prendere **anche le campagne pianificate** nella fase che sceglieranno (*orchestrated campaigns*, documentate da ago 2025). ⚠️ La consegna **da strumenti terzi non è nativa**: va detta come domanda, non promessa.
+- **Attribuzione.** Etichette «Solo canali digitali» / «Con Customer Journey Analytics», legenda delle barre, allineamenti.
+- **A capo armoniosi** (`text-wrap: pretty`/`balance`) su tutto il testo delle slide; copertina con colonne che crescono con lo schermo.
+- **Un difetto che esisteva solo in locale** (`ae91ab3`): gli URL degli sfondi dei momenti **senza virgolette**. Online funzionava; in locale no, perché il percorso della cartella di lavoro contiene **spazi**. La regola era già applicata alle altre pagine — è la terza volta che questo difetto nasce dove non è stata ripetuta.
+
+### La rotta delle campagne (`685832b`, 11 nov 00:09)
+
+**Perché c'è.** Verificato su Fluffy e Experience League: le *orchestrated campaigns* di Journey Optimizer sono **documentate da agosto 2025**, quindi «Campagne» nello schema è lo strumento di **oggi** e AJO può prendere **anche le campagne pianificate**, non solo i percorsi a evento. **Direzione strategica dell'owner**: mettere sul tavolo l'**evoluzione completa** dallo strumento di campagna di oggi verso Journey Optimizer, **per fasi** — una proposta di direzione, i tempi li decide la banca.
+
+Sotto lo schema dell'innesto entra una **rotta in tre fasi**, una per `data-substep` — si scopre a mano, chi parla decide quando si legge:
+
+1. **Accanto** — percorsi a evento su Journey Optimizer, campagne come oggi
+2. **Una famiglia alla volta** — le campagne pianificate passano su Journey Optimizer
+3. **Una sola piattaforma** — percorsi e campagne nello stesso posto
+
+Alla terza fase il riquadro **«Campagne» dello schema si spegne** (opacità 0,55, contorno tratteggiato) e mostra un'etichetta **«→ Journey Optimizer»**: la direzione si vede invece di essere raccontata. Bilingue via `<T>`, note del relatore aggiornate, e sugli schermi bassi (`max-height: 920px`) le descrizioni delle fasi si nascondono per non comprimere lo schema.
+
+⚠️ **Lo strumento di oggi non si nomina**, né in slide né in `/relatore/` — e la ragione sta nel codice, in un commento: **il deck gira fra i colleghi del cliente**. È la stessa decisione di §42.12, applicata una seconda volta senza che nessun gate la imponga.
+
+⚠️ **La consegna da strumenti terzi non è nativa** (i Custom Channels di Journey Optimizer sono in **Limited Availability da luglio 2026**): sta **nelle note del relatore come domanda**, non in slide come promessa.
+
+⚠️ **Il CSS della rotta è cresciuto a strati, ed è stato committato così**: due blocchi `@media (max-height: 920px)` separati e un blocco di correzione che ridichiara `.im-rotta::before`, `.im-rotta li` e il `display` del badge «→ Journey Optimizer». Funziona a schermo, ma **quale regola vinca sul badge** non è stato verificato *(da verificare)*: P1 di pulizia.
+
+### Gate e stato
+
+- **Sul committato**: `copy-audit` 0 HARD / 0 SOFT · `astro check` 0 · `audit:deck` **0 HARD a 1920, 1440, 1280 e 2560** · `audit:ink` pulito · `audit:taglio` allineato (`7a43b22`, `ee00a1a`). Su `685832b`: `copy-audit` 0 HARD, `audit:deck` 0 HARD a 1920/1440/1280.
+- ⚠️ **A 3840×2160 sette slide dei momenti hanno rilievi preesistenti** (l'etichetta «Giulia · Non ancora cliente»): `wallScale` non è acceso su questo deck, ed è la regola — si accende dopo `audit:deck -- --tv` a 0 HARD, non prima. P2.
+- ⚠️ **Non rilanciati**: `audit:fonti` (timeout di rete) e `audit:og`. P1.
+- **Aperti**: panel sullo stato pubblicato (P0) · i due audit · registro d'account, Goldmine, fonti pubbliche dei casi FSI (P1, dal 10) · momenti a 3840 e la congiunzione appesa su `approfondimenti/slide-integrazioni` a 1280 (P2).

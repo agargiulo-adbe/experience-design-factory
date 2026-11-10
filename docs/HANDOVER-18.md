@@ -1,4 +1,4 @@
-# Handover — Parte 18 di 21
+# Handover — Parte 18 di 22
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
@@ -496,3 +496,5 @@ Pubblicato il 9 nov 2026 (`1bfd653`, `0fcb92f`, `5cea9f3`). Percorso a **41 slid
 - **Momenti.** 01 mock Brand Visibility con «3 su 8» · 02 GenStudio in tre formati · 04 Decisioning a fasi; lo sconto under 36 è escluso **per esposizione** («già vista 3 volte»), non per età (Giulia ha 34 anni), corretto anche nel pop-in · 05 richiamo su email, sito e social, «solo con consenso» ed «esclusi i già clienti» · 06 canvas verso il CRM di filiale · 07 pannello CJA, attribuzione algoritmica. «Potenziali clienti» al posto di «le prospect».
 - **Gate dopo l'ultima modifica** (preview statico): `copy-audit` 0 HARD / 0 SOFT · `astro check` 0 · `audit:deck` 0 HARD sulle rotte toccate · `audit:ink` pulito. ⚠️ **Non rifatti** sullo stato pubblicato: `audit:taglio`, `audit:og`, `audit:fonti` (in timeout di rete) — da riverificare i **quattro link nuovi** a Experience League di `slide-capacita`.
 - **Aperti:** panel sullo stato pubblicato prima del check dell'11 nov alle 14:15 · i tre audit qui sopra · correzioni al registro d'account sull'installato · benchmark dal connettore «Adobe Goldmine» · fonti pubbliche per i casi FSI (NatWest, TSB, Crédit Agricole, Sabadell) · una congiunzione appesa a 1280 su `approfondimenti/slide-integrazioni`.
+
+**Il giro della sera del 10 novembre e la rotta delle campagne dell'11 stanno in §42.13 (Parte 19)**, perché questa parte è al limite del contratto di dimensione.

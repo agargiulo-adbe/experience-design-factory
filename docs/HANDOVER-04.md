@@ -1,4 +1,4 @@
-# Handover — Parte 4 di 21
+# Handover — Parte 4 di 22
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
@@ -8,6 +8,41 @@
 <!-- sezione spezzata a sotto-livello: §11 supera da sola il contratto di dimensione, quindi è
      divisa in quattro parti a confini ### — questa continua dal change log della Parte 3 e prosegue
      nella Parte 14, poi nella Parte 17 (coda di luglio). Ribilanciata il 13 ott 2026 -->
+
+### Change log — Unipol «Cinque domande»: registrata, ripulita dai nomi, e due giri di panel (2026-10-29) → §41 (Parte 18)
+
+**L'experience c'era dalla notte prima e non era registrata da nessuna parte**: nessuna rotta
+per l'audit, nessuna card su hub e showcase, nessuna riga nel deploy. Un deck che la CI non
+pubblica e che nessun gate misura, di fatto, non esiste. Ora ci sono tutte e sei le
+registrazioni, più il seed `0032` che smette di descriversi come uno scheletro da scrivere;
+sullo showcase nasce **spenta**, perché nasce da materiale di preparazione riservato.
+
+**Dentro c'era un difetto più serio**: `src/data/domande.ts` nominava **due referenti reali del
+cliente**, in un file tracciato su un repo pubblico e in copia che va in slide. Ora portano il
+ruolo, verificato sul registro d'account. La regola sta scritta nel commento di testa del file,
+non affidata alla memoria di chi modifica.
+
+**Due giri di panel, tutti e cinque gli assi in salita** (dettaglio e tabella in §41.4): il
+primo ha trovato la **copertina con la copia del generatore** e **la slide dell'ask vuota**,
+cioè i due punti che un gate non guarda mai; il secondo ha trovato che il deck citava due
+pagine di Experience League e **faceva i conti solo sulla prima**. Il fact‑check ha corretto
+dodici fatti nel primo giro e cinque nel secondo, e ha aggiunto quello che mancava — una skill
+documentata che **ingerisce il foglio dei test passati**, cioè la risposta letterale alla
+seconda domanda del cliente.
+
+**Due cose non sono diventate testo in slide, e la ragione conta.** La soglia di confidenza del
+verdetto non è pubblicata da nessuna parte: è una voce di registro con titolare e scadenza, non
+un numero inventato. E un rilievo del fact‑checker è stato **respinto con la fonte** — «il
+contesto vive in Notion» è detto dal cliente nel registro d'account. Anche un agente è
+un'ipotesi, non un oracolo.
+
+Gate: `audit:deck` 0 HARD su 9 rotte · `audit:ink` PULITO su 329 blocchi · `audit:wrap` PULITO ·
+`copy-audit` 0 HARD e 0 SOFT su 463 stringhe · `audit:fonti` nessun link rotto · `audit:og` PASS ·
+typecheck 0. In più `pnpm lint` torna a **0 errori**: due `prefer-const` preesistenti in
+`scripts/accounts.ts` e `scripts/og-images.ts`.
+
+⚠️ Tutto su `publish/intesa-esperienza-cliente`, che il deploy non pubblica: va su `main` quando si decide.
+
 
 ### Change log — il dossier del 5 novembre, bilingue, e il motore che non traduceva (2026-10-26) → §40 (Parte 18)
 
@@ -201,10 +236,3 @@ Lo strato operativo smette di dire solo **che cosa sta succedendo** e dice **a c
 - ⚠️ **La lezione è più grande del difetto, ed è in `CLAUDE.md`: misurare nelle condizioni di chi guarda, non in quelle del browser di prova.** Sono serviti **tre giri** per trovarlo. L'owner ha detto tre volte «la copertina è ferma»; ogni volta la misura — prima in locale, poi in produzione, con la differenza fra due fotogrammi, il PSNR del giro e il contrasto nel caso peggiore — diceva che il movimento c'era. Era vero e inutile: Playwright parte **senza** le preferenze dell'utente. Quando qualcuno dice «non lo vedo» e lo strumento dice che c'è, **la differenza è nelle condizioni di misura** e si riproducono prima di cercare altrove: `reducedMotion`, `colorScheme`, `forcedColors`, `locale`, zoom, `deviceScaleFactor`, rete lenta, risparmio energetico — e la **produzione**, non solo il preview. Vale anche al contrario di «quello che dice l'utente è un'ipotesi»: quando l'owner segnala un difetto e i miei numeri dicono il contrario, a sbagliare è quasi sempre la mia misura. Memoria `misurare-nelle-condizioni-utente`.
 - **Nello stesso giro, su `intesa-scala-umana`**: il velo della copertina era tarato male a monte — clip al 42% sotto un radiale a 0,84 lasciava passare il **6%** del movimento (differenza fra due fotogrammi **0,046 livelli su 255**, sotto qualunque soglia percettiva). Ricalibrato sulla misura: movimento **0,245** (5,3×), velo forte al centro dove sta il testo e leggero ai bordi dove corre il movimento, con il **contrasto verificato nel caso peggiore su otto fotogrammi del giro** e non in media — titolo 4,84:1, lead 4,75:1, riga di copertina 9:1. La media non vedeva la cresta chiara che passa dietro al lead una volta per giro. Memoria `velo-si-misura`.
 - `c4e14f0` **Trenitalia: il perimetro torna a trenitalia.com più il CRM** — `apps/trenitalia-connessioni` (§36, Parte 8). La riunione del 9 ottobre **riduce la proposta a due fonti**: l'Adobe Analytics di trenitalia.com e il CRM, uniti da chi fa login. Tutto il resto — le Frecce, la piattaforma di invio, il checkout, FS Park — diventa **orizzonte dichiarato invece di promessa**. Il percorso di default è lineare (copertina, scenario, quattro capitoli); il ramo FS Park, il bivio e il capitolo sulla clean room **restano nel repo e raggiungibili ma fuori dal percorso**, riaccendibili da una riga in `src/data/percorso.ts`, che diventa la **fonte unica** da cui leggono barra di navigazione, card della home e frecce di ogni pagina. Nel merito: l'accusa ai sistemi del Gruppo diventa **una domanda**, come chiesto in riunione; fuori la slide del varco, e il suo diagramma della soglia viene riusato per il prerequisito vero, **il login**; gli use case sono quelli nati al tavolo, con il **limite dell'attivazione dichiarato**; tre slide nuove in Convergenza (dove finisce il dato del CRM · le tre domande con cosa si fa della risposta · CX Enterprise Coworker sulla ricerca delle cause in linguaggio naturale). ⚠️ **Lo zero-copy promesso a voce in riunione era sbagliato ed è corretto qui**: per CJA il dato entra, e quello che si governa è **quanto**. Build pulita, `astro check` a zero, audit **0 HARD su 222 slide-viewport** comprese le rotte fuori percorso, quattro slide lette a 1920. ⚠️ **Il panel a due giri del 9 ott copre il deck PRIMA di questa riscrittura** (P0 nuovo, §10).
-
-### Change log — il gate sugli a capo, le rotte in un posto solo, e il modello di costo di Poste portato alla fonte (2026-10-09, sera tardi) → commit `1f38b6b`, `0d15ba5`
-
-- `1f38b6b` **feat(intesa): il taglio da dieci minuti si muove** — `apps/intesa-scala-umana` (§33, Parte 11): il percorso corto apre gli obiettivi e porta all'approfondimento invece di finire in sé stesso. ⚠️ Il deck resta **senza verdetto del panel** ed è pubblico: è il P0 più vecchio di questa experience, e ogni commit come questo lo ingrossa.
-- `0d15ba5` **`pnpm audit:wrap`, gate nuovo e regola BINDING** — `scripts/wrap-audit.ts`, riga in `package.json`, sezione in `CLAUDE.md` e passo **9b** nella skill `experience-design`. Misura le righe **realmente rese** (Range API, non il sorgente: dipendono da larghezza, carattere e viewport) e segnala la **parola di servizio appesa** a fine riga — preposizione, articolo, congiunzione. `text-wrap: balance`/`pretty` non la risolvono e `audit:deck` non la vede: le scatole sono a posto, il contrasto è a posto, è il testo che si rompe nel punto sbagliato. Gira contro il **preview statico** come `audit:deck`, con `--app`, `--tv` e `--tutto`. ⚠️ **La soglia è relativa, non assoluta**: guarda il testo oltre il **15% del corpo di base** — titoli, occhielli, lead — perché a dimensione muro la radice sale a 24-28px e un «≥18px» promuoverebbe a titolo ogni paragrafo. Dentro un paragrafo di corpo la stessa rottura non la nota nessuno. Si risolve **legando la coppia** con uno spazio unificatore (`\u00a0`), non la frase intera (se no la riga non va più a capo da nessuna parte); i nomi propri composti si legano per intero. Mai riscrivere per far tornare i conti, **mai rimpicciolire il tipo**. ⚠️ Legare **sposta** il punto di rottura: dopo si rilancia `audit:wrap` e **poi** `audit:deck`, perché una stringa che non va più a capo può sbordare, ed è un HARD. Prime applicazioni sui lead di copertina di quattro pagine di `intesa-scala-umana`. Memoria `a-capo-parole-appese`.
-- **Le rotte dei deck in un posto solo** — `scripts/lib/deck-routes.ts` (stesso commit): `ROUTE_SETS` e `CWD_ALIAS` escono da `deck-audit.ts` (−147 righe) perché il gate nuovo avrebbe dovuto tenerne una copia, e **una copia di un elenco di rotte diverge alla prima experience nuova** — esattamente il difetto che queste regole esistono per evitare.
-- **Poste — la prima delle due domande aperte del 7 ottobre ha una risposta, e cambia la forma della proposta.** Il referente aveva lasciato aperti **il modello di costo dopo i crediti di prova** e **il consumo per prompt** (§32.12, Parte 13). Il primo è stato portato alla fonte interna (Field Readiness): il percorso di licensing di Coworker è **prova → offerta ponte a durata fissa e senza metering → crediti dimensionati sull'uso → licenza enterprise sopra una soglia di ARR**, e la guida dice esplicitamente di **partire con volumi di crediti piccoli e crescere**, perché quello che conta è l'attach rate, non la dimensione del primo contratto. Due conseguenze operative: senza dati d'uso **non si dimensiona** un acquisto di crediti (ed è a questo che servono i due mesi di affiancamento già chiesti); e un ponte **senza metering** risponde all'obiezione vera del cliente — «è una Ferrari, ma non so se posso permettermi la benzina» — meglio di un pacchetto di crediti, perché quell'obiezione non era sul prezzo ma sul non sapere quanto brucia. Il **consumo per prompt** resta aperto. ⚠️ **Cifre, SKU, listini, nomi e stato della trattativa stanno fuori dal repo**, in `docs/Poste Italiane/` (git-ignorata): i documenti sono Adobe Confidential e i dati sono contrattuali del cliente. Resta qui solo la regola riusabile emersa dal giro: **una concessione su un prodotto va coperta da un upsell sullo stesso prodotto** — un'ask che sposta valore da una linea di prodotto a un'altra non supera Deal Desk, e conviene saperlo prima di scriverla.
