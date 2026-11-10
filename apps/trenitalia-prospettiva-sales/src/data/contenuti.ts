@@ -53,7 +53,7 @@ export interface Stat {
 
 /* ── Copertina e firma: le righe che vivono in entrambi i percorsi ───────── */
 export const COVER = {
-  tag: 'Quattro idee per\u00a0ottimizzare le\u00a0vendite, con\u00a0le\u00a0tecnologie per\u00a0realizzarle.',
+  tag: 'Come vendere di\u00a0più, dalla ricerca online fino all’agenzia.',
   /** La riga della slide-firma, identica nei due percorsi. */
   firma: 'Da quale cominciare lo decidiamo insieme.',
 };
