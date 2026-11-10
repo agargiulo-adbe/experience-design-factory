@@ -973,7 +973,7 @@ export const SERVE: Record<
        dichiarato pubblicamente, e che non possiamo nominare né sfiorare.
        Ora la riga parla di PRESENZA DI MARCA, non di vendita. */
     { nome: 'LLM Apps, dentro Adobe Experience Manager', fonte: 'llmApps', stato: 'nuovo',
-      a: 'La marca dentro gli assistenti AI', pop: 'llm-ricerca' },
+      a: 'Un’app Trenitalia dentro gli assistenti AI', pop: 'llm-ricerca' },
   ],
   acquisto: [
     { nome: 'Adobe Analytics', fonte: 'analytics', stato: 'avete', a: 'I segmenti di chi naviga' },

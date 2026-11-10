@@ -116,7 +116,7 @@ export const SCENE: Record<ScenaId, Scena> = {
   },
   'llm-ricerca': {
     prodotto: 'LLM Apps, dentro Experience Manager',
-    caso: 'La marca dentro gli assistenti AI',
+    caso: 'Un’app Trenitalia dentro gli assistenti AI',
     cosa: 'Un’esperienza con la marca Trenitalia dentro la conversazione.',
     passi: [
       'Un viaggiatore chiede come arrivare a Matera senza auto.',
