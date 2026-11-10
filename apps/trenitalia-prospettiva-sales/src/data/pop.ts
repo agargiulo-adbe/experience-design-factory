@@ -10,7 +10,7 @@
  * I PASSI SI SCOPRONO A MANO: chi presenta decide con → o ↓ (telecomando compreso)
  * quando entra il pezzo dopo. All'ultimo passo → richiude e si torna alla slide.
  *
- * FONTI LETTE il 10 nov 2026 (Experience League e materiale interno, via Fluffy):
+ * FONTI LETTE il 10 nov 2026 (Experience League e documentazione interna, via Fluffy):
  * · Adottare CJA non chiede di togliere Analytics; il connettore porta dentro i dati
  *   già raccolti e lo storico. Adobe indica il Web SDK come raccolta di lungo periodo
  *   e il connettore per lo storico. La pagina di upgrade dice anche che con il solo
@@ -184,13 +184,13 @@ export const SCENE: Record<ScenaId, Scena> = {
   'cja-rete': {
     prodotto: 'Customer Journey Analytics',
     caso: 'Schede e locandine in agenzia',
-    cosa: 'Quali materiali fanno vendere di più, senza toccare il sistema di vendita.',
+    cosa: 'Quali schede e locandine fanno vendere di più, senza toccare il sistema di vendita.',
     passi: [
-      'Ogni scheda va in alcune agenzie: basta l’elenco di dove è andata e quando.',
-      'Il venduto per agenzia lo avete già: si carica così com’è.',
+      'La scheda Matera è andata in sei agenzie su dodici: basta l’elenco di dove e quando.',
+      'Il venduto verso Matera per agenzia lo avete già: si carica così com’è.',
       'Customer Journey Analytics unisce i due file e ragiona per agenzia.',
-      'Si confrontano le agenzie con la scheda e quelle senza, stessa tratta e stesso periodo.',
-      'Si vede quale scheda fa vendere di più, e quale si può smettere di stampare.',
+      'Si confrontano le sei agenzie con la scheda Matera e le sei senza, nello stesso periodo.',
+      'Lo stesso confronto, scheda per scheda, dice quale fa vendere di più e quale non stampare più.',
       'Un QR per scheda aggiunge chi la inquadra e poi va sul sito.',
     ],
     nota: 'Ipotesi da verificare sui vostri dati: nessun dato di persona, e il confronto regge se le agenzie sono paragonabili. Valori illustrativi.',
