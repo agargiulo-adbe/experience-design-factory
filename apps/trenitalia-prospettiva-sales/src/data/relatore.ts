@@ -89,10 +89,7 @@ export const NOTE: Record<string, NotaSlide[]> = {
       seChiedono: { d: 'Otto domande sono poche.', r: 'Sì, ed è scritto. Non è una statistica: è una fotografia ripetibile. L’offerta è rifarla insieme con le vostre domande.' } },
     { id: 'slide-idea',
       dire: 'Ne prendiamo una, la prima: come arrivo da Roma a Matera senza auto. Tutti e due gli assistenti AI aprono con gli operatori di autobus.',
-      fatto: 'Tutti e due aprono con gli autobus e danno il combinato prima al concorrente. ChatGPT cita Freccialink dopo. La schermata riassume l’esito su ChatGPT.' },
-    { id: 'slide-leva',
-      dire: 'Tre ↓, tre misure. Presenza: Trenitalia è nominata 7 volte su 8 da ChatGPT e 6 da Google, che però due volte mette sullo stesso piano Frecciarossa, Italo, Trenitalia e Intercity, come fossero aziende in concorrenza. Fonti, la misura che conta per la vendita: trenitalia.com compare 7 volte su ChatGPT e 2 su Google. Traffico: va tracciato, e va distinto chi è una persona da chi è un agente. Poi c’è un secondo tempo: dove oggi vi citano, domani si potrebbe comprare.',
-      attenzione: 'L’errore è di Google, non «degli assistenti»: ChatGPT non sbaglia mai sulle otto. La terza finestra è un esempio, il traffico non l’abbiamo misurato. Sul secondo tempo basta dire che il presidio esiste, al condizionale: niente commissioni e accordi con le piattaforme, che sono ancora in divenire. LLM Apps è annunciata, non disponibile.',
+      fatto: 'Tutti e due aprono con gli autobus e danno il combinato prima al concorrente. ChatGPT cita Freccialink dopo. La schermata riassume l’esito su ChatGPT. Su tutte e otto: trenitalia.com è fra le fonti 7 volte su ChatGPT e 2 su Google, che in due risposte elenca le Frecce come aziende in concorrenza. L’errore è di Google: ChatGPT non sbaglia mai sulle otto.',
       seChiedono: { d: 'È SEO?', r: 'No. La SEO ottimizza un posizionamento in un elenco; qui si lavora su che cosa un sistema generativo cita come fonte, e si misura.' } },
   ],
 

@@ -80,7 +80,7 @@ export const IDEE: Idea[] = [
     chiusa: 'Il biglietto combinato treno più autobus va prima al concorrente. ChatGPT cita Freccialink solo dopo.',
     capability: ['Misurare come comparite nelle risposte', 'Produrre le pagine che l’AI legge'],
     gruppi: ['visibilita', 'canale'],
-    fonte: `${SOURCES.misura.label}, domanda 1 delle 8. La schermata riassume l’esito su ChatGPT, non è la risposta registrata.`,
+    fonte: `${SOURCES.misura.label}, domanda 1 delle 8. La schermata riassume l’esito su ChatGPT, non è la risposta registrata. LLM Apps è annunciata e non ancora disponibile.`,
   },
   {
     slug: 'viaggio',
