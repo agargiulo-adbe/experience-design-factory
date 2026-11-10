@@ -56,7 +56,7 @@ export const SCENE: Record<ScenaId, Scena> = {
     passi: [
       'Oggi trenitalia.com da una parte, Le Frecce e l’app dall’altra: due analisi separate.',
       'Customer Journey Analytics si appoggia sopra, e legge quello che Analytics raccoglie già.',
-      'Poi entra il CRM con CartaFreccia, quando sarà pronto.',
+      'Il CRM arricchisce con CartaFreccia, quando sarà pronto.',
       'Domani altre fonti, una alla volta, quando serviranno.',
       'Chi si identifica diventa un percorso solo: da Roma-Caserta alla prossima meta.',
       'Si misura due volte? No. La raccolta resta una sola, quella di Analytics.',

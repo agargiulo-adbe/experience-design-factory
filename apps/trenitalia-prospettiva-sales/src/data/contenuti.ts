@@ -752,7 +752,7 @@ export const TEMPI = {
   voci: [
     { k: 'Da subito', t: 'Governo della presenza negli assistenti AI', b: 'Misura continua di come compare il marchio e di quali fonti vengono citate.', dip: 'Impatto minimo sui sistemi' },
     { k: 'Da subito', t: 'Personalizzazione per\u00a0chi non è registrato', b: 'Customer Journey Analytics legge i dati Analytics di trenitalia.com, Le Frecce e app. Target attiva la personalizzazione su trenitalia.com.', dip: 'Si aggiunge Customer Journey Analytics' },
-    { k: 'Con il nuovo CRM', t: 'Personalizzazione per i clienti registrati', b: 'Il profilo resta nel CRM: qui si legge il comportamento di chi è già cliente.', dip: 'Dipende dal\u00a0nuovo CRM' }, // copy-audit-ignore V2 · «registrati» è un participio plurale, non un imperativo
+    { k: 'Con Customer Journey Analytics', t: 'Personalizzazione per i clienti registrati', b: 'I due Analytics uniti riconoscono chi è registrato. Il CRM arricchisce il profilo.', dip: 'Si arricchisce con il\u00a0nuovo CRM' }, // copy-audit-ignore V2 · «registrati» è un participio plurale, non un imperativo
     { k: 'Dopo, passo per passo', t: 'Un’esperienza unica per il cliente', b: 'Sito e sistema di vendita integrati: si propone e si compra nello stesso percorso.', dip: 'Dipende dai sistemi di vendita' },
     { k: 'Da approfondire insieme', t: 'Le agenzie', b: 'Campagne, digitale e venduto per agenzia nella stessa analisi.', dip: 'Serve l’esportazione del venduto per\u00a0agenzia' },
   ],
