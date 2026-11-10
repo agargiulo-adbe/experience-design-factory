@@ -468,3 +468,15 @@ riscritta su questo, e la verifica sull'istanza del cliente va fatta prima dell'
 ---
 
 ---
+
+### 42.11 Il giro del 9 novembre: la revisione del team, l'agenda concordata, e che cosa è venuto da Trenitalia
+
+Pubblicato il 9 nov 2026 (`1bfd653`, `0fcb92f`, `5cea9f3`). Percorso a **41 slide**, più 5 in `/approfondimenti/` fuori percorso e 6 in «In dieci minuti».
+
+- **Struttura.** Le slide tecniche sono uscite dai sette momenti (ora copertina + 7) e stanno in `messa-a-terra`, che assorbe il circolo in una slide; `/circolo/` rimanda. Dati, profilo, regia, arbitro e casi d'uso sono in `/approfondimenti/`, a un clic dai quattro componenti. Il motore di targeting è uscito dallo Scenario ed è la terza slide di `messa-a-terra`: schema + `HowItWorks`. ⚠️ Il panel del 30 ott lo aveva messo prima di Giulia per chi costruisce i target: va detto a voce in apertura.
+- **Agenda e barra.** Sette voci concordate col team (`data/agenda.ts`, `VOCI_NAV` in `data/chapters.ts`). `CHAPTERS` resta l'ordine delle pagine, con **CX Analytics subito dopo lo Scenario**; i numeri seguono le voci, quindi più pagine portano lo stesso numero (03: scenario e analytics · 04: persona, momenti, messa a terra). Lettura di «4 e 5 nel punto 4» **da confermare col committente**.
+- **Spenti con un flag, non cancellati** (`data/momenti.ts`): `DOMANDE_IN_SLIDE` e `CORPO_IN_SLIDE`. Il corpo dei momenti è la traccia di `/relatore/`.
+- **Da Trenitalia:** `/relatore/` generata dal registro (`data/slides.ts`, `data/relatore.ts`, pubblica: niente nomi né dati riservati), prodotto in tessera nei momenti, roadmap a binario su `slide-fasi`, affermazioni sul loro stato attuale riscritte come domande, sotto-passi circa dimezzati. **Non preso:** XD (886 usi di `.im-*`, dopo il 19), «tre soli contenitori», `DeckAudio` (licenza), `wallScale`. Titolo a quota fissa solo sopra i 1000px di altezza.
+- **Gate finali** (preview statico): `audit:deck` 156 combinazioni, 0 HARD · `audit:ink` pulito · `copy-audit` 0 HARD/0 SOFT · `audit:taglio` allineato · `audit:fonti` nessun link rotto · `audit:og` PASS · `audit:ritmo --sala` 83 SOFT.
+- **Trappole.** Una larghezza in percentuale dentro una colonna `auto` fa collassare il cerchio: si usa `vh` e `display: contents`. Un figlio assoluto che sporge gonfia `scrollWidth` (`c`, HARD): il riquadro del cerchio è più largo che alto. Il check `b` non vede una frase sotto i comandi del deck. Gli screenshot in `audit/<rotta>/` si aggiornano solo per le slide che falliscono: uno vecchio può sembrare un difetto. Prima di fidarsi di `DECK_URL` si controlla su quale porta è partito il preview.
+- **Aperti:** panel delta · dieci slide da proiettare · screenshot reali dal Solutions Consultant · parere dell'AE sul formato e revisione completa del responsabile FSI · «Progetto · entro novembre» sulla prima tappa, da rivedere ora che l'incontro è il 19 · «prospetto» in banca richiama il prospetto informativo.

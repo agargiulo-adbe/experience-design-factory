@@ -29,6 +29,9 @@ Sei commit da `5e98621` a `264b4e0`, tutti su `apps/trenitalia-prospettiva-sales
 - **CI rossa da `5e98621`** per due errori di typecheck: corretta in `98740de`.
 - ⚠️ Trappola del giro: `object-view-box` al posto di `transform: scale` sulle foto, perché lo scale è letto come scorrimento nascosto e testo su immagine (check `k` e `d`).
 
+### 2026-11-09 (notte) · Intesa «Adobe × Intesa Sanpaolo»: revisione del team e agenda a sette voci
+`1bfd653`, `0fcb92f`, `5cea9f3`. Capitolo «Come si mette a terra», approfondimenti fuori percorso, barra sull'agenda, CX Analytics dopo lo Scenario, `/relatore/`. Dettaglio in §42.11 (Parte 18). In rete senza panel.
+
 ### 2026-11-09 (sera) · Prospettiva Sales: le due call di revisione, e il deck cambia forma
 
 Dopo la review interna e l'allineamento con il responsabile dei canali digitali il percorso passa **da 38 a 25 slide**. ⚠️ Niente è committato, e il panel non copre questo stato.
