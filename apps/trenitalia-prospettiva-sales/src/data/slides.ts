@@ -62,8 +62,6 @@ export const PAGE_REGISTRY: PageEntry[] = [
       agenda: 'Non registrati, poi registrati' }, // copy-audit-ignore V2 · «registrati» è un participio plurale, non un imperativo
     { id: 'slide-prima', label: 'La personalizzazione comincia prima, e altrove',
       agenda: 'Il treno, per chi ha la crociera' },
-    { id: 'slide-collab', label: 'Dove si innesta la collaborazione sui dati',
-      agenda: 'Dove si innesta il dato condiviso' },
   ]},
   { slug: 'contenuto', label: 'Il contenuto a supporto dell’offerta personalizzata (05)', slides: [
     { id: 'slide-cover', label: 'Cover del capitolo' },

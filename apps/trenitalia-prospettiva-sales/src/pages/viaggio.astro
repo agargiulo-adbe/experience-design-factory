@@ -28,6 +28,9 @@ const SLUG = 'viaggio';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
+/* 10 nov 2026: la data collaboration si racconta dal pop-in, partendo dalla slide su Costa.
+   La slide resta qui, spenta: si riaccende cambiando questa riga. */
+const MOSTRA_COLLAB = false;
 
 ---
 <BaseLayout title={ch.title.it}>
@@ -144,6 +147,8 @@ const currentPath = Astro.url.pathname;
             esiste — verificato — e un caso preso da un altro settore apre la
             domanda «e nel nostro?» invece di chiuderla: si dice che è un'ipotesi
             e si chiude lì. */}
+        <p class="xd-chiusa tp-cede" data-reveal data-reveal-delay="0.2">Titolarità, base giuridica e&nbsp;contratto si definiscono prima di&nbsp;qualunque prova.</p>
+        <Fascia pezzi={SERVE.collaborazione} />
         <p class="xd-fonte" data-reveal data-reveal-delay="0.26">
           Il protocollo con Costa: <a href={SOURCES.costaTtg.url} target="_blank" rel="noopener noreferrer">{SOURCES.costaTtg.label}</a>.
         </p>
@@ -159,6 +164,7 @@ const currentPath = Astro.url.pathname;
          parte e non in fondo alla precedente perché lì, col blocco aperto, la
          slide usciva dalla safe-area a tutti e tre i viewport: il contratto dice
          di dividere, non di rimpicciolire. -->
+    {MOSTRA_COLLAB && (
     <Slide id="slide-collab" bg="primary" align="left">
       <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl" data-reveal>
@@ -195,6 +201,7 @@ const currentPath = Astro.url.pathname;
         <Fascia pezzi={SERVE.collaborazione} />
       </div>
     </Slide>
+    )}
 
   </DeckContainer>
 </BaseLayout>

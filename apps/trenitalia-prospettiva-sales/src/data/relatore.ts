@@ -111,10 +111,8 @@ export const NOTE: Record<string, NotaSlide[]> = {
       seChiedono: { d: 'E la geolocalizzazione?', r: 'Si apre la pagina /appendice/: una slide, solo perimetro e che cosa dimostra, senza numeri.' } },
     { id: 'slide-prima',
       dire: 'La personalizzazione comincia prima, e altrove. Chi ha prenotato una crociera da Genova sta ancora decidendo come arrivarci: conoscendolo, gli si fa una proposta vantaggiosa prima del confronto con Italo.',
-      fatto: 'Il protocollo con Costa Crociere presentato al TTG il 15 ottobre 2026: ha una data ed è loro.' },
-    { id: 'slide-collab',
-      dire: 'Si lavora in due sugli stessi viaggiatori senza scambiarsi i dati: si incrocia solo chi interessa a entrambe le aziende.',
-      seChiedono: { d: 'Dobbiamo consegnare la nostra base clienti?', r: 'No: gli elenchi si incrociano in un ambiente neutro, con controlli di accesso dichiarati da tutte e due le aziende. Titolarità e base giuridica si definiscono prima.' } },
+      fatto: 'Il protocollo con Costa Crociere presentato al TTG il 15 ottobre 2026: ha una data ed è loro.',
+      seChiedono: { d: 'Dobbiamo consegnare la nostra base clienti?', r: 'No: gli elenchi si incrociano in un ambiente neutro. Si apre la tessera Real-Time Collaboration. Titolarità, base giuridica e contratto si definiscono prima di qualunque prova.' } },
   ],
 
   contenuto: [
