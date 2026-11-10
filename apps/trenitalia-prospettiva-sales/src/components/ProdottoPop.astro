@@ -9,6 +9,9 @@
  *
  * Un elemento entra al passo `data-da` e, se c'è, esce dopo `data-a`. Niente testo
  * dentro un SVG: tutto HTML, così cresce con la radice e si legge su una parete.
+ * `data-audit-skip`: la stessa striscia sta su due slide di una pagina, quindi lo
+ * stesso pop-in compare due volte nel DOM. Sta dentro la slide perché fuori da
+ * quella attiva erediterebbe `visibility: hidden`. Non è prosa ripetuta a schermo.
  * I testi di ogni passo stanno in `data/pop.ts`; qui c'è solo la scena.
  */
 import { Image } from 'astro:assets';
@@ -24,7 +27,7 @@ const { scena } = Astro.props as Props;
 const s = SCENE[scena];
 const AGENZIE = Array.from({ length: 12 }, (_, i) => i);
 ---
-<dialog class="pp" data-pp data-deck-nochrome data-tot={s.passi.length} data-scena={scena} aria-label={`${s.prodotto}: ${s.caso}`}>
+<dialog class="pp" data-pp data-deck-nochrome data-audit-skip data-tot={s.passi.length} data-scena={scena} aria-label={`${s.prodotto}: ${s.caso}`}>
   <div class="pp-in">
     <header class="pp-testa">
       <div class="pp-testa-t">
