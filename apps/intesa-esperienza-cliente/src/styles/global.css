@@ -4489,3 +4489,42 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 [data-slide]:not([aria-hidden]) .im-div-bg::before { animation: im-div-avvicina 14s cubic-bezier(0.25, 0.1, 0.25, 1) both; }
 @keyframes im-div-avvicina { from { transform: scale(1); } to { transform: scale(1.06); } }
 @media (prefers-reduced-motion: reduce) { [data-slide]:not([aria-hidden]) .im-div-bg::before { animation: none; } }
+
+/* Innesto: la rotta delle campagne in tre fasi, e alla terza il riquadro
+   «Campagne» si spegne e indica dove sono andate. */
+.im-rotta { list-style: none; margin: clamp(0.8rem, 1.2vw, 2.4rem) 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; position: relative; }
+.im-rotta::before { content: ''; position: absolute; left: 1.1rem; right: 1.1rem; top: 1.05rem; height: 2px; background: rgba(255, 255, 255, 0.25); }
+.im-rotta li { position: relative; display: flex; gap: 0.7rem; align-items: flex-start; padding-right: 1.2rem; }
+.im-rotta-n { position: relative; z-index: 1; flex: none; display: grid; place-items: center; width: 2.1rem; height: 2.1rem; border-radius: 50%; background: #0f2e05; border: 2px solid #6cc04a; font-weight: 700; color: #ffffff; font-size: clamp(0.9rem, 0.85vw, 1.8rem); }
+.im-rotta li[data-f="3"] .im-rotta-n { background: #6cc04a; color: #0d2a03; }
+.im-rotta li > span:last-child { display: grid; gap: 0.1rem; padding-top: 0.15rem; }
+.im-rotta strong { font-size: clamp(1rem, 0.98vw, 2.1rem); color: #ffffff; }
+.im-rotta li > span:last-child > span { font-size: clamp(0.92rem, 0.86vw, 1.85rem); line-height: 1.35; color: #e3eedf; }
+#slide-innesto .im-inn-n:nth-child(3) { transition: opacity 0.6s, border-color 0.6s; }
+#slide-innesto .im-inn-n:nth-child(3)::after { content: '→ Journey Optimizer'; position: absolute; right: 0.8rem; bottom: 0.55rem; padding: 0.1rem 0.5rem; border-radius: 4px; background: #6cc04a; color: #0d2a03; font-weight: 700; font-size: clamp(0.78rem, 0.72vw, 1.55rem); opacity: 0; transition: opacity 0.6s 0.3s; }
+#slide-innesto:has(.im-rotta [data-f="3"][data-substep-active]) .im-inn-n:nth-child(3) { opacity: 0.55; border-style: dashed; }
+#slide-innesto:has(.im-rotta [data-f="3"][data-substep-active]) .im-inn-n:nth-child(3)::after { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { #slide-innesto .im-inn-n:nth-child(3), #slide-innesto .im-inn-n:nth-child(3)::after { transition: none; } }
+@media (max-height: 920px) {
+  #slide-innesto .im-ado-t { font-size: clamp(1.6rem, 2.1vw, 2.2rem); }
+  #slide-innesto .im-inn-n { min-height: 4.2rem; padding-block: 0.5rem; }
+  #slide-innesto .im-inn { grid-template-rows: auto 2rem auto 2rem auto; margin-top: 0.4rem; }
+  .im-rotta { margin-top: 0.5rem; }
+  .im-rotta li > span:last-child > span { display: none; }
+}
+@media (max-height: 920px) {
+  #slide-innesto .im-inn-b { padding-block: 0.45rem; gap: 0.05rem; }
+  #slide-innesto .im-inn-b .im-inn-d { font-size: 0.95rem; line-height: 1.3; }
+  #slide-innesto .im-inn-cdp { padding-block: 0; }
+  #slide-innesto .im-fonte-riga { margin-top: 0.2rem; }
+}
+/* Rotta: cerchi in fila sulla linea, testi sotto. Badge su una riga sua. */
+.im-rotta::before { top: 1.05rem; left: 1.05rem; right: calc(33.33% - 1.05rem); }
+.im-rotta li { flex-direction: column; gap: 0.45rem; }
+.im-rotta li > span:last-child { padding-top: 0; }
+#slide-innesto .im-inn-n:nth-child(3)::after { position: static; justify-self: start; margin-top: 0.3rem; }
+#slide-innesto .im-inn-n:nth-child(3):not(:has(~ *))::after { display: block; }
+#slide-innesto .im-inn-n:nth-child(3)::after { display: none; }
+#slide-innesto:has(.im-rotta [data-f="3"][data-substep-active]) .im-inn-n:nth-child(3)::after { display: block; }
+#slide-innesto:has(.im-rotta [data-f="3"][data-substep-active]) .im-inn-n:nth-child(3) .im-inn-d { display: none; }
+@media (max-height: 860px) { .im-rotta li { gap: 0.25rem; } }
