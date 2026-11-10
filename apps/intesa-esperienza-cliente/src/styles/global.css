@@ -2494,7 +2494,7 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 .im-div-bg { position: absolute; inset: 0; background: var(--color-paper); }
 .im-div-bg::before {
   content: ''; position: absolute; inset: 0 0 0 40%;
-  background-image: var(--foto); background-size: cover;
+  background-image: var(--foto); background-size: var(--misura, cover); background-repeat: no-repeat;
   background-position: var(--fuoco, center 38%);
   filter: brightness(1.08) saturate(1.04);
   -webkit-mask-image: linear-gradient(to right, transparent, #000 22% 100%);
@@ -4391,3 +4391,101 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 [data-slide] .im-due-t { font-size: clamp(1.45rem, 1.8vw, 3.8rem); }
 [data-slide] .im-orch-t { font-size: clamp(1.7rem, 2.1vw, 4.4rem); }
 [data-slide][id^="slide-ingaggio-"] :is(.im-ado-t, .im-h2) { font-size: clamp(1.6rem, 1.95vw, 4.1rem); }
+/* Momenti: la riga che apre la scena (quando · dove) è il primo appiglio della
+   storia, e si legge come una riga, non come un'etichetta tecnica. */
+[id^="slide-m-"] .im-mom-blocco { font-size: clamp(0.95rem, 0.9vw, 1.95rem); padding: 0.32rem 0.8rem; letter-spacing: 0.06em; }
+[id^="slide-m-"] .im-due-ora { font-size: clamp(1.25rem, 1.35vw, 2.85rem); font-weight: 600; letter-spacing: 0; text-transform: none; color: #ffffff; }
+
+/* ══ A capo armoniosi (10 nov 2026) ══
+   `pretty` evita la parola sola sull'ultima riga, ma valeva solo per i <p>:
+   etichette, card e voci dell'agenda (span a blocco, li, link) andavano a
+   capo come capitava. La proprietà si eredita: si dichiara sulla slide. I
+   titoli e le etichette brevi si bilanciano. */
+[data-slide] { text-wrap: pretty; }
+[data-slide] :is(h1, h2, h3, .im-cop-tit, .im-banca-q, .im-banca-t, .im-capg-r, .im-bv-t, .im-story-t, .im-mis-l, .im-rt-k, .im-rt-v strong) { text-wrap: balance; }
+/* Copertina: le colonne crescono con lo schermo come il testo, se no su
+   parete «2026» e «già» restano soli in riga. */
+.im-cop { width: min(100%, max(74rem, 64vw)); }
+.im-cop-sx { max-width: max(33rem, 29vw); }
+.im-cop-dx { width: min(100%, max(32rem, 28vw)); }
+.im-cop-tipo, .im-cop-occ { white-space: nowrap; }
+.im-cov-occ { white-space: nowrap; }
+
+/* Attribuzione: ogni riga dice da dove guarda, e la legenda dice che cosa misura la barra. */
+.im-att-k { display: inline-block; justify-self: start; margin-bottom: 0.3rem; padding: 0.15rem 0.6rem; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.35); font-size: clamp(0.8rem, 0.74vw, 1.6rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #e3eedf; }
+.im-att-k[data-cja] { border-color: #6cc04a; background: rgba(108, 192, 74, 0.18); color: #ffffff; }
+.im-att-leg { grid-column: 1 / -1; margin: 0.2rem 0 0; max-width: none; text-align: right; font-size: clamp(0.88rem, 0.8vw, 1.75rem); color: #c9d3c5; }
+
+/* Scenario: la frase che chiude la slide entra dopo il dato, e la metà che
+   conta si sottolinea con un tratto che si allarga. «Riduci movimento»: la
+   frase compare già evidenziata. */
+.im-seg-no { color: #c9d3c5; }
+.im-evid { background: linear-gradient(#6cc04a, #6cc04a) no-repeat 0 100% / 0% 0.16em; padding-bottom: 0.08em; color: #ffffff; font-weight: 700; transition: background-size 0.9s 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.im-seg-punto[data-substep-active] .im-evid { background-size: 100% 0.16em; }
+@media (prefers-reduced-motion: reduce) { .im-evid { transition: none; background-size: 100% 0.16em; } }
+
+/* Il ritratto di Giulia è verticale: in una colonna larga, a riempimento, il
+   volto si tagliava (schermi 21:9). Si adatta all'altezza e resta intero; il
+   fondo chiaro della foto si fonde col foglio. */
+@media (min-aspect-ratio: 16/10) { #slide-cover .im-div-bg[data-ritratto]::before {
+  --misura: auto 100%; --fuoco: right center;
+  -webkit-mask-image: linear-gradient(to right, transparent calc(60vw - 80vh), #000 calc(60vw - 80vh + 14vh));
+          mask-image: linear-gradient(to right, transparent calc(60vw - 80vh), #000 calc(60vw - 80vh + 14vh));
+} }
+/* Momenti: i mockup riempiono la colonna di destra invece di fermarsi a
+   26rem; restano entro l'altezza della banda, dove la misura li ferma. */
+@media (min-height: 941px) and (max-width: 2600px) {
+  .im-due-mock .im-cli { max-width: min(100%, 30rem); }
+  .im-due-mock .im-cli--sito, .im-due-mock .im-cli--filiale, .im-due-mock .im-ado { max-width: min(100%, 38rem); width: 100%; }
+}
+@media (min-height: 941px) and (min-width: 1401px) and (max-width: 2600px) {
+  .im-due-mock .im-cli { max-width: min(100%, 32rem); }
+  .im-due-mock .im-cli--sito, .im-due-mock .im-cli--filiale, .im-due-mock .im-ado { max-width: min(100%, 42rem); }
+}
+
+/* Attribuzione: le due etichette hanno la stessa forma e stanno su una riga;
+   la colonna dei testi è larga abbastanza da non spezzare le descrizioni. */
+.im-att { --att-e: clamp(15rem, 18vw, 34rem); }
+.im-att-k { display: block; width: fit-content; white-space: nowrap; text-transform: none; letter-spacing: 0.01em; font-size: clamp(0.88rem, 0.82vw, 1.75rem); padding: 0.2rem 0.65rem; margin-bottom: 0.4rem; }
+.im-att-e { align-content: center; min-height: 100%; }
+.im-att-d { text-wrap: balance; }
+@media (max-width: 1500px) { .im-att { --att-e: clamp(15rem, 22vw, 20rem); } .im-att-k { white-space: normal; } }
+.im-att-d { text-wrap: pretty; }
+.im-att-leg { text-align: left; padding-left: calc(var(--att-e) + 1.5rem); }
+.im-att-plus { max-width: none; }
+[data-slide] .im-att-leg { max-width: none; width: auto; }
+/* Ritorno: «E Giulia, ora cliente» e il testo sulla stessa linea, centrati
+   in altezza; il testo usa tutta la larghezza del riquadro. */
+.im-rt-dopo { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 0 1.4rem; padding: 0.8rem 1.2rem; }
+[data-slide] .im-rt-dopo .im-rt-dv { max-width: none; text-wrap: pretty; }
+.im-rt-dk { white-space: nowrap; }
+/* Evidenziatore: la fascia si stende dietro la frase, poi un alone pulsa tre
+   volte e si ferma. Inchiostro scuro sulla fascia chiara per il contrasto. */
+.im-evid {
+  padding: 0.04em 0.22em; margin: 0 -0.05em; border-radius: 0.18em;
+  box-decoration-break: clone; -webkit-box-decoration-break: clone;
+  background: linear-gradient(#9fe07a, #9fe07a) no-repeat 0 0 / 0% 100%;
+  color: #ffffff;
+  transition: background-size 0.8s 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.3s 0.6s;
+}
+.im-seg-punto[data-substep-active] .im-evid {
+  background-size: 100% 100%; color: #0d2a03;
+  animation: im-evid-pulsa 1.4s 1.3s ease-in-out 3;
+}
+@keyframes im-evid-pulsa {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(159, 224, 122, 0); }
+  50% { box-shadow: 0 0 0 0.35em rgba(159, 224, 122, 0.35), 0 0 1.4em 0.3em rgba(159, 224, 122, 0.45); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .im-evid { transition: none; background-size: 100% 100%; color: #0d2a03; }
+  .im-seg-punto[data-substep-active] .im-evid { animation: none; }
+}
+.im-evid { white-space: nowrap; }
+/* Copertine dei capitoli: l'immagine si avvicina piano quando la slide è
+   attiva (6% in 14 s) e poi si ferma. Nessun loop; con «Riduci movimento»
+   resta ferma. */
+.im-div-bg { overflow: hidden; }
+.im-div-bg::before { transform-origin: 60% 45%; will-change: transform; }
+[data-slide]:not([aria-hidden]) .im-div-bg::before { animation: im-div-avvicina 14s cubic-bezier(0.25, 0.1, 0.25, 1) both; }
+@keyframes im-div-avvicina { from { transform: scale(1); } to { transform: scale(1.06); } }
+@media (prefers-reduced-motion: reduce) { [data-slide]:not([aria-hidden]) .im-div-bg::before { animation: none; } }
