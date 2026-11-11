@@ -5,6 +5,8 @@
 
 ## 11. Change log recente
 
+- **2026-11-11** · backlog: esce il P0 «la stanza Intesa del 5 novembre non è registrata» — il 5 è stato annullato dal cliente e l'incontro fissato al 19 (registro d'account, 3 nov); i P0 su «Dove ci innestiamo» e sull'invito prendono la data del 19.
+
 ### 2026-11-11 (tarda mattina) · Storia di Intesa: dopo il panel, copia, agenda e Prossimi passi
 
 Otto commit dopo il secondo giro di panel, tutti **pubblicati**: `f9ff00a`, `ea3c77f`, `1fc829d`, `bc2a978`, `2e3dd73` (più i docs `c483850`). In sintesi: la lettura «prima che lasci l'email» con i sei canali; «Accanto» e «nome» tolti come gergo; Real-Time CDP uniformato; il passaggio Analytics di nuovo fuori percorso (scelta dell'owner del 10, ribaltata per errore dal giro del panel); **Prossimi passi da quattro slide a due**; il feedback del team sull'innesto (sistemi della banca non più nominati) e su m-06; **titolo in due livelli e agenda a sei voci** con gli stessi nomi in barra, copertine e `<title>`; i P1 di fatto rimasti dal panel (dato Nomisma, Projects, 12 ore, consenso via email). Gate su `2e3dd73`: `audit:deck` 177 righe 0 HARD, `copy-audit` 0 HARD, `audit:ink` pulito, `audit:taglio` allineato, `audit:og` PASS, `astro check` 0. Dettaglio in §42.14 (Parte 19). ⚠️ Non coperto dal panel: P0 in testa alla Parte 2.
