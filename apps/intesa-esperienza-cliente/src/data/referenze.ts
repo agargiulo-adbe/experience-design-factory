@@ -20,47 +20,6 @@ export const FONTI = {
   creditAgricole: 'https://business.adobe.com/uk/customer-success-stories/credit-agricole-italia.html',
 };
 
-/* La riga sotto il titolo di TSB, in un posto solo perché la rendono
-   due pagine (percorso intero e taglio corto).
-   ⚠️ Diceva «l'unica referenza pubblica in cui Offer Decisioning è
-   nominato»: falso — la pagina di U.S. Bank nomina «the offer decisioning
-   capability of Adobe Journey Optimizer». Corretto il 30 ott 2026. */
-export const TSB_SUB = {
-  it: 'Prima banca britannica su Experience Platform. Una pratica di mutuo lasciata a metà in app, ripresa in tempo reale.',
-  en: 'The first UK bank on Experience Platform. A mortgage application left half-done in the app, resumed in real time.',
-};
-/* Il «prima», perché una referenza senza il prima non pesa.
-   ⚠️ Diceva «Il prima: una grande banca retail con il 91% dei prodotti già
-   acquistati sui canali digitali»: smentito alla fonte (fact-check, 11 nov
-   2026). Il 91% è lo stato di OGGI («Today, more than 91% of products…»),
-   il prima è solo la latenza di nove giorni, e «grande banca» la pagina non
-   lo dice. Riletta l'11 nov 2026.
-   `breve` è per il taglio «In dieci minuti»: stesso oggetto, un campo
-   accanto (regola `taglio-corto-stessa-fonte`). */
-export const TSB_PRIMA = {
-  it: 'Il prima: un dato che arrivava in nove giorni. Oggi oltre il 91% dei prodotti si compra sui canali digitali. Da voi il mutuo si chiude in filiale: per questo l’imbuto conta gli appuntamenti.',
-  en: 'The before: data that arrived in nine days. Today over 91% of products are bought on digital channels. At your bank the mortgage closes in branch: that is why the funnel also counts appointments.',
-  breve: {
-    it: 'Il prima: un dato che arrivava in nove giorni. Oggi oltre il 91% è digitale; da voi il mutuo si chiude in filiale.',
-    en: 'The before: data that arrived in nine days. The 91% is today’s; at your bank the mortgage closes in branch.',
-  },
-};
-/* ⚠️ «Prima fase in produzione in meno di sei mesi, su canali digitali e
-   di filiale»: la frase dei sei mesi sulla pagina non parla di filiale
-   (fact-check, 11 nov 2026). Il pezzo si toglie da qui. */
-export const CA_PRIMA = {
-  it: 'Oltre 150 percorsi su acquisizione, ingaggio e retention, con Journey Optimizer, Real-Time CDP, Customer Journey Analytics, Target e Workfront. Prima fase in produzione in meno di sei mesi.',
-  en: 'Over 150 journeys across acquisition, engagement and retention, with Journey Optimizer, Real-Time CDP, Customer Journey Analytics, Target and Workfront. First phase live in under six months.',
-};
-/* Crédit Agricole Italia, le cifre con la loro cornice. ⚠️ Il +15% NON
-   viene da percorsi di filiale: la pagina dice «particularly for
-   self-service offers triggered by real-time behaviour», con l'esempio
-   della rateizzazione in app dopo un pagamento con carta. Base e periodo
-   non sono pubblicati, e si dice. Riletta l'11 nov 2026. */
-export const CA_CIFRE = {
-  it: '+15% di conversioni al primo acquisto, soprattutto sulle offerte self-service attivate dal comportamento in tempo reale, e +20% di efficacia delle campagne di cross-sell. Base e periodo non pubblicati.',
-  en: '+15% first-purchase conversions, particularly on self-service offers triggered by real-time behaviour, and +20% cross-sell campaign effectiveness. Baseline and period not published.',
-};
 /* La cornice delle referenze, in un posto solo. ⚠️ Diceva «i numeri sono
    quelli pubblicati da loro»: sono casi pubblicati da Adobe, con i
    portavoce delle banche citati (fact-check, 11 nov 2026). */
@@ -85,6 +44,120 @@ export const CIFRE_TSB = [
   { n: '91%', l: { it: 'dei prodotti, oggi, si compra sui canali digitali', en: 'of products are bought digitally today' },
     lBreve: { it: 'dei prodotti, oggi, comprati sui canali digitali', en: 'of products bought digitally today' } },
 ];
+
+/* Una riga di CIFRE_TSB nella forma di un riquadro del caso: le cifre di
+   TSB restano in un posto solo. */
+function CIFRE_TSB_RIGA(i: number) {
+  const c = CIFRE_TSB[i] as { n: string; l: L; lBreve?: L };
+  return { n: c.n, l: c.l, lBreve: c.lBreve };
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   I TRE CASI, UNA SLIDE CIASCUNO, sulla stessa grammatica (11 nov 2026):
+   titolo col risultato in accento, il PRIMA e l'OGGI in grande, una cifra
+   sotto la riga, due cifre a riquadro, una fascia sul «come», la fonte.
+   La referenza è la slide Santander del deck Adobe; la pelle resta quella
+   di Intesa. Il componente è `components/Caso.astro`, e lo usano sia il
+   percorso intero sia il taglio «In dieci minuti»: stesso oggetto, la
+   versione corta è un campo accanto (`lBreve`, `ponteBreve`).
+
+   ⚠️ Qui sono confluiti TSB_SUB, TSB_PRIMA, CA_PRIMA e CA_CIFRE, con le
+   correzioni del fact-check dell'11 nov 2026 che portavano:
+   · TSB: il 91% è lo stato di OGGI, il prima è solo la latenza di nove
+     giorni, e «grande banca» la pagina non lo dice;
+   · TSB: il +39% è su clienti ESISTENTI e senza base: «base non
+     pubblicata» resta accanto alla cifra, anche nel taglio corto;
+   · Crédit Agricole: il +15% non viene da percorsi di filiale ma
+     «particularly for self-service offers triggered by real-time
+     behaviour»; base e periodo non pubblicati, e si dice accanto;
+   · Crédit Agricole: la frase dei sei mesi non parla di filiale.
+   Santander, letta l'11 nov 2026 sulla pagina BR: «antes disparadas
+   apenas após três dias, agora são ativadas em até 15 minutos» (campagne
+   di abbandono), «aumento de 600% na conversão», «+100 milhões de
+   perfis», «2,3 vezes mais conversão» delle personalizzate sulle
+   generiche, CoE «no início de 2025» per la governance globale, e
+   «ecossistema comum entre países». ⚠️ La riga «competenze costruite
+   dentro la banca» della slide di riferimento NON è sulla pagina: fuori.
+   ══════════════════════════════════════════════════════════════════════ */
+type L = { it: string; en: string };
+export interface Caso {
+  slug: string; nome: string;
+  occ: L;
+  titolo: { pre: L; accento: L };
+  hero: { occ: L; prima?: { n: L }; oggi: { k: L; n: L }; l?: L };
+  metrica: { n: string; l: L; lBreve?: L };
+  nota?: L;
+  riquadri: { n: string; l: L; lBreve?: L }[];
+  fascia: { occ: L; testo: L; icona: 'riprende' | 'rete' | 'strati' };
+  ponte?: L; ponteBreve?: L;
+  fonte: { url: string; nome: string };
+}
+
+export const CASI: Record<'tsb' | 'santander' | 'creditAgricole', Caso> = {
+  tsb: {
+    slug: 'tsb', nome: 'TSB',
+    occ: { it: 'Un caso britannico', en: 'A UK case' },
+    titolo: { pre: { it: 'TSB:', en: 'TSB:' }, accento: { it: 'il dato in meno di 24 ore', en: 'data in under 24 hours' } },
+    hero: {
+      occ: { it: 'La latenza del dato', en: 'Data latency' },
+      prima: { n: { it: '9 giorni', en: '9 days' } },
+      oggi: { k: { it: 'Oggi', en: 'Today' }, n: { it: '<24 ore', en: '<24 hours' } },
+    },
+    metrica: CIFRE_TSB_RIGA(1),
+    riquadri: [CIFRE_TSB_RIGA(2), CIFRE_TSB_RIGA(3)],
+    fascia: {
+      occ: { it: 'Prima banca britannica su Experience Platform', en: 'The first UK bank on Experience Platform' },
+      testo: { it: 'Una pratica di mutuo lasciata a metà in app, ripresa in tempo reale', en: 'A mortgage application left half-done in the app, resumed in real time' },
+      icona: 'riprende',
+    },
+    ponte: { it: 'Nessuna delle tre è una banca come la vostra. Da voi il mutuo si chiude in filiale: per questo l’imbuto conta anche gli appuntamenti.', en: 'None of the three is a bank like yours. At your bank the mortgage closes in branch: that is why the funnel also counts appointments.' },
+    ponteBreve: { it: 'Da voi il mutuo si chiude in filiale: l’imbuto conta anche gli appuntamenti.', en: 'At your bank the mortgage closes in branch: the funnel also counts appointments.' },
+    fonte: { url: FONTI.tsb, nome: 'business.adobe.com · TSB' },
+  },
+  santander: {
+    slug: 'santander', nome: 'Santander Brasil',
+    occ: { it: 'Un caso internazionale · Gruppo Santander', en: 'An international case · Santander Group' },
+    titolo: { pre: { it: 'Santander Brasil:', en: 'Santander Brasil:' }, accento: { it: 'reagire entro 15 minuti', en: 'reacting within 15 minutes' } },
+    hero: {
+      occ: { it: 'Le campagne per chi abbandona a metà', en: 'Campaigns for people who drop out halfway' },
+      prima: { n: { it: '3 giorni', en: '3 days' } },
+      oggi: { k: { it: 'Oggi, entro', en: 'Today, within' }, n: { it: '15 minuti', en: '15 minutes' } },
+    },
+    metrica: { n: '+600%', l: { it: 'conversioni su queste campagne', en: 'conversions on these campaigns' } },
+    riquadri: [
+      { n: '100 mln+', l: { it: 'profili cliente in una vista unica', en: 'customer profiles in a single view' } },
+      { n: '2,3x', l: { it: 'conversione delle campagne personalizzate sulle generiche', en: 'conversion of personalized campaigns over generic ones' } },
+    ],
+    fascia: {
+      occ: { it: 'Dal 2025 · Center of Excellence', en: 'Since 2025 · Center of Excellence' },
+      testo: { it: 'Governance globale dei dati · un ecosistema comune fra i Paesi del gruppo', en: 'Global data governance · one ecosystem shared across the group’s countries' },
+      icona: 'rete',
+    },
+    fonte: { url: FONTI.santander, nome: 'business.adobe.com · Santander' },
+  },
+  creditAgricole: {
+    slug: 'credit-agricole', nome: 'Crédit Agricole Italia',
+    occ: { it: 'Un caso italiano · Gruppo Crédit Agricole', en: 'An Italian case · Crédit Agricole Group' },
+    titolo: { pre: { it: 'Crédit Agricole Italia:', en: 'Crédit Agricole Italia:' }, accento: { it: '+15% al primo acquisto', en: '+15% on first purchase' } },
+    hero: {
+      occ: { it: 'Le offerte attivate dal comportamento in tempo reale', en: 'Offers triggered by real-time behaviour' },
+      oggi: { k: { it: 'Conversioni', en: 'Conversions' }, n: { it: '+15%', en: '+15%' } },
+      l: { it: 'al primo acquisto, soprattutto sulle offerte self-service', en: 'on first purchase, particularly on self-service offers' },
+    },
+    metrica: { n: '+20%', l: { it: 'efficacia delle campagne di cross-sell', en: 'cross-sell campaign effectiveness' } },
+    nota: { it: 'Base e periodo non pubblicati.', en: 'Baseline and period not published.' },
+    riquadri: [
+      { n: '150+', l: { it: 'percorsi su acquisizione, ingaggio e retention', en: 'journeys across acquisition, engagement and retention' } },
+      { n: '<6 mesi', l: { it: 'alla prima fase in produzione', en: 'to the first phase in production' } },
+    ],
+    fascia: {
+      occ: { it: 'Cinque prodotti Adobe', en: 'Five Adobe products' },
+      testo: { it: 'Journey Optimizer · Real-Time CDP · Customer Journey Analytics · Target · Workfront', en: 'Journey Optimizer · Real-Time CDP · Customer Journey Analytics · Target · Workfront' },
+      icona: 'strati',
+    },
+    fonte: { url: FONTI.creditAgricole, nome: 'business.adobe.com · Crédit Agricole Italia' },
+  },
+};
 
 /* Le misure di ACQUISIZIONE, e che cosa se ne sa oggi. L'ask del deck sta
    qui, in un posto solo: due versioni della richiesta sono il modo più

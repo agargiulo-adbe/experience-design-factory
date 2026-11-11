@@ -32,7 +32,8 @@ import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { MOMENTI, DOMANDE_IN_SLIDE, CORPO_IN_SLIDE } from '../data/momenti';
-import { FONTI, CIFRE_TSB, MISURE, ASK, SEGUITO, TSB_SUB, TSB_PRIMA } from '../data/referenze';
+import { MISURE, ASK, SEGUITO, CASI } from '../data/referenze';
+import Caso from '../components/Caso.astro';
 import { TITOLO, CONFINE, OGGI, ACCANTO, TAVOLO, IPOTESI, WEB_ANALYTICS } from '../data/innesto';
 import { TITOLO_INCONTRO } from '../data/agenda';
 import '../styles/innesto.css';
@@ -147,28 +148,10 @@ const M = MOMENTI[2];
       </div>
     </Slide>
 
-    <Slide id="slide-prova" bg="primary" align="left">
-      <div class="im-sl" data-reveal>
-        <div class="im-sl-head">
-          <p class="im-n">TSB</p>
-          <T as="h2" class="im-h2" it="TSB porta il dato da 9 giorni a meno di 24 ore" en="TSB cut data latency from 9 days to under 24 hours" />
-          <T as="p" class="im-sub" it={TSB_SUB.it} en={TSB_SUB.en} />
-        </div>
-        <div class="im-cifre" data-stagger>
-          {CIFRE_TSB.map((c) => (
-            <div class="im-cifra">
-              <p class="im-cifra-n" data-display>{c.n}</p>
-              <T as="p" class="im-cifra-l" it={c.lBreve?.it ?? c.l.it} en={c.lBreve?.en ?? c.l.en} />
-            </div>
-          ))}
-        </div>
-        <T as="p" class="im-fonte" it={TSB_PRIMA.breve.it} en={TSB_PRIMA.breve.en} data-reveal data-reveal-delay="0.25" />
-        <p class="im-fonte" data-reveal data-reveal-delay="0.3">
-          <span data-lang-it>Fonte: </span><span data-lang-en>Source: </span>
-          <a href={FONTI.tsb} target="_blank" rel="noopener">business.adobe.com · TSB</a>
-          <span data-lang-it> · verificata l’11 novembre 2026</span><span data-lang-en> · checked 11 November 2026</span>
-        </p>
-      </div>
+    {/* La prova: lo stesso caso del percorso intero, stesso componente e
+        stesso oggetto, con i campi corti accanto. */}
+    <Slide id="slide-prova" bg="secondary" align="left">
+      <Caso caso={CASI.tsb} breve />
     </Slide>
 
     {/* ACCANTO — dall'innesto del percorso intero, ridotto alla posizione su cui

@@ -1,0 +1,113 @@
+---
+/**
+ * Caso — una banca che lo fa già, in una slide.
+ *
+ * La grammatica viene dalla slide Santander del deck Adobe (11 nov 2026),
+ * scelta come referenza principale del capitolo: il risultato nel titolo,
+ * in accento; il PRIMA e l'OGGI in grande, perché una referenza senza il
+ * prima non pesa; una cifra sotto la riga; due cifre a riquadro; una
+ * fascia che dice il «come»; la fonte col link.
+ *
+ * ⚠️ La forma è quella della referenza, la PELLE è di Intesa: verde di
+ * sistema al posto del rosso Adobe, Open Sans, gli stessi inchiostri del
+ * resto del deck. Un artefatto, un design system (CLAUDE.md).
+ * ⚠️ Vive su `bg="secondary"`, superficie CHIARA: gli inchiostri sono
+ * espliciti e pieni, misurati da `audit:ink`.
+ *
+ * `breve`: il taglio «In dieci minuti» usa lo stesso oggetto con i campi
+ * corti accanto (`lBreve`, `ponteBreve`): titoli, numeri e ordine restano
+ * fisicamente gli stessi.
+ */
+import T from '@edf/core/blocks/i18n/T.astro';
+import MarchioRef from './MarchioRef.astro';
+import type { Caso } from '../data/referenze';
+
+interface Props { caso: Caso; breve?: boolean }
+const { caso: c, breve = false } = Astro.props;
+const l = (x: { l: { it: string; en: string }; lBreve?: { it: string; en: string } }) => (breve && x.lBreve) || x.l;
+const ponte = breve ? (c.ponteBreve ?? c.ponte) : c.ponte;
+---
+<div class="im-caso" data-reveal>
+  <header class="im-caso-testa">
+    <div>
+      <T as="p" class="im-caso-occ" it={c.occ.it} en={c.occ.en} />
+      <h2 class="im-caso-t">
+        <span data-lang-it>{c.titolo.pre.it} <em>{c.titolo.accento.it}</em></span>
+        <span data-lang-en>{c.titolo.pre.en} <em>{c.titolo.accento.en}</em></span>
+      </h2>
+    </div>
+    <p class="im-caso-marchio"><MarchioRef slug={c.slug} nome={c.nome} /></p>
+  </header>
+
+  <section class="im-caso-hero" data-stagger>
+    <T as="p" class="im-caso-hocc" it={c.hero.occ.it} en={c.hero.occ.en} />
+    <div class="im-caso-pa">
+      {c.hero.prima && (
+        <>
+          <T as="p" class="im-caso-k" it="Prima" en="Before" />
+          <T as="p" class="im-caso-prima" it={c.hero.prima.n.it} en={c.hero.prima.n.en} data-display />
+        </>
+      )}
+      <T as="p" class="im-caso-k im-caso-k--oggi" it={c.hero.oggi.k.it} en={c.hero.oggi.k.en} />
+      <T as="p" class="im-caso-oggi" it={c.hero.oggi.n.it} en={c.hero.oggi.n.en} data-display />
+      {c.hero.l && <T as="p" class="im-caso-hl" it={c.hero.l.it} en={c.hero.l.en} />}
+    </div>
+    <div class="im-caso-met">
+      <p class="im-caso-met-n" data-display>{c.metrica.n}</p>
+      <div>
+        <T as="p" class="im-caso-met-l" it={l(c.metrica).it} en={l(c.metrica).en} />
+        {c.nota && <T as="p" class="im-caso-nota" it={c.nota.it} en={c.nota.en} />}
+      </div>
+    </div>
+  </section>
+
+  <ul class="im-caso-riq" role="list" data-stagger>
+    {c.riquadri.map((r, i) => (
+      <li class:list={['im-caso-r', i === 0 ? 'im-caso-r--marchio' : 'im-caso-r--notte']}>
+        <p class="im-caso-r-n" data-display>{r.n}</p>
+        <T as="p" class="im-caso-r-l" it={l(r).it} en={l(r).en} />
+      </li>
+    ))}
+  </ul>
+
+  <section class="im-caso-fascia">
+    <svg class="im-caso-ico" viewBox="0 0 64 64" aria-hidden="true">
+      {c.fascia.icona === 'rete' && (
+        <g>
+          <circle cx="32" cy="32" r="12" class="pieno" />
+          <path d="M27 31.5l3.5 3.5 6.5-7" class="su-pieno" />
+          <path d="M23 23l-9-9M41 23l9-9M23 41l-9 9M41 41l9 9M32 44v10" />
+          <circle cx="11" cy="11" r="4" /><circle cx="53" cy="11" r="4" /><circle cx="11" cy="53" r="4" /><circle cx="53" cy="53" r="4" />
+        </g>
+      )}
+      {c.fascia.icona === 'riprende' && (
+        <g>
+          <path d="M50 32a18 18 0 1 1-6-13.4" />
+          <path d="M45 9v10h-10" />
+          <circle cx="32" cy="32" r="7" class="pieno" />
+        </g>
+      )}
+      {c.fascia.icona === 'strati' && (
+        <g>
+          <path d="M32 10l22 11-22 11-22-11z" class="pieno" />
+          <path d="M10 32l22 11 22-11" />
+          <path d="M10 43l22 11 22-11" />
+        </g>
+      )}
+    </svg>
+    <div>
+      <T as="p" class="im-caso-f-occ" it={c.fascia.occ.it} en={c.fascia.occ.en} />
+      <T as="p" class="im-caso-f-t" it={c.fascia.testo.it} en={c.fascia.testo.en} />
+    </div>
+  </section>
+
+  <footer class="im-caso-piede">
+    {ponte && <T as="p" class="im-caso-ponte" it={ponte.it} en={ponte.en} />}
+    <p class="im-caso-fonte">
+      <span data-lang-it>Fonte: </span><span data-lang-en>Source: </span>
+      <a href={c.fonte.url} target="_blank" rel="noopener">{c.fonte.nome}</a>
+      <span data-lang-it> · caso pubblico, verificato l’11 novembre 2026</span>
+      <span data-lang-en> · public case study, checked 11 November 2026</span>
+    </p>
+  </footer>
+</div>

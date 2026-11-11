@@ -22,19 +22,15 @@ import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 /* Le cifre vengono dalla FONTE UNICA: il taglio «In dieci minuti» legge
    gli stessi oggetti, e due copie a mano divergono. Misure e ask stanno
    nella stessa fonte ma si rendono in «Prossimi passi». */
-import { FONTI, CIFRE_TSB, TSB_SUB, TSB_PRIMA, CA_PRIMA, CA_CIFRE, REF_CORNICE } from '../data/referenze';
+import { CASI } from '../data/referenze';
 import fondo from '../assets/generated/cover-banche.webp';
-import fondoTsb from '../assets/generated/fondo-tsb.webp';
-import MarchioRef from '../components/MarchioRef.astro';
+import Caso from '../components/Caso.astro';
 
 const SLUG = 'risultati';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-const TSB = FONTI.tsb;
-const SAN = FONTI.santander;
-const CA = FONTI.creditAgricole;
 
 ---
 <BaseLayout title={ch.title.it}>
@@ -50,63 +46,22 @@ const CA = FONTI.creditAgricole;
         tIt="Tre banche che lo fanno già, con i numeri pubblici" tEn="Three banks already doing it, with public numbers" />
     </Slide>
 
-    <Slide id="slide-tsb" bg="inverse" align="left">
-      <div slot="backdrop" class="im-bg-doppia" style={`--bg: url('${fondoTsb.src}')`}></div>
-      <div class="im-sl" data-reveal>
-        <div class="im-sl-head">
-          <p class="im-sl-marchio"><MarchioRef slug="tsb" nome="TSB" /></p>
-          <T as="h2" class="im-h2" it="TSB porta il dato da 9 giorni a meno di 24 ore" en="TSB cut data latency from 9 days to under 24 hours" />
-          <T as="p" class="im-sub" it={TSB_SUB.it} en={TSB_SUB.en} />
-        </div>
-        <div class="im-cifre" data-stagger>
-          {CIFRE_TSB.map((c) => (
-            <div class="im-cifra">
-              <p class="im-cifra-n" data-display>{c.n}</p>
-              <T as="p" class="im-cifra-l" it={c.l.it} en={c.l.en} />
-            </div>
-          ))}
-        </div>
-        <T as="p" class="im-fonte-riga" it={TSB_PRIMA.it} en={TSB_PRIMA.en} data-reveal data-reveal-delay="0.25" />
-        <p class="im-fonte" data-reveal data-reveal-delay="0.3">
-          <span data-lang-it>Fonte: </span><span data-lang-en>Source: </span>
-          <a href={TSB} target="_blank" rel="noopener">business.adobe.com · TSB</a>
-          <span data-lang-it> · verificata l’11 novembre 2026</span><span data-lang-en> · checked 11 November 2026</span>
-        </p>
-      </div>
+    {/* LE TRE BANCHE, una slide ciascuna, sulla stessa grammatica
+        (components/Caso.astro): prima la britannica, poi la più grande,
+        per ultima l'italiana, la più vicina a chi è in sala. Erano due
+        slide, e la seconda teneva Crédit Agricole e Santander in due
+        riquadri di testo: due casi con cifre diverse che si leggevano
+        come uno. */}
+    <Slide id="slide-tsb" bg="secondary" align="left">
+      <Caso caso={CASI.tsb} />
     </Slide>
 
-    <Slide id="slide-italia" bg="inverse" align="left">
-      <div class="im-sl" data-reveal>
-        <div class="im-sl-head">
-          {/* Giro 3: era un <p> con dentro l'italiano, e in inglese usciva
-              «E VICINO A VOI» in mezzo a una pagina tradotta. Unico caso in
-              tutto il deck, e nessun conteggio lo vedeva: si è visto
-              guardando la slide nell'altra lingua. */}
-          <T as="p" class="im-n" it="Altre due banche" en="Two more banks" />
-          <T as="h2" class="im-h2" it="Crédit Agricole Italia alza le conversioni, Santander Brasil unifica i profili" en="Crédit Agricole Italia lifts conversions, Santander Brasil unifies profiles" />
-          <T as="p" class="im-sub" it={`Nessuna delle due è una banca come la vostra. ${REF_CORNICE.it}`} en={`Neither is a bank like yours. ${REF_CORNICE.en}`} />
-        </div>
-        <div class="im-ref" data-stagger>
-          <div class="im-ref-b">
-            <MarchioRef slug="credit-agricole" nome="Crédit Agricole Italia" />
-            <T as="p" class="im-ref-f" it={CA_CIFRE.it} en={CA_CIFRE.en} />
-            {/* Slide chiara: la classe di fonte dei fondi scuri qui dava 1,38:1 (audit:ink). */}
-            <T as="p" class="im-ref-f im-ref-f--prima" it={CA_PRIMA.it} en={CA_PRIMA.en} />
-          </div>
-          <div class="im-ref-b">
-            <MarchioRef slug="santander" nome="Santander Brasil" />
-            <T as="p" class="im-ref-f" it="Oltre 100 milioni di profili in una vista sola, con Real-Time CDP, Journey Optimizer e Customer Journey Analytics." en="Over 100 million profiles in a single view, with Real-Time CDP, Journey Optimizer and Customer Journey Analytics." />
-          </div>
-        </div>
-        <p class="im-fonte" data-reveal data-reveal-delay="0.3">
-          <span data-lang-it>Fonti: </span><span data-lang-en>Sources: </span>
-          <a href={CA} target="_blank" rel="noopener">business.adobe.com · Crédit Agricole Italia</a>
-          <span data-lang-it> · </span><span data-lang-en> · </span>
-          <a href={SAN} target="_blank" rel="noopener">business.adobe.com · Santander</a>
-          <span data-lang-it> · verificate l’11 novembre 2026</span>
-          <span data-lang-en> · checked 11 November 2026</span>
-        </p>
-      </div>
+    <Slide id="slide-santander" bg="secondary" align="left">
+      <Caso caso={CASI.santander} />
+    </Slide>
+
+    <Slide id="slide-credit-agricole" bg="secondary" align="left">
+      <Caso caso={CASI.creditAgricole} />
     </Slide>
 
     {/* ⚠️ QUI STAVANO «CHE COSA MISUREREMMO» E LA SLIDE-FIRMA, e sono

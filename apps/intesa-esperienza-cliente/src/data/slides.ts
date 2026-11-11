@@ -44,8 +44,9 @@ export const PAGE_REGISTRY: PageEntry[] = [
   ]},
   { slug: 'risultati', label: 'Tre banche che lo fanno già (05)', slides: [
     { id: 'slide-cover',   label: 'Cover: una banca che lo fa già' },
-    { id: 'slide-tsb',     label: 'TSB: le quattro cifre, con la fonte' },
-    { id: 'slide-italia',  label: 'Crédit Agricole Italia e Santander Brasil' },
+    { id: 'slide-tsb',             label: 'TSB: il dato in meno di 24 ore' },
+    { id: 'slide-santander',       label: 'Santander Brasil: reagire entro 15 minuti' },
+    { id: 'slide-credit-agricole', label: 'Crédit Agricole Italia: +15% al primo acquisto' },
   ]},
   { slug: 'prossimi-passi', label: 'La proposta e come si parte (06)', slides: [
     { id: 'slide-cover',  label: 'Cover: prossimi passi' },

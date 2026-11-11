@@ -63,8 +63,9 @@ export const NOTE: Record<string, Record<string, Nota>> = {
   },
   risultati: {
     'slide-cover': { dire: 'Si passa dal racconto a chi lo fa già.' },
-    'slide-tsb': { dire: 'La prima banca britannica su Experience Platform: le cifre sono sulla slide, con la fonte.' },
-    'slide-italia': { dire: 'Due banche, due misure diverse, con i numeri che hanno pubblicato.', attenzione: 'Non sono banche come la loro: dirlo prima.' },
+    'slide-tsb': { dire: 'La prima banca britannica su Experience Platform: il dato passa da nove giorni a meno di ventiquattro ore.', attenzione: 'Non sono banche come la vostra: dirlo prima, è scritto sotto. Il +39% è su clienti già di TSB.' },
+    'slide-santander': { dire: 'La più grande delle tre: le campagne per chi abbandona a metà partivano dopo tre giorni, ora entro quindici minuti. Sotto, come ci sono arrivati: un Center of Excellence dal 2025 e una governance dei dati comune ai Paesi del gruppo.', attenzione: 'Il +600% è sulle sole campagne di abbandono, non su tutte. Base non pubblicata.' },
+    'slide-credit-agricole': { dire: 'L’italiana, la più vicina a voi: +15% al primo acquisto, soprattutto sulle offerte self-service attivate dal comportamento in tempo reale.', attenzione: 'Base e periodo non pubblicati: è scritto in slide, dirlo. Il +15% non viene da percorsi di filiale.' },
   },
   'prossimi-passi': {
     'slide-cover': { dire: 'Si passa dalla storia alla prova.' },
