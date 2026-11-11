@@ -30,26 +30,37 @@ const USCITA = `${href(base, '/messa-a-terra')}#slide-innesto`;
    (motore, data lake, CRM) sono caselle «da confermare» finché il
    footprint non le chiude. Scrivere lo stack del cliente a memoria è
    il modo più rapido di perdere il seggio tecnico.
+   ⚠️ Panel dell'11 nov 2026: i sistemi della banca portano gli STESSI nomi
+   in innesto, mappa e integrazioni (glossario: motore di targeting · data
+   warehouse · core banking · CRM di filiale · CDP attuale · registro dei
+   consensi). La politica di contatto oggi sta nella CDP attuale, non nel
+   motore; il consenso ha il suo registro, che resta il sistema di record.
+   «Avete» porta nove voci e per questo si stende su due colonne.
    ══════════════════════════════════════════════════════════════════════ */
 const MAPPA = [
   { stato: 'avete', t: { it: 'Avete', en: 'You have' }, v: [
-    { n: 'Adobe Analytics', d: { it: 'la misura di sito e app · uso da confermare', en: 'site and app measurement · usage to confirm' } },
+    { n: 'Adobe Analytics', d: { it: 'la misura di sito e app', en: 'site and app measurement' } },
     { n: 'Adobe Experience Manager', d: { it: 'il sito, on-premise', en: 'the site, on-premise' } },
     { n: 'CRM di filiale', d: { it: 'lead, appuntamenti, pratiche', en: 'leads, appointments, applications' } },
-    { n: 'Motore di targeting', d: { it: 'score, audience, politica di contatto', en: 'scores, audiences, contact policy' } },
-    { n: 'Data lake e core', d: { it: 'eleggibilità, saldi, approvazioni', en: 'eligibility, balances, approvals' } },
+    { n: 'Motore di targeting', d: { it: 'target, propensione, score dei clienti', en: 'targets, propensity, customer scores' } },
+    { n: 'Data warehouse', d: { it: 'storico e attributi dei clienti', en: 'customer history and attributes' } },
+    { n: 'Core banking', d: { it: 'eleggibilità creditizia, saldi, approvazioni', en: 'credit eligibility, balances, approvals' } },
+    { n: 'CDP attuale', d: { it: 'la politica di contatto, da confermare', en: 'the contact policy, to confirm' } },
+    { n: 'Registro dei consensi', d: { it: 'consensi e preferenze', en: 'consents and preferences' } },
+    { n: 'Media pagato', d: { it: 'le piattaforme pubblicitarie', en: 'the advertising platforms' } },
   ] },
   { stato: 'nuovo', t: { it: 'Si aggiunge', en: 'Gets added' }, v: [
-    { n: 'Real-Time CDP', d: { it: 'profilo e consenso, su Experience Platform', en: 'profile and consent, on Experience Platform' } },
+    { n: 'Real-Time CDP', d: { it: 'il profilo, che riceve il consenso dal registro e lo applica', en: 'the profile, which receives consent from the register and applies it' } },
     { n: 'Journey Optimizer', d: { it: 'percorsi a evento, e l’arbitro (AI Decisioning)', en: 'event-driven journeys, and the arbiter (AI Decisioning)' } },
     { n: 'Customer Journey Analytics', d: { it: 'la misura unica, Analytics compreso', en: 'the one measurement, Analytics included' } },
     { n: 'Brand Visibility', d: { it: 'come comparite nelle risposte generate', en: 'how you show up in generated answers' } },
   ] },
   { stato: 'vostro', t: { it: 'Resta vostro', en: 'Stays yours' }, v: [
-    { n: 'Eleggibilità e approvazioni', d: { it: 'nel core, come oggi', en: 'in the core, as today' } },
-    { n: 'Target e audience', d: { it: 'nel motore, definiti da chi li definisce', en: 'in the engine, defined by whoever defines them' } },
-    { n: 'Politica di contatto', d: { it: 'regola vostra; l’arbitro la legge', en: 'your rule; the arbiter reads it' } },
-    { n: 'Sito, app, filiale', d: { it: 'i canali: AEM, l’app, la Rete', en: 'the channels: AEM, the app, the branch network' } },
+    { n: 'Eleggibilità creditizia', d: { it: 'nel core banking, come oggi', en: 'in core banking, as today' } },
+    { n: 'Target e propensione', d: { it: 'nel motore di targeting', en: 'in the targeting engine' } },
+    { n: 'Politica di contatto', d: { it: 'la regola di contatto resta vostra', en: 'the contact rule stays yours' } },
+    { n: 'Gestione del consenso', d: { it: 'cookie e preferenze: il registro resta il sistema di record', en: 'cookies and preferences: the register stays the system of record' } },
+    { n: 'I canali', d: { it: 'filiale, Filiale Digitale, app, sito, self', en: 'branch, Filiale Digitale, app, site, self-service' } },
   ] },
 ];
 
@@ -87,13 +98,13 @@ const PASSAGGIO: { stato: string; t: { it: string; en: string }; v: Voce[] }[] =
    numero che un CIO va a cercare e non trova vale meno di nessun numero. */
 const BV = [
   { strato: 'segnali', fig: 'grafo', t: { it: 'Dati di mercato', en: 'Market intelligence' },
-    d: { it: 'Chi viene citato accanto a voi, su ChatGPT, Perplexity, Copilot.', en: 'Who gets cited next to you, on ChatGPT, Perplexity, Copilot.' } },
+    d: { it: 'Chi viene citato accanto a voi, sugli assistenti che il servizio copre: l’elenco si fissa all’avvio.', en: 'Who gets cited next to you, on the assistants the service covers: the list is set at kick-off.' } },
   { strato: 'segnali', fig: 'serie', t: { it: 'Segnali di casa vostra', en: 'Brand-owned signals' },
-    d: { it: 'Il traffico degli agenti dai log del vostro CDN: serve l’inoltro dei log, da concordare con l’IT.', en: 'Agent traffic from your CDN logs: log forwarding is needed, to agree with IT.' } },
+    d: { it: 'Il traffico degli agenti dai log del vostro CDN: escono indirizzo della pagina, user agent, esito, referrer, orario; nessun dato personale.', en: 'Agent traffic from your CDN logs: page address, user agent, status, referrer and time go out; no personal data.' } },
   { strato: 'ottimizzazioni', fig: 'bordo', t: { it: 'Ottimizzazioni', en: 'Optimisations' },
-    d: { it: 'I correttivi vanno in rete al bordo del vostro CDN, dentro il vostro change management.', en: 'Fixes ship at the edge of your CDN, inside your change management.' } },
+    d: { it: 'I correttivi vanno in rete al bordo del vostro CDN (Akamai, Cloudflare, CloudFront, Fastly, Imperva), dentro il vostro change management.', en: 'Fixes ship at the edge of your CDN (Akamai, Cloudflare, CloudFront, Fastly, Imperva), inside your change management.' } },
   { strato: 'ottimizzazioni', fig: 'esito', t: { it: 'Esiti misurabili', en: 'Measurable outcomes' },
-    d: { it: 'Dalla citazione al traffico che arriva; la pratica aperta la misura CX Analytics.', en: 'From citation to the traffic that arrives; the opened application is measured by CX Analytics.' } },
+    d: { it: 'Sessioni da assistenti sul totale, per domanda, ogni settimana; e quante avviano una simulazione.', en: 'Sessions from assistants over total, per question, weekly; and how many start a simulation.' } },
 ];
 
 /* L'APPROFONDIMENTO SU «CONTENT FACTORY», dopo quello su farsi trovare.
@@ -105,12 +116,16 @@ const BV = [
    La fascia sotto è il punto per una banca, e viene dal value prop per i
    servizi finanziari di GenStudio letto su Field Readiness il 30 ott
    2026 — «scalable, compliant campaign content»: la conformità non è un
-   passaggio a valle, sta dentro la produzione. */
+   passaggio a valle, sta dentro la produzione.
+   ⚠️ Panel dell'11 nov 2026 (P0, smentito alla fonte): GenStudio controlla
+   marchio, regole di piattaforma e accessibilità, e i punteggi si
+   aggiornano MENTRE si modifica. Le informative restano nell'iter legale
+   della banca: «verificate contro le informative» era falso. */
 const CSC = [
   { fig: 'flusso', t: { it: 'Pianificare', en: 'Plan' },
     d: { it: 'Una campagna nasce con dentro le sue approvazioni.', en: 'A campaign is born with its approvals inside it.' } },
   { fig: 'varianti', t: { it: 'Produrre', en: 'Produce' },
-    d: { it: 'Dodici varianti da un brief solo, verificate prima dell’approvazione.', en: 'Twelve variants from one brief, checked before approval.' } },
+    d: { it: 'Dodici varianti da un brief solo, controllate sul marchio mentre si producono.', en: 'Twelve variants from one brief, checked against the brand as they are produced.' } },
   { fig: 'archivio', t: { it: 'Gestire', en: 'Manage' },
     d: { it: 'Si sa che cosa si può usare, dove e fino a quando.', en: 'You know what can be used, where and until when.' } },
   { fig: 'canali', t: { it: 'Attivare e misurare', en: 'Activate and measure' },
@@ -133,19 +148,21 @@ const CICLO = [
   { n: '1', ancora: 'slide-ingaggio-dato', fig: 'misura', t: { it: 'La misura', en: 'Measurement' },
     s: { it: 'Analisi omnicanale', en: 'Omnichannel analytics' },
     d: { it: 'Percorsi, funnel, coorti e attribuzione su dati a livello di evento, su tutti i canali.', en: 'Journeys, funnels, cohorts and attribution on event-level data, across every channel.' },
-    i: { it: 'Un solo dato per app, sito, contact center e filiale, per Controllo di Gestione e Advanced Analytics.', en: 'One dataset across app, site, contact centre and branch, for management control and advanced analytics.' } },
+    i: { it: 'Un solo dato per app, sito, Filiale Digitale e filiale, per Controllo di Gestione e Advanced Analytics.', en: 'One dataset across app, site, Filiale Digitale and branch, for management control and advanced analytics.' } },
   { n: '2', ancora: 'slide-ingaggio-profilo', fig: 'profilo', t: { it: 'Il profilo', en: 'The profile' },
     s: { it: 'Da audience a target', en: 'From audience to target' },
     d: { it: 'Identità, consenso e segmenti attivabili su ogni canale, su Experience Platform.', en: 'Identity, consent and segments activatable on every channel, on Experience Platform.' },
-    i: { it: 'Riceve dal data lake e dagli eventi digitali, ed espone audience e attributi. Gli score del vostro motore entrano in batch quando la persona è riconosciuta: su un prospect non esistono ancora.', en: 'Fed by the data lake and digital events, and exposes audiences and attributes. Your engine’s scores come in by batch once the person is recognised: on a prospect they do not exist yet.' } },
+    i: { it: 'Riceve dal data warehouse e dagli eventi digitali, ed espone audience e attributi. Gli score del motore di targeting entrano in batch quando la persona è cliente: su un prospect non esistono ancora.', en: 'Fed by the data warehouse and digital events, and exposes audiences and attributes. The targeting engine’s scores come in by batch once the person is a customer: on a prospect they do not exist yet.' } },
   { n: '3', ancora: 'slide-ingaggio-regia', fig: 'regia', t: { it: 'La regia', en: 'Orchestration' },
     s: { it: 'In tempo reale', en: 'In real time' },
     d: { it: 'Percorsi uno-a-uno su email, push, SMS, in-app e web, attivati da eventi, con consenso e regole di conformità.', en: 'One-to-one journeys over email, push, SMS, in-app and web, triggered by events, with consent and compliance rules.' },
     i: { it: 'Governa i canali digitali e passa segnali e proposte al CRM di filiale, che resta vostro.', en: 'Runs the digital channels and passes signals and proposals to the branch CRM, which stays yours.' } },
   { n: '4', ancora: 'slide-ingaggio-arbitro', fig: 'arbitro', t: { it: 'L’arbitro', en: 'The arbiter' },
     s: { it: 'L’ultimo strato decisionale', en: 'The last decision layer' },
-    d: { it: 'Regole, vincoli e priorità per scegliere la prossima esperienza migliore, ogni volta.', en: 'Rules, constraints and priorities to pick the next best experience, every time.' },
-    i: { it: 'Coesiste col motore di targeting: il motore produce score e audience, qui si arbitrano offerta e canale per ogni contatto.', en: 'It coexists with the targeting engine: the engine produces scores and audiences, here offer and channel are arbitrated per contact.' } },
+    d: { it: 'Regole e vincoli: per ogni contatto esce una proposta fra quelle ammesse.', en: 'Rules and constraints: for each contact one proposal goes out among those allowed.' },
+    /* Precedenza: frase canonica del panel dell'11 nov 2026, identica
+       nel pop-in di messa-a-terra e in prossimi-passi. Non parafrasare. */
+    i: { it: 'Sul prospect classifica l’arbitro, con le regole scritte insieme. Sul cliente la classifica resta del vostro motore, e l’arbitro applica canale, consenso e politica di contatto.', en: 'On the prospect the arbiter ranks, with the rules written together. On the customer the ranking stays with your engine, and the arbiter applies channel, consent and contact policy.' } },
 ];
 
 /* Ogni freccia porta un nome, una direzione e una modalità. Quella senza
@@ -157,12 +174,58 @@ const FRECCE = [
      il profilo (l'SDK su AEM on-premise è l'integrazione più grossa, e si
      dice) e il ritorno dalla filiale, senza il quale la misura si ferma
      alla porta dello sportello. */
-  { da: 'Sito e app', a: 'Experience Platform', d: { it: 'eventi in sessione via SDK: su AEM on-premise è l’integrazione da disegnare per prima', en: 'in-session events via SDK: on AEM on-premise the integration to design first' }, aperta: true },
-  { da: 'Adobe Analytics', a: 'Customer Journey Analytics', d: { it: 'gli eventi di sito e app, via connettore, per la misura', en: 'site and app events, via connector, for measurement' } },
-  { da: 'Data lake', a: 'Real-Time CDP', d: { it: 'score e attributi dei clienti, batch notturno, dalla fase 2', en: 'customer scores and attributes, nightly batch, from phase 2' } },
-  { da: 'Journey Optimizer', a: 'CRM di filiale', d: { it: 'lead, appuntamento e simulazione, API', en: 'lead, appointment and simulation, API' } },
+  { da: 'Sito e app', a: 'Experience Platform', d: { it: 'eventi in sessione via SDK: su AEM on-premise è la prima da disegnare', en: 'in-session events via SDK: on AEM on-premise, the first to design' }, aperta: true },
+  { da: 'Adobe Analytics', a: 'Customer Journey Analytics', d: { it: 'gli eventi di sito e app, via connettore', en: 'site and app events, via connector' } },
+  { da: 'Registro dei consensi', a: 'Real-Time CDP', d: { it: 'stato e data del consenso, in continuo', en: 'consent status and date, continuously' } },
+  { da: 'Journey Optimizer', a: 'CRM di filiale', d: { it: 'lead, appuntamento e simulazione, via API del CRM', en: 'lead, appointment and simulation, via the CRM’s API' } },
   { da: 'CRM di filiale', a: 'Profilo e misura', d: { it: 'appuntamento tenuto, pratica, delibera: il ritorno che chiude l’imbuto', en: 'appointment held, application, approval: the return that closes the funnel' } },
-  { da: 'Core banking', a: 'Arbitro', d: { it: 'eleggibilità: attributo precalcolato o chiamata sincrona, da capire con voi', en: 'eligibility: precomputed attribute or synchronous call, to work out with you' }, aperta: true },
+  { da: 'Core banking', a: 'Arbitro', d: { it: 'Eleggibilità: attributo precalcolato nel profilo, oppure passata dal vostro sistema nella richiesta di decisione', en: 'Eligibility: precomputed attribute in the profile, or passed by your system in the decision request' }, aperta: true },
+  { da: 'Real-Time CDP', a: 'Piattaforme pubblicitarie', d: { it: 'pubblico e soppressione di chi ha firmato · con il consenso di profilazione · giornaliero · da validare con il DPO', en: 'audience and suppression of those who signed · with profiling consent · daily · to validate with the DPO' }, aperta: true },
+  { da: 'Postazione Filiale Digitale', a: 'API di decisione', d: { it: 'la stessa decisione, chiesta dall’operatore', en: 'the same decision, requested by the agent' }, aperta: true },
+  { da: 'Data warehouse', a: 'Real-Time CDP', d: { it: 'attributi dei clienti, batch notturno', en: 'customer attributes, nightly batch' }, dopo: true },
+  { da: 'Motore di targeting', a: 'Arbitro', d: { it: 'score dei clienti, batch notturno', en: 'customer scores, nightly batch' }, dopo: true },
+];
+/* ⚠️ Panel dell'11 nov 2026: le frecce sono diventate dieci, e la forma è
+   rimasta (contenuto · verso · modo; le incerte tratteggiate). L'arbitro NON
+   chiama il core in sincrono: quando decide lavora su profilo, dataset e
+   contesto passati nella richiesta. Il media pagato passa da Real-Time CDP,
+   non da Journey Optimizer, che un canale social non ce l'ha. */
+
+/* Dove sta ogni dato, e i quattro punti della riga del CRM: il panel li ha
+   chiesti, e sulla slide delle frecce non entravano senza rimpicciolire il
+   tipo: stanno nelle due slide che la seguono. Le retention non si inventano: si fissano in fase 0. Fonti: regioni
+   di Experience Platform e campi dei log CDN di Brand Visibility, su
+   Experience League, lette l'11 nov 2026. */
+const DATI = [
+  { n: { it: 'Eventi di sito e app', en: 'Site and app events' },
+    dove: { it: 'In Experience Platform, nella regione europea', en: 'In Experience Platform, in the European region' },
+    tempo: { it: 'Retention per dataset, da fissare in fase 0', en: 'Retention per dataset, to set in phase 0' } },
+  { n: { it: 'Attributi e score dei clienti', en: 'Customer attributes and scores' },
+    dove: { it: 'Una copia nel profilo; il sistema di record resta vostro', en: 'A copy in the profile; the system of record stays yours' },
+    tempo: { it: 'Riscritti a ogni batch notturno', en: 'Rewritten at each nightly batch' } },
+  { n: { it: 'Consenso', en: 'Consent' },
+    dove: { it: 'Nel vostro registro; il profilo lo riceve e lo applica', en: 'In your register; the profile receives and applies it' },
+    tempo: { it: 'Segue il registro, revoche comprese', en: 'Follows the register, revocations included' } },
+  { n: { it: 'Documenti di chi non è cliente', en: 'Documents from non-customers' },
+    dove: { it: 'Nel vostro sistema di pratiche; esce solo l’evento «documento caricato»', en: 'In your applications system; only the “document uploaded” event goes out' },
+    tempo: { it: 'Le vostre regole, come oggi', en: 'Your rules, as today' } },
+  { n: { it: 'Log del CDN', en: 'CDN logs' },
+    dove: { it: 'A Brand Visibility vanno pagina, user agent, esito, referrer e orario: nessun dato personale', en: 'Brand Visibility gets page, user agent, status, referrer and time: no personal data' },
+    tempo: { it: 'Regione e retention da verificare con Adobe', en: 'Region and retention to verify with Adobe' } },
+];
+const CRM = [
+  { fig: 'canali', t: { it: 'Chi espone l’API', en: 'Who exposes the API' },
+    chi: { it: 'Il CRM di filiale', en: 'The branch CRM' },
+    d: { it: 'Quale servizio, lo si identifica con il vostro Group Technology.', en: 'Which service is identified with your Group Technology.' } },
+  { fig: 'grafo', t: { it: 'La chiave del lead', en: 'The lead key' },
+    chi: { it: 'Scritta all’appuntamento', en: 'Written at the appointment' },
+    d: { it: 'Il CRM scrive l’identificativo del lead, e il ritorno si riaggancia lì.', en: 'The CRM writes the lead ID, and the return hooks back onto it.' } },
+  { fig: 'archivio', t: { it: 'I lead già aperti', en: 'Leads already open' },
+    chi: { it: 'Deduplica', en: 'Deduplication' },
+    d: { it: 'Con quelli che esistono si disegna in fase 0.', en: 'Against existing ones, designed in phase 0.' } },
+  { fig: 'bordo', t: { it: 'Se la chiamata fallisce', en: 'If the call fails' },
+    chi: { it: 'Nessun invio', en: 'No send' },
+    d: { it: 'Senza conferma del lead la mail non parte.', en: 'Without lead confirmation the email does not go out.' } },
 ];
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -186,16 +249,16 @@ const CASI = [
     serve: { it: 'Un’identità nata da una visita anonima, un percorso verso il CRM di filiale e una misura unica fra digitale e sportello.', en: 'An identity that starts from an anonymous visit, a journey that hands lead and simulation to the branch CRM, and one measurement holding digital and counter together.' },
     pezzi: { it: 'A pezzi separati: il sito non sa chi è, la filiale ignora la simulazione, e nessuno dei due sa dell’altro.', en: 'With the pieces apart: the site does not know who it is, the branch is unaware of the simulation, and neither knows about the other.' } },
   { da: { it: 'Quattro proposte', en: 'Four proposals' }, a: { it: 'Una, sul canale giusto', en: 'One, on the right channel' },
-    t: { it: 'Una politica di contatto che vale su tutto', en: 'A contact policy that holds everywhere' },
-    serve: { it: 'Un arbitro sopra i canali: regole di frequenza e consenso condivisi su email, SMS, push e canali custom, filiale compresa se registra i contatti. Per in-app e web vale il limite per offerta.', en: 'One arbiter above the channels: frequency rules and consent shared across email, SMS, push and custom channels, the branch included if it logs contacts. For in-app and web the per-offer limit applies.' },
-    pezzi: { it: 'A pezzi separati: ogni canale ha il suo limite, e la stessa persona riceve tre cose in un giorno e niente la settimana dopo.', en: 'With the pieces apart: each channel has its own limit, and the same person gets three things in a day and nothing the week after.' } },
+    t: { it: 'Una politica di contatto sui canali di invio', en: 'A contact policy across the sending channels' },
+    serve: { it: 'La regola di contatto resta vostra. Il tetto per persona e per canale vale su email, SMS, push e canali custom, filiale compresa se registra i contatti. Su web e app vale solo il limite per offerta.', en: 'The contact rule stays yours. The per-person, per-channel cap holds on email, SMS, push and custom channels, the branch included if it logs contacts. On web and app only the per-offer limit applies.' },
+    pezzi: { it: 'Da chiedere: sui canali digitali, a chi non ha una scheda cliente, oggi la pressione si conta per persona o canale per canale?', en: 'To ask: on the digital channels, for people without a customer record, is pressure counted per person today, or channel by channel?' } },
   { da: { it: 'I vostri sistemi', en: 'Your own systems' }, a: { it: 'La stessa decisione', en: 'The same decision' },
     t: { it: 'La decisione chiesta da chi ce l’ha già', en: 'The decision asked for by whoever already has one' },
-    serve: { it: 'Un motore interrogabile via API dal vostro backend e dalla postazione del contact center, senza spostare l’orchestrazione.', en: 'An engine callable over API from your backend and from the contact-centre desktop, without moving the orchestration.' },
+    serve: { it: 'Un motore interrogabile via API dal vostro backend e dalla postazione della Filiale Digitale, senza spostare l’orchestrazione.', en: 'An engine callable over API from your backend and from the Filiale Digitale desktop, without moving the orchestration.' },
     pezzi: { it: 'A pezzi separati: la regola si riscrive in ogni canale, e due canali danno due risposte diverse alla stessa persona.', en: 'With the pieces apart: the rule gets rewritten in every channel, and two channels give the same person two different answers.' } },
   { da: { it: 'Un evento di vita', en: 'A life event' }, a: { it: 'La proposta, quando serve', en: 'The proposal, when it is needed' },
     t: { it: 'Il cross-sell subito dopo la firma', en: 'Cross-sell right after signature' },
-    serve: { it: 'L’evento, l’eleggibilità che arriva dal core, e l’uplift misurato su un gruppo di controllo.', en: 'The event, eligibility coming from the core, and uplift measured against a control group.' },
+    serve: { it: 'L’evento, l’eleggibilità creditizia del core banking come attributo nel profilo, e l’uplift misurato su un gruppo di controllo.', en: 'The event, credit eligibility from core banking as a profile attribute, and uplift measured against a control group.' },
     pezzi: { it: 'A pezzi separati: la proposta parte quando chiude il trimestre, e di quanto sia servita non si sa dire.', en: 'With the pieces apart: the proposal goes out when the quarter closes, and nobody can say how much it helped.' } },
 ];
 
@@ -204,9 +267,9 @@ const CASI = [
 const FONTI_DATO = [
   { it: 'App e home banking', en: 'App and online banking' },
   { it: 'Sito', en: 'Website' },
-  { it: 'Contact center', en: 'Contact centre' },
+  { it: 'Filiale Digitale', en: 'Filiale Digitale' },
   { it: 'CRM di filiale', en: 'Branch CRM' },
-  { it: 'Data lake e core banking', en: 'Data lake and core banking' },
+  { it: 'Data warehouse e core banking', en: 'Data warehouse and core banking' },
 ];
 /* ⚠️ QUI C'ERANO TRE BLOCCHI, E DICEVANO LA COSA SBAGLIATA.
    Erano «Controllo di Gestione», «Advanced Analytics» e «Da definire
@@ -227,7 +290,7 @@ const FONTI_DATO = [
 const DOMANDE_CJA = [
   { q: { it: 'Quale canale porta davvero clienti nuovi?', en: 'Which channel actually brings new customers?' },
     chi: { it: 'Marketing e Controllo di Gestione', en: 'Marketing and management control' },
-    d: { it: 'Attribuzione su dati a livello di evento al posto dell’ultimo clic, con la finestra di osservazione dichiarata.', en: 'Attribution on event-level data instead of last click, with the lookback window stated.' } },
+    d: { it: 'Attribuzione su dati a livello di evento, filiale compresa, con la finestra di osservazione dichiarata.', en: 'Attribution on event-level data, branch included, with the lookback window stated.' } },
   { q: { it: 'Quanto il digitale porta in filiale?', en: 'How much does digital bring into the branch?' },
     chi: { it: 'Direzione commerciale e rete', en: 'Commercial division and the network' },
     d: { it: 'Il percorso online e l’esito allo sportello nello stesso dato: prodotti per cliente, tempo per acquisire.', en: 'The online path and the counter outcome in one dataset: products per customer, time to acquire.' } },
@@ -259,8 +322,8 @@ const PROFILO = [
     d: { it: 'Cookie, ID dell’app, email, codice cliente: lo stitching li riporta alla stessa persona.', en: 'Cookie, app ID, email, customer number: stitching ties them back to one person.' } },
   { fig: 'serie', t: { it: 'Il grafo si aggiorna da sé', en: 'The graph updates itself' },
     d: { it: 'Si aggiorna man mano che i dati arrivano.', en: 'It updates as data arrives.' } },
-  { fig: 'bordo', t: { it: 'Il consenso viaggia col profilo', en: 'Consent travels with the profile' },
-    d: { it: 'Vale su ogni canale, e si revoca in un posto solo.', en: 'It holds on every channel, and is revoked in one place.' } },
+  { fig: 'bordo', t: { it: 'Il consenso viene dal vostro registro', en: 'Consent comes from your register' },
+    d: { it: 'Il consenso resta nel vostro registro; la piattaforma lo riceve e lo applica. Una revoca in filiale arriva al profilo dal registro.', en: 'Consent stays in your register; the platform receives and applies it. A revocation in the branch reaches the profile from the register.' } },
 ];
 const SCELTA_PROFILO = [
   { t: { it: 'Portare il dato in piattaforma', en: 'Bring the data into the platform' },
@@ -291,8 +354,8 @@ const ESEC = [
     chi: { it: 'Journey Optimizer', en: 'Journey Optimizer' },
     d: { it: 'Il percorso decide quando, e la decisione entra nel messaggio al momento dell’invio.', en: 'The journey decides when, and the decision enters the message at send time.' } },
   { fig: 'canali', t: { it: 'Dai vostri sistemi', en: 'From your own systems' },
-    chi: { it: 'API di decisioning', en: 'AI Decisioning API' },
-    d: { it: 'Il vostro backend resta il motore di campagna e chiede solo quale offerta. La postazione del contact center fa la stessa chiamata.', en: 'Your backend stays the campaign engine and only asks which offer. The contact-centre desktop makes the same call.' } },
+    chi: { it: 'API di decisioning', en: 'Decisioning API' },
+    d: { it: 'Il vostro backend resta il motore di campagna e chiede solo quale offerta. La postazione della Filiale Digitale fa la stessa chiamata.', en: 'Your backend stays the campaign engine and only asks which offer. The Filiale Digitale desktop makes the same call.' } },
 ];
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -309,11 +372,11 @@ const DECIDE = [
   { n: '1', t: { it: 'Il catalogo', en: 'The catalogue' },
     d: { it: 'Le offerte che esistono, con le loro date e i canali su cui possono uscire.', en: 'The offers that exist, with their dates and the channels they may go out on.' } },
   { n: '2', t: { it: 'L’eleggibilità', en: 'Eligibility' },
-    d: { it: 'Chi può ricevere che cosa. Sul credito la dichiara il core banking.', en: 'Who can receive what. On credit, core banking declares it.' } },
+    d: { it: 'Eleggibilità creditizia: core banking; target e propensione: motore di targeting.', en: 'Credit eligibility: core banking; targets and propensity: targeting engine.' } },
   { n: '3', t: { it: 'I vincoli', en: 'The constraints' },
     d: { it: 'Limite per offerta, consenso, capienza di un’offerta, esclusioni.', en: 'Per-offer limit, consent, an offer’s capacity, exclusions.' } },
   { n: '4', t: { it: 'La classifica', en: 'The ranking' },
-    d: { it: 'Fra le ammesse, l’ordine: quanto vale per la persona e quanto per la banca.', en: 'Among those allowed, the order: what it is worth to the person and to the bank.' } },
+    d: { it: 'Fra le ammesse, l’ordine. Su chi non è ancora cliente il motore di targeting non ha punteggi: valgono la priorità dell’offerta e le regole scritte insieme.', en: 'Among those allowed, the order. On people who are not yet customers the targeting engine has no scores: offer priority and the rules written together apply.' } },
   { n: '5', t: { it: 'Il ripiego', en: 'The fallback' },
     d: { it: 'Che cosa esce quando nessuna è ammessa, dichiarato in anticipo.', en: 'What goes out when none is allowed, declared in advance.' } },
 ];
@@ -339,11 +402,11 @@ const DECIDE = [
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <T as="h2" class="im-ado-t im-ado-t--stretto" it="Che cosa avete, che cosa si aggiunge, che cosa resta vostro" en="What you have, what gets added, what stays yours" />
 
-        <div class="im-mappa">
+        <div class="im-mappa im-mappa--avete">
           {MAPPA.map((col) => (
             <section class="im-mappa-c" data-stato={col.stato}>
               <T as="p" class="im-mappa-k" it={col.t.it} en={col.t.en} />
-              <ul class="im-mappa-l">
+              <ul class:list={['im-mappa-l', col.stato === 'avete' && 'im-mappa-l--due']}>
                 {col.v.map((x) => (
                   <li>
                     <span class="im-mappa-n">{x.n}</span>
@@ -356,7 +419,7 @@ const DECIDE = [
         </div>
 
         <p class="im-fonte-riga">
-          <span data-lang-it>L’installato è un’ipotesi nostra: le voci «da confermare» si chiudono con il vostro footprint, prima dell’incontro. </span><span data-lang-en>The installed base is our assumption: the “to confirm” items close with your footprint, before the meeting. </span>
+          <span data-lang-it>L’installato è un’ipotesi nostra: le voci «da confermare» si chiudono con voi al primo tavolo. </span><span data-lang-en>The installed base is our assumption: the “to confirm” items close with you at the first working session. </span>
         </p>
       </div>
     </Slide>
@@ -394,7 +457,7 @@ const DECIDE = [
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <T as="p" class="im-ado-occ" it="Approfondimento · la misura unica" en="Deep dive · one measurement" />
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Una sola misura di app, sito, contact center e filiale" en="One measurement across app, site, contact centre and branch" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Una sola misura di app, sito, Filiale Digitale e filiale" en="One measurement across app, site, Filiale Digitale and branch" />
 
         <div class="im-flusso">
           <ul class="im-flusso-fonti">
@@ -426,8 +489,8 @@ const DECIDE = [
         </ul>
 
         <p class="im-fonte-riga">
-          <span data-lang-it>Tre cose si concordano prima: quali identificativi compongono il grafo, la tassonomia degli eventi (anche in filiale), i KPI con i gruppi di controllo dal giorno uno. L’attribuzione sostituisce la congettura sull’ultimo clic con modelli regolati o algoritmici. Il limite si dichiara, perché non misura quello che succede fuori dai canali osservati e la finestra di osservazione è una scelta. Modelli: </span>
-          <span data-lang-en>Three things get agreed first: which identifiers build the graph, the event taxonomy (in the branch too), KPIs with control groups from day one. Attribution replaces last-click guesswork with rule-based or algorithmic models. The limit is stated, because it does not measure what happens outside the observed channels and the lookback window is a choice. Models: </span>
+          <span data-lang-it>Tre cose si concordano prima: quali identificativi compongono il grafo, la tassonomia degli eventi (anche in filiale), i KPI con i gruppi di controllo dal giorno uno. Il modello conta meno del dato: oggi la filiale non entra nell’attribuzione. Sul media servono test di incrementalità (pubblico o area geografica di controllo), dal cross-sell sui clienti (fase 2 del piano). Il limite si dichiara, perché non misura quello che succede fuori dai canali osservati e la finestra di osservazione è una scelta. Modelli: </span>
+          <span data-lang-en>Three things get agreed first: which identifiers build the graph, the event taxonomy (in the branch too), KPIs with control groups from day one. The model matters less than the data: today the branch is not part of attribution. On media, incrementality tests (holdout audience or geography) are needed, from cross-sell to customers (phase 2 of the plan). The limit is stated, because it does not measure what happens outside the observed channels and the lookback window is a choice. Models: </span>
           <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-workspace/attribution/models" target="_blank" rel="noopener">Customer Journey Analytics · attribution</a>
           <a class="im-torna" href={TORNA}><span data-lang-it>← Torna ai quattro componenti</span><span data-lang-en>← Back to the four components</span></a>
         </p>
@@ -440,7 +503,7 @@ const DECIDE = [
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <T as="p" class="im-ado-occ" it="Approfondimento · il profilo" en="Deep dive · the profile" />
         <T as="h2" class="im-ado-t im-ado-t--stretto" it="Il profilo collega cookie, telefono e codice cliente alla stessa persona" en="The profile links cookie, phone number and customer number to one person" />
-        <T as="p" class="im-ado-l" it="Giulia è un cookie sul sito, un numero di telefono al contact center e un codice cliente dopo la firma. Il profilo li collega." en="Giulia is a cookie on the site, a phone number at the call centre and a customer number after signature. The profile links them." />
+        <T as="p" class="im-ado-l" it="Giulia è un cookie sul sito, un numero di telefono alla Filiale Digitale e un codice cliente dopo la firma. Il profilo li collega." en="Giulia is a cookie on the site, a phone number at the Filiale Digitale and a customer number after signature. The profile links them." />
 
         <div class="im-bv im-cat">
           {PROFILO.map((c, i) => (
@@ -474,8 +537,9 @@ const DECIDE = [
         <p class="im-fonte-riga">
           <span data-lang-it>La seconda strada è </span><span data-lang-en>The second route is </span>
           <a href="https://experienceleague.adobe.com/en/docs/federated-audience-composition/using/overview" target="_blank" rel="noopener">Federated Audience Composition</a><span
-            data-lang-it>: un modulo di Real-Time CDP e Journey Optimizer, con i suoi prerequisiti di pacchetto e un elenco di data warehouse supportati da verificare col vostro. Compone audience senza copiare il dato, e quelle audience si aggiornano a ogni esecuzione pianificata, non alla qualificazione a evento. Per il caso del mutuo serve la prima strada (riconoscimento in sessione, decisione a evento); la seconda vale per le audience sui dati regolamentati dei clienti. Verificato sulla documentazione pubblica, 30 ott 2026.</span>
-          <span data-lang-en>: a module of Real-Time CDP and Journey Optimizer, with its own package prerequisites and a list of supported data warehouses to check against yours. It composes audiences without copying the data, and those audiences refresh at each scheduled run, not on event qualification. For the mortgage case the first route is needed (in-session recognition, event-driven decision); the second holds for audiences on customers’ regulated data. Verified on the public documentation, 30 Oct 2026.</span>
+            data-lang-it>: un modulo a parte di Real-Time CDP e Journey Optimizer. Lavora solo su un elenco chiuso di database (Redshift, Synapse, Databricks, BigQuery, Fabric, Oracle, Snowflake, Teradata, Vertica). Il mutuo vuole la prima strada: riconoscimento in sessione, decisione a evento. Verificato l’11 nov 2026: </span>
+          <span data-lang-en>: a separate module of Real-Time CDP and Journey Optimizer. It works only on a closed list of databases (Redshift, Synapse, Databricks, BigQuery, Fabric, Oracle, Snowflake, Teradata, Vertica). For the mortgage case the first route is needed (in-session recognition, event-driven decision). Verified 11 Nov 2026: </span>
+          <a href="https://experienceleague.adobe.com/en/docs/federated-audience-composition/using/connections/home" target="_blank" rel="noopener"><span data-lang-it>database supportati</span><span data-lang-en>supported databases</span></a>
           <a class="im-torna" href={TORNA}><span data-lang-it>← Torna ai quattro componenti</span><span data-lang-en>← Back to the four components</span></a>
         </p>
       </div>
@@ -502,13 +566,14 @@ const DECIDE = [
 
         <div class="im-csc-conf im-csc-conf--eng">
           <T as="span" class="im-csc-conf-t" it="Il terzo modo è la risposta a «e quello che abbiamo già?»" en="The third route answers “what about what we already have?”" />
-          <T as="span" class="im-csc-conf-d" it="L’orchestrazione può restare dove è oggi: cambia solo chi decide quale offerta esce. La regola è una; il contatore si comporta diversamente al bordo (per identità, in tempo reale) e nel percorso (per profilo, con qualche minuto)." en="The orchestration can stay where it is today: only who decides which offer goes out changes. The rule is one; the counter behaves differently at the edge (per identity, in real time) and in the journey (per profile, with a few minutes’ lag)." />
+          <T as="span" class="im-csc-conf-d" it="L’orchestrazione può restare dove è oggi: cambia solo chi decide quale offerta esce. La regola resta vostra. Due contatori: il limite per offerta si valuta quando si decide; il tetto per persona e per canale si applica all’invio (su web e app vale solo il primo). La vostra politica si mappa sul secondo, oppure arriva dal vostro sistema come attributo “contatti residui”: si sceglie in fase 0." en="The orchestration can stay where it is today: only who decides which offer goes out changes. The rule stays yours. Two counters: the per-offer limit is evaluated when deciding; the per-person, per-channel cap is applied at send (on web and app only the first holds). Your policy maps onto the second, or comes from your system as a “contacts remaining” attribute: this is chosen in phase 0." />
         </div>
 
         <p class="im-fonte-riga">
-          <span data-lang-it>I tre modi di esecuzione e il comportamento dei contatori, dalla documentazione pubblica (30 ott 2026): </span><span data-lang-en>The three execution routes and the counters’ behaviour, from the public documentation (30 Oct 2026): </span>
-          <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/decisioning/offer-decisioning/api-reference/offer-delivery-api/start-offer-delivery-apis" target="_blank" rel="noopener">AI Decisioning · delivery APIs</a><span> · </span>
-          <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/conflict-prioritization/capping-rules/rule-sets" target="_blank" rel="noopener">rule sets</a>
+          <span data-lang-it>Il limite per offerta si conta per identità al bordo e per profilo nel percorso; nel percorso il contatore si aggiorna con fino a dieci minuti di ritardo. Documentazione pubblica, 11 nov 2026: </span><span data-lang-en>The per-offer limit counts per identity at the edge and per profile in the journey; in the journey the counter updates with up to ten minutes’ lag. Public documentation, 11 Nov 2026: </span>
+          <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/decisioning/experience-decisioning/gs-experience-decisioning" target="_blank" rel="noopener">Journey Optimizer · Decisioning</a><span> · </span>
+          <a href="https://experienceleague.adobe.com/en/docs/experience-cloud-kcs/kbarticles/ka-30469" target="_blank" rel="noopener">KB ka-30469</a><span> · </span>
+          <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/conflict-prioritization/gs-conflict-prioritization" target="_blank" rel="noopener">guardrail</a>
           <a class="im-torna" href={TORNA}><span data-lang-it>← Torna ai quattro componenti</span><span data-lang-en>← Back to the four components</span></a>
         </p>
       </div>
@@ -520,7 +585,7 @@ const DECIDE = [
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <T as="p" class="im-ado-occ" it="Approfondimento · l’arbitro" en="Deep dive · the arbiter" />
         <T as="h2" class="im-ado-t im-ado-t--stretto" it="Come ragiona una decisione, in cinque passaggi" en="How a decision reasons, in five steps" />
-        <T as="p" class="im-ado-l" it="Delle quattro proposte del momento 04 ne esce una sola, scelta in cinque passaggi." en="Of the four proposals in moment 04 only one goes out, picked in five steps." />
+        <T as="p" class="im-ado-l" it="Delle quattro proposte del momento 04 ne esce una sola." en="Of the four proposals in moment 04 only one goes out." />
 
         <ol class="im-dec">
           {DECIDE.map((d) => (
@@ -535,12 +600,12 @@ const DECIDE = [
         {/* Il confine. Si dice prima, perché è la paura di chi guarda. */}
         <div class="im-confine">
           <T as="span" class="im-confine-t" it="Dove si fermano le nostre regole" en="Where our rules stop" />
-          <T as="span" class="im-confine-d" it="Il motore non è il sistema di record dell’eleggibilità creditizia, dei saldi e delle approvazioni: quelli restano nel core banking. Qui si scelgono offerta, canale e momento fra ciò che il core ha già dichiarato ammissibile." en="The engine is not the system of record for credit eligibility, balances or approvals: those stay in core banking. Here offer, channel and timing are chosen among what the core has already declared eligible." />
+          <T as="span" class="im-confine-d" it="Il motore non è il sistema di record dell’eleggibilità creditizia, dei saldi e delle approvazioni: quelli restano nel core banking. Qui si scelgono offerta, canale e momento fra ciò che il core ha già dichiarato ammissibile. L’arbitro non interroga il core in sincrono. Eleggibilità: attributo precalcolato nel profilo, oppure passata dal vostro sistema nella richiesta di decisione." en="The engine is not the system of record for credit eligibility, balances or approvals: those stay in core banking. Here offer, channel and timing are chosen among what the core has already declared eligible. The arbiter does not query the core synchronously. Eligibility: precomputed attribute in the profile, or passed by your system in the decision request." />
         </div>
 
         <p class="im-fonte-riga">
-          <span data-lang-it>I cinque passaggi, dalla documentazione pubblica (30 ott 2026): </span><span data-lang-en>The five steps, from the public documentation (30 Oct 2026): </span>
-          <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/decisioning/offer-decisioning/get-started-decision/starting-offer-decisioning" target="_blank" rel="noopener">Journey Optimizer · AI Decisioning</a><span data-lang-it>. Il confine con il core banking è una scelta di disegno nostra, da confermare con voi.</span><span data-lang-en>. The boundary with core banking is a design choice of ours, to confirm with you.</span>
+          <span data-lang-it>I cinque passaggi, dalla documentazione pubblica (11 nov 2026): </span><span data-lang-en>The five steps, from the public documentation (11 Nov 2026): </span>
+          <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/decisioning/experience-decisioning/gs-experience-decisioning" target="_blank" rel="noopener">Journey Optimizer · Decisioning</a><span data-lang-it>. Il confine con il core banking è una scelta di disegno nostra, da confermare con voi.</span><span data-lang-en>. The boundary with core banking is a design choice of ours, to confirm with you.</span>
           <a class="im-torna" href={TORNA}><span data-lang-it>← Torna ai quattro componenti</span><span data-lang-en>← Back to the four components</span></a>
         </p>
       </div>
@@ -574,30 +639,105 @@ const DECIDE = [
 
     {/* ⚠️ LE FRECCE STAVANO SULLA MAPPA, sotto tre colonne, ed è la slide che
         il team ha chiamato «troppo densa» (Teams, 30 ott 2026). Qui stanno
-        da sole, e accanto hanno la domanda che in una banca viene subito
-        dopo: dove gira e sotto quale contratto. */}
+        da sole.
+        ⚠️ Panel dell'11 nov 2026: le frecce sono diventate dieci, e con loro
+        il riquadro «Dove gira, e sotto quale contratto» non entrava più a
+        1280×800 senza rimpicciolire il tipo. Il riquadro, con le sue parole,
+        apre la slide successiva, accanto alla tabella di dove sta ogni dato;
+        la riga del CRM ha una slide sua. Si divide, non si comprime. */}
     <Slide id="slide-integrazioni" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Servono sei collegamenti e due si disegnano con voi" en="Six connections are needed and two get designed with you" />
-        <T as="p" class="im-ado-l" it="Ogni freccia porta un contenuto, un verso e una modalità." en="Each arrow says what passes, in which direction and how." />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="I collegamenti della fase 1, e quelli che arrivano dopo" en="The phase 1 connections, and those that come later" />
+        <T as="p" class="im-ado-l" it="Le frecce tratteggiate si disegnano con voi." en="The dashed arrows get designed with you." />
 
         <ul class="im-frecce">
-          {FRECCE.map((f) => (
+          {FRECCE.map((f, i) => (
+            <>
+            {f.dopo && !FRECCE[i - 1]?.dopo && (
+              <li class="im-frecce-dopo"><span data-lang-it>Dal cross-sell sui clienti (fase 2 del piano)</span><span data-lang-en>From cross-sell to customers (phase 2 of the plan)</span></li>
+            )}
             <li class="im-frecce-i" data-aperta={f.aperta ? '' : null}>
               <span class="im-frecce-da">{f.da}</span><span class="im-frecce-fr" aria-hidden="true">→</span><span class="im-frecce-a">{f.a}</span>
               <T as="span" class="im-frecce-d" it={f.d.it} en={f.d.en} />
             </li>
+            </>
           ))}
         </ul>
 
-        <div class="im-csc-conf">
-          <T as="span" class="im-csc-conf-t" it="Dove gira, e sotto quale contratto" en="Where it runs, and under which contract" />
-          <T as="span" class="im-csc-conf-d" it="Experience Platform gira in cloud Adobe, istanza in regione europea; AEM e il CRM di filiale restano dove sono. Il modello contrattuale entra nel vostro registro degli outsourcing con gli addenda DORA di Adobe: la criticità la decidete voi nella vostra analisi d’impatto." en="Experience Platform runs in Adobe’s cloud, instance in a European region; AEM and the branch CRM stay where they are. The contractual model enters your outsourcing register with Adobe’s DORA addenda: criticality is for you to decide, in your own impact analysis." />
-        </div>
+        <p class="im-fonte-riga">
+          <a class="im-torna" href="#slide-integrazioni-dati"><span data-lang-it>Dove gira, e dove sta ogni dato →</span><span data-lang-en>Where it runs, and where each piece of data sits →</span></a>
+          <a class="im-torna" href="#slide-integrazioni-crm"><span data-lang-it>La riga del CRM in quattro punti →</span><span data-lang-en>The CRM line in four points →</span></a>
+        </p>
       </div>
     </Slide>
 
+    {/* Dove gira e dove sta ogni dato. Il riquadro DORA è quello che stava
+        sotto le frecce, parola per parola («la criticità la decidete voi»):
+        il panel l'ha messo fra le cose da non toccare. */}
+    <Slide id="slide-integrazioni-dati" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Approfondimento · i dati" en="Deep dive · the data" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Dove gira, e dove sta ogni dato" en="Where it runs, and where each piece of data sits" />
+
+        <div class="im-csc-conf">
+          <T as="span" class="im-csc-conf-t" it="Dove gira, e sotto quale contratto" en="Where it runs, and under which contract" />
+          <T as="span" class="im-csc-conf-d" it="Experience Platform è un servizio gestito da Adobe su Microsoft Azure, con istanza nella regione europea (Amsterdam), da fissare nel contratto. AEM e il CRM di filiale restano dove sono. Il contratto entra nel vostro registro delle informazioni DORA con l’addendum DORA di Adobe: la criticità la decidete voi nella vostra analisi d’impatto." en="Experience Platform is a service managed by Adobe on Microsoft Azure, with an instance in the European region (Amsterdam), to be fixed in the contract. AEM and the branch CRM stay where they are. The contract enters your DORA register of information with Adobe’s DORA addendum: criticality is for you to decide, in your own impact analysis." />
+        </div>
+
+        <div class="im-dati" role="table" aria-label="Dove sta ogni dato">
+          <div class="im-dati-i im-dati-h" role="row">
+            <T as="span" role="columnheader" it="Dato" en="Data" />
+            <T as="span" role="columnheader" it="Dove sta" en="Where it sits" />
+            <T as="span" role="columnheader" it="Per quanto" en="For how long" />
+          </div>
+          {DATI.map((x) => (
+            <div class="im-dati-i" role="row">
+              <T as="span" role="cell" class="im-dati-n" it={x.n.it} en={x.n.en} />
+              <T as="span" role="cell" class="im-dati-d" it={x.dove.it} en={x.dove.en} />
+              <T as="span" role="cell" class="im-dati-d" it={x.tempo.it} en={x.tempo.en} />
+            </div>
+          ))}
+        </div>
+
+        <p class="im-fonte-riga">
+          <span data-lang-it>Regioni e campi dei log, dalla documentazione pubblica (11 nov 2026): </span><span data-lang-en>Regions and log fields, from the public documentation (11 Nov 2026): </span>
+          <a href="https://experienceleague.adobe.com/en/docs/experience-platform/landing/multi-cloud" target="_blank" rel="noopener">Experience Platform · regioni</a><span> · </span>
+          <a href="https://experienceleague.adobe.com/en/docs/brand-visibility/using/dashboards/agentic-traffic" target="_blank" rel="noopener">Brand Visibility · log del CDN</a>
+          <a class="im-torna" href="#slide-integrazioni"><span data-lang-it>← Torna ai collegamenti</span><span data-lang-en>← Back to the connections</span></a>
+        </p>
+      </div>
+    </Slide>
+
+    {/* La riga Journey Optimizer → CRM di filiale. Il panel dell'11 nov 2026
+        (Group Technology) chiedeva quattro cose che sulla freccia non
+        stavano: chi espone l'API, la chiave che riaggancia l'appuntamento al
+        lead, la deduplica e che cosa succede se la chiamata fallisce. */}
+    <Slide id="slide-integrazioni-crm" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Approfondimento · la riga del CRM" en="Deep dive · the CRM line" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Il lead arriva al CRM di filiale, e quattro punti si fissano prima" en="The lead reaches the branch CRM, and four points are settled first" />
+        <T as="p" class="im-ado-l" it="Sulla freccia passano lead, appuntamento e simulazione." en="Lead, appointment and simulation travel on this arrow." />
+
+        <div class="im-esec im-esec--quattro">
+          {CRM.map((c) => (
+            <section class="im-esec-i">
+              <FiguraCap segno={c.fig} class="im-esec-fig" />
+              <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
+              <T as="span" class="im-esec-chi" it={c.chi.it} en={c.chi.en} />
+              <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
+            </section>
+          ))}
+        </div>
+
+        <p class="im-fonte-riga">
+          <span data-lang-it>Una proposta di disegno, da correggere con voi in fase 0. </span><span data-lang-en>A design proposal, to correct with you in phase 0. </span>
+          <a class="im-torna" href="#slide-integrazioni"><span data-lang-it>← Torna ai collegamenti</span><span data-lang-en>← Back to the connections</span></a>
+        </p>
+      </div>
+    </Slide>
 
     {/* Il momento 01 ha mostrato l'assistente che la banca c'è o non c'è. Qui si guarda come lo si governa. */}
     <Slide id="slide-brand-visibility" bg="inverse" align="left">
@@ -629,9 +769,11 @@ const DECIDE = [
         </div>
 
         <p class="im-fonte-riga">
-          <span data-lang-it>Capacità verificate sulla documentazione pubblica, 30 ott 2026: </span><span data-lang-en>Capabilities verified on the public documentation, 30 Oct 2026: </span>
+          <span data-lang-it>Capacità verificate sulla documentazione pubblica, 11 nov 2026; regione e retention dei log restano da verificare con Adobe: </span><span data-lang-en>Capabilities verified on the public documentation, 11 Nov 2026; log region and retention are still to verify with Adobe: </span>
           <a href="https://experienceleague.adobe.com/en/docs/brand-visibility/using/essentials/overview" target="_blank" rel="noopener">Adobe Brand Visibility</a><span> · </span>
-          <a href="https://experienceleague.adobe.com/en/docs/brand-visibility/using/resources/optimize-at-edge/overview" target="_blank" rel="noopener">Optimize at Edge</a>
+          <a href="https://experienceleague.adobe.com/en/docs/brand-visibility/using/resources/optimize-at-edge/overview" target="_blank" rel="noopener">Optimize at Edge</a><span> · </span>
+          <a href="https://experienceleague.adobe.com/en/docs/brand-visibility/using/log-forwarding/log-forwarding-overview" target="_blank" rel="noopener">CDN supportati</a><span> · </span>
+          <a href="https://experienceleague.adobe.com/en/docs/brand-visibility/using/dashboards/agentic-traffic" target="_blank" rel="noopener"><span data-lang-it>campi dei log</span><span data-lang-en>log fields</span></a>
         </p>
       </div>
     </Slide>
@@ -643,8 +785,8 @@ const DECIDE = [
     <Slide id="slide-content-factory" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quattro passi per produrre varianti già verificate" en="Four steps to produce pre-checked variants" />
-        <T as="p" class="im-ado-l" it="Il tempo di una campagna se ne va soprattutto fra approvazioni e rifacimenti." en="Most of a campaign’s time goes into approvals and rework." />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quattro passi per produrre varianti controllate sul marchio" en="Four steps to produce brand-checked variants" />
+        <T as="p" class="im-ado-l" it="Il tempo di una campagna se ne va fra approvazioni e rifacimenti." en="Most of a campaign’s time goes into approvals and rework." />
 
         <div class="im-bv im-csc">
           {CSC.map((c, i) => (
@@ -661,12 +803,12 @@ const DECIDE = [
 
         {/* La riga che per una banca è il punto. */}
         <div class="im-csc-conf">
-          <T as="span" class="im-csc-conf-t" it="Le varianti si verificano mentre si producono" en="Variants are checked as they are produced" />
-          <T as="span" class="im-csc-conf-d" it="Ogni variante è controllata contro linee guida e informative prima dell’approvazione." en="Every variant is checked against guidelines and disclosures before approval." />
+          <T as="span" class="im-csc-conf-t" it="Le varianti si controllano mentre si producono" en="Variants are checked as they are produced" />
+          <T as="span" class="im-csc-conf-d" it="Varianti controllate contro le linee guida di marchio e di canale mentre si producono; le informative restano nell’iter di approvazione legale." en="Variants checked against brand and channel guidelines as they are produced; disclosures stay in the legal approval process." />
         </div>
 
         <p class="im-fonte-riga">
-          <span data-lang-it>I quattro passi sono uno schema nostro. La verifica delle varianti è documentata: </span><span data-lang-en>The four steps are our own framing. Variant checking is documented: </span>
+          <span data-lang-it>I quattro passi sono uno schema nostro. Il controllo sul marchio è documentato: </span><span data-lang-en>The four steps are our own framing. Brand checking is documented: </span>
           <a href="https://experienceleague.adobe.com/en/docs/genstudio-for-performance-marketing/user-guide/guidelines/brand-validation" target="_blank" rel="noopener">GenStudio · brand validation</a>
         </p>
       </div>
@@ -735,3 +877,77 @@ const DECIDE = [
 
   </DeckContainer>
 </BaseLayout>
+
+<style is:global>
+  /* Panel dell'11 nov 2026. Stili SOLO di questa pagina, inchiostri pieni su
+     fondo scuro (audit:ink), corpo ≥ 0,95rem: quando la copia cresce si
+     ricompone, non si rimpicciolisce. */
+
+  /* La mappa: «Avete» porta nove sistemi e si stende su due colonne, in
+     colonna (cinque e quattro) così i sistemi restano raggruppati. */
+  .im-mappa--avete { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr); }
+  .im-mappa-l--due { grid-template-rows: repeat(5, auto); grid-auto-flow: column; column-gap: 1.4rem; }
+  .im-mappa-l--due li:nth-child(5) { border-bottom: 0; padding-bottom: 0; }
+  @media (max-width: 900px) {
+    .im-mappa--avete { grid-template-columns: minmax(0, 1fr); }
+    .im-mappa-l--due { grid-template-rows: none; grid-auto-flow: row; }
+    .im-mappa-l--due li:nth-child(5) { border-bottom: 1px solid rgba(255, 255, 255, 0.14); padding-bottom: 0.42rem; }
+  }
+
+  /* Una riga fatta solo di rimandi parte dal bordo, come i blocchi sopra. */
+  #slide-integrazioni .im-fonte-riga .im-torna:first-child { margin-left: 0; }
+
+  /* I collegamenti: le due frecce del cross-sell sotto un'etichetta sola. */
+  .im-frecce-dopo {
+    grid-column: 1 / -1; margin: 0.35rem 0 0; max-width: none; list-style: none;
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(0.82rem, 0.7vw, 1.5rem); letter-spacing: 0.08em; text-transform: uppercase; color: #9fd68a;
+  }
+  /* Sotto i 1500px i nomi lunghi («Postazione Filiale Digitale») schiacciano
+     la descrizione in una colonna di tre parole: la descrizione va a capo
+     sotto i nomi, a tutta larghezza della scheda. */
+  @media (max-width: 1500px) {
+    #slide-integrazioni .im-frecce-i { grid-template-columns: auto auto auto minmax(0, 1fr); }
+    #slide-integrazioni .im-frecce-d { grid-column: 1 / -1; }
+    #slide-integrazioni .im-frecce-da, #slide-integrazioni .im-frecce-a { white-space: normal; }
+  }
+  /* A 1280×800 scende la densità, mai il tipo: figure più basse e righe
+     più strette su profilo e collegamenti. */
+  @media (max-height: 880px) {
+    #slide-ingaggio-profilo .im-fig { height: clamp(2rem, 2.6vw, 4rem); margin-bottom: 0.25rem; }
+    #slide-ingaggio-profilo .im-scelta { margin-top: 0.4rem; }
+    #slide-integrazioni .im-frecce { gap: 0.3rem 0.6rem; }
+    #slide-integrazioni .im-frecce-i { padding-block: 0.3rem; row-gap: 0.15rem; }
+    .im-frecce-dopo { margin-top: 0.15rem; }
+    #slide-integrazioni-dati .im-csc-conf { margin-top: 0.45rem; padding: 0.6rem 0.9rem 0.7rem; }
+  }
+
+  /* Dove sta ogni dato: tre colonne, una riga per tipo di dato. */
+  .im-dati { margin-top: 0.9rem; display: grid; gap: 0.45rem; width: 100%; }
+  .im-dati-i {
+    display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.7fr) minmax(0, 1.1fr);
+    gap: 0.3rem 1.3rem; align-items: baseline;
+    padding: 0.55rem 0.95rem; border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.14);
+    font-size: clamp(0.95rem, 0.8vw, 1.8rem); line-height: 1.45; color: #dfeadb;
+  }
+  .im-dati-i > span { max-width: none; min-width: 0; }
+  .im-dati-n { font-weight: 700; color: #ffffff; }
+  .im-dati-h {
+    background: transparent; border-color: transparent; padding-block: 0 0.1rem;
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(0.82rem, 0.7vw, 1.5rem); letter-spacing: 0.08em; text-transform: uppercase; color: #9fd68a;
+  }
+  /* La riga del CRM: quattro schede sulla griglia `.im-esec`. */
+  .im-esec--quattro { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  @media (max-width: 1100px) { .im-esec--quattro { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: none; } .im-esec--quattro .im-esec-i { grid-row: auto; grid-template-rows: auto auto auto 1fr; } }
+  @media (max-height: 880px) {
+    .im-dati { gap: 0.32rem; margin-top: 0.6rem; }
+    .im-dati-i { padding: 0.4rem 0.8rem; }
+  }
+  @media (max-width: 900px) {
+    .im-dati-i { grid-template-columns: minmax(0, 1fr); }
+    .im-dati-h { display: none; }
+    .im-esec--quattro { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
