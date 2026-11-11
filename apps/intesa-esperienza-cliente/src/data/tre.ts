@@ -18,7 +18,7 @@ export const TRE: Cosa[] = [
   {
     n: '1', gruppo: 'trovare', prodotto: 'Adobe Brand Visibility',
     t: { it: 'Farsi trovare', en: 'Being found' },
-    riga: { it: 'Chi cerca casa lo chiede anche a un assistente AI. Se Intesa non è citata, il confronto parte senza di voi.', en: 'People looking for a home also ask an AI assistant. If Intesa is not cited, the comparison starts without you.' },
+    riga: { it: 'Chi cerca casa lo chiede anche a un assistente AI. Se l’assistente cita altre tre banche, il confronto si fa su quelle.', en: 'People looking for a home also ask an AI assistant. If it cites three other banks, the comparison happens on those.' },
   },
   {
     n: '2', gruppo: 'engagement', prodotto: 'Adobe Experience Platform',
@@ -28,6 +28,6 @@ export const TRE: Cosa[] = [
   {
     n: '3', gruppo: 'piattaforma', prodotto: 'Adobe CX Analytics',
     t: { it: 'Misurare in un posto solo', en: 'Measuring in one place' },
-    riga: { it: 'App, sito, contact center e filiale: quanti report servono oggi per tenerli insieme?', en: 'App, site, contact centre and branch: how many reports does it take today to hold them together?' },
+    riga: { it: 'Filiale, Filiale Digitale, app e sito: quanti report servono oggi per tenerli insieme?', en: 'Branch, Filiale Digitale, app and site: how many reports does it take today to hold them together?' },
   },
 ];

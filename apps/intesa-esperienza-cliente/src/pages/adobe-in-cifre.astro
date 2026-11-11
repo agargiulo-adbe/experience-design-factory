@@ -1,0 +1,66 @@
+---
+/**
+ * ADOBE IN CIFRE — fuori dal percorso delle frecce, raggiungibile dalla riga di
+ * fonte di «adobe/slide-chi».
+ *
+ * ⚠️ PERCHÉ È QUI (panel dell'11 nov 2026, P1, terzo giro): fondazione, ricavi,
+ * dipendenti e i quattro quadranti Forrester, come seconda slide di contenuto,
+ * in una sala di ventisette persone convocata sulla Web Analytics. Sei personas
+ * su sei la tagliavano. I numeri reggono, quindi non si buttano: escono dalle
+ * frecce e restano a un clic.
+ *
+ * Il motore non ha un «backup» di default (il gating dei capitoli NASCONDE la
+ * slide e la rende irraggiungibile), e `approfondimenti` è di un altro giro di
+ * lavoro: per questo una pagina a sé, con una slide. Le frecce riportano al
+ * capitolo Adobe.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { href } from '@edf/core/utils/url.js';
+import { WAVE, NUMERI } from '../data/wave';
+
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+const TORNA = `${href(base, '/adobe')}#slide-chi`;
+---
+<BaseLayout title="Adobe in cifre">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={TORNA} prevHref={TORNA}>
+
+    <Slide id="slide-fsi" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--wave" data-reveal>
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Adobe è Leader in quattro Forrester Wave del 2026" en="Adobe is a Leader in four 2026 Forrester Waves" />
+
+        <ul class="im-num">
+          {NUMERI.map((n) => (
+            <li class="im-num-i">
+              <span class="im-num-k">{n.k}</span>
+              <T as="span" class="im-num-v" it={n.v.it} en={n.v.en} />
+            </li>
+          ))}
+        </ul>
+        <p class="im-fonte-riga">
+          <span data-lang-it>Fonti: Adobe Form 10-K esercizio 2025 · risultati Q4 e FY2025 · Adobe Fast Facts · </span><span data-lang-en>Sources: Adobe Form 10-K fiscal 2025 · Q4 and FY2025 results · Adobe Fast Facts · </span>
+          <a href={TORNA}><span data-lang-it>← Torna al capitolo Adobe</span><span data-lang-en>← Back to the Adobe chapter</span></a>
+        </p>
+
+        <ul class="im-wave">
+          {WAVE.map((w) => (
+            <li class="im-wave-i">
+              <a class="im-wave-c" href={w.url} target="_blank" rel="noopener">{w.cat}</a>
+              <img class="im-wave-img" src={w.img.src} alt={`Forrester Wave ${w.cat}: Adobe fra i Leader`} width="680" height="664" loading="eager" />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

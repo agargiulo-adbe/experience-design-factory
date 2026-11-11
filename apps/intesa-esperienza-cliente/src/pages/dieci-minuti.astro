@@ -8,6 +8,12 @@
  * percorso intero resta, perché serve a chi ha l'ora; questo è lo stesso
  * racconto in sei slide.
  *
+ * ⚠️ 11 NOV 2026 (panel): il taglio non rispondeva a «e il nostro motore?».
+ * Entra «Accanto», dall'innesto, ridotta alla posizione su cui si decide e
+ * alla riga di confine — dalla fonte unica `data/innesto.ts`. Per restare a
+ * sei esce la slide della protagonista: Giulia arriva comunque col suo
+ * ritratto e il suo nome nella slide del momento.
+ *
  * ⚠️ NON È UNA COPIA. Ogni blocco viene dalla fonte unica — `MOMENTI`,
  * `referenze.ts` — e i componenti sono gli stessi. Un taglio che tiene
  * una copia a mano degli stessi numeri diverge sempre, e diverge sempre
@@ -27,10 +33,16 @@ import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
 import { MOMENTI, DOMANDE_IN_SLIDE, CORPO_IN_SLIDE } from '../data/momenti';
 import { FONTI, CIFRE_TSB, MISURE, ASK, TSB_SUB } from '../data/referenze';
-/* Il taglio corto porta le quattro misure di base; le due estese
-   (target, filiale) stanno nel percorso intero. Stesso oggetto, un
-   campo accanto: mai un altro elenco. */
-const MISURE_BREVI = MISURE.filter((m) => !m.estesa);
+import { CONFINE, OGGI, ACCANTO, TAVOLO, IPOTESI } from '../data/innesto';
+import '../styles/innesto.css';
+/* TUTTE le misure, dalla stessa fonte di «prossimi-passi/slide-da-voi»
+   (panel dell'11 nov 2026: il taglio ne portava quattro su sei, e mancavano
+   quelle che Controllo di Gestione e Rete chiedono ad alta voce). Dove la
+   fonte ha un campo breve accanto (`lBreve`, `oggiBreve`, `poiBreve`) il
+   taglio usa quello: stesso oggetto, meno parole, mai un altro elenco. */
+type Bil = { it: string; en: string };
+const corto = (m: (typeof MISURE)[number], k: 'l' | 'oggi' | 'poi'): Bil =>
+  ((m as unknown as Record<string, Bil | undefined>)[`${k}Breve`]) ?? m[k];
 import CircoloJourney from '../components/CircoloJourney.astro';
 import MockCliente from '../components/MockCliente.astro';
 import MockAdobe from '../components/MockAdobe.astro';
@@ -68,27 +80,6 @@ const M = MOMENTI[2];
            it="In dieci minuti: una persona che cerca casa e non è ancora vostra cliente, e cosa serve per non perderla."
            en="In ten minutes: someone looking for a home who is not your customer yet, and what it takes not to lose her."
            data-reveal data-reveal-delay="0.18" />
-      </div>
-    </Slide>
-
-    <Slide id="slide-chi" bg="primary" align="split">
-      <div class="im-pers" data-reveal>
-        <figure class="im-pers-foto">
-          <img src={ritratto.src} width={ritratto.width} height={ritratto.height}
-               alt="Giulia Marchetti, 34 anni, non ancora cliente di Intesa Sanpaolo"
-               loading="eager" decoding="async" />
-          <span class="im-pers-scrim" data-scrim aria-hidden="true"></span>
-          <figcaption class="im-pers-meta">
-            <span class="im-pers-nome">Giulia Marchetti</span>
-            <span class="im-pers-sub"><span data-lang-it>34 anni · Torino · non ancora cliente</span><span data-lang-en>34 · Turin · not a customer yet</span></span>
-          </figcaption>
-        </figure>
-        <div class="im-pan">
-          <T as="p" class="im-pan-tag" it="La protagonista" en="The lead character" />
-          <T as="p" class="im-pan-q"
-             it="Non è ancora cliente, e la banca non sa niente di lei. Quello che fa sul sito basta per proporle la cosa giusta."
-             en="She is not a customer yet, and the bank knows nothing about her. What she does on the site is enough to offer her the right thing." />
-        </div>
       </div>
     </Slide>
 
@@ -177,6 +168,41 @@ const M = MOMENTI[2];
       </div>
     </Slide>
 
+    {/* ACCANTO — dall'innesto del percorso intero, ridotto alla posizione su cui
+        si decide e alla riga di confine sul motore. Fonte: `data/innesto.ts`. */}
+    <Slide id="slide-accanto" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Il vostro motore resta a monte" en="Your engine stays upstream" />
+        <T as="p" class="im-inn-confine" it={CONFINE.it} en={CONFINE.en} />
+        <div class="im-acc">
+          <ol class="im-inn-oggi">
+            {OGGI.map((n, i) => (
+              <li class="im-inn-n" data-forte={n.forte ? '' : null}>
+                <T as="span" class="im-inn-t" it={n.t.it} en={n.t.en} />
+                {n.s && <T as="span" class="im-inn-s" it={n.s.it} en={n.s.en} />}
+                <T as="span" class="im-inn-d" it={n.d.it} en={n.d.en} />
+                {i > 0 && <svg class="im-inn-fr" viewBox="0 0 28 14" aria-hidden="true"><path d="M1 7h24M19 1l6 6-6 6" /></svg>}
+              </li>
+            ))}
+          </ol>
+          <p class="im-acc-giu" data-substep>
+            <svg viewBox="0 0 14 28" aria-hidden="true"><path d="M7 1v24M1 19l6 6 6-6" /></svg>
+            <span><span data-lang-it>Sopra, sui prospect: Real-Time CDP, Journey Optimizer con AI Decisioning, Customer Journey Analytics.</span><span data-lang-en>On top, for prospects: Real-Time CDP, Journey Optimizer with AI Decisioning, Customer Journey Analytics.</span></span>
+          </p>
+          <div class="im-accanto" data-substep>
+            <T as="span" class="im-accanto-k" it={ACCANTO.k.it} en={ACCANTO.k.en} />
+            <T as="strong" class="im-accanto-t" it={ACCANTO.t.it} en={ACCANTO.t.en} />
+            <T as="span" class="im-accanto-d" it={ACCANTO.d.it} en={ACCANTO.d.en} />
+          </div>
+        </div>
+        <p class="im-fonte-riga">
+          <span data-lang-it>{IPOTESI.it} </span><span data-lang-en>{IPOTESI.en} </span>
+          <a href={`${href(base, '/messa-a-terra')}#slide-innesto`}><span data-lang-it>L’innesto intero →</span><span data-lang-en>The full picture →</span></a>
+        </p>
+      </div>
+    </Slide>
+
     <Slide id="slide-firma" bg="inverse" align="center"
            data-made-with="Adobe Firefly" data-made-with-for="clip" data-audio="loud">
       <LoopVideo slot="backdrop" src={`${CLIP}/innesto-chiusura.loop.mp4`}
@@ -184,19 +210,20 @@ const M = MOMENTI[2];
                  scrim="im-clip-scrim" opacity={1} />
       <div class="im-firma" data-reveal>
         <CoBrand variant="hero" class="im-cov-lockup edf-cobrand--on-dark" />
-        <div class="im-mis im-mis--taglio" data-stagger>
-          {MISURE_BREVI.map((m) => (
+        <div class="im-mis im-mis--taglio im-mis--tutte" data-stagger>
+          {MISURE.map((m) => (
             <div class="im-mis-b" data-chiave={m.chiave ? '' : null}>
-              <T as="p" class="im-mis-l" it={m.l.it} en={m.l.en} />
+              <T as="p" class="im-mis-l" it={corto(m, 'l').it} en={corto(m, 'l').en} />
               <p class="im-mis-r">
-                <span class="im-mis-oggi"><span data-lang-it>{m.oggi.it}</span><span data-lang-en>{m.oggi.en}</span></span>
+                <span class="im-mis-oggi"><span data-lang-it>{corto(m, 'oggi').it}</span><span data-lang-en>{corto(m, 'oggi').en}</span></span>
                 <span class="im-mis-f" aria-hidden="true"></span>
-                <span class="im-mis-poi"><span data-lang-it>{m.poi.it}</span><span data-lang-en>{m.poi.en}</span></span>
+                <span class="im-mis-poi"><span data-lang-it>{corto(m, 'poi').it}</span><span data-lang-en>{corto(m, 'poi').en}</span></span>
               </p>
             </div>
           ))}
         </div>
         <T as="p" class="im-firma-l" it={ASK.it} en={ASK.en} data-reveal data-reveal-delay="0.14" />
+        <T as="p" class="im-firma-tavolo" it={TAVOLO.it} en={TAVOLO.en} data-reveal data-reveal-delay="0.2" />
         <a href={href(base, '/')} class="edf-sig-cta">
           <span data-lang-it>Il percorso intero</span><span data-lang-en>The full path</span>
         </a>
@@ -205,3 +232,11 @@ const M = MOMENTI[2];
 
   </DeckContainer>
 </BaseLayout>
+<style>
+  /* La firma del taglio porta tutte le misure: tre colonne invece di due, e
+     la colonna si allarga, perché in altezza non c'è posto per un'altra riga. */
+  #slide-firma .im-firma { max-width: 78rem; gap: 0.8rem; }
+  .im-mis--tutte { max-width: 78rem; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .im-firma-tavolo { margin: 0; max-width: none; font-size: clamp(1.05rem, 1.05vw, 2.3rem); font-weight: 700; color: #d7f0cd; }
+  @media (max-width: 900px) { .im-mis--tutte { grid-template-columns: minmax(0, 1fr); } }
+</style>

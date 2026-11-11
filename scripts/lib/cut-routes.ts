@@ -38,7 +38,9 @@ export const CUT_SETS: Record<string, CutSpec> = {
   },
   'intesa-esperienza-cliente': {
     taglio: 'dieci-minuti',
-    fonti: ['src/data/momenti.ts', 'src/data/referenze.ts'],
+    /* `innesto.ts` dall'11 nov 2026: la slide «Accanto» del taglio e
+       l'innesto del percorso intero leggono la stessa riga di confine. */
+    fonti: ['src/data/momenti.ts', 'src/data/referenze.ts', 'src/data/innesto.ts'],
     slideMax: 6,
     numeriSoloNelTaglio: ['10'],
   },

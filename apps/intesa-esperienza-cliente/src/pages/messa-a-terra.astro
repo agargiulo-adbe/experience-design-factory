@@ -29,6 +29,9 @@ import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import Divisore from '../components/Divisore.astro';
 import fondo from '../assets/generated/cover-innesto.webp';
 import fondoMisura from '../assets/generated/lavoro-07-misura.webp';
+import { CONFINE, OGGI, ACCANTO, OPZIONI, DECIDETE, IPOTESI } from '../data/innesto';
+import { PASSAGGIO, DETTAGLI_PASSAGGIO } from '../data/passaggio';
+import '../styles/innesto.css';
 
 const SLUG = 'messa-a-terra';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -36,25 +39,26 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 const DETTAGLI = href(base, '/approfondimenti');
 
-/* L'architettura di oggi, a grandi blocchi. SAS è pubblico (storie cliente su
-   sas.com); il resto della catena si dice per funzione e resta un'ipotesi. */
+/* L'architettura di oggi, a grandi blocchi, sta in `data/innesto.ts` (fonte
+   unica anche per il taglio corto). Il nome del motore non è confermato dal
+   cliente: «motore di targeting», e «SAS (da confermare)» nel solo riquadro. */
 const EL = 'https://experienceleague.adobe.com/en/docs';
 const CAPACITA = [
   { p: 'Real-Time CDP', k: 'riconosce', r: { it: 'Riconosce', en: 'Recognises' }, v: [
     { it: 'Profilo anche anonimo', en: 'Profiles for anonymous visitors' },
-    { it: 'Si unisce al consenso', en: 'Merges at consent' },
+    { it: 'Unisce le sessioni quando arriva un identificativo', en: 'Merges sessions when an identifier arrives' },
     { it: 'Segmenti in tempo reale', en: 'Real-time segments' },
   ], g: { it: 'la riconosce quando lascia il nome', en: 'recognises her when she gives her name' } },
   { p: 'AI Decisioning', k: 'sceglie', r: { it: 'Sceglie', en: 'Chooses' }, v: [
     { it: 'Un catalogo di offerte', en: 'One offer catalogue' },
-    { it: 'Regole e limiti per persona', en: 'Rules and caps per person' },
+    { it: 'La regola di contatto resta vostra', en: 'The contact rule stays yours' },
     { it: 'Classifica con l’AI', en: 'AI ranking' },
-  ], g: { it: 'sceglie il promemoria buste paga', en: 'picks the payslip reminder' } },
+  ], g: { it: 'sceglie il promemoria con appuntamento proposto', en: 'picks the reminder with a proposed appointment' } },
   { p: 'Journey Optimizer', k: 'agisce', r: { it: 'Agisce', en: 'Acts' }, v: [
     { it: 'Parte da un evento', en: 'Triggered by an event' },
     { it: 'Email, sito, app, SMS', en: 'Email, site, app, SMS' },
-    { it: 'Consenso e frequenza', en: 'Consent and frequency' },
-  ], g: { it: 'le ricorda la pratica su email, sito e social', en: 'reminds her of the application by email, site and social' } },
+    { it: 'Consenso e tetto per canale', en: 'Consent and per-channel cap' },
+  ], g: { it: 'le ricorda la pratica su email e sito; gli annunci di ripresa partono da Real-Time CDP', en: 'reminds her of the application by email and on the site; retargeting ads start from Real-Time CDP' } },
   { p: 'Customer Journey Analytics', k: 'misura', r: { it: 'Misura', en: 'Measures' }, v: [
     { it: 'Un percorso fra i canali', en: 'One journey across channels' },
     { it: 'Parte da Analytics', en: 'Starts from Analytics' },
@@ -64,28 +68,22 @@ const CAPACITA = [
 const DOC = [
   { l: 'Real-Time CDP · segmentazione edge', u: `${EL}/experience-platform/segmentation/methods/edge-segmentation` },
   { l: 'Journey Optimizer', u: `${EL}/journey-optimizer/using/ajo-home` },
-  { l: 'AI Decisioning', u: `${EL}/journey-optimizer/using/decisioning/gs-decision` },
+  { l: 'Decisioning', u: `${EL}/journey-optimizer/using/decisioning/experience-decisioning/gs-experience-decisioning` },
   { l: 'Connettore Analytics', u: `${EL}/experience-platform/sources/connectors/adobe-applications/analytics` },
-];
-const OGGI = [
-  { t: 'Data warehouse', d: { it: 'i dati dei clienti', en: 'customer data' } },
-  { t: 'SAS', forte: true, d: { it: 'target, propensione, eleggibilità', en: 'targets, propensity, eligibility' } },
-  { t: 'Campagne', d: { it: 'campagne pianificate e invii massivi, come oggi', en: 'scheduled campaigns and bulk sends, as today' } },
-  { t: 'Canali', d: { it: 'app, sito, contact center, filiale', en: 'app, site, contact centre, branch' } },
 ];
 
 /* IL BLOCCO SU CUSTOMER JOURNEY ANALYTICS: dopo lo schema dell'innesto (10 nov 2026). Fonti pubbliche in calce a ogni slide. */
 const FONTI = [
   { it: 'Sito', en: 'Website' },
   { it: 'App', en: 'App' },
-  { it: 'Contact center', en: 'Contact centre' },
+  { it: 'Filiale Digitale', en: 'Filiale Digitale' },
   { it: 'Filiale', en: 'Branch' },
   { it: 'CRM', en: 'CRM' },
 ];
 const TAPPE = [
   { it: 'Sito', en: 'Website' },
   { it: 'App', en: 'App' },
-  { it: 'Contact center', en: 'Contact centre' },
+  { it: 'Filiale Digitale', en: 'Filiale Digitale' },
   { it: 'Filiale', en: 'Branch' },
   { it: 'Firma', en: 'Signing' },
 ];
@@ -119,9 +117,7 @@ const RITORNO = [
     v: { it: 'Piano dei contenuti', en: 'Content plan' }, p: 'Brand Visibility' },
   { m: '02', g: 'content', k: { it: 'La variante che ha funzionato', en: 'The variant that worked' },
     v: { it: 'Brief per Milano e Bologna', en: 'Brief for Milan and Bologna' }, p: 'GenStudio' },
-  { m: '04', g: 'engagement', k: { it: 'La proposta che ha accettato', en: 'The offer she accepted' },
-    v: { it: 'Classifica delle proposte', en: 'Offer ranking' }, p: 'AI Decisioning' },
-  { m: '05', g: 'engagement', k: { it: 'Il punto dove si è fermata', en: 'Where she stalled' },
+  { m: '03', g: 'engagement', k: { it: 'Il punto dove si è fermata', en: 'Where she stalled' },
     v: { it: 'Un passo in meno nel percorso', en: 'One step fewer in the journey' }, p: 'Journey Optimizer' },
 ];
 ---
@@ -137,18 +133,22 @@ const RITORNO = [
       <Divisore num={ch.num} tIt="Dove ci innestiamo" tEn="Where we plug in" />
     </Slide>
 
-    {/* L'INNESTO, ad alto livello. Parte dall'architettura di oggi, con SAS a monte;
+    {/* L'INNESTO, ad alto livello. Parte dall'architettura di oggi, con il motore di targeting a monte;
         la freccia giù accende i due componenti Adobe. Ogni componente apre il suo
         mockup a passi. Le etichette sono HTML accanto ai nodi, l'SVG porta i tratti. */}
     <Slide id="slide-innesto" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="SAS resta a monte. Adobe aggiunge il tempo reale, la scelta e la misura" en="SAS stays upstream. Adobe adds real time, the choice and the measure" />
+        {/* Titolo e riga di confine: decisione del proprietario dell'11 nov 2026.
+            SAS non è confermato dal cliente, quindi non sta nel titolo come fatto. */}
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Il vostro motore resta a monte" en="Your engine stays upstream" />
+        <T as="p" class="im-inn-confine" it={CONFINE.it} en={CONFINE.en} />
         <div class="im-inn">
           <ol class="im-inn-oggi">
             {OGGI.map((n, i) => (
               <li class="im-inn-n" data-forte={n.forte ? '' : null}>
-                <span class="im-inn-t">{n.t}</span>
+                <T as="span" class="im-inn-t" it={n.t.it} en={n.t.en} />
+                {n.s && <T as="span" class="im-inn-s" it={n.s.it} en={n.s.en} />}
                 <T as="span" class="im-inn-d" it={n.d.it} en={n.d.en} />
                 {i > 0 && <svg class="im-inn-fr" viewBox="0 0 28 14" aria-hidden="true"><path d="M1 7h24M19 1l6 6-6 6" /></svg>}
               </li>
@@ -157,11 +157,11 @@ const RITORNO = [
 
           {/* Real-Time CDP per chi non è ancora cliente: il CRM e il CDP che la
               banca ha già restano sui clienti noti; qui entra il comportamento
-              anonimo, che si unisce al profilo al consenso (10 nov 2026). */}
+              anonimo, che si unisce al profilo quando la persona lascia l'email. */}
           <div class="im-inn-cdp" data-substep>
             <button type="button" class="im-inn-b im-inn-b--cdp" data-pp-open aria-haspopup="dialog" aria-label="Real-Time CDP: come funziona">
               <span class="im-inn-t">Real-Time CDP</span>
-              <T as="span" class="im-inn-d" it="Chi non è ancora cliente, dal primo clic al consenso" en="People who are not yet customers, from first click to consent" />
+              <T as="span" class="im-inn-d" it="Chi non è ancora cliente, dal primo clic all’email" en="People not yet customers, from first click to email" />
               <span class="im-inn-piu" aria-hidden="true">+</span>
             </button>
             <InnestoPop scena="cdp" />
@@ -175,7 +175,7 @@ const RITORNO = [
             </div>
             <button type="button" class="im-inn-b" data-pp-open aria-haspopup="dialog">
               <span class="im-inn-t">Journey Optimizer · AI Decisioning</span>
-              <T as="span" class="im-inn-d" it="I percorsi che partono da un gesto, e la proposta che esce. Le campagne pianificate possono seguire, nella fase che sceglierete." en="Journeys triggered by an action, and the offer that goes out. Scheduled campaigns can follow, at the stage you choose." />
+              <T as="span" class="im-inn-d" it="I percorsi che partono da un gesto, e la proposta che esce. Le campagne pianificate restano dove sono." en="Journeys triggered by an action, and the offer that goes out. Scheduled campaigns stay where they are." />
               <span class="im-inn-piu" aria-hidden="true">+</span>
             </button>
             <InnestoPop scena="decisioning" />
@@ -186,23 +186,38 @@ const RITORNO = [
             <span class="im-inn-f im-inn-f--ritorno" data-su><T as="span" it="il risultato" en="the result" /></span>
             <button type="button" class="im-inn-b im-inn-b--largo" data-pp-open aria-haspopup="dialog">
               <span class="im-inn-t">Customer Journey Analytics</span>
-              <T as="span" class="im-inn-d" it="Legge Adobe Analytics, che avete, più filiale, contact center e CRM" en="Reads Adobe Analytics, which you have, plus branch, contact centre and CRM" />
+              <T as="span" class="im-inn-d" it="Legge Adobe Analytics, che avete, più filiale, Filiale Digitale e CRM" en="Reads Adobe Analytics, which you have, plus branch, Filiale Digitale and CRM" />
               <span class="im-inn-piu" aria-hidden="true">+</span>
             </button>
             <InnestoPop scena="cja" />
           </div>
         </div>
 
-        {/* La rotta delle campagne: tre fasi, una per freccia giù. Alla terza
-            il riquadro «Campagne» dello schema si spegne. Lo strumento di oggi
-            non si nomina: il deck gira fra i colleghi del cliente. */}
-        <ol class="im-rotta" aria-label="Le campagne, per fasi">
-          <li data-substep data-f="1"><span class="im-rotta-n">1</span><span><T as="strong" it="Accanto" en="Alongside" /><T as="span" it="percorsi a evento su Journey Optimizer, campagne come oggi" en="event journeys on Journey Optimizer, campaigns as today" /></span></li>
-          <li data-substep data-f="2"><span class="im-rotta-n">2</span><span><T as="strong" it="Una famiglia alla volta" en="One family at a time" /><T as="span" it="le campagne pianificate passano su Journey Optimizer" en="scheduled campaigns move to Journey Optimizer" /></span></li>
-          <li data-substep data-f="3"><span class="im-rotta-n">3</span><span><T as="strong" it="Una sola piattaforma" en="One platform" /><T as="span" it="percorsi e campagne nello stesso posto" en="journeys and campaigns in one place" /></span></li>
-        </ol>
+        {/* LA POSIZIONE DELLE CAMPAGNE (decisione del proprietario, 11 nov 2026):
+            in slide si proietta solo «Accanto», su cui si decide il 19. Le altre
+            posizioni sono opzioni nel dettaglio, senza numeri — i numeri di fase
+            sono del piano. Lo strumento di campagna di oggi non si nomina. */}
+        <div class="im-accanto-riga">
+        <div class="im-accanto" data-substep>
+          <T as="span" class="im-accanto-k" it={ACCANTO.k.it} en={ACCANTO.k.en} />
+          <T as="strong" class="im-accanto-t" it={ACCANTO.t.it} en={ACCANTO.t.en} />
+          <T as="span" class="im-accanto-d" it={ACCANTO.d.it} en={ACCANTO.d.en} />
+        </div>
+        <HowItWorks title="Le posizioni delle campagne" label="Le altre posizioni" tone="onDark" class="ex-dett">
+          <Dettaglio>
+            {OPZIONI.map((o) => (
+              <DettaglioVoce>
+                <FiguraCap segno={o.segno} />
+                <T slot="ancora" as="p" it={o.t.it} en={o.t.en} />
+                <T slot="riga" as="p" it={o.d.it} en={o.d.en} />
+              </DettaglioVoce>
+            ))}
+            <T slot="nota" as="p" it={DECIDETE.it} en={DECIDETE.en} />
+          </Dettaglio>
+        </HowItWorks>
+        </div>
         <p class="im-fonte-riga">
-          <span data-lang-it>L’architettura attuale è una nostra ipotesi, da correggere con voi. </span><span data-lang-en>The current architecture is our assumption, to correct with you. </span>
+          <span data-lang-it>{IPOTESI.it} </span><span data-lang-en>{IPOTESI.en} </span>
           <a href={DETTAGLI}><span data-lang-it>Dettagli tecnici →</span><span data-lang-en>Technical detail →</span></a>
         </p>
       </div>
@@ -242,12 +257,12 @@ const RITORNO = [
 
     {/* I MESSAGGI PER UNA BANCA. Da «CJA Analytics Modernization for FSI», dai business
         case bancari e dai casi cliente su Field Readiness (10 nov 2026). Il dettaglio
-        Analytics → CJA è negli approfondimenti. */}
+        Analytics → CJA è la slide subito dopo. */}
     <Slide id="slide-cja-banca" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quattro domande a cui Customer Journey Analytics risponde" en="Four questions Customer Journey Analytics answers" />
-        <T as="p" class="im-ado-l" it="Si affianca a SAS e al BI che avete, e li lascia dove sono." en="It sits alongside SAS and your BI, and leaves them where they are." />
+        <T as="p" class="im-ado-l" it="Si affianca al motore di targeting e al BI che avete, e li lascia dove sono." en="It sits alongside your targeting engine and BI, and leaves them where they are." />
         <ul class="im-banca">
           {BANCA.map((b) => (
             <li class="im-banca-i" data-substep data-k={b.k}>
@@ -264,7 +279,58 @@ const RITORNO = [
         </ul>
         <p class="im-fonte-riga">
           <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-overview/cja-b2c-overview/cja-faq" target="_blank" rel="noopener"><span data-lang-it>Online e offline in Customer Journey Analytics</span><span data-lang-en>Online and offline in Customer Journey Analytics</span></a><span> · </span>
-          <a href={`${href(base, '/approfondimenti')}#slide-passaggio`}><span data-lang-it>Da Adobe Analytics a Customer Journey Analytics →</span><span data-lang-en>From Adobe Analytics to Customer Journey Analytics →</span></a>
+          <a href="#slide-passaggio"><span data-lang-it>Da Adobe Analytics a Customer Journey Analytics →</span><span data-lang-en>From Adobe Analytics to Customer Journey Analytics →</span></a>
+        </p>
+      </div>
+    </Slide>
+
+    {/* IL PASSAGGIO DA ANALYTICS (panel dell'11 nov 2026, P1): stava fra gli
+        approfondimenti, ma l'invito chiedeva «particolare attenzione alla Web
+        Analytics». Entra qui, subito dopo «Quattro domande». Dati in
+        `data/passaggio.ts`, riletti su Experience League l'11 nov 2026. */}
+    <Slide id="slide-passaggio" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Passando a Customer Journey Analytics restano dati, Workspace e segmenti" en="Moving to Customer Journey Analytics keeps your data, Workspace and segments" />
+
+        <div class="im-pas">
+          <div class="im-pas-testa">
+            <span></span>
+            <div class="im-pas-r"><span>Adobe Analytics</span><span></span><span>Customer Journey Analytics</span></div>
+          </div>
+          {PASSAGGIO.map((g) => (
+            <section class="im-pas-g" data-stato={g.stato} data-substep>
+              <T as="p" class="im-pas-k" it={g.t.it} en={g.t.en} />
+              <div>
+                {g.v.map((x) => (
+                  <div class="im-pas-r">
+                    {x.da ? <T as="span" it={x.da.it} en={x.da.en} /> : <span class="im-pas-vuoto" aria-hidden="true"></span>}
+                    <svg class="im-pas-fr" viewBox="0 0 28 14" aria-hidden="true"><path d="M1 7h24M19 1l6 6-6 6" /></svg>
+                    <T as="span" it={x.a.it} en={x.a.en} />
+                  </div>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+
+        <HowItWorks title="I dettagli del passaggio" tone="onDark" class="ex-dett">
+          <Dettaglio>
+            {DETTAGLI_PASSAGGIO.map((d) => (
+              <DettaglioVoce>
+                <FiguraCap segno={d.segno} />
+                <T slot="ancora" as="p" it={d.ancora.it} en={d.ancora.en} />
+                <T slot="riga" as="p" it={d.riga.it} en={d.riga.en} />
+              </DettaglioVoce>
+            ))}
+          </Dettaglio>
+        </HowItWorks>
+
+        <p class="im-fonte-riga">
+          <span data-lang-it>Ipotesi sul vostro installato, da correggere in sala. Verificato l’11 nov 2026: </span><span data-lang-en>Hypothesis on your installed base, to correct in the room. Verified 11 Nov 2026: </span>
+          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/compare-aa-cja/cja-aa-comparison/cja-aa" target="_blank" rel="noopener">feature support</a><span> · </span>
+          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/compare-aa-cja/upgrade-to-cja/cja-upgrade-recommendations" target="_blank" rel="noopener"><span data-lang-it>guida al passaggio</span><span data-lang-en>upgrade guide</span></a><span> · </span>
+          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/compare-aa-cja/cja-aa-comparison/aa-data-in-cja" target="_blank" rel="noopener">report suite data in CJA</a>
         </p>
       </div>
     </Slide>
@@ -327,7 +393,7 @@ const RITORNO = [
     <Slide id="slide-ritorno" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quello che si impara da Giulia rende più facile il prossimo cliente" en="What Giulia teaches makes the next customer easier" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quello che si misura sul mutuo nel primo trimestre cambia le regole del secondo" en="What the mortgage measures in the first quarter changes the rules for the second" />
 
         <div class="im-rt">
           <div class="im-rt-testa" aria-hidden="true">
@@ -345,10 +411,6 @@ const RITORNO = [
               </li>
             ))}
           </ol>
-          <div class="im-rt-dopo" data-substep>
-            <T as="p" class="im-rt-dk" it="E Giulia, ora cliente" en="And Giulia, now a customer" />
-            <T as="p" class="im-rt-dv" it="Le proposte successive arrivano quando servono: la polizza casa al trasloco, il conto famiglia quando cambia il nucleo." en="The next offers arrive when they are needed: home cover when she moves, a family account when the household changes." />
-          </div>
         </div>
       </div>
     </Slide>
