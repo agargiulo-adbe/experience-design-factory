@@ -17,6 +17,7 @@ import FiguraCap from '../components/FiguraCap.astro';
 import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
 import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
 import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
+import { PASSAGGIO, DETTAGLI_PASSAGGIO } from '../data/passaggio';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -791,6 +792,57 @@ const DECIDE = [
         <p class="im-fonte-riga">
           <span data-lang-it>I quattro passi sono uno schema nostro. Il controllo sul marchio è documentato: </span><span data-lang-en>The four steps are our own framing. Brand checking is documented: </span>
           <a href="https://experienceleague.adobe.com/en/docs/genstudio-for-performance-marketing/user-guide/guidelines/brand-validation" target="_blank" rel="noopener">GenStudio · brand validation</a>
+        </p>
+      </div>
+    </Slide>
+
+    {/* IL PASSAGGIO DA ANALYTICS. Torna fuori percorso l'11 nov 2026 (decisione dell'owner, dopo che il panel l'aveva portato nel capitolo 04): report suite, data view ed eVar parlano a chi usa Workspace, non a una prima stanza con IT, targeting, attivazione e marketing. Stava fra gli
+        approfondimenti, ma l'invito chiedeva «particolare attenzione alla Web
+        Analytics». Entra qui, subito dopo «Quattro domande». Dati in
+        `data/passaggio.ts`, riletti su Experience League l'11 nov 2026. */}
+    <Slide id="slide-passaggio" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Passando a Customer Journey Analytics restano dati, Workspace e segmenti" en="Moving to Customer Journey Analytics keeps your data, Workspace and segments" />
+
+        <div class="im-pas">
+          <div class="im-pas-testa">
+            <span></span>
+            <div class="im-pas-r"><span>Adobe Analytics</span><span></span><span>Customer Journey Analytics</span></div>
+          </div>
+          {PASSAGGIO.map((g) => (
+            <section class="im-pas-g" data-stato={g.stato} data-substep>
+              <T as="p" class="im-pas-k" it={g.t.it} en={g.t.en} />
+              <div>
+                {g.v.map((x) => (
+                  <div class="im-pas-r">
+                    {x.da ? <T as="span" it={x.da.it} en={x.da.en} /> : <span class="im-pas-vuoto" aria-hidden="true"></span>}
+                    <svg class="im-pas-fr" viewBox="0 0 28 14" aria-hidden="true"><path d="M1 7h24M19 1l6 6-6 6" /></svg>
+                    <T as="span" it={x.a.it} en={x.a.en} />
+                  </div>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+
+        <HowItWorks title="I dettagli del passaggio" tone="onDark" class="ex-dett">
+          <Dettaglio>
+            {DETTAGLI_PASSAGGIO.map((d) => (
+              <DettaglioVoce>
+                <FiguraCap segno={d.segno} />
+                <T slot="ancora" as="p" it={d.ancora.it} en={d.ancora.en} />
+                <T slot="riga" as="p" it={d.riga.it} en={d.riga.en} />
+              </DettaglioVoce>
+            ))}
+          </Dettaglio>
+        </HowItWorks>
+
+        <p class="im-fonte-riga">
+          <span data-lang-it>Ipotesi sul vostro installato, da correggere in sala. Verificato l’11 nov 2026: </span><span data-lang-en>Hypothesis on your installed base, to correct in the room. Verified 11 Nov 2026: </span>
+          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/compare-aa-cja/cja-aa-comparison/cja-aa" target="_blank" rel="noopener">feature support</a><span> · </span>
+          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/compare-aa-cja/upgrade-to-cja/cja-upgrade-recommendations" target="_blank" rel="noopener"><span data-lang-it>guida al passaggio</span><span data-lang-en>upgrade guide</span></a><span> · </span>
+          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/compare-aa-cja/cja-aa-comparison/aa-data-in-cja" target="_blank" rel="noopener">report suite data in CJA</a>
         </p>
       </div>
     </Slide>

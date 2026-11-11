@@ -34,7 +34,6 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-innesto', label: 'L’innesto: il vostro motore resta a monte, posizione «Accanto», Real-Time CDP, Journey Optimizer · AI Decisioning e CJA' },
     { id: 'slide-capacita', label: 'Che cosa porta ciascun componente: le capability' },
     { id: 'slide-cja-banca', label: 'Quattro risposte che una banca ottiene da CJA' },
-    { id: 'slide-passaggio', label: 'Web Analytics: da Adobe Analytics a CJA, che cosa resta, cambia, si aggiunge' },
     { id: 'slide-attribuzione', label: 'Quanto del digitale arriva in filiale' },
     { id: 'slide-ritorno', label: 'Quello che si misura sul mutuo nel primo trimestre cambia le regole del secondo' },
   ]},
@@ -73,6 +72,7 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-integrazioni-crm', label: 'La freccia verso il CRM di filiale, in quattro punti' },
     { id: 'slide-brand-visibility', label: 'Brand Visibility, quattro capacità e due strati' },
     { id: 'slide-content-factory', label: 'Content Factory, dal brief alla misura' },
+    { id: 'slide-passaggio', label: 'Web Analytics: da Adobe Analytics a CJA, che cosa resta, cambia, si aggiunge' },
   ]},
   { slug: 'adobe-in-cifre', label: 'Adobe in cifre (fuori percorso, dalla fonte di «Dati, contenuti e decisioni»)', slides: [
     { id: 'slide-fsi',       label: 'Adobe nei servizi finanziari: i numeri e i quattro Forrester Wave' },

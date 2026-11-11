@@ -24,7 +24,7 @@
    opzioni prendono il posto dello schema e di «Accanto». */
 .im-accanto-riga { align-self: stretch; display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1.6rem; margin-top: clamp(0.8rem, 1.2vw, 2.4rem); }
 .im-accanto-riga .im-accanto { flex: 1 1 36rem; margin: 0; }
-#slide-innesto .im-accanto-riga .ex-dett { flex: 0 0 auto; width: 12.5rem; max-width: 100%; margin: 0; }
+#slide-innesto .im-accanto-riga .ex-dett { flex: 0 0 auto; width: auto; max-width: 100%; margin: 0; }
 #slide-innesto:has([data-hiw][data-hiw-on]) .im-accanto-riga .ex-dett { flex-basis: 100%; width: 100%; }
 #slide-innesto:has([data-hiw][data-hiw-on]) .im-inn,
 #slide-innesto:has([data-hiw][data-hiw-on]) .im-accanto { display: none; }
@@ -51,4 +51,43 @@
 @media (max-width: 900px) {
   .im-acc .im-inn-oggi { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
   .im-acc .im-inn-fr { display: none; }
+}
+
+/* Come possono evolvere le campagne (11 nov 2026): tre tappe in fila, una
+   freccia fra l'una e l'altra, la prima accesa. Era una griglia di quattro card
+   uguali, con la frequenza messa in fila come se fosse una tappa. */
+.im-evo { list-style: none; margin: clamp(0.8rem, 1.2vw, 2.4rem) 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(2.4rem, 3.2vw, 6rem); }
+.im-evo-i { position: relative; display: grid; align-content: start; gap: 0.4rem; min-width: 0; margin: 0; padding: clamp(1rem, 1.3vw, 2.6rem); border-radius: 12px; border: 1px dashed rgba(255, 255, 255, 0.4); background: rgba(6, 22, 2, 0.6); }
+.im-evo-i[data-ora] { border: 2px solid #6cc04a; background: rgba(31, 116, 0, 0.35); }
+.im-evo-i + .im-evo-i::before { content: '→'; position: absolute; left: calc(-1 * clamp(2.4rem, 3.2vw, 6rem)); width: clamp(2.4rem, 3.2vw, 6rem); top: 50%; transform: translateY(-50%); text-align: center; font-size: clamp(1.4rem, 1.6vw, 3.2rem); color: #b9e6a3; }
+.im-evo-k { justify-self: start; padding: 0.15rem 0.6rem; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.45); font-size: clamp(0.8rem, 0.74vw, 1.6rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #ffffff; }
+.im-evo-i[data-ora] .im-evo-k { border-color: #6cc04a; background: #6cc04a; color: #0d2a03; }
+.im-evo-t { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.25rem, 1.4vw, 2.9rem); line-height: 1.2; color: #ffffff; }
+.im-evo-d { margin: 0; max-width: none; font-size: clamp(1rem, 1vw, 2.1rem); line-height: 1.5; color: #e3eedf; }
+.im-evo-note { display: grid; gap: 0.5rem; margin-top: clamp(1rem, 1.4vw, 2.8rem); padding-top: clamp(0.8rem, 1vw, 2rem); border-top: 1px solid rgba(255, 255, 255, 0.22); }
+.im-evo-n { margin: 0; max-width: none; font-size: clamp(1rem, 1vw, 2.1rem); line-height: 1.5; color: #e3eedf; }
+.im-evo .figcap, .im-evo svg { max-height: clamp(3rem, 5vh, 6rem); }
+@media (max-width: 900px) { .im-evo { grid-template-columns: minmax(0, 1fr); gap: 1.2rem; } .im-evo-i + .im-evo-i::before { content: '↓'; left: 0; right: 0; width: auto; top: -1.2rem; transform: none; } }
+
+/* Il link al piano di evoluzione sta sulla STESSA riga di «Accanto»: a capo
+   aggiungeva una riga e a 1280×800 spingeva il titolo fuori dall'area sicura
+   (check c, 11 nov 2026). */
+.im-accanto-riga { flex-wrap: nowrap; }
+.im-accanto-riga .im-accanto { flex: 1 1 0; min-width: 0; }
+#slide-innesto .im-accanto-riga .ex-dett .hiw-trigger { white-space: nowrap; }
+#slide-innesto:has([data-hiw][data-hiw-on]) .im-accanto-riga { flex-wrap: wrap; }
+/* Da chiuso il blocco misura solo il link: il corpo nascosto (tre tappe)
+   allargava la colonna e schiacciava «Accanto». Aperto prende la riga intera. */
+#slide-innesto .im-accanto-riga .ex-dett { flex: 0 0 auto; width: max-content; max-width: 24rem; overflow: hidden; }
+#slide-innesto:has([data-hiw][data-hiw-on]) .im-accanto-riga .ex-dett { width: 100%; max-width: none; overflow: visible; }
+/* Sotto i 1400px il link al piano di evoluzione va su due righe accanto ad
+   «Accanto», invece di stringerlo fino a mandarlo a capo: a 1280×800 la riga
+   in più spingeva il titolo fuori dall'area sicura (check c, 11 nov 2026). */
+@media (max-width: 1400px) {
+  #slide-innesto .im-accanto-riga .ex-dett { max-width: 13.5rem; }
+  #slide-innesto .im-accanto-riga .ex-dett .hiw-trigger { white-space: normal; text-align: left; }
+}
+@media (max-height: 820px) {
+  #slide-innesto .im-accanto-riga { margin-top: 0.3rem; }
+  #slide-innesto .im-accanto { padding-block: 0.45rem; }
 }

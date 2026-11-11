@@ -56,15 +56,15 @@ export const SCENE: Record<ScenaId, Scena> = {
   },
   cdp: {
     prodotto: 'Real-Time CDP',
-    cosa: 'Chi non è ancora cliente: il comportamento sul sito, prima del nome, e il profilo che nasce al consenso.',
+    cosa: 'Riconosce chi non è ancora cliente: prima da come usa il sito, poi dall’email che lascia.',
     passi: [
-      'Giulia arriva sul sito: nessun nome, solo l’identificativo del browser.',
-      'Simula la rata: un segmento in tempo reale la riconosce come interessata alla prima casa.',
-      'Nella pagina successiva il sito le propone di riprendere la simulazione.',
-      'Lascia l’email e il consenso: la storia anonima si unisce al suo profilo.',
-      'Il profilo passa a Journey Optimizer e AI Decisioning. Il CRM resta dov’è.',
+      'Giulia arriva sul sito senza lasciare il nome. Si riconosce solo il suo browser.',
+      'Simula la rata, e in quell’istante entra nel gruppo «mutuo prima casa».',
+      'Quando torna, il sito le propone di riprendere la simulazione.',
+      'Lascia email e consenso. Le visite fatte da anonima si uniscono al suo nome.',
+      'Da qui Journey Optimizer e AI Decisioning sanno chi è. Il CRM di filiale non cambia.',
     ],
-    nota: 'Schema illustrativo. Per adattare il sito a un anonimo serve il consenso ai cookie; per contattarlo, il consenso marketing. I profili anonimi scadono dopo un periodo configurabile da 1 a 365 giorni.',
+    nota: 'Schema illustrativo. Per personalizzare il sito serve il consenso ai cookie; per scriverle, il consenso marketing. I profili anonimi si cancellano dopo un periodo che scegliete voi, da 1 a 365 giorni.',
     fonti: [
       { label: 'Segmentazione edge', url: `${EL}/experience-platform/segmentation/methods/edge-segmentation` },
       { label: 'Profili anonimi', url: `${EL}/experience-platform/profile/pseudonymous-profiles` },

@@ -38,25 +38,32 @@ export const OGGI: { t: Testo; s?: Testo; d: Testo; forte?: boolean }[] = [
 export const ACCANTO = {
   k: { it: 'Si parte da qui', en: 'Where we start' },
   t: { it: 'Accanto', en: 'Alongside' },
-  d: { it: 'percorsi a evento su Journey Optimizer, le campagne come oggi', en: 'event journeys on Journey Optimizer, campaigns as today' },
+  d: { it: 'i percorsi nuovi su Journey Optimizer, le campagne come oggi', en: 'new journeys on Journey Optimizer, campaigns as today' },
 };
 
-/** Le posizioni possibili, nel dettaglio a richiesta. Opzioni, non tappe: senza numeri. */
-export const OPZIONI: { segno: string; t: Testo; d: Testo }[] = [
-  { segno: 'canali', t: { it: 'Accanto', en: 'Alongside' },
-    d: { it: 'Percorsi a evento su Journey Optimizer, campagne pianificate dove sono.', en: 'Event journeys on Journey Optimizer, scheduled campaigns where they are.' } },
-  { segno: 'flusso', t: { it: 'Per famiglia', en: 'By family' },
-    d: { it: 'Una famiglia di campagne pianificate alla volta passa su Journey Optimizer.', en: 'One family of scheduled campaigns at a time moves to Journey Optimizer.' } },
-  { segno: 'archivio', t: { it: 'Tutto insieme', en: 'All together' },
-    d: { it: 'Percorsi e campagne pianificate nello stesso strumento.', en: 'Journeys and scheduled campaigns in the same tool.' } },
-  { segno: 'misura', t: { it: 'In fase 1, la frequenza', en: 'In phase 1, frequency' },
-    d: { it: 'Due strumenti parlano alla stessa persona: chi governa il tetto si decide in fase 0.', en: 'Two tools reach the same person: who owns the cap gets decided in phase 0.' } },
+/** Come possono evolvere le campagne: tre tappe in ordine, nel dettaglio a
+    richiesta. Si parte dalla prima; le altre due le decide la banca, dopo la
+    misura della fase 1. Non sono i numeri di fase del piano (0 · 1 · 2), quindi
+    la tappa non porta un numero: porta chi la decide. */
+export const EVOLUZIONE: { segno: string; k: Testo; t: Testo; d: Testo; ora?: boolean }[] = [
+  { segno: 'canali', ora: true, k: { it: 'Si parte da qui', en: 'Where we start' }, t: { it: 'Accanto', en: 'Alongside' },
+    d: { it: 'I percorsi nuovi vanno su Journey Optimizer. Le campagne pianificate restano dove sono.', en: 'New journeys run on Journey Optimizer. Scheduled campaigns stay where they are.' } },
+  { segno: 'flusso', k: { it: 'Se lo decidete voi', en: 'If you decide so' }, t: { it: 'Una famiglia alla volta', en: 'One family at a time' },
+    d: { it: 'Le campagne pianificate passano su Journey Optimizer, un gruppo per volta.', en: 'Scheduled campaigns move to Journey Optimizer, one group at a time.' } },
+  { segno: 'archivio', k: { it: 'Se lo decidete voi', en: 'If you decide so' }, t: { it: 'Tutto in un posto', en: 'All in one place' },
+    d: { it: 'Percorsi e campagne pianificate nello stesso strumento.', en: 'Journeys and scheduled campaigns in the same tool.' } },
 ];
 
-/** La riga della decisione, sotto le opzioni. Parole del proprietario. */
+/** Una cosa da decidere SUBITO, qualunque tappa si scelga: non è una tappa. */
+export const FREQUENZA: Testo = {
+  it: 'Nella fase 1 due strumenti possono scrivere alla stessa persona. Chi fissa il numero massimo di messaggi si decide in fase 0.',
+  en: 'In phase 1 two tools can write to the same person. Who sets the maximum number of messages gets decided in phase 0.',
+};
+
+/** La riga della decisione, sotto le tappe. */
 export const DECIDETE: Testo = {
-  it: 'Se e quando spostare le campagne pianificate lo decidete voi, dopo la misura della fase 1. Costo, tempi e prerequisiti si stimano allora.',
-  en: 'Whether and when to move scheduled campaigns is your call, after the phase 1 measurement. Cost, timing and prerequisites get estimated then.',
+  it: 'Se e quando spostare le campagne lo decidete voi, dopo i risultati della fase 1. Costi e tempi si stimano allora.',
+  en: 'Whether and when to move the campaigns is your call, after the phase 1 results. Cost and timing get estimated then.',
 };
 
 /** La nota sotto lo schema («non toccare» del panel): le stesse parole nei due percorsi. */

@@ -253,7 +253,7 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'percorso', scena: 'lavoro-05-orchestrazione',
-      titolo: { it: 'Se la richiesta si ferma, la banca la ricorda per email, sul sito e con annunci di ripresa', en: 'If the application stalls, the bank follows up by email, on the site and with resume ads' },
+      titolo: { it: 'Se lascia la richiesta a metà, la banca gliela ricorda per email, sul sito e con un annuncio', en: 'If she leaves the application half-done, the bank reminds her by email, on the website and with an ad' },
       corpo: {
         it: 'L’audience si definisce una volta, con le regole, e il percorso parte dall’evento. Aspetta dodici ore, prova la mail con la proposta di appuntamento e, se il clic non arriva, riprova con la variante giusta.',
         en: 'The audience is defined once, with rules, and the journey starts from the event. It waits twelve hours, tries email with the proposed appointment and, if the click does not come, tries again with the right variant.',
@@ -281,7 +281,7 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'filiale', scena: 'lavoro-06-filiale-back',
-      titolo: { it: 'Il percorso passa al CRM di filiale lead, appuntamento e simulazione', en: 'The journey hands lead, appointment and simulation to the branch CRM' },
+      titolo: { it: 'Il CRM di filiale riceve il contatto, l’appuntamento e la simulazione', en: 'The branch CRM receives the contact, the appointment and the simulation' },
       corpo: {
         it: 'Il percorso scrive nel CRM di filiale il lead, la data e la simulazione appena lei accetta l’appuntamento, via API e dentro i consensi. Chi la riceve lavora nel CRM che usa già. La stessa azione vale per un’audience intera: ogni persona arriva in filiale come lead da lavorare. Il collegamento con il vostro CRM si disegna con voi.',
         en: 'When she accepts the appointment, the journey writes the lead, the date and the simulation into the branch CRM, over API and within consent. Whoever receives her works in the CRM they already use. The same action works for a whole audience: each person reaches the branch as a lead to work. The link with your CRM gets designed with you.',

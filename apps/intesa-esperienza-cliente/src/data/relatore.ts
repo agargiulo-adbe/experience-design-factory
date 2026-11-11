@@ -26,7 +26,7 @@ export const NOTE: Record<string, Record<string, Nota>> = {
   },
   scenario: {
     'slide-cover': { dire: 'Si parte dal dato che c’è, e spesso riguarda chi è cliente di un’altra banca.' },
-    'slide-segnale': { dire: 'Il segnale più forte, simulare la rata, arriva da chi è ancora anonimo. Poi si chiede: quanto tempo passa oggi fra quel gesto e una risposta?', attenzione: 'Il dato è di mercato (Nomisma e MutuiSupermarket.it, maggio 2026), non è loro. Il 45% «vuole» simulare la rata: non dire che la simula.' },
+    'slide-segnale': { dire: 'Prima il dato, poi la lettura (freccia giù): il segnale più forte arriva da chi è ancora anonimo. Prima del nome si risponde con assistenti AI, annunci e sito; dopo, email, filiale e app. Sono i sette momenti che seguono. Poi si chiede: quanto tempo passa oggi fra quel gesto e una risposta?', attenzione: 'Il dato è di mercato (Nomisma e MutuiSupermarket.it, maggio 2026), non è loro. Il 45% «vuole» simulare la rata: non dire che la simula.' },
   },
   persona: {
     'slide-cover': { dire: 'Giulia, 34 anni, non è ancora cliente: tutto il racconto è su di lei.' },
@@ -37,7 +37,6 @@ export const NOTE: Record<string, Record<string, Nota>> = {
     'slide-innesto': { dire: 'Si parte da quello che c’è: il vostro motore di targeting a monte, le campagne e gli invii dove sono. Sotto il titolo la riga di confine: sui clienti la next best action resta del loro motore. Freccia giù: Real-Time CDP sui prospect, poi Journey Optimizer con AI Decisioning, poi Customer Journey Analytics, infine la posizione «Accanto». Un clic su ciascun componente apre il mockup a passi.', attenzione: 'L’architettura attuale è una nostra ipotesi: si chiede di correggerla. Il nome SAS non è confermato: si dice «il vostro motore di targeting» e si chiede, senza darlo per fatto.', seChiedono: 'Il motore di targeting? Resta dov’è: target e propensione entrano come attributi; l’eleggibilità creditizia viene dal core banking, precalcolata nel profilo o passata nella richiesta di decisione. Due strumenti di campagna? Si parte «accanto»; le altre posizioni (per famiglia, tutto insieme) sono in «Le altre posizioni» e le decidono loro dopo la misura della fase 1. Far uscire i messaggi di Journey Optimizer dallo strumento che hanno oggi non è ancora nativo: chiederlo come domanda, non prometterlo. Customer Journey Analytics sostituisce il BI? No, gli si affianca.' },
     'slide-capacita': { dire: 'Una colonna per componente, con la freccia giù: tre capability ciascuno, nell’ordine dello schema. Si sceglie la colonna che interessa e si apre la demo da lì.', attenzione: 'Sul prospect classificano priorità e regole; un modello AI arriva dove ci sono storico e volume, da validare con Advanced Analytics. Sono capability documentate: i link sono in fondo. Disponibilità e licenze si verificano sul loro contratto. Journey Optimizer non ha un canale social: gli annunci di ripresa partono da un pubblico di Real-Time CDP, aggiornato ogni giorno.' },
     'slide-cja-banca': { dire: 'Quattro risposte, una per freccia giù. La slide dopo è il passaggio da Analytics, che l’invito chiedeva.' },
-    'slide-passaggio': { dire: 'Web Analytics: Adobe Analytics e Customer Journey Analytics convivono finché serve. Tre gruppi: resta, cambia nome, si aggiunge. Nel dettaglio: esportazioni, Activity Map, convivenza e formazione.', attenzione: 'È un’ipotesi sul loro installato: si corregge in sala. Quanto durano insieme le due licenze non si stima: si decide in fase 0.' },
     'slide-attribuzione': { dire: 'Si va oltre l’ultimo clic, fino a quanto il digitale porta in filiale.', seChiedono: 'Da chiedere: quale modello di attribuzione usate oggi in Adobe Analytics, e su quali canali?', attenzione: 'L’attribuzione si ferma ai canali osservati: dirlo subito.' },
     'slide-ritorno': { dire: 'Una riga alla volta con la freccia giù: che cosa si impara dal mutuo nel primo trimestre, e quale regola cambia nel secondo.' },
   },
@@ -49,6 +48,7 @@ export const NOTE: Record<string, Record<string, Nota>> = {
     'slide-integrazioni-crm': { dire: 'La freccia verso il CRM: chi espone l’API, la chiave del lead, la deduplica, e che cosa succede se la chiamata fallisce.', seChiedono: 'L’API del CRM la identifichiamo con Group Technology in fase 0.' },
     'slide-brand-visibility': { dire: 'Prima si misura come si compare nelle risposte generate, poi si interviene.', seChiedono: 'Serve l’inoltro dei log del CDN: va concordato con il loro IT.' },
     'slide-content-factory': { dire: 'Una campagna di mutuo si ferma sulle approvazioni: la verifica sta dentro la produzione.' },
+    'slide-passaggio': { dire: 'Web Analytics: Adobe Analytics e Customer Journey Analytics convivono finché serve. Tre gruppi: resta, cambia nome, si aggiunge. Nel dettaglio: esportazioni, Activity Map, convivenza e formazione.', attenzione: 'È un’ipotesi sul loro installato: si corregge in sala. Quanto durano insieme le due licenze non si stima: si decide in fase 0.' },
     'slide-ingaggio-dato': { dire: 'Fuori percorso: una sola misura e le quattro domande che apre.' },
     'slide-ingaggio-profilo': { dire: 'Fuori percorso: come si cuciono gli identificativi, e la scelta fra copiare il dato e lasciarlo dov’è.', attenzione: 'Le audience federate si aggiornano a ogni esecuzione pianificata, non a evento.' },
     'slide-ingaggio-regia': { dire: 'Fuori percorso: tre modi di eseguire la stessa decisione. Il terzo lascia l’orchestrazione dov’è.' },
@@ -89,6 +89,6 @@ export const DAVANTI: Record<string, string[]> = {
   scenario: ['slide-segnale'],
   persona: ['slide-giro-di-giulia'],
   momenti: ['slide-m-03', 'slide-m-04', 'slide-m-07'],
-  'messa-a-terra': ['slide-innesto', 'slide-attribuzione', 'slide-passaggio'],
+  'messa-a-terra': ['slide-innesto', 'slide-attribuzione'],
   'prossimi-passi': ['slide-da-voi', 'slide-soglia', 'slide-serve', 'slide-firma'],
 };

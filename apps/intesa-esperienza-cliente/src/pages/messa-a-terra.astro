@@ -29,8 +29,7 @@ import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import Divisore from '../components/Divisore.astro';
 import fondo from '../assets/generated/cover-innesto.webp';
 import fondoMisura from '../assets/generated/lavoro-07-misura.webp';
-import { CONFINE, OGGI, ACCANTO, OPZIONI, DECIDETE, IPOTESI } from '../data/innesto';
-import { PASSAGGIO, DETTAGLI_PASSAGGIO } from '../data/passaggio';
+import { CONFINE, OGGI, ACCANTO, EVOLUZIONE, FREQUENZA, DECIDETE, IPOTESI } from '../data/innesto';
 import '../styles/innesto.css';
 
 const SLUG = 'messa-a-terra';
@@ -117,7 +116,12 @@ const RITORNO = [
     v: { it: 'Piano dei contenuti', en: 'Content plan' }, p: 'Brand Visibility' },
   { m: '02', g: 'content', k: { it: 'La variante che ha funzionato', en: 'The variant that worked' },
     v: { it: 'Brief per Milano e Bologna', en: 'Brief for Milan and Bologna' }, p: 'GenStudio' },
-  { m: '03', g: 'engagement', k: { it: 'Il punto dove si è fermata', en: 'Where she stalled' },
+  /* La riga di AI Decisioning torna (era stata tolta l'11 nov perché parlava di
+     «classifica» su un prospect che non ha score): sul prospect la misura
+     corregge le REGOLE, non un punteggio. Il numero è quello del momento. */
+  { m: '04', g: 'engagement', k: { it: 'La proposta che ha funzionato', en: 'The offer that worked' },
+    v: { it: 'Regole riviste a fine trimestre', en: 'Rules revised at quarter end' }, p: 'AI Decisioning' },
+  { m: '05', g: 'engagement', k: { it: 'Il punto dove si è fermata', en: 'Where she stalled' },
     v: { it: 'Un passo in meno nel percorso', en: 'One step fewer in the journey' }, p: 'Journey Optimizer' },
 ];
 ---
@@ -203,17 +207,24 @@ const RITORNO = [
           <T as="strong" class="im-accanto-t" it={ACCANTO.t.it} en={ACCANTO.t.en} />
           <T as="span" class="im-accanto-d" it={ACCANTO.d.it} en={ACCANTO.d.en} />
         </div>
-        <HowItWorks title="Le posizioni delle campagne" label="Le altre posizioni" tone="onDark" class="ex-dett">
-          <Dettaglio>
-            {OPZIONI.map((o) => (
-              <DettaglioVoce>
-                <FiguraCap segno={o.segno} />
-                <T slot="ancora" as="p" it={o.t.it} en={o.t.en} />
-                <T slot="riga" as="p" it={o.d.it} en={o.d.en} />
-              </DettaglioVoce>
+        <HowItWorks title="Come possono evolvere le campagne" label="Come possono evolvere le campagne" tone="onDark" class="ex-dett">
+          {/* Tre tappe in fila con la freccia fra l'una e l'altra: la prima è
+              accesa (si parte da lì), le altre due dicono chi le decide. La
+              frequenza è una decisione di fase 0, non una tappa: sta sotto. */}
+          <ol class="im-evo" role="list">
+            {EVOLUZIONE.map((e) => (
+              <li class="im-evo-i" data-ora={e.ora ? '' : null}>
+                <FiguraCap segno={e.segno} />
+                <T as="span" class="im-evo-k" it={e.k.it} en={e.k.en} />
+                <T as="strong" class="im-evo-t" it={e.t.it} en={e.t.en} />
+                <T as="p" class="im-evo-d" it={e.d.it} en={e.d.en} />
+              </li>
             ))}
-            <T slot="nota" as="p" it={DECIDETE.it} en={DECIDETE.en} />
-          </Dettaglio>
+          </ol>
+          <div class="im-evo-note">
+            <T as="p" class="im-evo-n" it={FREQUENZA.it} en={FREQUENZA.en} />
+            <T as="p" class="im-evo-n" it={DECIDETE.it} en={DECIDETE.en} />
+          </div>
         </HowItWorks>
         </div>
         <p class="im-fonte-riga">
@@ -279,61 +290,11 @@ const RITORNO = [
         </ul>
         <p class="im-fonte-riga">
           <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-overview/cja-b2c-overview/cja-faq" target="_blank" rel="noopener"><span data-lang-it>Online e offline in Customer Journey Analytics</span><span data-lang-en>Online and offline in Customer Journey Analytics</span></a><span> · </span>
-          <a href="#slide-passaggio"><span data-lang-it>Da Adobe Analytics a Customer Journey Analytics →</span><span data-lang-en>From Adobe Analytics to Customer Journey Analytics →</span></a>
+          <a href={`${href(base, '/approfondimenti/')}#slide-passaggio`}><span data-lang-it>Da Adobe Analytics a Customer Journey Analytics →</span><span data-lang-en>From Adobe Analytics to Customer Journey Analytics →</span></a>
         </p>
       </div>
     </Slide>
 
-    {/* IL PASSAGGIO DA ANALYTICS (panel dell'11 nov 2026, P1): stava fra gli
-        approfondimenti, ma l'invito chiedeva «particolare attenzione alla Web
-        Analytics». Entra qui, subito dopo «Quattro domande». Dati in
-        `data/passaggio.ts`, riletti su Experience League l'11 nov 2026. */}
-    <Slide id="slide-passaggio" bg="inverse" align="left">
-      <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Passando a Customer Journey Analytics restano dati, Workspace e segmenti" en="Moving to Customer Journey Analytics keeps your data, Workspace and segments" />
-
-        <div class="im-pas">
-          <div class="im-pas-testa">
-            <span></span>
-            <div class="im-pas-r"><span>Adobe Analytics</span><span></span><span>Customer Journey Analytics</span></div>
-          </div>
-          {PASSAGGIO.map((g) => (
-            <section class="im-pas-g" data-stato={g.stato} data-substep>
-              <T as="p" class="im-pas-k" it={g.t.it} en={g.t.en} />
-              <div>
-                {g.v.map((x) => (
-                  <div class="im-pas-r">
-                    {x.da ? <T as="span" it={x.da.it} en={x.da.en} /> : <span class="im-pas-vuoto" aria-hidden="true"></span>}
-                    <svg class="im-pas-fr" viewBox="0 0 28 14" aria-hidden="true"><path d="M1 7h24M19 1l6 6-6 6" /></svg>
-                    <T as="span" it={x.a.it} en={x.a.en} />
-                  </div>
-                ))}
-              </div>
-            </section>
-          ))}
-        </div>
-
-        <HowItWorks title="I dettagli del passaggio" tone="onDark" class="ex-dett">
-          <Dettaglio>
-            {DETTAGLI_PASSAGGIO.map((d) => (
-              <DettaglioVoce>
-                <FiguraCap segno={d.segno} />
-                <T slot="ancora" as="p" it={d.ancora.it} en={d.ancora.en} />
-                <T slot="riga" as="p" it={d.riga.it} en={d.riga.en} />
-              </DettaglioVoce>
-            ))}
-          </Dettaglio>
-        </HowItWorks>
-
-        <p class="im-fonte-riga">
-          <span data-lang-it>Ipotesi sul vostro installato, da correggere in sala. Verificato l’11 nov 2026: </span><span data-lang-en>Hypothesis on your installed base, to correct in the room. Verified 11 Nov 2026: </span>
-          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/compare-aa-cja/cja-aa-comparison/cja-aa" target="_blank" rel="noopener">feature support</a><span> · </span>
-          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/compare-aa-cja/upgrade-to-cja/cja-upgrade-recommendations" target="_blank" rel="noopener"><span data-lang-it>guida al passaggio</span><span data-lang-en>upgrade guide</span></a><span> · </span>
-          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/compare-aa-cja/cja-aa-comparison/aa-data-in-cja" target="_blank" rel="noopener">report suite data in CJA</a>
-        </p>
-      </div>
-    </Slide>
 
     <Slide id="slide-attribuzione" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-doppia" style={`--bg: url('${fondoMisura.src}')`}></div>
@@ -393,7 +354,7 @@ const RITORNO = [
     <Slide id="slide-ritorno" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quello che si misura sul mutuo nel primo trimestre cambia le regole del secondo" en="What the mortgage measures in the first quarter changes the rules for the second" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quello che si impara da Giulia rende più facile il prossimo cliente" en="What Giulia teaches makes the next customer easier" />
 
         <div class="im-rt">
           <div class="im-rt-testa" aria-hidden="true">
@@ -411,6 +372,13 @@ const RITORNO = [
               </li>
             ))}
           </ol>
+          {/* «E Giulia, ora cliente» torna, ma dice il CONFINE invece di proporle
+              una polizza: sul cliente la next best action è del motore della
+              banca (panel, 11 nov 2026). Così chiude il giro e lo rispetta. */}
+          <div class="im-rt-dopo" data-substep>
+            <T as="p" class="im-rt-dk" it="E Giulia, ora cliente" en="And Giulia, now a customer" />
+            <T as="p" class="im-rt-dv" it="Passa al vostro motore con tutta la sua storia: da qui le proposte le sceglie lui." en="She moves to your engine with her whole history: from here on, it chooses the offers." />
+          </div>
         </div>
       </div>
     </Slide>
