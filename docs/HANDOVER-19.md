@@ -295,3 +295,15 @@ Sei «condizionato» su sei in entrambi i giri. Il **primo giro** ha trovato che
 - **La slide del team**: sette nomi, contro i cinque dell'invito.
 - I 17 P1 e 6 P2 del secondo giro stanno nel verdetto.
 - Le domande per il check col referente (11 nov, 14:15) sono state preparate in chat dai due verdetti.
+
+### La mattina dell'11: copia, sintesi e il feedback del team (dopo il panel)
+
+Giro di copia e grafica chiesto dall'owner, più i commenti di un collega del team Adobe sul thread interno. **Non coperto dal panel**: niente terzo giro, per regola.
+- **Scenario**: «La nostra lettura» diventa una fascia a tutta larghezza con i sei canali dei momenti, divisi dal momento del nome (assistenti AI, annunci, sito → email, filiale, app).
+- **Innesto**: titolo dal feedback del team, «Adobe si aggiunge con tempo reale, decisione e analisi multicanale» (fonte unica `TITOLO` in `data/innesto.ts`, uguale nel taglio corto). **I sistemi della banca non si nominano più, nemmeno SAS «da confermare»**: si scrive «motore di targeting», come per lo strumento di campagna. Real-Time CDP «il profilo di clienti e prospect, anche prima del nome», perché tiene anche i clienti (rilievo giusto del collega); Journey Optimizer e CJA con la copia del team, semplificata.
+- **«Le altre posizioni» → «Come possono evolvere le campagne»**: tre tappe in fila (si parte da qui · se lo decidete voi), la frequenza come nota di fase 0.
+- **Il passaggio Analytics → CJA torna fuori percorso**: la scelta dell'owner del 10 nov era stata ribaltata dal giro del panel senza dirlo. Resta raggiungibile da `slide-cja-banca`.
+- **Prossimi passi da quattro slide dense a due**: la proposta (ask, quattro misure; le altre tre e la soglia a richiesta) e come si parte (tre tappe con chi guida e quando; che cosa si fa a richiesta). Le cinque cose da portare sono in `approfondimenti/slide-serve`, dati in `data/serve.ts`. `slide-soglia` non esiste più.
+- **Slide di ritorno** di nuovo più ricca: torna la riga di AI Decisioning (le regole riviste a fine trimestre) e «Giulia, ora cliente» che passa al motore della banca.
+- **Pop-in Real-Time CDP** riscritto in parole piane, e le etichette dei passi ora si leggono: erano grigio chiaro su bianco, e `audit:ink` non apre i pop-in. **Momenti**: a 1440×900 e 1280×800 il testo cadeva sulla foto chiara, e la foto ora è abbassata. m-05 e m-06 riscritti, con le parole del collega su m-06. «Capitolo 03.1.1» corretto.
+- **Gate**: `audit:deck` 177 righe, 0 HARD · `copy-audit` 0 HARD · `audit:ink` pulito · `audit:taglio` allineato · `audit:fonti` nessun link rotto · `astro check` 0.

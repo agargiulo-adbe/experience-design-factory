@@ -49,10 +49,8 @@ export const PAGE_REGISTRY: PageEntry[] = [
   ]},
   { slug: 'prossimi-passi', label: 'Prossimi passi (07)', slides: [
     { id: 'slide-cover',  label: 'Cover: prossimi passi' },
-    { id: 'slide-da-voi', label: 'Che cosa misureremmo dal giorno uno, in sette misure' },
-    { id: 'slide-soglia', label: 'La soglia, il gruppo di controllo e l’ask' },
-    { id: 'slide-fasi',   label: 'Il seguito a tappe: disegno, mutuo sui prospect, dopo il trimestre' },
-    { id: 'slide-serve',  label: 'Che cosa ci serve: cinque cose, e chi le porta' },
+    { id: 'slide-da-voi', label: 'La proposta: un trimestre sul mutuo, quattro misure e l’ask (le altre a richiesta)' },
+    { id: 'slide-fasi',   label: 'Come si parte: tre tappe, chi guida e quando (il dettaglio a richiesta)' },
     { id: 'slide-firma',  label: 'La firma: Adobe × Intesa Sanpaolo, chiude il percorso' },
   ]},
   /* ⚠️ Le pagine FUORI PERCORSO stanno in coda. La console costruisce
@@ -73,6 +71,7 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-brand-visibility', label: 'Brand Visibility, quattro capacità e due strati' },
     { id: 'slide-content-factory', label: 'Content Factory, dal brief alla misura' },
     { id: 'slide-passaggio', label: 'Web Analytics: da Adobe Analytics a CJA, che cosa resta, cambia, si aggiunge' },
+    { id: 'slide-serve', label: 'Le cinque cose da portare alla fase 0, e chi le porta' },
   ]},
   { slug: 'adobe-in-cifre', label: 'Adobe in cifre (fuori percorso, dalla fonte di «Dati, contenuti e decisioni»)', slides: [
     { id: 'slide-fsi',       label: 'Adobe nei servizi finanziari: i numeri e i quattro Forrester Wave' },

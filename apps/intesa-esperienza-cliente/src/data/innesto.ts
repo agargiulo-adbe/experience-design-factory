@@ -14,21 +14,30 @@
  *   banca decide dopo la misura della fase 1, senza numeri (i numeri di fase
  *   sono del piano: 0 Il disegno · 1 Il mutuo · 2 Dopo il trimestre);
  * · SAS non è confermato dal cliente: il sistema si chiama «motore di
- *   targeting», e solo nel riquadro compare «SAS (da confermare)»;
+ *   targeting» ovunque, anche nel riquadro (feedback del team, 11 nov: i
+ *   sistemi della banca non si nominano, come lo strumento di campagna);
  * · lo strumento di campagna di oggi non si nomina.
  */
 type Testo = { it: string; en: string };
 
+/** Il titolo dell'innesto (feedback del team, 11 nov 2026): dice che cosa
+    aggiunge Adobe, e non nomina i sistemi della banca. Fonte unica per il
+    percorso intero e per il taglio corto. */
+export const TITOLO: Testo = {
+  it: 'Adobe si aggiunge con tempo reale, decisione e analisi multicanale',
+  en: 'Adobe adds real time, decisioning and cross-channel analysis',
+};
+
 /** La riga di confine sul motore. Frase canonica: identica ovunque compaia. */
 export const CONFINE: Testo = {
-  it: 'Sui clienti la next best action resta del vostro motore; il pilota lavora su chi non è ancora cliente.',
+  it: 'Sui clienti la next best action resta del vostro motore; il pilota lavora su chi non è ancora cliente.',
   en: 'For customers the next best action stays with your engine; the pilot works on people who are not customers yet.',
 };
 
 /** L'architettura di oggi, a grandi blocchi: un'ipotesi, e la slide lo dichiara. */
 export const OGGI: { t: Testo; s?: Testo; d: Testo; forte?: boolean }[] = [
   { t: { it: 'Data warehouse', en: 'Data warehouse' }, d: { it: 'i dati dei clienti', en: 'customer data' } },
-  { t: { it: 'Motore di targeting', en: 'Targeting engine' }, s: { it: 'SAS (da confermare)', en: 'SAS (to be confirmed)' },
+  { t: { it: 'Motore di targeting', en: 'Targeting engine' },
     d: { it: 'target, propensione', en: 'targets, propensity' }, forte: true },
   { t: { it: 'Campagne', en: 'Campaigns' }, d: { it: 'campagne pianificate e invii massivi, come oggi', en: 'scheduled campaigns and bulk sends, as today' } },
   { t: { it: 'Canali', en: 'Channels' }, d: { it: 'filiale, Filiale Digitale, app, sito, self, media pagato', en: 'branch, Filiale Digitale, app, site, self-service, paid media' } },

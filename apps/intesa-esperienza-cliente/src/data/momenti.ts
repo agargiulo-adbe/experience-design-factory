@@ -273,7 +273,7 @@ export const MOMENTI: Momento[] = [
     prodotto: 'Journey Optimizer',
     cliente: {
       chrome: 'filiale', scena: 'scena-06-filiale',
-      titolo: { it: 'In filiale trova la simulazione già aperta', en: 'In the branch she finds her simulation already open' },
+      titolo: { it: 'In filiale trova un gestore che conosce già il suo percorso', en: 'In the branch she finds an adviser who already knows her journey' },
       corpo: {
         it: 'Entra per l’appuntamento e trova la sua simulazione già aperta: stesso importo, stessa rata, stessi documenti. Non le viene chiesto di raccontare da capo quello che ha già fatto sul sito tre sere prima.',
         en: 'She arrives for the appointment and finds her simulation already open: same amount, same instalment, same documents. She is not asked to retell what she already did on the site three evenings earlier.',
@@ -281,7 +281,7 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'filiale', scena: 'lavoro-06-filiale-back',
-      titolo: { it: 'Il CRM di filiale riceve il contatto, l’appuntamento e la simulazione', en: 'The branch CRM receives the contact, the appointment and the simulation' },
+      titolo: { it: 'Le informazioni di Giulia passano al CRM della filiale, e al gestore', en: 'Giulia’s information passes to the branch CRM, and to the adviser' },
       corpo: {
         it: 'Il percorso scrive nel CRM di filiale il lead, la data e la simulazione appena lei accetta l’appuntamento, via API e dentro i consensi. Chi la riceve lavora nel CRM che usa già. La stessa azione vale per un’audience intera: ogni persona arriva in filiale come lead da lavorare. Il collegamento con il vostro CRM si disegna con voi.',
         en: 'When she accepts the appointment, the journey writes the lead, the date and the simulation into the branch CRM, over API and within consent. Whoever receives her works in the CRM they already use. The same action works for a whole audience: each person reaches the branch as a lead to work. The link with your CRM gets designed with you.',

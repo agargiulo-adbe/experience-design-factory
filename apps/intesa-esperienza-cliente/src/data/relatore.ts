@@ -49,6 +49,7 @@ export const NOTE: Record<string, Record<string, Nota>> = {
     'slide-brand-visibility': { dire: 'Prima si misura come si compare nelle risposte generate, poi si interviene.', seChiedono: 'Serve l’inoltro dei log del CDN: va concordato con il loro IT.' },
     'slide-content-factory': { dire: 'Una campagna di mutuo si ferma sulle approvazioni: la verifica sta dentro la produzione.' },
     'slide-passaggio': { dire: 'Web Analytics: Adobe Analytics e Customer Journey Analytics convivono finché serve. Tre gruppi: resta, cambia nome, si aggiunge. Nel dettaglio: esportazioni, Activity Map, convivenza e formazione.', attenzione: 'È un’ipotesi sul loro installato: si corregge in sala. Quanto durano insieme le due licenze non si stima: si decide in fase 0.' },
+    'slide-serve': { dire: 'Cinque cose e chi le porta: non è un preventivo, è il contenuto della prima sessione.' },
     'slide-ingaggio-dato': { dire: 'Fuori percorso: una sola misura e le quattro domande che apre.' },
     'slide-ingaggio-profilo': { dire: 'Fuori percorso: come si cuciono gli identificativi, e la scelta fra copiare il dato e lasciarlo dov’è.', attenzione: 'Le audience federate si aggiornano a ogni esecuzione pianificata, non a evento.' },
     'slide-ingaggio-regia': { dire: 'Fuori percorso: tre modi di eseguire la stessa decisione. Il terzo lascia l’orchestrazione dov’è.' },
@@ -67,10 +68,8 @@ export const NOTE: Record<string, Record<string, Nota>> = {
   },
   'prossimi-passi': {
     'slide-cover': { dire: 'Si passa dalla storia alla prova.' },
-    'slide-da-voi': { dire: 'Sette misure dal giorno uno, ognuna con la domanda «oggi: lo misurate?». La prima è il tasso di consenso: senza, le altre non partono.' },
-    'slide-soglia': { dire: 'La forma della soglia e del gruppo di controllo, poi la richiesta. Si legge la richiesta così com’è scritta.', attenzione: 'Soglia, campione e quota del gruppo non hanno numeri in sala: si fissano in fase 0 con il calcolo dei volumi.' },
+    'slide-da-voi': { dire: 'La proposta in una frase, e quattro misure. Si legge la richiesta così com’è scritta. Le altre tre misure e la forma della soglia stanno in «Le altre misure e la soglia».', attenzione: 'Soglia, campione e quota del gruppo non hanno numeri in sala: si fissano in fase 0 con il calcolo dei volumi.' },
     'slide-fasi': { dire: 'Tre tappe: il disegno, il mutuo sui prospect, gli altri casi.', seChiedono: 'Chi integra lo decidono loro, con noi o con un integratore.' },
-    'slide-serve': { dire: 'Cinque cose e chi le porta: non è un preventivo, è il contenuto della prima sessione.' },
     'slide-firma': { dire: 'Si chiude sulla firma, senza aggiungere altro.' },
   },
   'adobe-in-cifre': {
@@ -90,5 +89,5 @@ export const DAVANTI: Record<string, string[]> = {
   persona: ['slide-giro-di-giulia'],
   momenti: ['slide-m-03', 'slide-m-04', 'slide-m-07'],
   'messa-a-terra': ['slide-innesto', 'slide-attribuzione'],
-  'prossimi-passi': ['slide-da-voi', 'slide-soglia', 'slide-serve', 'slide-firma'],
+  'prossimi-passi': ['slide-da-voi', 'slide-fasi', 'slide-firma'],
 };

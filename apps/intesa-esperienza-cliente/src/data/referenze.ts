@@ -100,30 +100,32 @@ export const CIFRE_TSB = [
    diventa «per richiesta firmata, per canale», con da dove arriva la
    spesa; e «una politica sola, valutata quando si decide» esce: la
    politica di contatto resta della banca (frase canonica).
+   `davanti`: le quattro che si proiettano in prossimi-passi/slide-da-voi; le
+   altre stanno nel dettaglio (sintesi del capitolo, 11 nov 2026).
    `estesa`: misure che il taglio corto può saltare. `poi` è la forma che
    regge anche nel taglio corto; `poiLungo` la rende il percorso intero. Campi accanto, mai un
    altro elenco. */
 export const MISURE = [
-  { l: { it: 'Quante simulazioni vengono riprese', en: 'How many simulations get resumed' },
+  { davanti: true, l: { it: 'Quante simulazioni vengono riprese', en: 'How many simulations get resumed' },
     oggi: { it: 'oggi: come lo sapete?', en: 'today: how do you know?' },
     poi: { it: 'si misura, con un gruppo che resta nel processo di oggi', en: 'measured, against a group that stays in today’s process' },
     poiLungo: { it: 'si misura con un gruppo che resta nel processo di oggi, approvato dalla Rete in fase 0', en: 'measured against a group that stays in today’s process, approved by the Network in phase 0' } },
-  { l: { it: 'Quante simulazioni lasciano nome e consenso', en: 'How many simulations leave a name and consent' },
+  { davanti: true, l: { it: 'Quante simulazioni lasciano nome e consenso', en: 'How many simulations leave a name and consent' },
     oggi: { it: 'oggi: lo misurate?', en: 'today: do you measure it?' },
     poi: { it: 'tasso di consenso, dal primo giorno', en: 'consent rate, from day one' },
     poiLungo: { it: 'tasso di consenso, dal primo giorno: senza, le altre misure non partono', en: 'consent rate, from day one: without it the other measures cannot start' },
     estesa: true },
-  { l: { it: 'Quanto passa fra il gesto e il contatto', en: 'How long between the action and the contact' },
+  { l: { it: 'Quanto passa fra il gesto e il contatto', en: 'How long between the action and the contact' },
     oggi: { it: 'oggi: in giorni, o in ore?', en: 'today: days, or hours?' },
     poi: { it: 'si contano le ore', en: 'counted in hours' } },
   { l: { it: 'Quante volte si contatta la stessa persona', en: 'How often the same person is contacted' },
     oggi: { it: 'oggi: per cliente, canale per canale?', en: 'today: per customer, channel by channel?' },
     poi: { it: 'la regola di contatto resta vostra', en: 'the contact rule stays yours' } },
-  { l: { it: 'Il percorso rende, e il target era giusto', en: 'Does the journey pay, and was the target right' },
+  { davanti: true, l: { it: 'Il percorso rende, e il target era giusto', en: 'Does the journey pay, and was the target right' },
     oggi: { it: 'oggi: dalla redemption?', en: 'today: from redemption?' },
     poi: { it: 'fase 1: uplift del percorso sul controllo · fase 2: uplift per target', en: 'phase 1: journey uplift vs control · phase 2: uplift per target' },
     estesa: true },
-  { l: { it: 'Quanto il digitale porta in filiale', en: 'How much digital brings into the branch' },
+  { davanti: true, l: { it: 'Quanto il digitale porta in filiale', en: 'How much digital brings into the branch' },
     oggi: { it: 'oggi: si aggancia la firma al percorso?', en: 'today: is the signature tied back to the path?' },
     poi: { it: 'appuntamenti nati online, chiusi e non chiusi, e costo per appuntamento', en: 'appointments born online, closed and not closed, and cost per appointment' },
     estesa: true },

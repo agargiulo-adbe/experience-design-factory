@@ -56,7 +56,7 @@ export const SCENE: Record<ScenaId, Scena> = {
   },
   cdp: {
     prodotto: 'Real-Time CDP',
-    cosa: 'Riconosce chi non è ancora cliente: prima da come usa il sito, poi dall’email che lascia.',
+    cosa: 'Tiene il profilo di clienti e prospect. Con Giulia: prima da come usa il sito, poi dall’email che lascia.',
     passi: [
       'Giulia arriva sul sito senza lasciare il nome. Si riconosce solo il suo browser.',
       'Simula la rata, e in quell’istante entra nel gruppo «mutuo prima casa».',

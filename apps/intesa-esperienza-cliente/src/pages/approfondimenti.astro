@@ -18,6 +18,7 @@ import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
 import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
 import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
 import { PASSAGGIO, DETTAGLI_PASSAGGIO } from '../data/passaggio';
+import { SERVE } from '../data/serve';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -803,7 +804,7 @@ const DECIDE = [
     <Slide id="slide-passaggio" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Passando a Customer Journey Analytics restano dati, Workspace e segmenti" en="Moving to Customer Journey Analytics keeps your data, Workspace and segments" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Passando a Customer Journey Analytics restano dati, Workspace e segmenti" en="Moving to Customer Journey Analytics keeps your data, Workspace and segments" />
 
         <div class="im-pas">
           <div class="im-pas-testa">
@@ -847,10 +848,37 @@ const DECIDE = [
       </div>
     </Slide>
 
+    {/* CHE COSA SERVE PER LA FASE 0 (fuori percorso dall'11 nov 2026: la
+        sintesi di Prossimi passi l'ha tolta dalla sala, il link sta sotto le fasi). */}
+    <Slide id="slide-serve" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Per la fase 0" en="For phase 0" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Le cinque cose da portare alla prima sessione, e chi le porta" en="The five things to bring to the first session, and who brings them" />
+          <div class="im-serve im-serve--cinque">
+      {SERVE.map((x) => (
+        <section class="im-serve-i">
+          <FiguraCap segno={x.fig} class="im-serve-fig" />
+          <span class="im-bv-t"><span data-lang-it>{x.t.it}</span><span data-lang-en>{x.t.en}</span> <span class="im-serve-q"><span data-lang-it>· {x.quando.it}</span><span data-lang-en>· {x.quando.en}</span></span></span>
+          <T as="span" class="im-esec-chi" it={x.chi.it} en={x.chi.en} />
+          <T as="span" class="im-bv-d" it={x.d.it} en={x.d.en} />
+        </section>
+      ))}
+      <section class="im-serve-nota">
+        <T as="span" class="im-bv-t" it="Chi possiede il caso: una proposta da correggere in sala" en="Who owns the case: a proposal to correct in the room" />
+        <T as="span" class="im-bv-d" it="Il caso al Targeting Commerciale, regole e canali ai Canali, l’offerta ai Mutui." en="The case to Commercial Targeting, rules and channels to Channels, the offer to Mortgages." />
+      </section>
+          </div>
+      </div>
+    </Slide>
+
   </DeckContainer>
 </BaseLayout>
 
 <style is:global>
+  #slide-serve .im-serve-q { font-weight: 700; color: #ffc46b; white-space: nowrap; }
+  #slide-serve .im-serve-nota { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 0.2rem 0.8rem; align-items: baseline; padding: 0.3rem 0.2rem 0; }
+  @media (max-width: 1400px) { #slide-serve .im-serve-nota { grid-column: auto; display: grid; align-content: start; padding: 0.8rem 0.85rem; border: 1px dashed rgba(255, 255, 255, 0.35); border-radius: 6px; } }
   /* Panel dell'11 nov 2026. Stili SOLO di questa pagina, inchiostri pieni su
      fondo scuro (audit:ink), corpo ≥ 0,95rem: quando la copia cresce si
      ricompone, non si rimpicciolisce. */
