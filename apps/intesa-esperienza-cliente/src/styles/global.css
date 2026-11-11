@@ -2567,14 +2567,17 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
    ⚠️ Sette colonne stanno solo finché la pagina è larga. Sotto i 1200px
    diventano quattro più tre — mai sette strette, che manderebbero i nomi
    a capo ogni due lettere. */
-/* Sette ritratti presi da fonti diverse (sfondi rosso, teal, mattoni,
-   una bandiera; tagli e luci diversi) leggevano come sette figurine.
-   In bianco e nero, a contrasto pari, diventano una squadra: lo sfondo
-   smette di parlare e restano le facce. Il ritratto cresce (era ~100px a
-   1920) perché in sala è la sola cosa da guardare.
+/* Sette ritratti presi da fonti diverse (sfondi rosso, verde acqua,
+   mattoni, una bandiera) leggevano come sette figurine. Sono scontornati
+   (vedi adobe.astro) e qui stanno tutti sullo STESSO fondo, quello della
+   skin: a colori, perché sono le persone vere che saranno in sala e il
+   resto del deck è a colori. Il bianco e nero, provato prima, faceva il
+   contrario: grigie le persone vere, a colori Giulia.
+   Il ritratto è grande (~157px a 1920) perché in sala è la sola cosa da
+   guardare.
    ⚠️ `align-content: start` sulla voce: con un ruolo su due righe la
    griglia allungava la riga del ritratto e il nome saliva di 6px rispetto
-   ai vicini. Ora i nomi stanno tutti sulla stessa linea. */
+   ai vicini. */
 .im-team {
   list-style: none; margin: clamp(1.4rem, 2.2vw, 3.6rem) 0 0; padding: 0;
   display: grid; grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -2587,14 +2590,14 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 .im-team-ft {
   display: block; width: clamp(5.4rem, 8.2vw, 15rem); aspect-ratio: 1;
   margin-bottom: 0.7rem; border-radius: 999px;
-  /* I ritagli d'origine sono cerchi su un quadrato bianco: al 100%
-     l'angolo bianco affiora come un anello sul bordo, quindi si
-     ingrandisce lo sfondo, non l'elemento. */
-  background: #1a2a18 center / 114% no-repeat;
-  filter: grayscale(1) contrast(1.06) brightness(1.02);
+  /* Il ritratto è lo SFONDO del cerchio, non un <img> ingrandito: un
+     <img> scalato dentro un contenitore con overflow nascosto era uno
+     scroll nascosto per `audit:deck` (check c e k, HARD). Sotto il
+     ritratto scontornato, il fondo comune: una luce verde dall'alto. */
+  background: var(--ritratto) center / 100% no-repeat,
+    radial-gradient(circle at 50% 36%, #4a8a30 0%, #23571a 48%, #0f2f05 100%);
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.22), 0 0.9rem 2.2rem -0.8rem rgba(0, 0, 0, 0.55);
 }
-.im-team-ft[data-zoom] { background-size: 128%; }
 .im-team-n {
   font-size: clamp(1rem, 0.94vw, 2.1rem); font-weight: 700;
   line-height: 1.2; color: #ffffff; text-wrap: balance;

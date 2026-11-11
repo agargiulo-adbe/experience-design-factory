@@ -43,7 +43,17 @@ import { TRE } from '../data/tre';
    lo portano le sole clip. */
 /* I sette ritratti del team. Ritagliati dalla slide 2 nella sua versione
    aggiornata — quella a sette persone, che nei file su disco non c'è:
-   il deck a quattro era una versione precedente. */
+   il deck a quattro era una versione precedente.
+   11 nov 2026: SCONTORNATI, a colori. Erano sette foto con sette sfondi
+   (rosso, verde acqua, mattoni, una bandiera); il bianco e nero provato
+   prima toglieva il colore alle persone vere mentre Giulia resta a
+   colori, e non uniformava luce e taglio. Ora il soggetto è ritagliato
+   in locale (riconoscimento del soggetto di macOS, nessun file uscito
+   dalla macchina) e lo sfondo è uno solo per tutti, quello della skin,
+   messo dal CSS. Su Ellena e De Matteis due pezzi di sfondo che il
+   riconoscimento teneva come parte della persona sono stati tolti a mano.
+   ⚠️ Il ritaglio d'origine di Gargiulo è più stretto sul viso: per
+   pareggiarlo serve la foto originale, non un ingrandimento. */
 import rGordiani from '../assets/team/gordiani.png';
 import rEllena from '../assets/team/ellena.png';
 import rGargiulo from '../assets/team/gargiulo.png';
@@ -57,13 +67,11 @@ const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-/* Il team che è in sala il 19 novembre, nell'ordine della slide 2.
-   `zoom`: il ritaglio porta un anello già impresso nell'immagine
-   d'origine; un ingrandimento leggero lo porta fuori dal cerchio. */
-const TEAM: { n: string; f: ImageMetadata; zoom?: boolean; r: { it: string; en: string } }[] = [
+/* Il team che è in sala il 19 novembre, nell'ordine della slide 2. */
+const TEAM: { n: string; f: ImageMetadata; r: { it: string; en: string } }[] = [
   { n: 'Alex Gordiani', f: rGordiani, r: { it: 'Head of FSI', en: 'Head of FSI' } },
   { n: 'Francesca Ellena', f: rEllena, r: { it: 'Account Executive FSI', en: 'Account Executive FSI' } },
-  { n: 'Antonio Gargiulo', f: rGargiulo, zoom: true, r: { it: 'Product Sales Specialist FSI', en: 'Product Sales Specialist FSI' } },
+  { n: 'Antonio Gargiulo', f: rGargiulo, r: { it: 'Product Sales Specialist FSI', en: 'Product Sales Specialist FSI' } },
   { n: 'Giacomo Selmi', f: rSelmi, r: { it: 'Senior Solutions Consultant', en: 'Senior Solutions Consultant' } },
   { n: 'Matteo Grieco', f: rGrieco, r: { it: 'Solutions Consultant', en: 'Solutions Consultant' } },
   { n: 'Raffaele De Matteis', f: rDeMatteis, r: { it: 'Manager, Solutions Consulting', en: 'Manager, Solutions Consulting' } },
@@ -153,7 +161,7 @@ const FASCE = [
                   un'immagine scalata dentro un contenitore con overflow nascosto
                   è uno scroll nascosto per `audit:deck` (check c e k, HARD).
                   Decorativo: il nome accanto dice chi è. */}
-              <span class="im-team-ft" data-zoom={p.zoom ? '' : undefined} style={`background-image: url('${p.f.src}')`} aria-hidden="true"></span>
+              <span class="im-team-ft" style={`--ritratto: url('${p.f.src}')`} aria-hidden="true"></span>
               <span class="im-team-n">{p.n}</span>
               <T as="span" class="im-team-r" it={p.r.it} en={p.r.en} />
             </li>
