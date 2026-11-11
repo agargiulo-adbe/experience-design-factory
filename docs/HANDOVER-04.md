@@ -1,4 +1,4 @@
-# Handover — Parte 4 di 22
+# Handover — Parte 4 di 23
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
@@ -8,6 +8,78 @@
 <!-- sezione spezzata a sotto-livello: §11 supera da sola il contratto di dimensione, quindi è
      divisa in quattro parti a confini ### — questa continua dal change log della Parte 3 e prosegue
      nella Parte 14, poi nella Parte 17 (coda di luglio). Ribilanciata il 13 ott 2026 -->
+
+### Change log — Intesa: il deck del 5 novembre entra nella Storia, lo slug dice l'incontro, e la Factory va in rete (2026-10-30) → §42 (Parte 18)
+
+**Ventiquattro commit fra le 22:35 del 29 e le 08:32 del 30.** L'experience nata il 28 ott come
+Storia a cinque capitoli ha **inglobato il `.pptx` da 78 slide** del 5 novembre: un artefatto
+invece di due, su richiesta dell'owner. Nove capitoli, 41 slide. Il conto del taglio — −8 agende
+ripetute, −35 slide di magazzino, −8 doppioni — e la mappa per funzione stanno in §42.1.
+⚠️ L'argomento che ha deciso la fusione è una **contraddizione fra i due artefatti**: il deck
+diceva «Giulia è già cliente», l'experience «non ancora» — che è la logica prospect chiesta dal
+cliente.
+
+**Gli approfondimenti che mancavano.** Dei quattro componenti dell'ingaggio solo CJA aveva un
+affondo: ora ci sono anche **il profilo** (stitching, grafo, consenso, e la scelta fra portare il
+dato in piattaforma o interrogarlo nel warehouse), **la regia** (i tre modi di eseguire una
+decisione, compreso quello che lascia l'orchestrazione nei sistemi del cliente) e **l'arbitro**
+(cinque passaggi, e il confine: non è il sistema di record dell'eleggibilità creditizia).
+Verificati su Field Readiness; ⚠️ quel materiale **nomina banche clienti** e lo schema si riusa
+mentre i nomi no.
+
+**La revisione critica a dieci punti** ha tolto più di quanto abbia aggiunto: le due slide di
+Scenario sono diventate **una**, il cerchio grande del capitolo 05 è **uscito** perché ripeteva il
+03, i tre blocchi di CJA erano **due reparti e una lista di cose da concordare** (sostituiti da
+quattro domande, una per area operativa), e i quattro casi d'uso sono stati **rifatti**: erano
+continuità operativa, a cui si risponde «anche noi facciamo così»; ora dicono che cosa resta fuori
+portata quando profilo, decisione e misura stanno in sistemi diversi. Il flusso finisce dove deve
+— referenze → CX Analytics → prossimi passi → firma — e `risultati` non punta più a `/`
+saltando due capitoli.
+
+**La mappa e la ripresa, e una tecnica corretta a metà dalle prove** (§42.5). Due slide gemelle:
+una annuncia le tre cose, l'altra le riprende alla fine. ⚠️ «Dì quello che dirai, dillo, ripeti»
+è **folklore del 1908**, non di Aristotele: regge **l'anticipazione** (advance organizer, 0,21
+subito e 0,38 dopo tre settimane), mentre **ri-presentare lo stesso materiale è la famiglia con
+meno prove** (Dunlosky 2013). Quindi la seconda **non ripete**: tiene la geometria e cambia il
+testo, da `src/data/tre.ts`.
+
+**Lo slug dice l'incontro, non il prodotto.** `intesa-mutuo` → **`intesa-esperienza-cliente`**,
+rinominato **prima** della pubblicazione perché dopo un link girato si rompe. Giro completo
+(cartella, base, pacchetto, rotte dei gate, deploy, hub, showcase, registry MCP rigenerato,
+lockfile, migrazioni `0033` e `0034`), più **dodici stub di rimando** nell'hub: il vecchio
+indirizzo era già pubblicato e senza di loro darebbe 404.
+
+**La Factory è andata in rete.** Il ramo è stato mergiato in `main` con fast-forward e il deploy è
+**success**: le 11 rotte rispondono, i rimandi anche. Con lo stesso giro si chiude il P0 «il ramo
+porta due experience e non è su `main`»: anche **Unipol «Cinque domande»** è ora pubblicata.
+
+**Tre difetti trovati mentre si pubblicava, non da un gate.**
+- Il **`<title>` si duplicava** su ogni pagina (`Adobe × Intesa Sanpaolo · Adobe × Intesa
+  Sanpaolo`): il layout appendeva sempre la firma co-brand, e il documento aveva preso per nome
+  la firma. La guardia esistente non poteva vederlo perché il doppione era **dentro** `SITE_NAME`.
+  Non si vede dalla pagina: si vede incollando l'URL in chat. Regola estesa in `CLAUDE.md`.
+- **`MockAdobe` usava la prop `compatto` senza dichiararla**: tre errori di `astro check` e **CI
+  rossa**, mentre la pagina rendeva benissimo.
+- Due slide dichiaravano **`data-made-with="Adobe Firefly"` sotto fotografie Pexels**: una
+  dichiarazione falsa, tolta. Nel deck quel credito lo portano le sole clip.
+
+**Riservatezza, due voci.** I **sedici riferimenti per nome a un altro cliente Adobe** usato come
+riferimento di qualità sono usciti dai commenti del codice (il repo è pubblico): resta il
+ragionamento, sparisce il nome. E un P0 dell'handover nominava **tre persone reali** — due
+referenti del cliente e un collega — in `docs/HANDOVER-02.md`, che è **tracciato**: ora porta i
+ruoli. ⚠️ Non l'ha trovato un gate: `audit:docs` guarda i **percorsi**, non il contenuto.
+⚠️ **Resta aperto** il nome nel **messaggio del commit `f97ef53`** e nei diff storici: riscrivere
+la history richiede un force-push ed è una decisione dell'owner (P1 nuovo).
+
+**La console porta ai dossier.** Chi apre «Apri console» trovava il deck e non il documento che
+gli dice chi ha davanti. I due dossier esistono già e sono di questo cliente: non ne è stato
+creato uno nuovo, perché due documenti che preparano la stessa stanza divergono.
+
+**Supabase, applicato.** Le migrazioni `0033` e `0034` erano ferme: la riga `experiences` **non
+esisteva**, ed è per questo che la Console non mostrava la card. Applicate il 30 ott. ⚠️ La CLI
+non partiva: il binario aveva la **firma non valida** e macOS lo uccideva con SIGKILL — non era
+il sandbox (`brew reinstall supabase`, 2.107 → 2.122).
+
 
 ### Change log — Unipol «Cinque domande»: registrata, ripulita dai nomi, e due giri di panel (2026-10-29) → §41 (Parte 18)
 
@@ -230,9 +302,3 @@ Lo strato operativo smette di dire solo **che cosa sta succedendo** e dice **a c
 - **`copy-audit` era cieco, e ora conta quello che misura.** Leggeva solo gli attributi `it=`/`en=` di `<T>`: sulle experience in **una lingua sola** misurava **14 stringhe su 226** e stampava PASS. Ora legge anche i campi dei dati e il markup, salta le note non rese e la console admin, e **stampa quante stringhe ha misurato** (7.548 sul monorepo), segnalando le app dove ne misura zero. Nuova famiglia **`L` (linearità)**, SOFT: frase oltre le ~28 parole, tre o più subordinate, doppia relativa, apertura con subordinata — i quattro modi in cui una frase costringe a tornare indietro mentre qualcuno parla. Sul deck: **da 20 frasi sopra soglia a 0**, e la domanda chiave è passata da tre righe contorte a una sola («Allora dove si perdono le vendite?»), con la premessa nell'occhiello; quella slide, che falliva il check `i`, ora passa tutti e dodici.
 - ⚠️ **Lezione pagata due volte.** La CI è andata **rossa sul primo push su main** perché `typecheck` non era stato lanciato: un `const COVER` con l'URL della clip **ombreggiava l'import** omonimo e la copertina del taglio rendeva una riga vuota. Dietro altri due import inutilizzati c'erano difetti veri — la testa della mappa e la riga della firma **tornate scritte a mano** nel percorso lungo mentre il taglio le leggeva dai dati. Il gate non le vedeva: `c1` guardava solo la pagina del taglio, ora guarda anche quelle del percorso intero.
 - ⚠️ **Due sessioni sullo stesso ramo.** `76eb1ff` ha tolto `audit:taglio` dal `package.json` del branch con la motivazione «puntava a un file non committato»: il file era tracciato dal 12 ott e su `main` il comando girava. Ripristinato (`bf4b94e`). Prima di togliere una voce altrui, `git ls-files <percorso>` — «non c'è nel mio albero» e «non è committato» sono due cose diverse.
-### Change log — la copertina era ferma per metà delle persone, e il perimetro di Trenitalia si stringe (2026-10-09, notte) → commit `c4e14f0`, `dc82a1e`
-
-- `dc82a1e` **`prefers-reduced-motion` nascondeva la clip, e nessuno poteva accorgersene** — `packages/core/src/blocks/immersive/LoopVideo.astro`. Il motore faceva un `display: none` secco sulla clip di sfondo sotto la preferenza di sistema. Tecnicamente corretto, **in pratica un difetto silenzioso**: su macOS «Riduci movimento» è attivo su moltissime macchine — spesso per la nausea da parallasse, non per togliere una clip ambient — e chi apriva il deck vedeva una copertina ferma **senza sapere che ci fosse un video**. Misurato: con la preferenza attiva `display:none`, `paused:true`, `t:0`; senza, gira a `t:6.01`. Ora la preferenza vale (**niente autoplay**, nessun movimento a sorpresa) ma non decide al posto di chi guarda: un **comando nella barra del deck** accende il movimento, la scelta si ricorda in `localStorage['edf:motion']`, vale per tutte le clip del percorso e sopravvive agli swap SPA; **senza quella preferenza il comando non compare**. Pillola e non cerchio, perché un «play» in mezzo ai comandi di una presentazione si legge come «avvia le slide»; su telefono resta la sola icona, bersaglio 44×44, con il senso in `aria-label`. Sta nel motore: **ogni deck con una clip lo eredita senza wiring**. Verifica: i quattro casi misurati uno per uno (senza preferenza · con preferenza prima e dopo il clic · altro capitolo), barra dentro il viewport a 1920/1280/768/390 con la preferenza attiva, 16 app buildate, `audit:deck --tv` 0 HARD, `audit:wrap` pulito.
-- ⚠️ **La lezione è più grande del difetto, ed è in `CLAUDE.md`: misurare nelle condizioni di chi guarda, non in quelle del browser di prova.** Sono serviti **tre giri** per trovarlo. L'owner ha detto tre volte «la copertina è ferma»; ogni volta la misura — prima in locale, poi in produzione, con la differenza fra due fotogrammi, il PSNR del giro e il contrasto nel caso peggiore — diceva che il movimento c'era. Era vero e inutile: Playwright parte **senza** le preferenze dell'utente. Quando qualcuno dice «non lo vedo» e lo strumento dice che c'è, **la differenza è nelle condizioni di misura** e si riproducono prima di cercare altrove: `reducedMotion`, `colorScheme`, `forcedColors`, `locale`, zoom, `deviceScaleFactor`, rete lenta, risparmio energetico — e la **produzione**, non solo il preview. Vale anche al contrario di «quello che dice l'utente è un'ipotesi»: quando l'owner segnala un difetto e i miei numeri dicono il contrario, a sbagliare è quasi sempre la mia misura. Memoria `misurare-nelle-condizioni-utente`.
-- **Nello stesso giro, su `intesa-scala-umana`**: il velo della copertina era tarato male a monte — clip al 42% sotto un radiale a 0,84 lasciava passare il **6%** del movimento (differenza fra due fotogrammi **0,046 livelli su 255**, sotto qualunque soglia percettiva). Ricalibrato sulla misura: movimento **0,245** (5,3×), velo forte al centro dove sta il testo e leggero ai bordi dove corre il movimento, con il **contrasto verificato nel caso peggiore su otto fotogrammi del giro** e non in media — titolo 4,84:1, lead 4,75:1, riga di copertina 9:1. La media non vedeva la cresta chiara che passa dietro al lead una volta per giro. Memoria `velo-si-misura`.
-- `c4e14f0` **Trenitalia: il perimetro torna a trenitalia.com più il CRM** — `apps/trenitalia-connessioni` (§36, Parte 8). La riunione del 9 ottobre **riduce la proposta a due fonti**: l'Adobe Analytics di trenitalia.com e il CRM, uniti da chi fa login. Tutto il resto — le Frecce, la piattaforma di invio, il checkout, FS Park — diventa **orizzonte dichiarato invece di promessa**. Il percorso di default è lineare (copertina, scenario, quattro capitoli); il ramo FS Park, il bivio e il capitolo sulla clean room **restano nel repo e raggiungibili ma fuori dal percorso**, riaccendibili da una riga in `src/data/percorso.ts`, che diventa la **fonte unica** da cui leggono barra di navigazione, card della home e frecce di ogni pagina. Nel merito: l'accusa ai sistemi del Gruppo diventa **una domanda**, come chiesto in riunione; fuori la slide del varco, e il suo diagramma della soglia viene riusato per il prerequisito vero, **il login**; gli use case sono quelli nati al tavolo, con il **limite dell'attivazione dichiarato**; tre slide nuove in Convergenza (dove finisce il dato del CRM · le tre domande con cosa si fa della risposta · CX Enterprise Coworker sulla ricerca delle cause in linguaggio naturale). ⚠️ **Lo zero-copy promesso a voce in riunione era sbagliato ed è corretto qui**: per CJA il dato entra, e quello che si governa è **quanto**. Build pulita, `astro check` a zero, audit **0 HARD su 222 slide-viewport** comprese le rotte fuori percorso, quattro slide lette a 1920. ⚠️ **Il panel a due giri del 9 ott copre il deck PRIMA di questa riscrittura** (P0 nuovo, §10).

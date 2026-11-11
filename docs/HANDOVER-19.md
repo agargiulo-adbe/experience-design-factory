@@ -1,4 +1,4 @@
-# Handover — Parte 19 di 22
+# Handover — Parte 19 di 23
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
@@ -259,3 +259,39 @@ Alla terza fase il riquadro **«Campagne» dello schema si spegne** (opacità 0,
 - ⚠️ **A 3840×2160 sette slide dei momenti hanno rilievi preesistenti** (l'etichetta «Giulia · Non ancora cliente»): `wallScale` non è acceso su questo deck, ed è la regola — si accende dopo `audit:deck -- --tv` a 0 HARD, non prima. P2.
 - ⚠️ **Non rilanciati**: `audit:fonti` (timeout di rete) e `audit:og`. P1.
 - **Aperti**: panel sullo stato pubblicato (P0) · i due audit · registro d'account, Goldmine, fonti pubbliche dei casi FSI (P1, dal 10) · momenti a 3840 e la congiunzione appesa su `approfondimenti/slide-integrazioni` a 1280 (P2).
+
+## 42.14 Storia di Intesa · il panel dell'11 novembre, due giri, e che cosa è rimasto aperto
+
+**Due giri di panel review** sullo stato pubblicato, sei seggi: il Targeting che ha convocato, il suo responsabile CRM, il marketing digitale, Group Technology (seggio **derivato**, senza persona confermata), i Canali, il consulente della banca. Più il fact-checker. Personas cieche, verificato sui transcript: **zero letture fuori dal pacchetto**. Verdetti e JSON in `docs/<Cliente>/` (git-ignorata), `PANEL-VERDICT-2026-11-11-round1.md` e `-round2.md`.
+
+| Asse | 30 ott (g2) | 11 nov g1 | 11 nov g2 |
+|---|---|---|---|
+| credibilità dei fatti | 4,0 | 4,0 | 4,0 |
+| rilevanza | 4,0 | 3,5 | 4,0 |
+| chiarezza | 4,0 | 3,67 | 4,0 |
+| rischio (5 = nessuno) | 3,2 | 3,17 | 3,67 |
+| azionabilità | 4,0 | 3,67 | 4,0 |
+
+Sei «condizionato» su sei in entrambi i giri. Il **primo giro** ha trovato che i giri del 6-10 novembre avevano fatto scendere tre assi: la **rotta delle campagne** (`685832b`) disegnava una sostituzione sotto un titolo che diceva «aggiunge», e la chiusura affermava un'assenza sulla banca («manca chi decide») che la sua Divisione smentisce in pubblico. Più cinque fatti smentiti alla fonte: GenStudio non controlla le informative, Journey Optimizer non ha un canale social, Data Feeds ≠ Full Table Export, l'arbitro non chiama il core in sincrono, il 5 dicembre è sabato.
+
+**Decisioni dell'owner (11 nov):** in slide si proietta solo la tappa «Accanto», e le altre due posizioni vanno nel dettaglio come opzioni della banca · la chiusura diventa una proposta · il motore a monte è «da confermare» col referente · si applicano tutti i P0 e i P1.
+
+**Come è stato applicato.** Tre agenti in worktree isolati, divisi per proprietà dei file (approfondimenti · innesto/struttura/taglio · racconto/chiusura), con le **frasi canoniche scritte una volta** in un brief comune (confine sul motore, precedenza, regola di contatto, eleggibilità, canali, glossario dei sistemi). Merge senza conflitti, raccordi a mano (`b727554`), poi i P0 del secondo giro (`6d1c288`). Che cosa è cambiato, in sintesi:
+- **Innesto**: «Il vostro motore resta a monte», Campagne «come oggi», una sola tappa in vista e «Le altre posizioni» a richiesta. Il badge «→ Journey Optimizer» e il CSS cresciuto a strati sono stati tolti, e la rotta ora vive in `styles/innesto.css`.
+- **Il passaggio Analytics → Customer Journey Analytics entra nel capitolo 04** (era fra gli approfondimenti), come chiedeva l'invito. `adobe/slide-fsi` esce dalle frecce: è la pagina `adobe-in-cifre`, raggiunta dalla riga di fonte.
+- **Tre slide nuove**: `approfondimenti/slide-integrazioni-dati` e `-crm` (dieci collegamenti più il riquadro DORA non entravano a 1280: si è divisa la slide, il tipo non è stato toccato) e `prossimi-passi/slide-soglia` (soglia, ripresa, unità del controllo, vincolo per la Rete, ask).
+- **Il taglio «In dieci minuti»**: c'è la slide «Accanto», compaiono tutte e sette le misure e il seguito in una riga; resta a sei slide.
+- **La firma di Giulia è mercoledì 9 dicembre**, perché l'8 è l'Immacolata.
+- **Sugli schermi alti fino a 940px** (1440×900, 1280×800) la vista «In Intesa Sanpaolo» dei momenti cadeva sulla foto chiara, e il titolo bianco non si leggeva. `audit:ink` misura **solo a 1920** e non lo vedeva: la foto in quella disposizione ora è abbassata. ⚠️ È un buco del gate, non di questo deck.
+- La pagina `/relatore/` costruisce il link `?c=` delle **slide davanti proposte** (`DAVANTI` in `relatore.ts`). È una proposta e non spegne nulla di default.
+
+**Gate su `6d1c288`**: `audit:deck` 183 righe **0 HARD** (solo SOFT `a`/`i`/`g`) · `copy-audit` 0 HARD, 1 SOFT (una frase canonica di 29 parole) · `audit:ink` pulito · `audit:taglio` allineato · `audit:fonti` nessun link rotto, nove link business.adobe.com «da aprire a mano» · `astro check` 0 · `audit:wrap`: resta la copertina del taglio, che va a capo sulla virgola, cioè sul confine giusto.
+
+**Che cosa è sopravvissuto al secondo giro** (punti aperti, niente terzo giro):
+- **La CDP attuale**: il deck la nomina e non le dà un ruolo accanto a Real-Time CDP. È l'obiezione che il panel giudica più pericolosa, e la risposta è del cliente.
+- **I mesi al primo invio** (Solutions Consultant) e la **forma della fase 0 e della licenza** (costo, nome Adobe, integratore, durata minima): decisioni dell'AE, da chiudere prima del 17.
+- **Il motore a monte**: il nome è «da confermare» col referente.
+- **Coworker**: la regola di uscita (fuori dall'agenda se l'attivazione non è confermata entro il 17) è da decidere.
+- **La slide del team**: sette nomi, contro i cinque dell'invito.
+- I 17 P1 e 6 P2 del secondo giro stanno nel verdetto.
+- Le domande per il check col referente (11 nov, 14:15) sono state preparate in chat dai due verdetti.

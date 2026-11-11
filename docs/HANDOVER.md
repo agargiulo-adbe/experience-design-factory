@@ -7,8 +7,10 @@
 > segnalalo e aggiorna questo file.
 >
 > **Nuova sessione CC:** l'indice/ordine di lettura è in `docs/README.md`. Leggere **tutti** i
-> `.md` costa ~40k token su 22 parti (ok). **Non** aprire mai i `.pptx`/`.mp4` in `docs/` (binari giganti,
+> `.md` costa ~40k token su 23 parti (ok). **Non** aprire mai i `.pptx`/`.mp4` in `docs/` (binari giganti,
 > git-ignored, non presenti in un clone pulito) — i fatti utili sono già distillati qui (§5.3).
+>
+> 🏦 **L'11 novembre la Storia di Intesa passa due giri di panel, e le correzioni sono pubblicate** (§42.14, Parte 19 · change log, Parte 3). Rilevanza da 3,5 a 4,0 e rischio da 3,17 a 3,67. L'innesto non disegna più una sostituzione, la chiusura è diventata una proposta e la Web Analytics è entrata nel capitolo 04. Ci sono tre slide nuove, e il taglio corto ora porta l'innesto. ⚠️ **Restano al cliente e all'AE, prima del 17**: la CDP attuale, il nome del motore, i mesi al primo invio, la forma della fase 0 e della licenza, l'uscita di Coworker e le slide davanti. Sono il P0 in testa alla Parte 2.
 >
 > 🏦 **La sera del 10 novembre la Storia di Intesa chiude «Dove ci innestiamo» a sei slide, trova una scala tipografica sola, e porta la rotta delle campagne** (§42.13, Parte 19 · change log, Parte 3). Sei commit, da `7a43b22` a `685832b`, **tutti pubblicati**. Tolte «unifica» e «motore»; «AI Decisioning» ovunque; «Quattro domande a cui CJA risponde» con un disegno per meccanismo. Sette misure di titolo diventano una (≈48 px a 1920). La proposta esclusa di AI Decisioning cambia ragione: lo sconto under 36 non reggeva, perché **Giulia ha 34 anni e ne ha diritto**. Sotto lo schema dell'innesto una **rotta in tre fasi** verso Journey Optimizer (le *orchestrated campaigns* sono documentate da ago 2025): alla terza il riquadro «Campagne» si spegne, e lo strumento di oggi non si nomina. ⚠️ **Il panel è fermo al 30 ottobre e il check col referente è l'11 nov alle 14:15**: è il P0 in testa alla Parte 2.
 >
@@ -386,3 +388,4 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 - [Parte 20 — §11 change log datato (coda: settembre e luglio 2026)](./HANDOVER-20.md) — creata il **3 nov** per liberare la catena 3 → 4 → 14 → 17: le voci più vecchie, dal **7 set 2026** all'indietro fino a fine luglio. Ribilanciata il **9 nov**. ⚠️ Ora a 647 byte dal tetto: al prossimo giro sul change log serve una parte nuova.
 - [Parte 21 — §39 **il lavoro operativo d'account**](./HANDOVER-21.md) — scorporata dalla Parte 16 il **4 nov**, che con §37.13 aveva superato il contratto di dimensione: registri, Radar, i comandi `/account-open` e `/account-close`, le cinque fonti dell'apertura, il giro gratuito di ogni mattina, **§39.8 il grafo dei contatti** e **§39.9 l'apertura e il giro di ritorno**.
 - [Parte 22 — §10.c backlog: **i 50 P2 e le note non azionabili**](./HANDOVER-22.md) — scorporata dalla Parte 10 l'**11 nov**, che era a 0,4 KB dal tetto e non aveva un terzo anello nella catena del backlog. Qui non si decide niente: è la coda di ciò che non decide nessuna settimana. 20,9 KB di margine.
+- [Parte 23 — §11 change log datato (coda più vecchia)](./HANDOVER-23.md) — creata l'**11 nov** perché la Parte 20 era oltre il tetto e la catena 3 → 4 → 14 → 17 → 20 non aveva un altro anello: qui finiscono le voci più vecchie del change log.
