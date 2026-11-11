@@ -17,7 +17,7 @@ export const TRE_COSE = [
 ];
 
 export const NOTE: Record<string, Record<string, Nota>> = {
-  index: { 'slide-cover': { dire: 'Si apre dall’agenda, sette voci, e si dice subito che il motore di targeting resta dov’è.' } },
+  index: { 'slide-cover': { dire: 'Si apre dall’agenda, sei voci: il caso è il mutuo di Giulia, e il motore di targeting resta dov’è.' } },
   adobe: {
     'slide-cover': { dire: 'Chi siamo, in pochi minuti: il tema dell’incontro viene dopo.' },
     'slide-team': { dire: 'Si presentano le persone, con il ruolo di ciascuno.' },

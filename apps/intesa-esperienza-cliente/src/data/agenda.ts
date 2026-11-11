@@ -1,5 +1,5 @@
 /**
- * L'AGENDA DELL'INCONTRO DEL 5 NOVEMBRE — fonte unica.
+ * L'AGENDA DELL'INCONTRO DEL 19 NOVEMBRE — fonte unica.
  *
  * ⚠️ NON È L'ELENCO DEI CAPITOLI, ed è il motivo per cui questo file
  * esiste invece di riusare `chapters.ts`. I capitoli sono quello che il
@@ -29,42 +29,35 @@ export interface VoceAgenda {
 }
 
 export const AGENDA: VoceAgenda[] = [
-  /* ⚠️ L'AGENDA CONCORDATA DAL TEAM (9 nov 2026), parole sue, ed è più corta
-     della barra dei capitoli: sette voci contro nove capitoli. «Dove ci
-     innestiamo» copre i capitoli 04 e 05. Il pannello del 30 ott aveva
-     chiesto un indice solo: qui la differenza è voluta, e la decisione è di
-     chi presenta. */
-  {
-    n: '01', capitolo: 'adobe',
-    titolo: { it: 'Adobe, chi siamo', en: 'Adobe, who we are' },
-  },
-  {
-    n: '02', capitolo: 'adobe', ancora: 'slide-cx',
-    titolo: { it: 'L’offerta Adobe', en: 'The Adobe offering' },
-  },
-  {
-    n: '03', capitolo: 'scenario',
-    titolo: { it: 'Dal dato alla decisione', en: 'From data to decision' },
-  },
-  {
-    n: '04', capitolo: 'messa-a-terra',
+  /* ⚠️ SEI VOCI, NOMI DAL CONTENUTO (decisione dell'owner, 11 nov 2026).
+     L'agenda del team del 9 nov aveva sette voci: «02 L'offerta» era
+     un'ancora dentro il capitolo su Adobe e nella barra non si accendeva
+     mai; il caso di Giulia, metà del documento, compariva come «Dal dato
+     alla decisione»; «Prossimi passi» non diceva che dentro c'è la proposta.
+     Ora agenda, barra (`VOCI_NAV`), copertine e titoli di pagina portano gli
+     stessi nomi e gli stessi numeri: si cambiano qui e in `chapters.ts`. */
+  { n: '01', capitolo: 'adobe',
+    titolo: { it: 'Adobe e l’offerta', en: 'Adobe and the offering' } },
+  { n: '02', capitolo: 'scenario',
+    titolo: { it: 'Giulia: un mutuo, sette momenti', en: 'Giulia: one mortgage, seven moments' } },
+  { n: '03', capitolo: 'messa-a-terra',
     titolo: { it: 'Dove ci innestiamo', en: 'Where we plug in' },
-    /* L'invito chiedeva «particolare attenzione alla Web Analytics»: la voce
-       la nomina, e il passaggio è nel capitolo (panel dell'11 nov 2026). */
-    sotto: { it: 'Web Analytics: da Analytics a Customer Journey Analytics', en: 'Web analytics: from Analytics to Customer Journey Analytics' },
-  },
-  {
-    /* Il titolo della copertina del capitolo. Prima diceva «motore di lavoro»,
-       e in sala «motore» è il motore di targeting della banca. */
-    n: '05', capitolo: 'coworker',
-    titolo: { it: 'Coworker prepara il lavoro che gli si chiede', en: 'Coworker prepares the work it is asked for' },
-  },
-  {
-    n: '06', capitolo: 'risultati',
-    titolo: { it: 'Banche che lo fanno già', en: 'Banks already doing it' },
-  },
-  {
-    n: '07', capitolo: 'prossimi-passi',
-    titolo: { it: 'Prossimi passi', en: 'Next steps' },
-  },
+    /* L'invito chiedeva «particolare attenzione alla Web Analytics»: nel
+       capitolo è Customer Journey Analytics sopra Adobe Analytics, e
+       l'attribuzione delle firme fino alla filiale. */
+    sotto: { it: 'e come si misura, con Customer Journey Analytics', en: 'and how it is measured, with Customer Journey Analytics' } },
+  { n: '04', capitolo: 'coworker',
+    titolo: { it: 'CX Enterprise Coworker', en: 'CX Enterprise Coworker' } },
+  { n: '05', capitolo: 'risultati',
+    titolo: { it: 'Tre banche che lo fanno già', en: 'Three banks already doing it' } },
+  { n: '06', capitolo: 'prossimi-passi',
+    titolo: { it: 'La proposta e come si parte', en: 'The proposal and how we start' } },
 ];
+
+/** Il titolo del documento, in due livelli (decisione dell'owner, 11 nov 2026):
+    lo stesso nella copertina dell'incontro e in quella del taglio corto, che è
+    la versione che gira al capo. Il secondo livello dice il percorso del caso. */
+export const TITOLO_INCONTRO = {
+  t: { it: 'Acquisire chi non è ancora vostro cliente', en: 'Winning people who are not yet your customers' },
+  s: { it: 'dal primo segnale alla firma', en: 'from the first signal to the signature' },
+};

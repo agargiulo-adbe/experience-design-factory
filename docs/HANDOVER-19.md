@@ -315,3 +315,11 @@ Giro di copia e grafica chiesto dall'owner, più i commenti di un collega del te
 - **Real-Time CDP** passa al verde pieno come Journey Optimizer e CJA. Il colore dice «questo lo porta Adobe»; il bordo bianco resta solo sul motore della banca.
 - `customer journey analytics` legato con spazi unificatori nei titoli: andava a capo dentro il nome.
 - **Gate su `1fc829d`**: `audit:deck` 177 righe 0 HARD · `copy-audit` 0 HARD · `audit:ink` pulito · `audit:taglio` allineato · `audit:og` PASS (16/16 pagine, `adobe-in-cifre` compresa) · `audit:fonti` nessun link rotto · `astro check` 0. Due rilievi di `audit:wrap` lasciati: nel dettaglio delle fasi, la frase va a capo dopo una virgola.
+
+### Titolo, agenda e barra allineati ai contenuti (11 nov, fine mattina)
+
+Analisi chiesta dall'owner: lo stesso capitolo aveva fino a tre nomi diversi (agenda, barra, copertina e `<title>`). «02 L'offerta» era un'ancora che nella barra non si accendeva mai; il caso di Giulia, metà del deck, stava sotto «Dal dato alla decisione»; la riga sotto la 04 citava una slide uscita dal percorso; il taglio corto aveva un altro titolo. **Decisioni dell'owner**, che sostituiscono l'agenda del team del 9 nov:
+- **Titolo in due livelli**, uguale nei due percorsi (`TITOLO_INCONTRO` in `data/agenda.ts`): «Acquisire chi non è ancora vostro cliente» + «dal primo segnale alla firma».
+- **Sei voci, nomi dal contenuto**, gli stessi in agenda, barra (`VOCI_NAV`), copertine e `<title>` (`CHAPTERS`): 01 Adobe e l'offerta · 02 Giulia: un mutuo, sette momenti · 03 Dove ci innestiamo (*e come si misura, con Customer Journey Analytics*) · 04 CX Enterprise Coworker · 05 Tre banche che lo fanno già · 06 La proposta e come si parte. La copertina di Giulia non ha più numero (`Divisore` accetta `num` vuoto), così non si leggono due «Capitolo 02» di fila.
+- Il fondo delle voci d'agenda copre la scia della clip, che prima si vedeva attraverso.
+- **Gate**: `audit:deck` 177 righe 0 HARD · `copy-audit` 0 HARD · `audit:ink` pulito · `audit:taglio` allineato · `audit:og` PASS · `astro check` 0.

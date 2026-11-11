@@ -4,23 +4,23 @@ export interface PageEntry { slug: string; label: string; slides: SlideEntry[]; 
 
 export const PAGE_REGISTRY: PageEntry[] = [
   { slug: 'index', label: 'Copertina dell’incontro (00)', slides: [
-    { id: 'slide-cover', label: 'Copertina dell’incontro: titolo e agenda a sette voci' },
+    { id: 'slide-cover', label: 'Copertina dell’incontro: titolo e agenda a sei voci' },
   ]},
-  { slug: 'adobe', label: 'Adobe per Intesa Sanpaolo (01)', slides: [
+  { slug: 'adobe', label: 'Adobe e l’offerta (01)', slides: [
     { id: 'slide-cover',     label: 'Cover: Adobe per Intesa Sanpaolo' },
     { id: 'slide-team',      label: 'Il team Adobe in sala' },
     { id: 'slide-chi',       label: 'Dati, contenuti e decisioni nello stesso sistema: i quattro verbi, le Wave in fonte' },
     { id: 'slide-cx',        label: 'Adobe CX Enterprise: i blocchi, le tre cose di cui si parla, e i nomi' },
   ]},
-  { slug: 'scenario', label: 'Dal dato alla decisione · Scenario (03)', slides: [
+  { slug: 'scenario', label: 'Giulia: un mutuo, sette momenti · Il segnale (02)', slides: [
     { id: 'slide-cover',      label: 'Cover: Dal dato alla decisione' },
     { id: 'slide-segnale',    label: 'Il segnale c’è già: l’imbuto' },
   ]},
-  { slug: 'persona', label: 'Dal dato alla decisione · La persona (03)', slides: [
+  { slug: 'persona', label: 'Giulia: un mutuo, sette momenti · La persona (02)', slides: [
     { id: 'slide-cover',  label: 'Cover: Giulia, 34 anni, non è vostra cliente' },
     { id: 'slide-giro-di-giulia', label: 'La protagonista, che cosa non avete di lei, e le sette fermate' },
   ]},
-  { slug: 'momenti', label: 'Dal dato alla decisione · I sette momenti (03)', slides: [
+  { slug: 'momenti', label: 'Giulia: un mutuo, sette momenti · I momenti (02)', slides: [
     { id: 'slide-m-01', label: '01 Farsi trovare: l’assistente la cita, o no' },
     { id: 'slide-m-02', label: '02 Content Factory: la variante per la sua città' },
     { id: 'slide-m-03', label: '03 Engagement: da visita anonima a nome' },
@@ -29,7 +29,7 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-m-06', label: '06 Customer Engagement: il percorso attiva la filiale' },
     { id: 'slide-m-07', label: '07 CX Analytics: quanto è costato acquisirla' },
   ]},
-  { slug: 'messa-a-terra', label: 'Dove ci innestiamo · Come si mette a terra (04)', slides: [
+  { slug: 'messa-a-terra', label: 'Dove ci innestiamo (03)', slides: [
     { id: 'slide-cover', label: 'Cover: Dove ci innestiamo' },
     { id: 'slide-innesto', label: 'L’innesto: Adobe si aggiunge, si parte dai percorsi nuovi, Real-Time CDP, Journey Optimizer · AI Decisioning e CJA' },
     { id: 'slide-capacita', label: 'Che cosa porta ciascun componente: le capability' },
@@ -37,17 +37,17 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-attribuzione', label: 'Quanto del digitale arriva in filiale' },
     { id: 'slide-ritorno', label: 'Quello che si misura sul mutuo nel primo trimestre cambia le regole del secondo' },
   ]},
-  { slug: 'coworker', label: 'AI Conversazionali · Coworker (05)', slides: [
+  { slug: 'coworker', label: 'CX Enterprise Coworker (04)', slides: [
     { id: 'slide-cover', label: 'Cover: divisore del capitolo' },
     { id: 'slide-cosa',  label: 'Che cos’è Coworker: chat, agenti, dove gira' },
     { id: 'slide-video', label: 'Video demo con i dati del cliente: slot da console' },
   ]},
-  { slug: 'risultati', label: 'Banche che lo fanno già (06)', slides: [
+  { slug: 'risultati', label: 'Tre banche che lo fanno già (05)', slides: [
     { id: 'slide-cover',   label: 'Cover: una banca che lo fa già' },
     { id: 'slide-tsb',     label: 'TSB: le quattro cifre, con la fonte' },
     { id: 'slide-italia',  label: 'Crédit Agricole Italia e Santander Brasil' },
   ]},
-  { slug: 'prossimi-passi', label: 'Prossimi passi (07)', slides: [
+  { slug: 'prossimi-passi', label: 'La proposta e come si parte (06)', slides: [
     { id: 'slide-cover',  label: 'Cover: prossimi passi' },
     { id: 'slide-da-voi', label: 'La proposta: un trimestre sul mutuo, quattro misure e l’ask (le altre a richiesta)' },
     { id: 'slide-fasi',   label: 'Come si parte: tre tappe, chi guida e quando (il dettaglio a richiesta)' },
