@@ -56,6 +56,13 @@ export interface Momento {
   /** La MAPPA: che cosa fa il marketer in questo passo, e con che cosa.
       Due campi corti per forza — stanno in una colonna su sette. */
   funzione: { it: string; en: string };
+  /** La tessera sotto il titolo interno, quando deve dire PIÙ della
+      `funzione`. La funzione resta corta perché sta anche in una colonna
+      su sette (mappa e circolo); qui c'è la riga intera. */
+  tessera?: { it: string; en: string };
+  /** Lo stato di Giulia nel chip in alto, quando non è più «non ancora
+      cliente» (momento 07: ha firmato la richiesta e aperto il conto). */
+  statoGiulia?: { it: string; en: string };
   /** Il TOUCHPOINT, in due parole. Chiesto in riunione il 29 ott 2026:
       «il classico percorso XD […] il percorso di vari touchpoint». `dove`
       è narrativo e non sta in una colonna su sette; questo sì. */
@@ -162,10 +169,10 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'genstudio', scena: 'lavoro-02-contenuti',
-      titolo: { it: 'Il team crea dodici annunci da un solo brief, già validati', en: 'The team creates twelve ads from one brief, already validated' },
+      titolo: { it: 'Il team crea dodici annunci da un solo brief, controllati sulle linee guida', en: 'The team creates twelve ads from one brief, checked against the guidelines' },
       corpo: {
-        it: 'Il tempo se ne va soprattutto nelle approvazioni. Qui ogni variante è verificata contro linee guida e informative prima dell’approvazione. Su chi non vi conosce ancora, un messaggio generico non lo recupera poi la relazione.',
-        en: 'Most of the time goes into approvals. Here every variant is checked against guidelines and disclosures before approval. With someone who does not know you yet, no relationship later makes up for a generic message.',
+        it: 'Il tempo se ne va soprattutto nelle approvazioni. Varianti controllate contro le linee guida di marchio e di canale mentre si producono; le informative restano nell’iter di approvazione legale. Su chi non vi conosce ancora, un messaggio generico non lo recupera poi la relazione.',
+        en: 'Most of the time goes into approvals. Variants are checked against brand and channel guidelines while they are produced; disclosures stay in the legal approval process. With someone who does not know you yet, no relationship later makes up for a generic message.',
       },
     },
   },
@@ -190,10 +197,10 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'profilo', scena: 'lavoro-03-dati',
-      titolo: { it: 'Con il consenso ai cookie, le due sessioni anonime si agganciano al suo profilo', en: 'With cookie consent, the two anonymous sessions link to her profile' },
+      titolo: { it: 'Quando lascia l’email, le due sessioni anonime (raccolte col consenso ai cookie) si uniscono al suo profilo', en: 'When she leaves her email, the two anonymous sessions (collected under cookie consent) merge into her profile' },
       corpo: {
-        it: 'Le visite anonime delle sere prima si collegano al profilo nell’istante del consenso, se il consenso ai cookie c’era già: se manca, si riparte dalla simulazione di oggi. Nel CRM non ha una scheda cliente: può avere un lead.',
-        en: 'Her anonymous visits from the previous evenings link to the profile the instant consent is given, if cookie consent was already there. If not, you start from today’s simulation. In the CRM she has no customer record: she can have a lead.',
+        it: 'Le visite anonime delle sere prima si uniscono al profilo quando arriva un identificativo, l’email. Serve che il consenso ai cookie ci fosse già: se manca, si riparte dalla simulazione di oggi. Nel CRM non ha una scheda cliente: può avere un lead.',
+        en: 'Her anonymous visits from the previous evenings merge into the profile when an identifier arrives, the email, if cookie consent was already there. If not, it starts from today’s simulation. In the CRM she has no customer record: she can have a lead.',
       },
     },
   },
@@ -218,10 +225,10 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'decisione', scena: 'lavoro-04-decisione',
-      titolo: { it: 'Delle quattro proposte possibili, il sito le mostra il promemoria sulle buste paga mancanti', en: 'Of the four possible offers, the site shows her the reminder about the missing payslips' },
+      titolo: { it: 'Delle quattro proposte possibili, il sito le mostra il promemoria con un appuntamento proposto', en: 'Of the four possible offers, the site shows her the reminder with a proposed appointment' },
       corpo: {
-        it: 'Su chi non è ancora cliente il profilo è sottile: due sessioni, una simulazione, un consenso. Serve il posto dove si decide quale proposta parte, su quale canale e dentro la politica di contatto, valutata quando si decide.',
-        en: 'For someone not yet a customer the profile is thin: two sessions, one simulation, one consent. What is missing is where to decide which proposal goes, on which channel and within the contact policy, evaluated at decision time.',
+        it: 'Il profilo è sottile: due sessioni, una simulazione, un consenso. Su chi non è ancora cliente il motore di targeting non ha punteggi: valgono la priorità dell’offerta e le regole scritte insieme. La regola di contatto resta vostra.',
+        en: 'The profile is thin: two sessions, one simulation, one consent. For someone not yet a customer the targeting engine has no scores: the offer’s priority and the rules written together apply. The contact rule stays yours.',
       },
     },
   },
@@ -231,7 +238,7 @@ export const MOMENTI: Momento[] = [
     ora: { it: 'Il mattino dopo', en: 'The next morning' },
     dove: { it: 'Via email', en: 'By email' },
     short: { it: 'Riprende la pratica', en: 'Resumes the application' },
-    funzione: { it: 'Un richiamo su tre canali', en: 'One follow-up, three channels' },
+    funzione: { it: 'Un richiamo, più canali', en: 'One follow-up, several channels' },
     canale: { it: 'Email', en: 'Email' },
     gruppo: 'engagement',
     verifica: { it: 'Oggi quanto passa fra il gesto di un prospect e il primo contatto?', en: 'Today, how long passes between a prospect’s action and the first contact?' },
@@ -246,7 +253,7 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'percorso', scena: 'lavoro-05-orchestrazione',
-      titolo: { it: 'Se la richiesta si ferma, la banca la ricorda su email, sito e social', en: 'If the application stalls, the bank follows up by email, on the site and on social' },
+      titolo: { it: 'Se la richiesta si ferma, la banca la ricorda per email, sul sito e con annunci di ripresa', en: 'If the application stalls, the bank follows up by email, on the site and with resume ads' },
       corpo: {
         it: 'L’audience si definisce una volta, con le regole, e il percorso parte dall’evento. Aspetta dodici ore, prova la mail con la proposta di appuntamento e, se il clic non arriva, riprova con la variante giusta.',
         en: 'The audience is defined once, with rules, and the journey starts from the event. It waits twelve hours, tries email with the proposed appointment and, if the click does not come, tries again with the right variant.',
@@ -256,7 +263,7 @@ export const MOMENTI: Momento[] = [
   {
     n: '06', of: '07',
     blocco: { it: 'Customer Engagement', en: 'Customer engagement' },
-    ora: { it: 'Due giorni dopo', en: 'Two days later' },
+    ora: { it: 'Il mercoledì', en: 'On the Wednesday' },
     dove: { it: 'In filiale', en: 'In branch' },
     short: { it: 'Va in filiale', en: 'Goes to the branch' },
     funzione: { it: 'La filiale è informata', en: 'The branch is informed' },
@@ -284,28 +291,33 @@ export const MOMENTI: Momento[] = [
   {
     n: '07', of: '07',
     blocco: { it: 'CX Analytics', en: 'CX analytics' },
+    /* ⚠️ Tre settimane dal mercoledì 18 novembre: mercoledì 9 dicembre.
+       NON martedì 8, che è l'Immacolata e le filiali sono chiuse; e non
+       più sabato 5 alle 18:40, che il panel dell'11 nov 2026 ha visto. */
     ora: { it: 'Tre settimane dopo', en: 'Three weeks later' },
-    dove: { it: 'Diventa cliente', en: 'She becomes a customer' },
+    dove: { it: 'In filiale', en: 'In branch' },
     short: { it: 'Diventa cliente', en: 'Becomes a customer' },
-    funzione: { it: 'Costo di acquisizione misurato', en: 'Acquisition cost measured' },
+    funzione: { it: 'Costo di acquisizione misurabile', en: 'Acquisition cost, measurable' },
+    tessera: { it: 'Costo di acquisizione misurabile, una volta portata in piattaforma la spesa per canale', en: 'Acquisition cost measurable, once spend per channel is brought into the platform' },
+    statoGiulia: { it: 'Richiesta firmata · cliente da oggi', en: 'Application signed · customer from today' },
     canale: { it: 'Filiale e app', en: 'Branch and app' },
     gruppo: 'piattaforma',
     verifica: { it: 'Oggi sapete quale momento ha prodotto il cliente, o solo quanto ha reso il canale?', en: 'Today, do you know which moment produced the customer, or only what the channel returned?' },
     prodotto: 'Customer Journey Analytics',
     cliente: {
       chrome: 'app', scena: 'scena-07-casa',
-      titolo: { it: 'Firma la richiesta e scarica l’app', en: 'She signs the application and downloads the app' },
+      titolo: { it: 'Firma la richiesta e apre il conto: da oggi la pratica è nell’app', en: 'She signs the application and opens an account: from today the file is in the app' },
       corpo: {
-        it: 'Richiesta firmata; l’istruttoria comincia adesso. L’app le serve da oggi: prima non aveva motivo di averla, ed è il motivo per cui nei momenti precedenti non c’era. Da qui in avanti il canale è vostro, e la relazione comincia.',
-        en: 'Application signed; the credit assessment starts now. The app matters from today: before she had no reason to have it, which is why it was absent from the earlier moments. From here the channel is yours, and the relationship begins.',
+        it: 'Firma la richiesta in filiale e apre il conto; l’istruttoria comincia adesso. L’app le serve da oggi: prima non aveva un rapporto, ed è il motivo per cui nei momenti precedenti non c’era. Da qui in avanti il canale è vostro.',
+        en: 'She signs the application in branch and opens an account; the credit assessment starts now. The app matters from today: before she had no relationship, which is why it was absent from the earlier moments. From here the channel is yours.',
       },
     },
     interno: {
       prodotto: 'misura', scena: 'lavoro-07-misura',
       titolo: { it: 'Si vede dove si perdono i potenziali clienti, filiale compresa', en: 'You can see where prospects are lost, branch included' },
       corpo: {
-        it: 'A che serve qui: manca una misura sola dall’assistente alla firma. Senza quella nessuno sa quale dei sette momenti ha prodotto la cliente, né su quale investire il mese dopo. Appuntamento tenuto, pratica e delibera tornano dal CRM di filiale nello stesso dato. Il numero da guardare è quanto costa acquisirla, e dove si perdono le altre.',
-        en: 'What it is for: there is no single measurement from the assistant to the signature. Without it nobody knows which of the seven moments produced the customer, or where to invest next month. Appointment held, application and approval come back from the branch CRM into the same data. The number to watch is what she cost to acquire, and where others are lost.',
+        it: 'A che serve qui: manca una misura sola dall’assistente alla firma. Senza quella nessuno sa quale dei sette momenti ha prodotto la cliente, né su quale investire il mese dopo. Appuntamento tenuto, pratica e delibera tornano dal CRM di filiale nello stesso dato. Il numero da guardare è quanto costa una richiesta firmata, per canale, una volta portata in piattaforma la spesa, e dove si perdono le altre.',
+        en: 'What it is for: there is no single measurement from the assistant to the signature. Without it nobody knows which of the seven moments produced the customer, or where to invest next month. Appointment held, application and approval come back from the branch CRM into the same data. The number to watch is what a signed application costs, per channel, once spend is in the platform, and where others are lost.',
       },
     },
   },
