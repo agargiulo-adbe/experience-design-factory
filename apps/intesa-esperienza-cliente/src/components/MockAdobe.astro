@@ -94,11 +94,21 @@ const VARIANTI = ['Torino · prima casa', 'Milano · prima casa', 'Under 36', 'S
    prospect non ha un gestore — ed è diventato il contact center;
    «Offerta conto corrente» è uscita: è il rapporto su cui il mutuo si
    appoggia, non un cross-sell da tenere fuori. */
+/* ⚠️ NIENTE PUNTEGGI (panel, 11 nov 2026). C'erano 92, 61 e 38: punteggi
+   individuali su una persona che, come dice il deck, non ha score. Su chi
+   non è ancora cliente valgono la priorità dell'offerta e le regole
+   scritte insieme, quindi resta l'ORDINE, non una cifra.
+   Vince il promemoria CON l'appuntamento proposto: è quello che l'email
+   del momento 05 porta la mattina dopo, e prima la proposta che perdeva
+   qui ricompariva lì.
+   Il contatto telefonico non «perde»: è escluso prima della classifica,
+   con le stesse parole del pop-in AI Decisioning. Il canale che richiama
+   un prospect è la Filiale Digitale, non un «contact center». */
 const OFFERTE = [
-  { l: 'Promemoria buste paga', s: 'scelta', v: 92 },
-  { l: 'Invito in filiale', s: 'scartata', v: 61 },
-  { l: 'Contatto dal contact center', s: 'scartata', v: 38 },
-  { l: 'Polizza casa', s: 'esclusa', v: 0 },
+  { l: 'Promemoria con appuntamento proposto', s: 'scelta', stato: 'esce ora' },
+  { l: 'Promemoria senza appuntamento', s: 'scartata', stato: '2ª in ordine' },
+  { l: 'Contatto dalla Filiale Digitale', s: 'esclusa', stato: 'escluso', motivo: 'non ammesso: manca il consenso al contatto telefonico' },
+  { l: 'Polizza casa', s: 'esclusa', stato: 'escluso', motivo: 'solo dopo la firma' },
 ];
 /* 05 · il percorso che parte dall'evento. */
 const PASSI = [
@@ -149,18 +159,21 @@ const FUNNEL = IMBUTO.map((r) => ({ l: r.l.it, v: r.v, n: r.n, offline: r.offlin
 
       {prodotto === 'genstudio' && (
         <>
-          <p class="im-ado-occhiello">Un brief · dodici varianti · verificate</p>
+          {/* ⚠️ Niente «informative ✓» (fact-check, 11 nov 2026): la brand
+              validation di GenStudio guarda marchio, regole di canale e
+              accessibilità; la conformità legale resta del cliente. */}
+          <p class="im-ado-occhiello">Un brief · dodici varianti · controllate sulle linee guida</p>
           <div class="im-gs">
             {FORMATI.map((f, i) => (
               <figure class="im-gs-v" data-f={f.k} data-scelta={i === 0 ? '' : null}>
                 <div class="im-gs-img" style={`background-image: url('${f.img.src}')`}>
                   <span class="im-gs-h">{f.h}</span>
                 </div>
-                <figcaption><strong>{f.l}</strong><span>{f.p}</span><em>informative ✓</em></figcaption>
+                <figcaption><strong>{f.l}</strong><span>{f.p}</span><em>marchio ✓</em></figcaption>
               </figure>
             ))}
           </div>
-          <p class="im-ado-rilievo">Un brief solo: per ogni pubblico cambiano immagine, messaggio e formato.</p>
+          <p class="im-ado-rilievo">Un brief solo: per ogni pubblico cambiano immagine, messaggio e formato. Le informative restano nell’iter di approvazione legale.</p>
         </>
       )}
 
@@ -181,28 +194,33 @@ const FUNNEL = IMBUTO.map((r) => ({ l: r.l.it, v: r.v, n: r.n, offline: r.offlin
                 sul comportamento, calcolata in piattaforma; lo score del
                 motore entra quando la persona è riconosciuta. */}
             <div><dt>Nel CRM</dt><dd>nessuna posizione · non è cliente</dd></div>
-            <div><dt>Consenso</dt><dd>dato ora, con la simulazione</dd></div>
+            {/* Due consensi, due righe: i cookie raccolgono le sessioni
+                anonime, il ricontatto permette di scriverle. Erano una riga
+                sola, «Consenso: dato ora» (panel, 11 nov 2026). */}
+            <div><dt>Cookie</dt><dd>accettati il 12 nov</dd></div>
+            <div><dt>Ricontatto</dt><dd>✓ ora, con l’email</dd></div>
             <div><dt>Regola di sessione</dt><dd>2 sessioni · 1 simulazione salvata</dd></div>
           </dl>
-          <p class="im-ado-rilievo">Le visite di prima si collegano al profilo quando arriva il consenso, se il consenso ai cookie c’era già.</p>
+          <p class="im-ado-rilievo">Le sessioni di prima si uniscono al profilo quando arriva l’email, se il consenso ai cookie c’era già.</p>
         </>
       )}
 
       {prodotto === 'decisione' && (
         <>
           <ol class="im-dc-fasi" aria-label="Come decide">
-            <li>4 proposte</li><li>Regole e limiti</li><li>Classifica</li><li data-on>1 esce</li>
+            <li>4 proposte</li><li>Regole e consensi</li><li>Ordine</li><li data-on>1 esce</li>
           </ol>
-          <ul class="im-dc">
+          <ul class="im-dc im-dc--ordine">
             {OFFERTE.map((o) => (
               <li data-stato={o.s}>
                 <span class="im-dc-l">{o.l}</span>
-                <span class="im-dc-b"><i style={`width:${o.v}%`}></i></span>
-                <em>{o.s === 'scelta' ? 'esce ora' : o.s === 'esclusa' ? 'solo dopo la firma' : `${o.v}`}</em>
+                <em>{o.stato}</em>
+                {o.motivo && <span class="im-dc-m">{o.motivo}</span>}
               </li>
             ))}
           </ul>
-          <p class="im-dc-out"><span aria-hidden="true">↓</span> Sul sito, adesso: <strong>Promemoria buste paga</strong></p>
+          <p class="im-dc-nota">Priorità dell’offerta + regole scritte insieme; nessuno score individuale sul prospect.</p>
+          <p class="im-dc-out"><span aria-hidden="true">↓</span> Sul sito, adesso: <strong>Promemoria con appuntamento proposto</strong></p>
         </>
       )}
 
@@ -216,7 +234,7 @@ const FUNNEL = IMBUTO.map((r) => ({ l: r.l.it, v: r.v, n: r.n, offline: r.offlin
             <div class="im-aj-rami">
               <div class="im-aj-n" data-t="email" data-ora><i><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="6" width="17" height="12" rx="1.5" /><path d="m4 7 8 6 8-6" /></svg></i><span>Email</span></div>
               <div class="im-aj-n" data-t="web"><i><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="14" rx="1.5" /><path d="M3.5 9h17" /></svg></i><span>Banner sul sito</span></div>
-              <div class="im-aj-n" data-t="media"><i><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" /><circle cx="12" cy="12" r="3.5" /></svg></i><span>Social</span></div>
+              <div class="im-aj-n" data-t="media"><i><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" /><circle cx="12" cy="12" r="3.5" /></svg></i><span>Annunci di ripresa<small class="im-aj-sub">pubblico da Real-Time CDP, aggiornato ogni giorno</small></span></div>
             </div>
           </div>
           <div class="im-aj-dati">
@@ -250,13 +268,20 @@ const FUNNEL = IMBUTO.map((r) => ({ l: r.l.it, v: r.v, n: r.n, offline: r.offlin
               <div class="im-cj-col" data-offline={f.offline ? '' : null} data-ultimo={i === FUNNEL.length - 1 ? '' : null}>
                 <span class="im-cj-n">{f.n}</span>
                 <span class="im-cj-b"><i style={`height:${f.v}%`}></i></span>
-                <span class="im-cj-l">{['Visite', 'Simulazioni', 'Consensi', 'In filiale', 'Firme'][i]}</span>
+                <span class="im-cj-l">{['Visite', 'Simulazioni', 'Consensi', 'In filiale', 'Richieste firmate'][i]}</span>
               </div>
             ))}
           </div>
           <div class="im-cj-attr">
-            <small>Attribuzione delle firme per canale · algoritmica</small>
+            <small>Attribuzione delle richieste firmate per canale · algoritmica</small>
             <div class="im-cj-seg"><span style="flex:42">Sito</span><span style="flex:18">Email</span><span style="flex:40" data-on>Filiale</span></div>
+          </div>
+          {/* Il costo con un euro a schermo, e con la sua condizione: CJA lo
+              legge solo se la spesa per canale entra in piattaforma
+              (fact-check, 11 nov 2026). Cifre di esempio, dichiarate. */}
+          <div class="im-cj-costo">
+            <small>Costo per richiesta firmata · per canale · spesa importata</small>
+            <div class="im-cj-costo-r"><span>Sito <b>410 €</b></span><span>Email <b>95 €</b></span><span>Filiale <b>620 €</b></span></div>
           </div>
         </div>
       )}
@@ -264,3 +289,21 @@ const FUNNEL = IMBUTO.map((r) => ({ l: r.l.it, v: r.v, n: r.n, offline: r.offlin
   </div>
   {!compatto && (<figcaption class="im-mock-cap">Dati di esempio.</figcaption>)}
 </figure>
+
+<style>
+  /* 04 · l'ORDINE senza punteggi: etichetta e stato su una riga, il motivo
+     dell'esclusione sotto, a tutta larghezza. Corpi agli stessi minimi
+     delle altre righe del mock: niente si rimpicciolisce. */
+  .im-dc--ordine li { grid-template-columns: minmax(0, 1fr) auto; row-gap: 0.1rem; padding-block: 0.32rem; }
+  .im-dc-m { grid-column: 1 / -1; font-size: clamp(0.76rem, 0.62vw, 1.4rem); line-height: 1.3; color: var(--color-grey-600); font-weight: 400; }
+  .im-dc--ordine li[data-stato="esclusa"] em { color: #8a1c1c; }
+  .im-dc-nota { margin: 0 0 0.45rem; max-width: none; font-size: clamp(0.76rem, 0.62vw, 1.4rem); line-height: 1.35; color: var(--color-ink-2); }
+  /* 05 · il ramo degli annunci: la riga sotto dice da dove viene il pubblico. */
+  .im-aj-sub { display: block; font-size: clamp(0.72rem, 0.58vw, 1.3rem); line-height: 1.2; color: var(--color-grey-600); }
+  /* 07 · il costo per richiesta firmata, sotto l'attribuzione. */
+  .im-cj-costo { display: grid; gap: 0.2rem; margin-top: -1.1rem; padding-bottom: 1.6rem; }
+  .im-cj-costo small { font-size: clamp(0.78rem, 0.68vw, 1.5rem); font-weight: 700; color: var(--color-ink); }
+  .im-cj-costo-r { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.3rem; }
+  .im-cj-costo-r span { padding: 0.16rem 0.45rem; border: 1px solid var(--color-grey-200); border-radius: 4px; font-size: clamp(0.78rem, 0.66vw, 1.45rem); color: var(--color-ink-2); }
+  .im-cj-costo-r b { color: var(--color-ink); font-variant-numeric: tabular-nums; }
+</style>

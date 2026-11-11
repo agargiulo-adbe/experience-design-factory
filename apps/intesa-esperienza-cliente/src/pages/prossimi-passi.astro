@@ -32,7 +32,7 @@ import { CHAPTERS, prevSlug } from '../data/chapters';
 import Divisore from '../components/Divisore.astro';
 import FiguraCap from '../components/FiguraCap.astro';
 import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
-import { MISURE, ASK, TRIMESTRE } from '../data/referenze';
+import { MISURE, ASK, TRIMESTRE, SOGLIA } from '../data/referenze';
 import fondo from '../assets/generated/cover-passi.webp';
 /* La clip sta sul Release `media`, ricucita con `pnpm loop:seamless`. */
 const CLIP = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media';
@@ -44,39 +44,68 @@ const currentPath = Astro.url.pathname;
 
 /* Le cose che servono per scrivere una proposta con un perimetro
    invece di un ordine di grandezza. Dalla slide 61 del deck, RIFATTE
-   (panel, 30 ott 2026): «chiedere alla Divisione» senza dire chi porta
-   che cosa vuol dire che nessuno le porta. Ogni voce ha la funzione che
-   la possiede e che cosa basta mandare; «i profili in dodici mesi» sono
-   la base di prezzo delle licenze, e si dice, separati dal perimetro
-   del pilota; la governance dell'arbitro e la spesa media per canale
-   sono le due voci che mancavano. */
+   (panel, 30 ott 2026): ogni voce ha la funzione che la possiede e che
+   cosa basta mandare; «i profili in dodici mesi» sono la base di prezzo e
+   stanno a parte («non toccare», panel dell'11 nov 2026).
+   Giro dell'11 nov 2026: ogni voce dice in QUALE TAPPA serve (`quando`);
+   la governance passa a «Targeting · Canali · CRM» con la regola di
+   precedenza proposta, e la conferma resta loro; fra chi porta i dati
+   entra l'Analytics digitale della Divisione; la spesa per canale non si
+   chiede alla prima sessione: in fase 0 si disegna il flusso, in fase 1
+   la banca la carica nella propria istanza (disaccordo Baa/Rubino,
+   risolto in sequenza dall'arbitro). */
 const SERVE = [
   { fig: 'misura', t: { it: 'I volumi', en: 'The volumes' },
     chi: { it: 'Controllo di Gestione · Targeting', en: 'Management control · Targeting' },
-    d: { it: 'Eventi al giorno per canale, profili nel grafo, attributi, retention: sono le grandezze del dimensionamento. I profili da contattare in dodici mesi servono al prezzo, e stanno a parte.', en: 'Events per day per channel, profiles in the graph, attributes, retention: the sizing quantities. Profiles to contact over twelve months serve the price, and sit apart.' } },
+    quando: { it: 'fase 0', en: 'phase 0' },
+    d: { it: 'Eventi → ingestione, profili → piattaforma, retention → storage, e la doppia licenza Analytics/CJA: ordini di grandezza, non un preventivo. I profili da contattare in dodici mesi servono al prezzo, e stanno a parte.', en: 'Events → ingestion, profiles → platform, retention → storage, and the dual Analytics/CJA licence: orders of magnitude, not a quote. Profiles to contact over twelve months serve the price, and sit apart.' } },
   { fig: 'canali', t: { it: 'Le integrazioni', en: 'The integrations' },
     chi: { it: 'Group Technology', en: 'Group Technology' },
-    d: { it: 'La mappa dei collegamenti con CRM di filiale, motore di targeting, data lake e Adobe Analytics: chi espone quali dati, e come.', en: 'The map of links with the branch CRM, the targeting engine, the data lake and Adobe Analytics: who exposes which data, and how.' } },
+    quando: { it: 'fase 0', en: 'phase 0' },
+    d: { it: 'La mappa dei collegamenti con motore di targeting, data warehouse, core banking, CRM di filiale, CDP attuale e registro dei consensi. E che cosa avete in programma su motore, CRM e dato nei prossimi dodici mesi.', en: 'The map of links with targeting engine, data warehouse, core banking, branch CRM, current CDP and consent register. And what you have planned on engine, CRM and data over the next twelve months.' } },
   { fig: 'archivio', t: { it: 'I dati', en: 'The data' },
-    chi: { it: 'Targeting · Advanced Analytics', en: 'Targeting · Advanced analytics' },
+    chi: { it: 'Targeting · Advanced Analytics · Analytics digitale della Divisione', en: 'Targeting · Advanced analytics · Division digital analytics' },
+    quando: { it: 'fase 0', en: 'phase 0' },
     d: { it: 'Quali dati sono già raccolti, con quale tassonomia, quali vanno portati, e chi li possiede.', en: 'Which data is already collected, under which taxonomy, which needs bringing in, and who owns it.' } },
   { fig: 'regia', t: { it: 'La governance', en: 'Governance' },
-    chi: { it: 'Canali · CRM', en: 'Channels · CRM' },
-    d: { it: 'Chi possiede le regole dell’arbitro e la politica di contatto, canale per canale; e chi vince quando il motore e l’arbitro dicono due cose diverse.', en: 'Who owns the arbiter’s rules and the contact policy, channel by channel; and who wins when the engine and the arbiter disagree.' } },
+    chi: { it: 'Targeting · Canali · CRM', en: 'Targeting · Channels · CRM' },
+    quando: { it: 'fase 0', en: 'phase 0' },
+    d: { it: 'Sul prospect classifica l’arbitro, con le regole scritte insieme. Sul cliente la classifica resta del vostro motore, e l’arbitro applica canale, consenso e politica di contatto. La regola di precedenza la scrivete voi.', en: 'On prospects the arbiter ranks, with rules written together. On customers the ranking stays with your engine, and the arbiter applies channel, consent and contact policy. You write the precedence rule.' } },
   { fig: 'esito', t: { it: 'Il marketing', en: 'Marketing' },
     chi: { it: 'Marketing digitale', en: 'Digital marketing' },
-    d: { it: 'La spesa media per canale negli ultimi dodici mesi, e le domande su cui volete essere citati dagli assistenti.', en: 'Average spend per channel over the last twelve months, and the questions you want assistants to cite you on.' } },
+    quando: { it: 'fase 0 e 1', en: 'phases 0 and 1' },
+    d: { it: 'La spesa per canale: in fase 0 se ne disegna il flusso, in fase 1 la caricate voi nella vostra istanza. E le domande su cui volete essere citati.', en: 'Spend per channel: in phase 0 its feed is designed, in phase 1 you load it into your own instance. And the questions you want to be cited on.' } },
 ];
-/* Le fasi del seguito: un piano, non un preventivo. Il primo tavolo è
-   una sessione di architettura e modello dati. */
+/* I sistemi della banca con UN nome solo, uguale in innesto, mappa,
+   integrazioni e qui (glossario del panel, 11 nov 2026): motore di
+   targeting · data warehouse · core banking · CRM di filiale · CDP attuale
+   · registro dei consensi. Sta nella card delle integrazioni. */
+/* Le fasi del seguito: un piano, non un preventivo.
+   ⚠️ Il titolo prometteva «ogni tappa ha un responsabile» e nessuna card
+   ne portava uno (panel, 11 nov 2026). Ora `guida` è la funzione della
+   banca, `con` chi lavora accanto. Le date sono da fissare in sala. Niente
+   importi e niente durate di licenza inventate: dove il fatto non c'è, si
+   scrive «da definire». La tappa 1 decide sul digitale ma misura fino
+   allo sportello, perché il mutuo si chiude in filiale. */
 const FASI = [
-  { n: '0', t: { it: 'Il disegno', en: 'The design' }, chi: { it: 'Progetto · entro novembre', en: 'Project · by November' },
-    b: { it: 'Identificativi, eventi, consenso, gruppo di controllo, mappa dell’esistente.', en: 'Identifiers, events, consent, control group, map of what exists.' } },
-  { n: '1', t: { it: 'Il mutuo, sui prospect', en: 'The mortgage, on prospects' }, chi: { it: 'Licenza + progetto · un trimestre', en: 'Licence + project · one quarter' },
-    b: { it: 'Il percorso di Giulia sui canali digitali, con gruppo di controllo.', en: 'Giulia’s path on digital channels, with a control group.' } },
-  { n: '2', t: { it: 'Dopo il trimestre', en: 'After the quarter' }, chi: { it: 'Un caso alla volta', en: 'One case at a time' },
-    b: { it: 'Il cross-sell dopo la firma, poi gli altri casi, ciascuno con la sua misura.', en: 'Cross-sell after signature, then the other cases, each with its own measure.' } },
+  { n: '0', t: { it: 'Il disegno', en: 'The design' },
+    guida: { it: 'guida: Targeting e Group Technology, con il business owner della Divisione · con: Adobe / integratore', en: 'led by: Targeting and Group Technology, with the Division’s business owner · with: Adobe / integrator' },
+    quando: { it: 'primo tavolo entro novembre, disegno chiuso entro gennaio: date da fissare in sala · costo: da definire', en: 'first table by November, design closed by January: dates to set in the room · cost: to be defined' },
+    b: { it: 'Identificativi, eventi, consenso, gruppo di controllo, mappa dell’esistente; la regola di eleggibilità dei prospect (Targeting); la durata della convivenza Analytics / CJA.', en: 'Identifiers, events, consent, control group, map of what exists; the prospect eligibility rule (Targeting); how long Analytics and CJA run side by side.' } },
+  { n: '1', t: { it: 'Il mutuo, sui prospect', en: 'The mortgage, on prospects' },
+    guida: { it: 'guida: Targeting, con Canali e CRM · con: Adobe / integratore', en: 'led by: Targeting, with Channels and CRM · with: Adobe / integrator' },
+    quando: { it: 'tempo al primo invio: ordine di grandezza in mesi, ipotesi · poi un trimestre di misura', en: 'time to first send: order of magnitude in months, a hypothesis · then one quarter of measurement' },
+    b: { it: 'Decisione sui canali digitali, misura fino allo sportello: l’esito dell’appuntamento lo registra la filiale nel CRM. Licenza: durata minima da definire; a fine trimestre si estende o si ferma, e i profili prospect si cancellano.', en: 'Decision on digital channels, measurement up to the counter: the branch records the appointment outcome in the CRM. Licence: minimum term to be defined; at quarter end it extends or stops, and prospect profiles are deleted.' } },
+  { n: '2', t: { it: 'Dopo il trimestre', en: 'After the quarter' },
+    guida: { it: 'guida: Targeting, con il prodotto · con: Adobe / integratore', en: 'led by: Targeting, with product · with: Adobe / integrator' },
+    quando: { it: 'un caso alla volta, se la soglia si è mossa', en: 'one case at a time, if the threshold moved' },
+    b: { it: 'Il cross-sell dopo la firma, poi gli altri casi, ciascuno con la sua misura. Sui clienti la classifica resta del vostro motore.', en: 'Cross-sell after signature, then the other cases, each with its own measure. On customers the ranking stays with your engine.' } },
 ];
+/* Perché il mutuo prima del cross-sell: lo chiedono Rete e Targeting. */
+const CRITERIO = {
+  it: 'Perché il mutuo prima del cross-sell: sui prospect il vostro motore non ha punteggi, e la sua classifica non si tocca. La misura si chiude in un trimestre.',
+  en: 'Why the mortgage before cross-sell: on prospects your engine has no scores, and its ranking stays untouched. The measurement closes within a quarter.',
+};
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -96,27 +125,51 @@ const FASI = [
       <div class="im-sl" data-reveal>
         <div class="im-sl-head">
           <T as="p" class="im-n" it="Da voi" en="At your end" />
-          <T as="h2" class="im-h2" it="Sei misure di acquisizione da attivare dal primo giorno" en="Six acquisition measures to switch on from day one" />
-          <T as="p" class="im-sub" it="A sinistra la domanda su oggi, da verificare con voi. A destra come si saprebbe." en="On the left the question about today, to check with you. On the right how it would be known." />
+          <T as="h2" class="im-h2" it="Sette misure di acquisizione da attivare dal primo giorno" en="Seven acquisition measures to switch on from day one" />
+          <T as="p" class="im-sub" it="A sinistra la domanda su oggi, da verificare con voi. A destra come si saprebbe." en="On the left the question about today, to check with you. On the right how it would be known." />
         </div>
-        <div class="im-mis im-mis--sei" data-stagger>
+        {/* Sette misure: due colonne, e la misura chiave (il costo) a tutta
+            larghezza in fondo. L'ask è passato alla slide che segue, con la
+            forma della soglia: le due cose insieme non entravano a 1920
+            col tipo pieno, e il tipo non si rimpicciolisce. */}
+        <div class="im-mis im-mis--sei im-mis--sette" data-stagger>
           {MISURE.map((m) => (
             <div class="im-mis-b" data-chiave={m.chiave ? '' : null}>
               <T as="p" class="im-mis-l" it={m.l.it} en={m.l.en} />
               <p class="im-mis-r">
                 <span class="im-mis-oggi"><span data-lang-it>{m.oggi.it}</span><span data-lang-en>{m.oggi.en}</span></span>
                 <span class="im-mis-f" aria-hidden="true"></span>
-                <span class="im-mis-poi"><span data-lang-it>{m.poi.it}</span><span data-lang-en>{m.poi.en}</span></span>
+                <span class="im-mis-poi"><span data-lang-it>{(m.poiLungo ?? m.poi).it}</span><span data-lang-en>{(m.poiLungo ?? m.poi).en}</span></span>
               </p>
             </div>
           ))}
         </div>
-        {/* L'ASK, grande. La cifra è un numerale, non copia: il testo
-            arriva verbatim dalla fonte unica, perché due versioni della
-            richiesta sono il modo più rapido di sembrare confusi. */}
-        <div class="im-ask" data-reveal data-reveal-delay="0.3">
+        <T as="p" class="im-fonte-riga" it={TRIMESTRE.it} en={TRIMESTRE.en} />
+      </div>
+    </Slide>
+
+    {/* ── La soglia e l'ask (11 nov 2026) ─────────────────────────────
+        Nata dividendo slide-da-voi: la soglia senza forma era un P1 del
+        panel («con circa 1.900 firme l'anno, in un trimestre non si vede
+        niente»). L'ask resta verbatim dalla fonte unica. */}
+    <Slide id="slide-soglia" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-sl" data-reveal>
+        <div class="im-sl-head">
+          <T as="p" class="im-n" it="La richiesta" en="The ask" />
+          <T as="h2" class="im-h2" it="Il pilota si giudica su una soglia fissata prima del primo invio" en="The pilot is judged on a threshold set before the first send" />
+        </div>
+        <div class="im-ask" data-reveal data-reveal-delay="0.1">
           <p class="im-ask-n" data-display>1</p>
           <T as="p" class="im-ask-t" it={ASK.it} en={ASK.en} />
+        </div>
+        <div class="im-mis im-mis--soglia" data-stagger>
+          {SOGLIA.map((x) => (
+            <div class="im-mis-b">
+              <T as="p" class="im-mis-l" it={x.k.it} en={x.k.en} />
+              <p class="im-mis-r"><span class="im-mis-oggi"><span data-lang-it>{x.v.it}</span><span data-lang-en>{x.v.en}</span></span></p>
+            </div>
+          ))}
         </div>
         <T as="p" class="im-fonte-riga" it={TRIMESTRE.it} en={TRIMESTRE.en} />
       </div>
@@ -127,20 +180,21 @@ const FASI = [
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <T as="p" class="im-ado-occ" it="Il seguito" en="What follows" />
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Il piano parte da una sessione di architettura e ogni tappa ha un responsabile" en="The plan starts with an architecture session and every stage has an owner" />
-        <T as="p" class="im-ado-l" it="Progetto o licenza, tappa per tappa, e i prerequisiti di ciascuna." en="Project or licence, stage by stage, and the prerequisites of each." />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Il piano parte da una sessione di architettura e ogni tappa ha un responsabile" en="The plan starts with an architecture session and every stage has an owner" />
         {/* Un binario in posa, come sulla Roadmap di Trenitalia: posato dove dipende
             da quello che si può fare subito, tratteggiato dove dipende dalla tappa prima. */}
-        <ol class="im-rm" data-reveal data-reveal-delay="0.12">
+        <ol class="im-rm im-rm--guida" data-reveal data-reveal-delay="0.12">
           {FASI.map((f, i) => (
             <li class="im-rm-i" data-tratto={i === 0 ? 'posato' : 'da-posare'}>
               <span class="im-rm-n">{f.n}</span>
               <T as="span" class="im-rm-t" it={f.t.it} en={f.t.en} />
-              <T as="span" class="im-rm-chi" it={f.chi.it} en={f.chi.en} />
+              <T as="span" class="im-rm-chi" it={f.guida.it} en={f.guida.en} />
+              <T as="span" class="im-rm-q" it={f.quando.it} en={f.quando.en} />
               <T as="span" class="im-rm-b" it={f.b.it} en={f.b.en} />
             </li>
           ))}
         </ol>
+        <T as="p" class="im-fonte-riga" it={CRITERIO.it} en={CRITERIO.en} />
       </div>
     </Slide>
 
@@ -149,23 +203,34 @@ const FASI = [
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <T as="p" class="im-ado-occ" it="Che cosa ci serve per la proposta" en="What we need for the proposal" />
         <T as="h2" class="im-ado-t im-ado-t--stretto" it="Le cinque cose da portare alla prima sessione e chi le porta" en="The five things to bring to the first session and who brings them" />
-        <T as="p" class="im-ado-l" it="Per ciascuna, la funzione che la possiede e che cosa basta mandare." en="For each, the function that owns it and what is enough to send." />
 
         <div class="im-serve im-serve--cinque">
           {SERVE.map((x) => (
             <section class="im-serve-i" data-substep data-side="in">
               <FiguraCap segno={x.fig} class="im-serve-fig" />
-              <T as="span" class="im-bv-t" it={x.t.it} en={x.t.en} />
+              {/* La tappa in cui serve sta sulla riga del titolo: una riga in
+                  più per card non entrava a 1280×800 col tipo pieno. */}
+              <span class="im-bv-t"><span data-lang-it>{x.t.it}</span><span data-lang-en>{x.t.en}</span> <span class="im-serve-q"><span data-lang-it>· {x.quando.it}</span><span data-lang-en>· {x.quando.en}</span></span></span>
               <T as="span" class="im-esec-chi" it={x.chi.it} en={x.chi.en} />
               <T as="span" class="im-bv-d" it={x.d.it} en={x.d.en} />
             </section>
           ))}
+          {/* Il proprietario del caso, dalla parte della banca (panel, 11 nov
+              2026). Sta nella griglia e non sotto: a 1280 riempie la sesta
+              cella vuota invece di aggiungere una riga che sbordava. */}
+          <section class="im-serve-nota">
+            <T as="span" class="im-bv-t" it="Chi possiede il caso: una proposta da correggere in sala" en="Who owns the case: a proposal to correct in the room" />
+            <T as="span" class="im-bv-d" it="Il caso al Targeting Commerciale, regole e canali ai Canali, l’offerta ai Mutui. È la richiesta, e sta in un posto solo." en="The case to Commercial Targeting, rules and channels to Channels, the offer to Mortgages. This is the ask, and it sits in one place only." />
+          </section>
         </div>
-
-        <T as="p" class="im-fonte-riga" it="È la richiesta, e sta in un posto solo. Chi di Adobe siede al tavolo e la data del primo incontro si fissano in sala." en="This is the ask, and it sits in one place only. Who from Adobe sits at the table and the date of the first meeting get fixed in the room." />
       </div>
     </Slide>
 
+    {/* ⚠️ LA CHIUSURA NON DICE «MANCA» (panel, 11 nov 2026). Diceva «Il
+        segnale sui prospect ce l'avete già. Manca chi decide che farne»:
+        un'affermazione di assenza sulla banca, mai verificata, davanti a
+        una Divisione che un motore di decisione ce l'ha. Ora è la proposta,
+        e sotto il confine sul motore con la frase canonica. */}
     <Slide id="slide-firma" bg="inverse" align="center"
            data-made-with="Adobe Firefly" data-made-with-for="clip" data-audio="loud">
       <LoopVideo slot="backdrop" src={`${CLIP}/innesto-chiusura.loop.mp4`}
@@ -173,7 +238,8 @@ const FASI = [
                  scrim="im-clip-scrim" opacity={1} />
       <div class="im-firma" data-reveal>
         <CoBrand variant="hero" class="im-cov-lockup edf-cobrand--on-dark" />
-        <T as="p" class="im-firma-l" it="Il segnale sui prospect ce l’avete già. Manca chi decide che farne, prima che diventino clienti." en="You already have the signal on prospects. What is missing is who decides what to do with it, before they become customers." data-reveal data-reveal-delay="0.14" />
+        <T as="p" class="im-firma-l" it="Sui prospect il segnale arriva già al sito. Proponiamo di provare, su un percorso solo, a usarlo prima che lascino il nome, e di misurarlo." en="On prospects the signal already reaches the site. We propose to try, on a single journey, using it before they leave their name, and to measure it." data-reveal data-reveal-delay="0.14" />
+        <T as="p" class="im-firma-confine" it="Sui clienti la next best action resta del vostro motore; il pilota lavora su chi non è ancora cliente." en="On customers the next best action stays with your engine; the pilot works on those who are not customers yet." data-reveal data-reveal-delay="0.2" />
         <a href={href(base, '/')} class="edf-sig-cta">
           <span data-lang-it>Torna all’inizio</span><span data-lang-en>Back to the start</span>
         </a>
@@ -182,3 +248,27 @@ const FASI = [
 
   </DeckContainer>
 </BaseLayout>
+
+<style is:global>
+  /* Sette misure: la chiave (il costo) a tutta larghezza in fondo. */
+  #slide-da-voi .im-mis--sette > [data-chiave] { grid-column: 1 / -1; }
+  /* La soglia: stessi corpi delle misure (globale su #slide-da-voi). */
+  #slide-soglia .im-mis--soglia { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem 0.8rem; margin-top: 0.8rem; }
+  #slide-soglia .im-mis-l { font-size: clamp(1.05rem, 0.94vw, 2.1rem); }
+  #slide-soglia .im-mis-r { font-size: clamp(0.95rem, 0.82vw, 1.8rem); }
+  #slide-soglia .im-mis-oggi { color: #e3eedf; }
+  /* Le fasi: il quando sotto la guida, in un inchiostro più quieto. */
+  #slide-fasi .im-rm-q { font-size: clamp(0.95rem, 0.8vw, 1.8rem); line-height: 1.38; color: #cfe3c6; }
+  #slide-fasi .im-rm-chi { line-height: 1.32; }
+  #slide-fasi .im-rm-b { font-size: clamp(0.95rem, 0.86vw, 1.95rem); }
+  /* Serve: la tappa in cui serve, sotto la funzione. */
+  #slide-serve .im-serve-q { font-weight: 700; color: #ffc46b; white-space: nowrap; }
+  #slide-serve .im-serve-nota { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 0.2rem 0.8rem; align-items: baseline; padding: 0.3rem 0.2rem 0; }
+  @media (max-width: 1400px) { #slide-serve .im-serve-nota { grid-column: auto; display: grid; align-content: start; padding: 0.8rem 0.85rem; border: 1px dashed rgba(255, 255, 255, 0.35); border-radius: 6px; } }
+  /* Il costo, a tutta larghezza: etichetta a sinistra, misura a destra. */
+  #slide-da-voi .im-mis--sette > [data-chiave] { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 0.2rem 1.2rem; align-items: center; }
+  #slide-da-voi .im-mis--sette > [data-chiave] .im-mis-l { margin: 0; }
+  @media (max-height: 950px) { #slide-da-voi .im-mis--sette { gap: 0.4rem 0.7rem; margin-top: 0.3rem; } #slide-da-voi .im-mis--sette .im-mis-b { padding: 0.5rem 0.8rem; } #slide-da-voi .im-mis--sette .im-mis-l { margin-bottom: 0.25rem; } }
+  /* La chiusura: il confine sul motore, sotto la proposta. */
+  .im-firma-confine { margin: 0.6rem auto 0; max-width: 46rem; font-size: clamp(1rem, 0.9vw, 2rem); line-height: 1.45; color: #e3eedf; text-align: center; }
+</style>

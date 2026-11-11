@@ -53,7 +53,7 @@ const { chrome, scena, class: className, compatto = false } = Astro.props;
 
 const ORA: Record<string, string> = {
   ricerca: '21:40', feed: '08:12', simulazione: '21:48',
-  documenti: '22:05', ripresa: '08:02', firma: '18:40', sportello: '11:30',
+  documenti: '22:05', ripresa: '08:02', firma: '15:40', sportello: '11:30',
 };
 const telefono = chrome === 'assistente' || chrome === 'feed' || chrome === 'posta' || chrome === 'app';
 ---
@@ -165,7 +165,7 @@ const telefono = chrome === 'assistente' || chrome === 'feed' || chrome === 'pos
 
       {scena === 'simulazione' && (
         <>
-          <p class="im-cli-occhiello">Simulazione mutuo · senza registrazione</p>
+          <p class="im-cli-occhiello">Simulazione mutuo · esempio illustrativo</p>
           <p class="im-cli-titolo">Prima casa · 25 anni</p>
           <div class="im-cli-cifra">
             {/* ⚠️ 180.000 € a 25 anni al 3,10% dà ~863 €/mese con la rata
@@ -175,12 +175,22 @@ const telefono = chrome === 'assistente' || chrome === 'feed' || chrome === 'pos
           </div>
           <dl class="im-cli-righe">
             <div><dt>Importo</dt><dd>180.000 €</dd></div>
-            <div><dt>Tasso fisso</dt><dd>3,10%</dd></div>
+            {/* ⚠️ Il TAEG accanto al TAN (panel, 11 nov 2026): una
+                simulazione di mutuo senza TAEG non è quella che un sito di
+                banca può mostrare. 3,23% è calcolato, non preso: TAN 3,10%,
+                300 rate da 863 €, e 1.570 € di spese iniziali di esempio
+                (istruttoria 800, perizia 320, imposta sostitutiva 0,25% =
+                450). Illustrativo, e la riga sopra lo dice. */}
+            <div><dt>TAN fisso · TAEG</dt><dd>3,10% · 3,23%</dd></div>
           </dl>
           <div class="im-cli-campo">
             <span class="im-cli-campo-l">Salva la simulazione</span>
             <span class="im-cli-campo-v">giulia.marchetti@…</span>
           </div>
+          {/* Due consensi, due caselle: i cookie (dati il 12 nov, alla
+              prima visita) e il ricontatto (adesso). Il mock ne mostrava
+              uno solo, e il titolo parlava dell'altro (panel, 11 nov 2026). */}
+          <p class="im-cli-consenso im-cli-consenso--cookie"><span class="im-cli-spunta" aria-hidden="true"></span>Cookie di profilazione: accettati il 12 nov</p>
           <p class="im-cli-consenso"><span class="im-cli-spunta" aria-hidden="true"></span>Acconsento a essere ricontattata</p>{/* copy-audit-ignore V1 — testo di un consenso NELL'interfaccia, non voce del deck. */}
         </>
       )}
@@ -223,13 +233,16 @@ const telefono = chrome === 'assistente' || chrome === 'feed' || chrome === 'pos
           <p class="im-cli-occhiello">La tua pratica</p>{/* copy-audit-ignore V1 — messaggio dell'app ALLA persona. */}
           {/* ⚠️ «Mutuo erogato» in tre settimane non esiste: istruttoria,
               perizia, delibera, atto. Il settimo momento è la FIRMA DELLA
-              RICHIESTA, e le date tornano: simulazione il 14/11, firma il
-              5/12 — tre settimane (panel, 30 ott 2026). */}
-          <p class="im-cli-titolo">Richiesta firmata</p>
+              RICHIESTA, firmata in filiale insieme all'apertura del conto:
+              senza un rapporto aperto l'app non si usa (panel, 11 nov 2026).
+              Le date: appuntamento mercoledì 18 nov, firma tre settimane
+              dopo, mercoledì 9 dic, in orario di filiale. Non il 5 dic
+              (un sabato) e non l'8 (Immacolata, filiali chiuse). */}
+          <p class="im-cli-titolo">Richiesta firmata · conto aperto</p>
           <dl class="im-cli-righe">
             <div><dt>Rata</dt><dd>863 €/mese</dd></div>
             <div><dt>Durata</dt><dd>25 anni</dd></div>
-            <div><dt>Firmata il</dt><dd>5 dic</dd></div>
+            <div><dt>Firmata il</dt><dd>9 dic, in filiale</dd></div>
           </dl>
           <div class="im-cli-notifica">
             <p class="im-cli-notifica-t">Benvenuta</p>
@@ -273,3 +286,10 @@ const telefono = chrome === 'assistente' || chrome === 'feed' || chrome === 'pos
           : 'Ricostruzione illustrativa: il sistema è vostro, i numeri sono di esempio.'}
   </figcaption>)}
 </figure>
+
+<style>
+  /* I cookie erano già accettati alla prima visita: casella spuntata ma
+     neutra, così si distingue dal consenso che arriva adesso. */
+  .im-cli-consenso--cookie { margin-bottom: 0.28rem; }
+  .im-cli-consenso--cookie .im-cli-spunta { background: var(--color-grey-600); }
+</style>
