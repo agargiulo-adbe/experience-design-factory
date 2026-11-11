@@ -5,6 +5,10 @@
 
 ## 11. Change log recente
 
+### 2026-11-11 (tarda mattina) · Storia di Intesa: dopo il panel, copia, agenda e Prossimi passi
+
+Otto commit dopo il secondo giro di panel, tutti **pubblicati**: `f9ff00a`, `ea3c77f`, `1fc829d`, `bc2a978`, `2e3dd73` (più i docs `c483850`). In sintesi: la lettura «prima che lasci l'email» con i sei canali; «Accanto» e «nome» tolti come gergo; Real-Time CDP uniformato; il passaggio Analytics di nuovo fuori percorso (scelta dell'owner del 10, ribaltata per errore dal giro del panel); **Prossimi passi da quattro slide a due**; il feedback del team sull'innesto (sistemi della banca non più nominati) e su m-06; **titolo in due livelli e agenda a sei voci** con gli stessi nomi in barra, copertine e `<title>`; i P1 di fatto rimasti dal panel (dato Nomisma, Projects, 12 ore, consenso via email). Gate su `2e3dd73`: `audit:deck` 177 righe 0 HARD, `copy-audit` 0 HARD, `audit:ink` pulito, `audit:taglio` allineato, `audit:og` PASS, `astro check` 0. Dettaglio in §42.14 (Parte 19). ⚠️ Non coperto dal panel: P0 in testa alla Parte 2.
+
 ### 2026-11-11 · Storia di Intesa: due giri di panel, e le correzioni pubblicate
 
 Panel a due giri sullo stato pubblicato (rilevanza 3,5 → 4,0, rischio 3,17 → 3,67); innesto «Accanto» senza sostituzione disegnata, chiusura come proposta, passaggio Web Analytics nel capitolo 04, tre slide nuove, taglio corto con l'innesto e sette misure, momenti leggibili sugli schermi bassi. `8d9b79b`…`6d1c288`, pubblicati. Dettaglio, gate e punti aperti in §42.14 (Parte 19).

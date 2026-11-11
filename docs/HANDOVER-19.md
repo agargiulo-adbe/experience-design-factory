@@ -323,3 +323,10 @@ Analisi chiesta dall'owner: lo stesso capitolo aveva fino a tre nomi diversi (ag
 - **Sei voci, nomi dal contenuto**, gli stessi in agenda, barra (`VOCI_NAV`), copertine e `<title>` (`CHAPTERS`): 01 Adobe e l'offerta · 02 Giulia: un mutuo, sette momenti · 03 Dove ci innestiamo (*e come si misura, con Customer Journey Analytics*) · 04 CX Enterprise Coworker · 05 Tre banche che lo fanno già · 06 La proposta e come si parte. La copertina di Giulia non ha più numero (`Divisore` accetta `num` vuoto), così non si leggono due «Capitolo 02» di fila.
 - Il fondo delle voci d'agenda copre la scia della clip, che prima si vedeva attraverso.
 - **Gate**: `audit:deck` 177 righe 0 HARD · `copy-audit` 0 HARD · `audit:ink` pulito · `audit:taglio` allineato · `audit:og` PASS · `astro check` 0.
+
+### I P1 di fatto rimasti dal secondo giro (`2e3dd73`)
+
+- **Dato Nomisma**: il 45% riguarda gli intervistati, non le famiglie, e non dice «online» → «Quasi una persona su due vuole poter simulare la rata del mutuo».
+- **Coworker**: «Agentico» non è un modulo pubblico → «Projects · in arrivo, non ancora disponibile»; l'attivazione «passa dal team Adobe e va confermata», senza legarla al settore (la distinzione per settore regge solo su fonte interna); la frase-formula sul piano riscritta.
+- **Coerenze**: la demo Coworker usa le 12 ore di m-05 (non 48); il consenso di m-03 è «via email», coerente con m-04; spesa per canale e 91% di TSB detti in un modo solo; tolto il tetto di contatti «filiale compresa» (non documentato) e la formula «Ogni giro migliora il prossimo».
+- **Restano aperti** (fatti del cliente o decisioni): Adobe Analytics «che avete» solo da fonte interna; eventi del sito via SDK e via connettore; incrementalità degli annunci di ripresa; sub-fornitori DORA e regione dei log di Brand Visibility; peso di Crédit Agricole contro TSB; una riga per la Rete in Coworker.
