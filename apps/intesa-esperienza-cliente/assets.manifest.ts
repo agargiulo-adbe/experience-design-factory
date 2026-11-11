@@ -23,7 +23,31 @@ import type { AssetSlot } from '@edf/core/assets/types';
  *                     Anche qui niente primi piani: il marketer non è un
  *                     personaggio, è un mestiere.
  *
- * Perché stock licenziato e non generato: è la strada già sancita su
+ * ⚠️ 11 NOV 2026 — LE SCENE DI GIULIA PASSANO A FIREFLY, e il perché.
+ * Le otto foto stock erano otto mondi: un divano fotografato col
+ * telefono e vignettato, uno studio grigio da catalogo, un flatlay
+ * bianco, una tazza rossa satura, un ufficio di coworking col NOME di
+ * uno studio sul muro (wrong-brand, nascosto con uno zoom al 180%), le
+ * chiavi col portachiavi a casetta. Cinque temperature di luce, nessun
+ * filo. Lo stock non sa dare UNA casa e UNA mano in otto scene; un
+ * generatore sì, se il prompt fissa il mondo:
+ *   · la casa di Giulia a Torino (velluto verde smeraldo, rovere, pothos,
+ *     finestre alte, portici e tram fuori);
+ *   · la stessa mano — giovane, sottile, anello d'oro sottile — nella
+ *     stessa manica di maglia grigia del ritratto;
+ *   · il telefono con la cover verde salvia, la tazza in terracotta;
+ *   · la luce che segue il racconto: sera, mattino, sera, sera, mattino,
+ *     il mercoledì in filiale, tre settimane dopo la firma.
+ * La regola dell'unico volto resta: nessuna faccia nelle scene.
+ * Guardate tutte a dimensione intera prima di posarle; scartate e
+ * rigenerate quattro al primo giro (una mano maschile anziana, una
+ * penna rotta con un'intestazione di lettere inventate, una torre al
+ * neon che a Torino non c'è, una filiale spoglia). Sulla 07 due righe di
+ * lettere generate sono coperte col colore della carta (provenance).
+ * ⚠️ Lo script riscrive provenance.json INTERO: si genera in una
+ * cartella a parte e si unisce, se no si perde la provenienza del resto.
+ *
+ * Perché il resto (ritratto, `lavoro-*`) resta stock licenziato: è la strada già sancita su
  * UniCredit (persona-marco → Pexels, poi scontorno via API Photoshop). Una
  * foto licenziata porta autore, licenza e URL in provenance.json, e la si
  * può mostrare a un cliente senza doverlo spiegare.
@@ -31,6 +55,27 @@ import type { AssetSlot } from '@edf/core/assets/types';
  * `alt=''` sulle scene perché sono sfondi: il contenuto è nel testo della
  * slide, e un alt qui lo farebbe leggere due volte a un lettore di schermo.
  */
+/* Le scene di Giulia — un mondo, una mano, una luce che segue il racconto. */
+const STILE = ', candid 35mm film photograph, natural light, soft fine grain, shallow depth of field, muted warm palette of oak, linen and warm grey with deep emerald green accents, quiet and intimate, realistic, editorial lifestyle, the main subject in the centre of the frame';
+const NO_1 = 'faces, face, head, portrait, eyes, people in background, text, letters, words, numbers on screen, readable screen, logos, brand names, signage, watermark, neon, oversaturated, harsh flash, cartoon, illustration, cgi, deformed hands, extra fingers';
+/* Secondo giro: la mano esplicitata, e via torri, neon e intestazioni. */
+const NO_2 = 'man, male hand, old hand, wrinkled hand, faces, face, head, portrait, eyes, people in background, text, letters, words, headline, title, numbers, readable screen, logos, brand names, signage, watermark, tower, neon, purple light, oversaturated, harsh flash, cartoon, illustration, cgi, deformed hands, extra fingers, broken pen';
+const MANO = 'the slender hand of a young woman in her thirties with a thin gold ring, in a soft grey knit sweater sleeve';
+const scena = (id: string, prompt: string, seed: number, negativePrompt: string): AssetSlot => ({
+  id, type: 'firefly', contentClass: 'photo', prompt: prompt + STILE, negativePrompt,
+  aspect: '16:9', width: 2400, grade: 'none', seed, alt: '',
+});
+const SCENE_GIULIA: AssetSlot[] = [
+  scena('scena-01-divano', 'Evening in a young woman’s flat in Turin, close view of her hand in a soft grey knit sweater sleeve holding a smartphone with a sage green case, the screen glowing softly and turned away, resting on the arm of a deep emerald green velvet sofa, warm amber light from a brass floor lamp, a trailing pothos plant on a side table, tall old window with blue dusk behind, herringbone oak floor', 7417, NO_1),
+  scena('scena-02-bar', `Morning at a traditional Turin café counter of white marble and walnut, a small green ceramic espresso cup on its saucer, ${MANO} holding a smartphone with a sage green case, an orange city tram passing softly blurred beyond the large window, porticoes of an old arcade, soft low morning sun`, 2611, NO_2),
+  scena('scena-03-tavolo', 'Evening at a small oak kitchen table in a Turin flat, an open laptop seen from the side with a softly glowing screen turned away, a calculator, a pencil and a sheet of plain paper with handwritten pencil marks, a smartphone with a sage green case, a terracotta mug of tea, warm pendant lamp light, a pothos plant, blue dusk in the tall window', 7417, NO_1),
+  scena('scena-04-documenti', 'Night at a writing desk in a Turin flat, a neat stack of plain paper folders and documents seen from above at an angle, a brass desk lamp casting a warm pool of light, a pen, a smartphone with a sage green case, a hand in a soft grey knit sweater sleeve placing a sheet on the pile, dark emerald green wall behind', 7417, NO_1),
+  scena('scena-05-colazione', 'Bright morning breakfast by the tall window of a Turin flat, a terracotta mug of coffee, a plate with a croissant, a smartphone with a sage green case lying on the oak table, a hand in a soft grey knit sweater sleeve reaching for the mug, soft golden sunlight and long shadows, a pothos plant on the windowsill, Turin rooftops softly out of focus', 7417, NO_1),
+  scena('scena-06-filiale', 'Daytime inside a calm, elegant contemporary Italian bank branch: a welcoming private meeting corner with a light oak round table and two upholstered armchairs in deep emerald green, a slim glass partition with soft frosting, a closed tablet and a plain closed folder on the table, a tall green plant, warm stone floor, large window with soft diffuse daylight and an old Turin arcade outside, warm and reassuring, empty room', 2611, NO_2),
+  scena('scena-07-casa', `Late afternoon in a bank branch meeting room, close view of ${MANO} signing at the bottom of a plain white sheet of paper covered only by faint grey blurred lines, with an elegant intact dark fountain pen, a set of two brass house keys on a plain ring resting beside the papers on a light oak table, warm golden sunlight across the table, a deep emerald green armchair softly out of focus`, 2611, NO_2),
+  scena('scena-08-tracce', 'Night, raindrops on the tall old window of a flat in Turin, warm amber street lamps and the lit arcades of an old Italian street blurred beyond the glass, low historic rooftops, a smartphone with a sage green case lying on the wooden windowsill with its screen glowing faintly, a pothos leaf in the corner, deep dark emerald tones, moody and calm', 2611, NO_2),
+];
+
 export const assets: AssetSlot[] = [
   // ── L'unico volto della Storia ────────────────────────────────────
   {
@@ -43,49 +88,10 @@ export const assets: AssetSlot[] = [
     alt: 'Giulia Marchetti, 34 anni, non ancora cliente di Intesa Sanpaolo',
   },
 
-  // ── I luoghi di Giulia — senza volti ──────────────────────────────
-  {
-    id: 'scena-01-divano',
-    type: 'stock',
-    query: 'empty living room sofa at night warm lamp light cosy interior no people',
-    aspect: '16:9', width: 2400, grade: 'editorial', alt: '',
-  },
-  {
-    id: 'scena-02-bar',
-    type: 'stock',
-    query: 'cafe counter morning coffee cup close up hands only city light no faces',
-    aspect: '16:9', width: 2400, grade: 'editorial', alt: '',
-  },
-  {
-    id: 'scena-03-tavolo',
-    type: 'stock',
-    query: 'kitchen table with open laptop and notebook evening light empty no people',
-    aspect: '16:9', width: 2400, grade: 'editorial', alt: '',
-  },
-  {
-    id: 'scena-04-documenti',
-    type: 'stock',
-    query: 'desk with paperwork documents and desk lamp at night overhead no people',
-    aspect: '16:9', width: 2400, grade: 'editorial', alt: '',
-  },
-  {
-    id: 'scena-05-colazione',
-    type: 'stock',
-    query: 'breakfast table morning light coffee and phone on table overhead no people',
-    aspect: '16:9', width: 2400, grade: 'editorial', alt: '',
-  },
-  {
-    id: 'scena-06-filiale',
-    type: 'stock',
-    query: 'modern bank branch interior empty meeting desk glass office daylight',
-    aspect: '16:9', width: 2400, grade: 'editorial', alt: '',
-  },
-  {
-    id: 'scena-07-casa',
-    type: 'stock',
-    query: 'house keys in hand close up new apartment door blurred background',
-    aspect: '16:9', width: 2400, grade: 'editorial', alt: '',
-  },
+  // ── I luoghi di Giulia — senza volti, un mondo solo (11 nov 2026) ──
+  // Generati con Firefly: vedi SCENE_GIULIA in fondo al file.
+  ...SCENE_GIULIA,
+
 
   // ── Le scene di chi prepara — schermi e spazi, non facce ──────────
   {
@@ -147,12 +153,6 @@ export const assets: AssetSlot[] = [
     aspect: '16:9', width: 2400, grade: 'editorial', alt: '',
   },
   {
-    id: 'scena-08-tracce',
-    type: 'stock',
-    query: 'scattered city lights at night bokeh dark abstract separated points',
-    aspect: '16:9', width: 2400, grade: 'editorial', alt: '',
-  },
-  {
     id: 'scena-09-lista',
     type: 'stock',
     query: 'long printed spreadsheet list on desk paperwork overhead no people',
@@ -165,3 +165,4 @@ export const assets: AssetSlot[] = [
     aspect: '16:9', width: 2400, grade: 'editorial', alt: '',
   },
 ];
+
