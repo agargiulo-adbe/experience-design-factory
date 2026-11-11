@@ -24,9 +24,12 @@ export const CHAPTERS: Chapter[] = [
      «Dove ci innestiamo». CX Analytics sta dopo lo Scenario perché è il cuore
      di «Dal dato alla decisione», e non nomina Giulia prima che arrivi. */
   { slug: 'adobe', num: '01', title: { it: 'Adobe, chi siamo', en: 'Adobe, who we are' } },
-  { slug: 'scenario', num: '03', title: { it: 'Dal dato alla decisione', en: 'From data to decision' } },
-  { slug: 'persona', num: '03', title: { it: 'La persona', en: 'The persona' } },
-  { slug: 'momenti', num: '03', title: { it: 'I sette momenti, dai due lati', en: 'Seven moments, from both sides' } },
+  /* ⚠️ Tre pagine sotto la voce 03 dell'agenda. Le copertine di scenario e
+     persona portavano entrambe «Capitolo 03», una dopo l'altra (panel dell'11
+     nov 2026): ora si numerano come parti della stessa voce. */
+  { slug: 'scenario', num: '03.1', title: { it: 'Dal dato alla decisione', en: 'From data to decision' } },
+  { slug: 'persona', num: '03.2', title: { it: 'La persona', en: 'The persona' } },
+  { slug: 'momenti', num: '03.3', title: { it: 'I sette momenti, dai due lati', en: 'Seven moments, from both sides' } },
   { slug: 'messa-a-terra', num: '04', title: { it: 'Come si mette a terra', en: 'How it gets built' } },
   { slug: 'coworker', num: '05', title: { it: 'CX Enterprise Coworker', en: 'CX Enterprise Coworker' } },
   { slug: 'risultati', num: '06', title: { it: 'Banche che lo fanno già', en: 'Banks already doing it' } },
@@ -35,7 +38,7 @@ export const CHAPTERS: Chapter[] = [
 
 /** La barra: le sette voci dell'agenda. `pagine` accende la voce. */
 export const VOCI_NAV = [
-  { n: '01', it: 'Adobe', en: 'Adobe', slug: 'adobe', pagine: ['adobe'] },
+  { n: '01', it: 'Adobe', en: 'Adobe', slug: 'adobe', pagine: ['adobe', 'adobe-in-cifre'] },
   { n: '02', it: 'L’offerta', en: 'The offering', slug: 'adobe', ancora: 'slide-cx', pagine: [] as string[] },
   { n: '03', it: 'Dal dato alla decisione', en: 'From data to decision', slug: 'scenario', pagine: ['scenario', 'persona', 'momenti'] },
   { n: '04', it: 'Dove ci innestiamo', en: 'Where we plug in', slug: 'messa-a-terra', pagine: ['messa-a-terra', 'approfondimenti'] },

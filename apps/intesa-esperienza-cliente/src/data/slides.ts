@@ -9,8 +9,7 @@ export const PAGE_REGISTRY: PageEntry[] = [
   { slug: 'adobe', label: 'Adobe per Intesa Sanpaolo (01)', slides: [
     { id: 'slide-cover',     label: 'Cover: Adobe per Intesa Sanpaolo' },
     { id: 'slide-team',      label: 'Il team Adobe in sala' },
-    { id: 'slide-chi',       label: 'Una piattaforma unica: comprendere, decidere, creare, attivare' },
-    { id: 'slide-fsi',       label: 'Adobe nei servizi finanziari: i numeri e i quattro Forrester Wave' },
+    { id: 'slide-chi',       label: 'Dati, contenuti e decisioni nello stesso sistema: i quattro verbi, le Wave in fonte' },
     { id: 'slide-cx',        label: 'Adobe CX Enterprise: i blocchi, le tre cose di cui si parla, e i nomi' },
   ]},
   { slug: 'scenario', label: 'Dal dato alla decisione · Scenario (03)', slides: [
@@ -32,24 +31,12 @@ export const PAGE_REGISTRY: PageEntry[] = [
   ]},
   { slug: 'messa-a-terra', label: 'Dove ci innestiamo · Come si mette a terra (04)', slides: [
     { id: 'slide-cover', label: 'Cover: Dove ci innestiamo' },
-    { id: 'slide-innesto', label: 'L’innesto: SAS a monte, Real-Time CDP, Journey Optimizer · AI Decisioning e CJA' },
+    { id: 'slide-innesto', label: 'L’innesto: il vostro motore resta a monte, posizione «Accanto», Real-Time CDP, Journey Optimizer · AI Decisioning e CJA' },
     { id: 'slide-capacita', label: 'Che cosa porta ciascun componente: le capability' },
     { id: 'slide-cja-banca', label: 'Quattro risposte che una banca ottiene da CJA' },
+    { id: 'slide-passaggio', label: 'Web Analytics: da Adobe Analytics a CJA, che cosa resta, cambia, si aggiunge' },
     { id: 'slide-attribuzione', label: 'Quanto del digitale arriva in filiale' },
-    { id: 'slide-ritorno', label: 'Che cosa il percorso lascia a Giulia e al prospect successivo' },
-  ]},
-  { slug: 'approfondimenti', label: 'Approfondimenti (fuori percorso)', slides: [
-    { id: 'slide-ingaggio-mappa', label: 'La mappa: esistente, nuovo, e ciò che resta vostro' },
-    { id: 'slide-passaggio', label: 'Da Adobe Analytics a CJA: che cosa resta, cambia, si aggiunge' },
-    { id: 'slide-ingaggio-ciclo', label: 'I quattro componenti del ciclo di ingaggio' },
-    { id: 'slide-ingaggio-dato', label: 'Una sola misura, e le quattro domande di CJA' },
-    { id: 'slide-ingaggio-profilo', label: 'Il profilo: stitching, grafo, e duplicare o federare' },
-    { id: 'slide-ingaggio-regia', label: 'Tre modi di eseguire la stessa decisione' },
-    { id: 'slide-ingaggio-arbitro', label: 'Come ragiona una decisione, e dove si ferma' },
-    { id: 'slide-ingaggio-casi', label: 'Quattro casi d’uso che reggono solo a stack intero' },
-    { id: 'slide-integrazioni', label: 'Sei collegamenti, e dove gira sotto quale contratto' },
-    { id: 'slide-brand-visibility', label: 'Brand Visibility, quattro capacità e due strati' },
-    { id: 'slide-content-factory', label: 'Content Factory, dal brief alla misura' },
+    { id: 'slide-ritorno', label: 'Quello che si misura sul mutuo nel primo trimestre cambia le regole del secondo' },
   ]},
   { slug: 'coworker', label: 'AI Conversazionali · Coworker (05)', slides: [
     { id: 'slide-cover', label: 'Cover: divisore del capitolo' },
@@ -67,6 +54,25 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-fasi',   label: 'Il seguito a tappe: disegno, mutuo sui prospect, dopo il trimestre' },
     { id: 'slide-serve',  label: 'Che cosa ci serve: cinque cose, e chi le porta' },
     { id: 'slide-firma',  label: 'La firma: Adobe × Intesa Sanpaolo, chiude il percorso' },
+  ]},
+  /* ⚠️ Le pagine FUORI PERCORSO stanno in coda. La console costruisce
+     l'ordine del link `?c=` da questo elenco, e il runtime salta i capitoli
+     spenti cercando il primo capitolo vivo in quell'ordine: una pagina fuori
+     percorso in mezzo diventerebbe la destinazione delle frecce. */
+  { slug: 'approfondimenti', label: 'Approfondimenti (fuori percorso)', slides: [
+    { id: 'slide-ingaggio-mappa', label: 'La mappa: esistente, nuovo, e ciò che resta vostro' },
+    { id: 'slide-ingaggio-ciclo', label: 'I quattro componenti del ciclo di ingaggio' },
+    { id: 'slide-ingaggio-dato', label: 'Una sola misura, e le quattro domande di CJA' },
+    { id: 'slide-ingaggio-profilo', label: 'Il profilo: stitching, grafo, e duplicare o federare' },
+    { id: 'slide-ingaggio-regia', label: 'Tre modi di eseguire la stessa decisione' },
+    { id: 'slide-ingaggio-arbitro', label: 'Come ragiona una decisione, e dove si ferma' },
+    { id: 'slide-ingaggio-casi', label: 'Quattro casi d’uso che reggono solo a stack intero' },
+    { id: 'slide-integrazioni', label: 'Sei collegamenti, e dove gira sotto quale contratto' },
+    { id: 'slide-brand-visibility', label: 'Brand Visibility, quattro capacità e due strati' },
+    { id: 'slide-content-factory', label: 'Content Factory, dal brief alla misura' },
+  ]},
+  { slug: 'adobe-in-cifre', label: 'Adobe in cifre (fuori percorso, dalla fonte di «Dati, contenuti e decisioni»)', slides: [
+    { id: 'slide-fsi',       label: 'Adobe nei servizi finanziari: i numeri e i quattro Forrester Wave' },
   ]},
 ];
 

@@ -9,12 +9,30 @@ import Navigation from '../components/Navigation.astro';
 import { SITE } from '../data/site';
 import { CHAPTERS } from '../data/chapters';
 import { PAGE_REGISTRY } from '../data/slides';
-import { NOTE, TRE_COSE } from '../data/relatore';
+import { NOTE, TRE_COSE, DAVANTI } from '../data/relatore';
+import { href } from '@edf/core/utils/url.js';
 import { MOMENTI } from '../data/momenti';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
-const ordine = ['index', ...CHAPTERS.map((c) => c.slug), 'approfondimenti'];
+const ordine = ['index', ...CHAPTERS.map((c) => c.slug), 'approfondimenti', 'adobe-in-cifre'];
+
+/* Il link «slide davanti»: lo stesso formato che scrive il tab «Capitoli e
+   slide» (solo gli scostamenti dal tutto acceso). L'ordine è quello del deck,
+   senza le pagine fuori percorso: il runtime cerca lì il capitolo vivo dopo. */
+const deck = CHAPTERS.map((c) => c.slug);
+const chapters: Record<string, { on: boolean; n: number; slides: Record<string, boolean> }> = {};
+for (const slug of deck) {
+  const pagina = PAGE_REGISTRY.find((p) => p.slug === slug);
+  if (!pagina) continue;
+  const tenute = DAVANTI[slug];
+  if (!tenute) { chapters[slug] = { on: false, n: pagina.slides.length, slides: {} }; continue; }
+  const slides: Record<string, boolean> = {};
+  for (const x of pagina.slides) if (!tenute.includes(x.id)) slides[x.id] = false;
+  chapters[slug] = { on: true, n: pagina.slides.length, slides };
+}
+const linkDavanti = `${href(base, '/')}?c=${Buffer.from(JSON.stringify({ v: 1, order: deck, chapters })).toString('base64url')}`;
+const etichetta = (slug: string, id: string) => PAGE_REGISTRY.find((p) => p.slug === slug)?.slides.find((x) => x.id === id)?.label ?? id;
 const sezioni = ordine.map((s) => PAGE_REGISTRY.find((p) => p.slug === s)).filter((p): p is NonNullable<typeof p> => Boolean(p));
 const momento = (id: string) => MOMENTI.find((m) => `slide-m-${m.n}` === id);
 ---
@@ -26,6 +44,12 @@ const momento = (id: string) => MOMENTI.find((m) => `slide-m-${m.n}` === id);
     <section class="rel-tre">
       <h2 class="rel-k">Le tre cose che devono restare</h2>
       <ol>{TRE_COSE.map((t) => <li>{t}</li>)}</ol>
+    </section>
+    <section class="rel-tre rel-davanti">
+      <h2 class="rel-k">Le slide davanti: proposta da confermare al check col referente</h2>
+      <p>Il formato concordato era «poche slide davanti». Questa è la proposta del panel dell’11 novembre, più copertina e firma. Niente è spento di default: il link vale solo per chi lo apre, e solo per la sessione. Il resto resta raggiungibile dal percorso intero.</p>
+      <ol>{Object.entries(DAVANTI).flatMap(([slug, ids]) => ids.map((id) => <li>{etichetta(slug, id)}</li>))}</ol>
+      <p><a href={linkDavanti}>Apri il deck con le sole slide davanti →</a></p>
     </section>
     {sezioni.map((s) => (
       <section class="rel-sez">
@@ -72,4 +96,6 @@ const momento = (id: string) => MOMENTI.find((m) => `slide-m-${m.n}` === id);
   .rel-at { color: #ffc27a; }
   .rel-se { color: #dfeadb; }
   .rel-manca { color: #ff9a8f; font-weight: 700; }
+  .rel-davanti { margin-top: 1rem; }
+  .rel-davanti a { color: #ffffff; font-weight: 700; }
 </style>

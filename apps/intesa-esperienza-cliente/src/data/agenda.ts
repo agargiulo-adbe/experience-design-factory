@@ -24,6 +24,8 @@ export interface VoceAgenda {
   capitolo: string | null;
   /** La slide di arrivo, quando la voce non comincia dalla prima del capitolo. */
   ancora?: string;
+  /** Una seconda riga, più piccola: un tema che la voce deve nominare. */
+  sotto?: { it: string; en: string };
 }
 
 export const AGENDA: VoceAgenda[] = [
@@ -47,10 +49,15 @@ export const AGENDA: VoceAgenda[] = [
   {
     n: '04', capitolo: 'messa-a-terra',
     titolo: { it: 'Dove ci innestiamo', en: 'Where we plug in' },
+    /* L'invito chiedeva «particolare attenzione alla Web Analytics»: la voce
+       la nomina, e il passaggio è nel capitolo (panel dell'11 nov 2026). */
+    sotto: { it: 'Web Analytics: da Analytics a Customer Journey Analytics', en: 'Web analytics: from Analytics to Customer Journey Analytics' },
   },
   {
+    /* Il titolo della copertina del capitolo. Prima diceva «motore di lavoro»,
+       e in sala «motore» è il motore di targeting della banca. */
     n: '05', capitolo: 'coworker',
-    titolo: { it: 'AI Conversazionali: motore di lavoro', en: 'Conversational AI: the engine of the work' },
+    titolo: { it: 'Coworker prepara il lavoro che gli si chiede', en: 'Coworker prepares the work it is asked for' },
   },
   {
     n: '06', capitolo: 'risultati',

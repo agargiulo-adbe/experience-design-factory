@@ -21,9 +21,8 @@ export const NOTE: Record<string, Record<string, Nota>> = {
   adobe: {
     'slide-cover': { dire: 'Chi siamo, in pochi minuti: il tema dell’incontro viene dopo.' },
     'slide-team': { dire: 'Si presentano le persone, con il ruolo di ciascuno.' },
-    'slide-chi': { dire: 'Quattro verbi, una piattaforma: comprendere, decidere, creare, attivare.', seChiedono: 'Experience Cloud oggi si chiama CX Enterprise: il prodotto è lo stesso che conoscono.' },
-    'slide-fsi': { dire: 'I numeri sono nostri, il giudizio è di Forrester. Passando il mouse su un quadrante, si ingrandisce.' },
-    'slide-cx': { dire: 'Con la freccia giù un blocco alla volta: tre canali, una sola misura e, sotto, il lavoro chiesto a parole.', seChiedono: 'AI Decisioning è il modulo di Journey Optimizer che nei casi pubblici si chiama ancora Offer Decisioning.' },
+    'slide-chi': { dire: 'Quattro verbi, una piattaforma: comprendere, decidere, creare, attivare. In fondo le quattro Forrester Wave e il link ad «Adobe in cifre», fuori dalle frecce.', seChiedono: 'Al Summit 2026 Adobe ha presentato CX Enterprise; le applicazioni che conoscono sono le stesse. Il comunicato non parla di un cambio di nome: non dirlo come fatto.' },
+    'slide-cx': { dire: 'Con la freccia giù un blocco alla volta: tre canali, una sola misura e, sotto, il lavoro chiesto a parole.', seChiedono: 'AI decisioning è la capacità di decisione di Journey Optimizer: in documentazione si chiama Decisioning, nei casi pubblici Offer Decisioning. GenStudio controlla le varianti contro le linee guida di marchio e di canale; le informative restano nell’iter di approvazione legale.' },
   },
   scenario: {
     'slide-cover': { dire: 'Si parte dal dato che c’è, e spesso riguarda chi è cliente di un’altra banca.' },
@@ -35,15 +34,15 @@ export const NOTE: Record<string, Record<string, Nota>> = {
   },
   'messa-a-terra': {
     'slide-cover': { dire: 'Si esce dalla storia: da qui si guarda la loro architettura.' },
-    'slide-innesto': { dire: 'Sotto lo schema, la rotta delle campagne in tre fasi: alla terza il riquadro «Campagne» si spegne. È una proposta di direzione, i tempi li decidono loro. Si parte da quello che c’è: SAS a monte, le campagne e gli invii restano dove sono. Freccia giù: Real-Time CDP sui prospect, poi Journey Optimizer con AI Decisioning, poi Customer Journey Analytics. Un clic su ciascuno apre il mockup a passi.', attenzione: 'L’architettura attuale è una nostra ipotesi: si chiede di correggerla.', seChiedono: 'Il motore di targeting? Resta dov’è: score, eleggibilità e politica di contatto entrano nella decisione. Chi segue oggi chi non è ancora nel CRM si chiede, non si dà per scontato. Due strumenti di campagna? Si parte dai percorsi a evento; Journey Optimizer copre anche le campagne pianificate (orchestrated campaigns), e se e quando spostarle lo decidono loro. Far uscire i messaggi di Journey Optimizer dallo strumento che hanno oggi non è ancora nativo: chiederlo come domanda, non prometterlo. Customer Journey Analytics sostituisce il BI? No, gli si affianca.' },
-    'slide-capacita': { dire: 'Una colonna per componente, con la freccia giù: tre capability ciascuno, nell’ordine dello schema. Si sceglie la colonna che interessa e si apre la demo da lì.', attenzione: 'Sono capability documentate: i link sono in fondo. Disponibilità e licenze si verificano sul loro contratto.' },
-    'slide-cja-banca': { dire: 'Quattro risposte, una per freccia giù. Il dettaglio del passaggio da Analytics è negli approfondimenti.' },
+    'slide-innesto': { dire: 'Si parte da quello che c’è: il vostro motore di targeting a monte, le campagne e gli invii dove sono. Sotto il titolo la riga di confine: sui clienti la next best action resta del loro motore. Freccia giù: Real-Time CDP sui prospect, poi Journey Optimizer con AI Decisioning, poi Customer Journey Analytics, infine la posizione «Accanto». Un clic su ciascun componente apre il mockup a passi.', attenzione: 'L’architettura attuale è una nostra ipotesi: si chiede di correggerla. Il nome SAS non è confermato: si dice «il vostro motore di targeting» e si chiede, senza darlo per fatto.', seChiedono: 'Il motore di targeting? Resta dov’è: target e propensione entrano come attributi; l’eleggibilità creditizia viene dal core banking, precalcolata nel profilo o passata nella richiesta di decisione. Due strumenti di campagna? Si parte «accanto»; le altre posizioni (per famiglia, tutto insieme) sono in «Le altre posizioni» e le decidono loro dopo la misura della fase 1. Far uscire i messaggi di Journey Optimizer dallo strumento che hanno oggi non è ancora nativo: chiederlo come domanda, non prometterlo. Customer Journey Analytics sostituisce il BI? No, gli si affianca.' },
+    'slide-capacita': { dire: 'Una colonna per componente, con la freccia giù: tre capability ciascuno, nell’ordine dello schema. Si sceglie la colonna che interessa e si apre la demo da lì.', attenzione: 'Sono capability documentate: i link sono in fondo. Disponibilità e licenze si verificano sul loro contratto. Journey Optimizer non ha un canale social: gli annunci di ripresa partono da un pubblico di Real-Time CDP, aggiornato ogni giorno.' },
+    'slide-cja-banca': { dire: 'Quattro risposte, una per freccia giù. La slide dopo è il passaggio da Analytics, che l’invito chiedeva.' },
+    'slide-passaggio': { dire: 'Web Analytics: Adobe Analytics e Customer Journey Analytics convivono finché serve. Tre gruppi: resta, cambia nome, si aggiunge. Nel dettaglio: esportazioni, Activity Map, convivenza e formazione.', attenzione: 'È un’ipotesi sul loro installato: si corregge in sala. Quanto durano insieme le due licenze non si stima: si decide in fase 0.' },
     'slide-attribuzione': { dire: 'Si va oltre l’ultimo clic, fino a quanto il digitale porta in filiale.', seChiedono: 'Da chiedere: quale modello di attribuzione usate oggi in Adobe Analytics, e su quali canali?', attenzione: 'L’attribuzione si ferma ai canali osservati: dirlo subito.' },
-    'slide-ritorno': { dire: 'Una riga alla volta con la freccia giù: che cosa si impara da Giulia, e dove torna per il prossimo cliente. In fondo, il secondo giro: Giulia da cliente.' },
+    'slide-ritorno': { dire: 'Una riga alla volta con la freccia giù: che cosa si impara dal mutuo nel primo trimestre, e quale regola cambia nel secondo.' },
   },
   approfondimenti: {
     'slide-ingaggio-mappa': { dire: 'Che cosa hanno, che cosa si aggiunge, che cosa resta loro.', attenzione: 'L’installato è una nostra ipotesi: si chiede di correggerla.' },
-    'slide-passaggio': { dire: 'Adobe Analytics e Customer Journey Analytics convivono finché serve. Che cosa resta, che cosa cambia nome, che cosa si aggiunge.', attenzione: 'È un’ipotesi sul loro installato: si corregge in sala.' },
     'slide-ingaggio-ciclo': { dire: 'Quattro componenti di un ciclo. Ognuno ha un dettaglio a un clic, che si apre solo se serve.' },
     'slide-integrazioni': { dire: 'Sei collegamenti. I due tratteggiati sono da disegnare insieme.', attenzione: 'Su DORA la criticità la decidono loro, nella loro analisi d’impatto. Mai dire che Adobe è conforme a DORA.' },
     'slide-brand-visibility': { dire: 'Prima si misura come si compare nelle risposte generate, poi si interviene.', seChiedono: 'Serve l’inoltro dei log del CDN: va concordato con il loro IT.' },
@@ -56,7 +55,7 @@ export const NOTE: Record<string, Record<string, Nota>> = {
   },
   coworker: {
     'slide-cover': { dire: 'Quello che si è appena visto si può chiedere a un agente.' },
-    'slide-cosa': { dire: 'Prepara fino all’approvazione: chi approva resta chi approva oggi.', attenzione: 'Nel settore finanziario l’attivazione si chiede ad Adobe: la richiesta è in corso, e il capitolo descrive, non promette.' },
+    'slide-cosa': { dire: 'Prepara fino all’approvazione: chi approva resta chi approva oggi.', attenzione: 'Nel settore finanziario l’attivazione per la loro istanza va richiesta e confermata da Adobe: il capitolo descrive, non promette.' },
     'slide-video': { dire: 'Una campagna di mutuo preparata in una sessione. La clip si carica dalla console.' },
   },
   risultati: {
@@ -71,4 +70,22 @@ export const NOTE: Record<string, Record<string, Nota>> = {
     'slide-serve': { dire: 'Cinque cose e chi le porta: non è un preventivo, è il contenuto della prima sessione.' },
     'slide-firma': { dire: 'Si chiude sulla firma, senza aggiungere altro.' },
   },
+  'adobe-in-cifre': {
+    'slide-fsi': { dire: 'Fuori dalle frecce: si apre solo se chiedono chi è Adobe in numeri. I numeri sono nostri, il giudizio è di Forrester. Passando il mouse su un quadrante, si ingrandisce.' },
+  },
+};
+
+/* LE SLIDE DAVANTI — una PROPOSTA, non una configurazione accesa.
+   Il formato concordato col referente era «poche slide davanti», e il percorso
+   ne ha una trentina (panel dell'11 nov 2026). Qui l'elenco proposto dal panel,
+   più la copertina e la firma, che il contratto del co-brand vuole sempre.
+   Niente si spegne di default: la pagina delle note costruisce il link `?c=`
+   (formato del tab «Capitoli e slide»), che vale solo per chi lo apre e solo
+   per la sessione. Si conferma al check col referente prima di usarlo. */
+export const DAVANTI: Record<string, string[]> = {
+  scenario: ['slide-segnale'],
+  persona: ['slide-giro-di-giulia'],
+  momenti: ['slide-m-03', 'slide-m-04', 'slide-m-07'],
+  'messa-a-terra': ['slide-innesto', 'slide-attribuzione', 'slide-passaggio'],
+  'prossimi-passi': ['slide-da-voi', 'slide-serve', 'slide-firma'],
 };
