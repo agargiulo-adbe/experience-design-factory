@@ -22,5 +22,5 @@ export const SERVE = [
   { fig: 'esito', t: { it: 'Il marketing', en: 'Marketing' },
     chi: { it: 'Marketing digitale', en: 'Digital marketing' },
     quando: { it: 'fase 0 e 1', en: 'phases 0 and 1' },
-    d: { it: 'La spesa per canale: in fase 0 se ne disegna il flusso, in fase 1 la caricate voi nella vostra istanza. E le domande su cui volete essere citati.', en: 'Spend per channel: in phase 0 its feed is designed, in phase 1 you load it into your own instance. And the questions you want to be cited on.' } },
+    d: { it: 'La spesa per canale: in fase 0 se ne disegna il flusso, dalla fase 1 entra in piattaforma ogni giorno, con l’identificativo di campagna. E le domande su cui volete essere citati.', en: 'Spend per channel: in phase 0 its feed is designed, in phase 1 you load it into your own instance. And the questions you want to be cited on.' } },
 ];
