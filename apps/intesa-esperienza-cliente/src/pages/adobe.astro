@@ -60,11 +60,13 @@ const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-/* Il team che è in sala il 5 novembre, nell'ordine della slide 2. */
-const TEAM = [
+/* Il team che è in sala il 19 novembre, nell'ordine della slide 2.
+   `zoom`: il ritaglio porta un anello già impresso nell'immagine
+   d'origine; un ingrandimento leggero lo porta fuori dal cerchio. */
+const TEAM: { n: string; f: ImageMetadata; zoom?: boolean; r: { it: string; en: string } }[] = [
   { n: 'Alex Gordiani', f: rGordiani, r: { it: 'Head of FSI', en: 'Head of FSI' } },
   { n: 'Francesca Ellena', f: rEllena, r: { it: 'Account Executive FSI', en: 'Account Executive FSI' } },
-  { n: 'Antonio Gargiulo', f: rGargiulo, r: { it: 'Product Sales Specialist FSI', en: 'Product Sales Specialist FSI' } },
+  { n: 'Antonio Gargiulo', f: rGargiulo, zoom: true, r: { it: 'Product Sales Specialist FSI', en: 'Product Sales Specialist FSI' } },
   { n: 'Giacomo Selmi', f: rSelmi, r: { it: 'Senior Solutions Consultant', en: 'Senior Solutions Consultant' } },
   { n: 'Matteo Grieco', f: rGrieco, r: { it: 'Solutions Consultant', en: 'Solutions Consultant' } },
   { n: 'Raffaele De Matteis', f: rDeMatteis, r: { it: 'Manager, Solutions Consulting', en: 'Manager, Solutions Consulting' } },
@@ -142,16 +144,21 @@ const FASCE = [
 
     <Slide id="slide-team" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-ado-cap" data-reveal>
-        <T as="p" class="im-ado-occ" it="Chi è in sala" en="Who is in the room" />
+      {/* «Adobe Italia» stava sotto ogni nome, sette volte la stessa riga:
+          ora la dice l'occhiello, una volta. */}
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Chi è in sala · Adobe Italia" en="Who is in the room · Adobe Italy" />
         <T as="h2" class="im-ado-t" it="Il team Adobe per i servizi finanziari" en="The Adobe team for financial services" />
         <ul class="im-team">
           {TEAM.map((p) => (
             <li class="im-team-i">
-              <img class="im-team-f" src={p.f.src} alt="" width="360" height="360" loading="eager" />
+              {/* Il ritratto è lo SFONDO del cerchio, non un <img> ingrandito:
+                  un'immagine scalata dentro un contenitore con overflow nascosto
+                  è uno scroll nascosto per `audit:deck` (check c e k, HARD).
+                  Decorativo: il nome accanto dice chi è. */}
+              <span class="im-team-ft" data-zoom={p.zoom ? '' : undefined} style={`background-image: url('${p.f.src}')`} aria-hidden="true"></span>
               <span class="im-team-n">{p.n}</span>
               <T as="span" class="im-team-r" it={p.r.it} en={p.r.en} />
-              <span class="im-team-s">Adobe Italia</span>
             </li>
           ))}
         </ul>
