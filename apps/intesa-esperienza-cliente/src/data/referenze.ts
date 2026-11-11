@@ -41,7 +41,7 @@ export const TSB_PRIMA = {
   it: 'Il prima: un dato che arrivava in nove giorni. Oggi oltre il 91% dei prodotti si compra sui canali digitali. Da voi il mutuo si chiude in filiale: per questo l’imbuto conta gli appuntamenti.',
   en: 'The before: data that arrived in nine days. Today over 91% of products are bought on digital channels. At your bank the mortgage closes in branch: that is why the funnel also counts appointments.',
   breve: {
-    it: 'Il prima: un dato che arrivava in nove giorni. Il 91% è di oggi; da voi il mutuo si chiude in filiale.',
+    it: 'Il prima: un dato che arrivava in nove giorni. Il 91% è di oggi; da voi il mutuo si chiude in filiale.',
     en: 'The before: data that arrived in nine days. The 91% is today’s; at your bank the mortgage closes in branch.',
   },
 };

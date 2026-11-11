@@ -44,7 +44,9 @@ export const NOTE: Record<string, Record<string, Nota>> = {
   approfondimenti: {
     'slide-ingaggio-mappa': { dire: 'Che cosa hanno, che cosa si aggiunge, che cosa resta loro.', attenzione: 'L’installato è una nostra ipotesi: si chiede di correggerla.' },
     'slide-ingaggio-ciclo': { dire: 'Quattro componenti di un ciclo. Ognuno ha un dettaglio a un clic, che si apre solo se serve.' },
-    'slide-integrazioni': { dire: 'Sei collegamenti. I due tratteggiati sono da disegnare insieme.', attenzione: 'Su DORA la criticità la decidono loro, nella loro analisi d’impatto. Mai dire che Adobe è conforme a DORA.' },
+    'slide-integrazioni': { dire: 'I collegamenti della fase 1 e quelli che arrivano col cross-sell. I tratteggiati sono da disegnare insieme.', attenzione: 'Non contare i collegamenti ad alta voce: il numero lo fa Group Technology con noi in fase 0.' },
+    'slide-integrazioni-dati': { dire: 'Dove gira la piattaforma e dove sta ogni tipo di dato.', attenzione: 'Su DORA la criticità la decidono loro, nella loro analisi d’impatto. Mai dire che Adobe è conforme a DORA. Retention e regione dei log CDN: da verificare con Adobe, non promettere.' },
+    'slide-integrazioni-crm': { dire: 'La freccia verso il CRM: chi espone l’API, la chiave del lead, la deduplica, e che cosa succede se la chiamata fallisce.', seChiedono: 'L’API del CRM la identifichiamo con Group Technology in fase 0.' },
     'slide-brand-visibility': { dire: 'Prima si misura come si compare nelle risposte generate, poi si interviene.', seChiedono: 'Serve l’inoltro dei log del CDN: va concordato con il loro IT.' },
     'slide-content-factory': { dire: 'Una campagna di mutuo si ferma sulle approvazioni: la verifica sta dentro la produzione.' },
     'slide-ingaggio-dato': { dire: 'Fuori percorso: una sola misura e le quattro domande che apre.' },
@@ -65,7 +67,8 @@ export const NOTE: Record<string, Record<string, Nota>> = {
   },
   'prossimi-passi': {
     'slide-cover': { dire: 'Si passa dalla storia alla prova.' },
-    'slide-da-voi': { dire: 'Sei misure dal giorno uno, e la richiesta. Si legge la richiesta così com’è scritta.' },
+    'slide-da-voi': { dire: 'Sette misure dal giorno uno, ognuna con la domanda «oggi: lo misurate?». La prima è il tasso di consenso: senza, le altre non partono.' },
+    'slide-soglia': { dire: 'La forma della soglia e del gruppo di controllo, poi la richiesta. Si legge la richiesta così com’è scritta.', attenzione: 'X, Y e la quota del gruppo non si dicono in sala: si fissano in fase 0 con il calcolo dei volumi.' },
     'slide-fasi': { dire: 'Tre tappe: il disegno, il mutuo sui prospect, gli altri casi.', seChiedono: 'Chi integra lo decidono loro, con noi o con un integratore.' },
     'slide-serve': { dire: 'Cinque cose e chi le porta: non è un preventivo, è il contenuto della prima sessione.' },
     'slide-firma': { dire: 'Si chiude sulla firma, senza aggiungere altro.' },
@@ -87,5 +90,5 @@ export const DAVANTI: Record<string, string[]> = {
   persona: ['slide-giro-di-giulia'],
   momenti: ['slide-m-03', 'slide-m-04', 'slide-m-07'],
   'messa-a-terra': ['slide-innesto', 'slide-attribuzione', 'slide-passaggio'],
-  'prossimi-passi': ['slide-da-voi', 'slide-serve', 'slide-firma'],
+  'prossimi-passi': ['slide-da-voi', 'slide-soglia', 'slide-serve', 'slide-firma'],
 };
