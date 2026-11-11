@@ -266,11 +266,22 @@ const relevantMockups = MOCKUP_LIBRARY.filter(m => allSolutionIds.includes(m.sol
                 </div>
                 <div class="chapter-slides" data-chapter-slides={page.slug} hidden>
                   {page.slides.map((sl, i) => (
-                    <label class="chapter-slide-row">
+                    <label class="chapter-slide-row" data-slide-row={sl.id}>
                       <input type="checkbox" data-slide-toggle={page.slug + '::' + sl.id} checked />
                       <span class="chapter-slide-n">{String(i + 1).padStart(2, '0')}</span>
                       <span class="chapter-slide-label">{sl.label}</span>
                       <code class="chapter-slide-id">{sl.id}</code>
+                      {/* Spostare una slide dentro il suo capitolo. Il runtime
+                          del deck (DeckContainer) riordina le slide prima che
+                          il deck le conti; senza spostamenti non cambia nulla. */}
+                      <span class="chapter-slide-move">
+                        <button type="button" class="chapter-move-btn" data-slide-move="-1" aria-label={`Sposta su: ${sl.label}`} title="Sposta su">
+                          <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 10l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <button type="button" class="chapter-move-btn" data-slide-move="1" aria-label={`Sposta giù: ${sl.label}`} title="Sposta giù">
+                          <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                      </span>
                     </label>
                   ))}
                 </div>
@@ -973,6 +984,16 @@ const relevantMockups = MOCKUP_LIBRARY.filter(m => allSolutionIds.includes(m.sol
   }
   .chapter-slide-row:hover { background: #f9fafb; }
   .chapter-slide-row input { width: 15px; height: 15px; flex-shrink: 0; accent-color: #111827; cursor: pointer; }
+  .chapter-slide-move { display: inline-flex; gap: 4px; margin-left: 0.4rem; flex-shrink: 0; }
+  .chapter-move-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border: 1px solid #e5e7eb; border-radius: 6px;
+    background: #fff; color: #4b5563; cursor: pointer;
+  }
+  .chapter-move-btn:hover { border-color: #BE2027; color: #BE2027; background: #fef2f2; }
+  .chapter-move-btn:focus-visible { outline: 2px solid #BE2027; outline-offset: 1px; }
+  .chapter-move-btn:disabled { opacity: 0.35; cursor: default; background: #fff; color: #9ca3af; border-color: #e5e7eb; }
+  .chapter-slide-row[data-moved] .chapter-slide-n { color: #BE2027; font-weight: 700; }
   .chapter-slide-n { font-size: 0.6875rem; color: #9ca3af; font-variant-numeric: tabular-nums; flex-shrink: 0; }
   .chapter-slide-label { flex: 1; min-width: 0; }
   .chapter-slide-id { font-size: 0.6875rem; color: #9ca3af; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
@@ -1500,6 +1521,50 @@ const relevantMockups = MOCKUP_LIBRARY.filter(m => allSolutionIds.includes(m.sol
       return { chapterOn: chapterOn, on: on, total: boxes.length, boxes: boxes };
     }
 
+    // L'ordine delle slide di un capitolo, come sta ora nella console.
+    function slideSeq(slug) {
+      var panel = document.querySelector('[data-chapter-slides="' + slug + '"]');
+      if (!panel) return [];
+      return Array.prototype.map.call(panel.querySelectorAll('[data-slide-row]'), function(r) {
+        return r.getAttribute('data-slide-row');
+      });
+    }
+    function defaultSeq(page) { return page.slides.map(function(sl) { return sl.id; }); }
+    function seqMoved(page) { return slideSeq(page.slug).join('|') !== defaultSeq(page).join('|'); }
+
+    // Rinumera le righe e segna quelle fuori dalla posizione d'origine.
+    function paintSeq(page) {
+      var panel = document.querySelector('[data-chapter-slides="' + page.slug + '"]');
+      if (!panel) return;
+      var rows = panel.querySelectorAll('[data-slide-row]');
+      var orig = defaultSeq(page);
+      Array.prototype.forEach.call(rows, function(row, i) {
+        var n = row.querySelector('.chapter-slide-n');
+        if (n) n.textContent = String(i + 1).padStart(2, '0');
+        if (orig[i] !== row.getAttribute('data-slide-row')) row.setAttribute('data-moved', '');
+        else row.removeAttribute('data-moved');
+        var up = row.querySelector('[data-slide-move="-1"]');
+        var down = row.querySelector('[data-slide-move="1"]');
+        if (up) up.disabled = i === 0;
+        if (down) down.disabled = i === rows.length - 1;
+      });
+    }
+    function applySeq(page, seq) {
+      var panel = document.querySelector('[data-chapter-slides="' + page.slug + '"]');
+      if (!panel || !seq || !seq.length) return;
+      seq.forEach(function(id) {
+        var row = panel.querySelector('[data-slide-row="' + id + '"]');
+        if (row) panel.appendChild(row);
+      });
+      // le slide nuove, che la sequenza salvata non conosce, restano in coda
+      defaultSeq(page).forEach(function(id) {
+        if (seq.indexOf(id) === -1) {
+          var row = panel.querySelector('[data-slide-row="' + id + '"]');
+          if (row) panel.appendChild(row);
+        }
+      });
+    }
+
     function buildChapterConfig() {
       var order = [];
       var chapters = {};
@@ -1512,10 +1577,15 @@ const relevantMockups = MOCKUP_LIBRARY.filter(m => allSolutionIds.includes(m.sol
           // registro solo le eccezioni rispetto allo stato del capitolo
           if (b.checked !== st.chapterOn) slides[id] = b.checked;
         });
-        var isDefault = st.chapterOn && Object.keys(slides).length === 0;
+        var moved = seqMoved(page);
+        var isDefault = st.chapterOn && Object.keys(slides).length === 0 && !moved;
         // `n` = quante slide ha il capitolo: serve al runtime per sapere se ne
         // resta almeno una accesa in un capitolo che non sta visitando.
-        if (!isDefault) chapters[page.slug] = { on: st.chapterOn, n: st.total, slides: slides };
+        // `seq` = l'ordine delle slide, solo se è stato cambiato.
+        if (!isDefault) {
+          chapters[page.slug] = { on: st.chapterOn, n: st.total, slides: slides };
+          if (moved) chapters[page.slug].seq = slideSeq(page.slug);
+        }
       });
       return { v: 1, order: order, chapters: chapters };
     }
@@ -1533,7 +1603,8 @@ const relevantMockups = MOCKUP_LIBRARY.filter(m => allSolutionIds.includes(m.sol
         var st = chapterState(page.slug);
         var card = document.querySelector('[data-chapter-row="' + page.slug + '"]');
         var badge = document.querySelector('[data-chapter-badge="' + page.slug + '"]');
-        var state = st.on === 0 ? 'off' : (st.on === st.total && st.chapterOn ? 'on' : 'partial');
+        var state = st.on === 0 ? 'off' : (st.on === st.total && st.chapterOn && !seqMoved(page) ? 'on' : 'partial');
+        paintSeq(page);
         if (card) card.setAttribute('data-state', state);
         if (badge) badge.textContent = st.on === 0
           ? 'capitolo spento'
@@ -1575,6 +1646,7 @@ const relevantMockups = MOCKUP_LIBRARY.filter(m => allSolutionIds.includes(m.sol
           var chapterOn = entry ? entry.on !== false : true;
           var t = document.querySelector('[data-chapter-toggle="' + page.slug + '"]');
           if (t) t.checked = chapterOn;
+          if (entry && entry.seq) applySeq(page, entry.seq);
           page.slides.forEach(function(sl) {
             var box = document.querySelector('[data-slide-toggle="' + page.slug + '::' + sl.id + '"]');
             if (!box) return;
@@ -1612,6 +1684,23 @@ const relevantMockups = MOCKUP_LIBRARY.filter(m => allSolutionIds.includes(m.sol
           if (t) t.checked = true;
         }
         saveChapters();
+      });
+    });
+
+    document.querySelectorAll('[data-slide-move]').forEach(function(btn) {
+      btn.addEventListener('click', function(ev) {
+        // dentro una <label>: senza questo il clic accenderebbe/spegnerebbe la slide
+        ev.preventDefault(); ev.stopPropagation();
+        var row = btn.closest('[data-slide-row]');
+        var panel = row && row.parentElement;
+        if (!row || !panel) return;
+        var dir = Number(btn.getAttribute('data-slide-move'));
+        if (dir < 0 && row.previousElementSibling) panel.insertBefore(row, row.previousElementSibling);
+        else if (dir > 0 && row.nextElementSibling) panel.insertBefore(row.nextElementSibling, row);
+        saveChapters();
+        // il fuoco resta sul pulsante, così si sposta una slide di più posti di fila
+        var again = row.querySelector('[data-slide-move="' + dir + '"]');
+        if (again && !again.disabled) again.focus();
       });
     });
 

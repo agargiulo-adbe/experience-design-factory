@@ -445,6 +445,29 @@ const EDF_PROJECT = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '').split(
     if (!cfg || !cfg.chapters) return;
     var here = currentSlug();
 
+    // 0 · l'ordine delle slide, se la Console l'ha cambiato. Si sposta nel DOM
+    //     PRIMA che il deck conti le slide, così frecce, contatore e ancore
+    //     seguono il nuovo ordine. Le slide che la sequenza non conosce (nuove,
+    //     o iniettate dopo) restano dove sono, in coda.
+    var seqHere = entryFor(here) && entryFor(here).seq;
+    if (seqHere && seqHere.length) {
+      var els = seqHere.map(function(id) { return document.getElementById(id); })
+        .filter(function(el) { return el && el.hasAttribute('data-slide'); });
+      if (els.length > 1) {
+        var parent = els[0].parentElement;
+        var same = els.every(function(el) { return el.parentElement === parent; });
+        if (same) {
+          // un segnaposto dove comincia il gruppo, poi le slide davanti a lui
+          // nell'ordine nuovo: il gruppo resta nello stesso punto della pagina
+          var first = Array.prototype.find.call(parent.children, function(el) { return els.indexOf(el) !== -1; });
+          var marker = document.createComment('edf-seq');
+          parent.insertBefore(marker, first);
+          els.forEach(function(el) { parent.insertBefore(el, marker); });
+          parent.removeChild(marker);
+        }
+      }
+    }
+
     // 1 · le slide spente escono dal conteggio del deck, come per il gating soluzioni
     if (entryFor(here)) {
       document.querySelectorAll('[data-slide]').forEach(function(el) {
