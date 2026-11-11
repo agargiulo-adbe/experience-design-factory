@@ -24,8 +24,6 @@ export interface VoceAgenda {
   capitolo: string | null;
   /** La slide di arrivo, quando la voce non comincia dalla prima del capitolo. */
   ancora?: string;
-  /** Una seconda riga, più piccola: un tema che la voce deve nominare. */
-  sotto?: { it: string; en: string };
 }
 
 export const AGENDA: VoceAgenda[] = [
@@ -41,11 +39,12 @@ export const AGENDA: VoceAgenda[] = [
   { n: '02', capitolo: 'scenario',
     titolo: { it: 'Giulia: un mutuo, sette momenti', en: 'Giulia: one mortgage, seven moments' } },
   { n: '03', capitolo: 'messa-a-terra',
-    titolo: { it: 'Dove ci innestiamo', en: 'Where we plug in' },
-    /* L'invito chiedeva «particolare attenzione alla Web Analytics»: nel
-       capitolo è Customer Journey Analytics sopra Adobe Analytics, e
-       l'attribuzione delle firme fino alla filiale. */
-    sotto: { it: 'e come si misura, con Customer Journey Analytics', en: 'and how it is measured, with Customer Journey Analytics' } },
+    /* L'invito chiedeva «particolare attenzione alla Web Analytics», e nel
+       capitolo la misura (Customer Journey Analytics sopra Adobe Analytics,
+       l'attribuzione fino alla filiale) vale due slide su cinque: per questo
+       sta NEL TITOLO. Fino all'11 nov era una seconda riga, l'unica del
+       deck, residuo del capitolo CX Analytics confluito qui il 10 nov. */
+    titolo: { it: 'Dove ci innestiamo e che cosa si misura', en: 'Where we plug in and what gets measured' } },
   { n: '04', capitolo: 'coworker',
     titolo: { it: 'CX Enterprise Coworker', en: 'CX Enterprise Coworker' } },
   { n: '05', capitolo: 'risultati',

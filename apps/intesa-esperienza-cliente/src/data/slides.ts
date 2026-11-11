@@ -29,8 +29,8 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-m-06', label: '06 Customer Engagement: il percorso attiva la filiale' },
     { id: 'slide-m-07', label: '07 CX Analytics: quanto è costato acquisirla' },
   ]},
-  { slug: 'messa-a-terra', label: 'Dove ci innestiamo (03)', slides: [
-    { id: 'slide-cover', label: 'Cover: Dove ci innestiamo' },
+  { slug: 'messa-a-terra', label: 'Dove ci innestiamo e che cosa si misura (03)', slides: [
+    { id: 'slide-cover', label: 'Cover: Dove ci innestiamo e che cosa si misura' },
     { id: 'slide-innesto', label: 'L’innesto: Adobe si aggiunge, si parte dai percorsi nuovi, Real-Time CDP, Journey Optimizer · AI Decisioning e CJA' },
     { id: 'slide-capacita', label: 'Che cosa porta ciascun componente: le capability' },
     { id: 'slide-cja-banca', label: 'Quattro risposte che una banca ottiene da CJA' },
