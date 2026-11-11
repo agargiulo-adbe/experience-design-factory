@@ -307,3 +307,11 @@ Giro di copia e grafica chiesto dall'owner, più i commenti di un collega del te
 - **Slide di ritorno** di nuovo più ricca: torna la riga di AI Decisioning (le regole riviste a fine trimestre) e «Giulia, ora cliente» che passa al motore della banca.
 - **Pop-in Real-Time CDP** riscritto in parole piane, e le etichette dei passi ora si leggono: erano grigio chiaro su bianco, e `audit:ink` non apre i pop-in. **Momenti**: a 1440×900 e 1280×800 il testo cadeva sulla foto chiara, e la foto ora è abbassata. m-05 e m-06 riscritti, con le parole del collega su m-06. «Capitolo 03.1.1» corretto.
 - **Gate**: `audit:deck` 177 righe, 0 HARD · `copy-audit` 0 HARD · `audit:ink` pulito · `audit:taglio` allineato · `audit:fonti` nessun link rotto · `astro check` 0.
+
+### L'ultimo giro della mattina dell'11 (`ea3c77f`, `1fc829d`)
+
+- **«Nome» → «email»**: «prima del nome» era una metafora, ma Giulia lascia l'email con il consenso. Il lessico ora è **anonima · email · profilo**, ovunque (scenario, innesto, pop-in, momenti, misure, chiusura), IT ed EN. «Contatto» scartato: in banca vuol dire anche «contattare».
+- **«Accanto» era gergo nostro**: la posizione da cui si parte si chiama «Percorsi nuovi su Journey Optimizer · le campagne restano come oggi», anche nel taglio corto e nel piano di evoluzione.
+- **Real-Time CDP** passa al verde pieno come Journey Optimizer e CJA. Il colore dice «questo lo porta Adobe»; il bordo bianco resta solo sul motore della banca.
+- `customer journey analytics` legato con spazi unificatori nei titoli: andava a capo dentro il nome.
+- **Gate su `1fc829d`**: `audit:deck` 177 righe 0 HARD · `copy-audit` 0 HARD · `audit:ink` pulito · `audit:taglio` allineato · `audit:og` PASS (16/16 pagine, `adobe-in-cifre` compresa) · `audit:fonti` nessun link rotto · `astro check` 0. Due rilievi di `audit:wrap` lasciati: nel dettaglio delle fasi, la frase va a capo dopo una virgola.
