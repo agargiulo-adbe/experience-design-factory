@@ -18,6 +18,13 @@ export const FONTI = {
      volevano tagliare la referenza per quell'etichetta (panel, 30 ott
      2026). Letta e verificata il 30 ott 2026. */
   creditAgricole: 'https://business.adobe.com/uk/customer-success-stories/credit-agricole-italia.html',
+  /* Clienti e agenzie del Gruppo Unipol, al 31 dicembre 2025: «17,6 milioni
+     Clienti», «2.035 agenzie e 4.910 subagenzie in Italia». Letto l'11 nov
+     2026. Il modello e i risultati NON vengono da qui ma dalla sessione di
+     Unipol ad Adobe Summit 2026 (CP16, 21 aprile), di cui non c'è un link
+     pubblico verificato: si cita per nome. Al Summit Unipol diceva 16,8
+     milioni di clienti e 2.100 agenzie: dato precedente, vince il fact sheet. */
+  unipol: 'https://www.unipol.com/sites/default/files/documents/2026-06/unipol_fact_sheet_giugno_2026_1.pdf',
 };
 
 /* La cornice delle referenze, in un posto solo. ⚠️ Diceva «i numeri sono
@@ -91,9 +98,14 @@ export interface Caso {
   fascia: { occ: L; testo: L; icona: 'riprende' | 'rete' | 'strati' };
   ponte?: L; ponteBreve?: L;
   fonte: { url: string; nome: string };
+  /** Dopo il link: di che cosa è fonte, e una seconda fonte senza link. */
+  fonteCoda?: L;
 }
 
-export const CASI: Record<'tsb' | 'santander' | 'creditAgricole', Caso> = {
+/* ⚠️ L'ORDINE IN PAGINA (11 nov 2026, owner): Santander, Crédit Agricole,
+   TSB, Unipol. La cornice «nessuno di questi è un caso come il vostro» sta
+   sul PRIMO caso, Santander; TSB tiene il ponte sulla filiale. */
+export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Caso> = {
   tsb: {
     slug: 'tsb', nome: 'TSB',
     occ: { it: 'Un caso britannico', en: 'A UK case' },
@@ -110,7 +122,7 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole', Caso> = {
       testo: { it: 'Una pratica di mutuo lasciata a metà in app, ripresa in tempo reale', en: 'A mortgage application left half-done in the app, resumed in real time' },
       icona: 'riprende',
     },
-    ponte: { it: 'Nessuna delle tre è una banca come la vostra. Da voi il mutuo si chiude in filiale: per questo l’imbuto conta anche gli appuntamenti.', en: 'None of the three is a bank like yours. At your bank the mortgage closes in branch: that is why the funnel also counts appointments.' },
+    ponte: { it: 'Da voi il mutuo si chiude in filiale: per questo l’imbuto conta anche gli appuntamenti.', en: 'At your bank the mortgage closes in branch: that is why the funnel also counts appointments.' },
     ponteBreve: { it: 'Da voi il mutuo si chiude in filiale: l’imbuto conta anche gli appuntamenti.', en: 'At your bank the mortgage closes in branch: the funnel also counts appointments.' },
     fonte: { url: FONTI.tsb, nome: 'business.adobe.com · TSB' },
   },
@@ -133,6 +145,7 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole', Caso> = {
       testo: { it: 'Governance globale dei dati · un ecosistema comune fra i Paesi del gruppo', en: 'Global data governance · one ecosystem shared across the group’s countries' },
       icona: 'rete',
     },
+    ponte: { it: 'Nessuno di questi casi è uguale al vostro: i numeri sono quelli dichiarati in pubblico.', en: 'None of these cases is the same as yours: the figures are the ones stated in public.' },
     fonte: { url: FONTI.santander, nome: 'business.adobe.com · Santander' },
   },
   creditAgricole: {
@@ -156,6 +169,41 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole', Caso> = {
       icona: 'strati',
     },
     fonte: { url: FONTI.creditAgricole, nome: 'business.adobe.com · Crédit Agricole Italia' },
+  },
+  /* Unipol — assicurazioni, non banca. Il punto per chi è in sala: una rete
+     fisica grande (agenzie) e il digitale nella stessa analisi, con le
+     campagne misurate anche su quello che si vende fuori dal digitale. È la
+     forma del problema della filiale.
+     Dalla sessione del Summit (testo delle slide): «Website · APP · Agents
+     selling tool · SalesForce · Issued Policies DB» nello stesso modello;
+     «Impact of marketing campaign on offline conversion»; «–90% time to
+     deliver integrated analyses»; «2x faster root cause identification».
+     ⚠️ Referenziabilità: Unipol ha parlato in pubblico (Summit, aprile 2026;
+     AI Forum di Milano, 21 ott 2026), ma uno stato «Referenceable» formale
+     non risulta; un case study Adobe è in lavorazione. Confermare col team
+     dell'account Unipol prima del 19 novembre. */
+  unipol: {
+    slug: 'unipol', nome: 'Unipol',
+    occ: { it: 'Unipol · assicurazioni, Italia', en: 'Unipol · insurance, Italy' },
+    titolo: { pre: { it: 'Unipol:', en: 'Unipol:' }, accento: { it: 'le campagne misurate anche sulle vendite offline', en: 'campaigns measured on offline sales too' } },
+    hero: {
+      occ: { it: 'Agenzie, sito, app e polizze nella stessa analisi', en: 'Agencies, website, app and policies in one analysis' },
+      oggi: { k: { it: 'Tempo', en: 'Time' }, n: { it: '−90%', en: '−90%' } },
+      l: { it: 'per consegnare un’analisi integrata', en: 'to deliver an integrated analysis' },
+    },
+    metrica: { n: '2x', l: { it: 'più veloce trovare la causa di un problema', en: 'faster to find the root cause of a problem' } },
+    nota: { it: 'Numeri dichiarati da Unipol ad Adobe Summit 2026.', en: 'Figures stated by Unipol at Adobe Summit 2026.' },
+    riquadri: [
+      { n: '17,6 mln', l: { it: 'clienti', en: 'customers' } },
+      { n: '2.000+', l: { it: 'agenzie in Italia', en: 'agencies in Italy' } },
+    ],
+    fascia: {
+      occ: { it: 'Adobe Summit 2026 · la sessione di Unipol', en: 'Adobe Summit 2026 · Unipol’s session' },
+      testo: { it: 'Un modello di analisi omnicanale su Customer Journey Analytics', en: 'An omnichannel analysis model on Customer Journey Analytics' },
+      icona: 'rete',
+    },
+    fonte: { url: FONTI.unipol, nome: 'unipol.com · fact sheet, giugno 2026' },
+    fonteCoda: { it: ' · clienti e agenzie <span class=im-nw>al 31 dicembre 2025.</span> Modello e risultati: Unipol ad Adobe Summit 2026, <span class=im-nw>sessione CP16</span>', en: ' · customers and agencies <span class=im-nw>at 31 December 2025.</span> Model and results: Unipol at Adobe Summit 2026, <span class=im-nw>session CP16</span>' },
   },
 };
 
