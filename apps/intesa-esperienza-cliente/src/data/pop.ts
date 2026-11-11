@@ -46,7 +46,7 @@ export const SCENE: Record<ScenaId, Scena> = {
       'Regole, consenso e politica di contatto tolgono quelle non ammesse.',
       'Su chi non è ancora cliente il motore di targeting non ha punteggi: valgono la priorità dell’offerta e le regole scritte insieme.',
       'Ne esce una sola, sul canale giusto. L’orchestrazione può restare dov’è.',
-      'Customer Journey Analytics misura l’esito, e il modello impara per la volta dopo.',
+      'Customer Journey Analytics misura l’esito sul gruppo di controllo; priorità e regole si rivedono con voi a fine trimestre.',
     ],
     nota: 'Schema illustrativo, sistemi attuali da confermare con voi. Sul prospect classifica l’arbitro, con le regole scritte insieme. Sul cliente la classifica resta del vostro motore, e l’arbitro applica canale, consenso e politica di contatto.',
     fonti: [

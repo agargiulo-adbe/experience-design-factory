@@ -79,11 +79,12 @@ const BV = [
   { strato: 'segnali', fig: 'grafo', t: { it: 'Dati di mercato', en: 'Market intelligence' },
     d: { it: 'Chi viene citato accanto a voi, sugli assistenti che il servizio copre: l’elenco si fissa all’avvio.', en: 'Who gets cited next to you, on the assistants the service covers: the list is set at kick-off.' } },
   { strato: 'segnali', fig: 'serie', t: { it: 'Segnali di casa vostra', en: 'Brand-owned signals' },
-    d: { it: 'Il traffico degli agenti dai log del vostro CDN: escono indirizzo della pagina, user agent, esito, referrer, orario; nessun dato personale.', en: 'Agent traffic from your CDN logs: page address, user agent, status, referrer and time go out; no personal data.' } },
+    d: { it: 'Il traffico degli agenti dai log del vostro CDN: escono indirizzo della pagina, user agent, esito, referrer, orario; nessun dato personale.', en: 'Agent traffic from your CDN logs: page address, user agent, status, referrer and time go out; no personal data.' },
+    log: { it: 'Log forwarding: Akamai, Cloudflare, CloudFront, Fastly, Imperva.', en: 'Log forwarding: Akamai, Cloudflare, CloudFront, Fastly, Imperva.' } },
   { strato: 'ottimizzazioni', fig: 'bordo', t: { it: 'Ottimizzazioni', en: 'Optimisations' },
-    d: { it: 'I correttivi vanno in rete al bordo del vostro CDN (Akamai, Cloudflare, CloudFront, Fastly, Imperva), dentro il vostro change management.', en: 'Fixes ship at the edge of your CDN (Akamai, Cloudflare, CloudFront, Fastly, Imperva), inside your change management.' } },
+    d: { it: 'I correttivi vanno in rete al bordo del vostro CDN (Akamai, Cloudflare, CloudFront, Fastly, Azure Front Door, o Apache), dentro il vostro change management.', en: 'Fixes ship at the edge of your CDN (Akamai, Cloudflare, CloudFront, Fastly, Azure Front Door, or Apache), inside your change management.' } },
   { strato: 'ottimizzazioni', fig: 'esito', t: { it: 'Esiti misurabili', en: 'Measurable outcomes' },
-    d: { it: 'Sessioni da assistenti sul totale, per domanda, ogni settimana; e quante avviano una simulazione.', en: 'Sessions from assistants over total, per question, weekly; and how many start a simulation.' } },
+    d: { it: 'Sessioni da assistenti sul totale, per pagina e per piattaforma, ogni settimana; con Analytics collegato, quante avviano una simulazione. Per domanda si misurano le citazioni.', en: 'Sessions from assistants over total, by page and by platform, weekly; with Analytics connected, how many start a simulation. Per question, citations are what gets measured.' } },
 ];
 
 /* L'APPROFONDIMENTO SU «CONTENT FACTORY», dopo quello su farsi trovare.
@@ -549,10 +550,10 @@ const DECIDE = [
         </div>
 
         <p class="im-fonte-riga">
-          <span data-lang-it>Il limite per offerta si conta per identità al bordo e per profilo nel percorso; nel percorso il contatore si aggiorna con fino a dieci minuti di ritardo. Documentazione pubblica, 11 nov 2026: </span><span data-lang-en>The per-offer limit counts per identity at the edge and per profile in the journey; in the journey the counter updates with up to ten minutes’ lag. Public documentation, 11 Nov 2026: </span>
+          <span data-lang-it>Il limite per offerta si conta per identità al bordo e per profilo nel percorso. Nel percorso il contatore del limite per offerta può aggiornarsi con qualche minuto di ritardo; fra bordo e hub la propagazione arriva fino a 30 minuti. Documentazione pubblica, 11 nov 2026: </span><span data-lang-en>The per-offer limit counts per identity at the edge and per profile in the journey. In the journey the per-offer limit counter may update with a few minutes’ delay; between edge and hub propagation takes up to 30 minutes. Public documentation, 11 Nov 2026: </span>
           <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/decisioning/experience-decisioning/gs-experience-decisioning" target="_blank" rel="noopener">Journey Optimizer · Decisioning</a><span> · </span>
           <a href="https://experienceleague.adobe.com/en/docs/experience-cloud-kcs/kbarticles/ka-30469" target="_blank" rel="noopener">KB ka-30469</a><span> · </span>
-          <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/conflict-prioritization/gs-conflict-prioritization" target="_blank" rel="noopener">guardrail</a>
+          <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/decisioning/offer-decisioning/managing-offers-in-the-offer-library/configure-offers/add-constraints" target="_blank" rel="noopener"><span data-lang-it>limiti per offerta</span><span data-lang-en>offer capping</span></a>
           <a class="im-torna" href={TORNA}><span data-lang-it>← Torna ai quattro componenti</span><span data-lang-en>← Back to the four components</span></a>
         </p>
       </div>
@@ -736,6 +737,7 @@ const DECIDE = [
                 <FiguraCap segno={c.fig} />
                 <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
                 <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
+                {c.log && <T as="span" class="im-bv-d im-bv-log" it={c.log.it} en={c.log.en} />}
               </section>
               {i < BV.length - 1 && <span class="im-bv-op" aria-hidden="true">{i === 1 ? '=' : '+'}</span>}
             </>
@@ -751,7 +753,7 @@ const DECIDE = [
           <span data-lang-it>Capacità verificate sulla documentazione pubblica, 11 nov 2026; regione e retention dei log restano da verificare con Adobe: </span><span data-lang-en>Capabilities verified on the public documentation, 11 Nov 2026; log region and retention are still to verify with Adobe: </span>
           <a href="https://experienceleague.adobe.com/en/docs/brand-visibility/using/essentials/overview" target="_blank" rel="noopener">Adobe Brand Visibility</a><span> · </span>
           <a href="https://experienceleague.adobe.com/en/docs/brand-visibility/using/resources/optimize-at-edge/overview" target="_blank" rel="noopener">Optimize at Edge</a><span> · </span>
-          <a href="https://experienceleague.adobe.com/en/docs/brand-visibility/using/log-forwarding/log-forwarding-overview" target="_blank" rel="noopener">CDN supportati</a><span> · </span>
+          <a href="https://experienceleague.adobe.com/en/docs/brand-visibility/using/log-forwarding/log-forwarding-overview" target="_blank" rel="noopener">log forwarding</a><span> · </span>
           <a href="https://experienceleague.adobe.com/en/docs/brand-visibility/using/dashboards/agentic-traffic" target="_blank" rel="noopener"><span data-lang-it>campi dei log</span><span data-lang-en>log fields</span></a>
         </p>
       </div>

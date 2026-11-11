@@ -79,8 +79,7 @@ export const CIFRE_TSB = [
      «This year, we’ve seen 39% more customers…» senza base: «base non
      pubblicata» sta accanto alla cifra, anche nel taglio corto (panel,
      11 nov 2026). */
-  { n: '+39%', l: { it: 'clienti in più che scelgono un prodotto TSB dopo un’interazione personalizzata · base non pubblicata', en: 'more customers choosing a TSB product following a personalized interaction · baseline not published' },
-    lBreve: { it: 'clienti in più che scelgono un prodotto · base non pubblicata', en: 'more customers choosing a product · baseline not published' } },
+  { n: '+39%', l: { it: 'clienti in più che scelgono un prodotto TSB dopo un’interazione personalizzata · base non pubblicata', en: 'more customers choosing a TSB product following a personalized interaction · baseline not published' },  },
   { n: '1.000+', l: { it: 'casi d’uso in produzione: erano 250 tre anni fa', en: 'use cases live: 250 three years ago' },
     lBreve: { it: 'casi d’uso in produzione', en: 'use cases live' } },
   { n: '91%', l: { it: 'dei prodotti, oggi, si compra sui canali digitali', en: 'of products are bought digitally today' },
@@ -107,7 +106,8 @@ export const CIFRE_TSB = [
 export const MISURE = [
   { l: { it: 'Quante simulazioni vengono riprese', en: 'How many simulations get resumed' },
     oggi: { it: 'oggi: come lo sapete?', en: 'today: how do you know?' },
-    poi: { it: 'si misura, con un gruppo che non riceve niente', en: 'measured, against a group that receives nothing' } },
+    poi: { it: 'si misura, con un gruppo che resta nel processo di oggi', en: 'measured, against a group that stays in today’s process' },
+    poiLungo: { it: 'si misura con un gruppo che resta nel processo di oggi, approvato dalla Rete in fase 0', en: 'measured against a group that stays in today’s process, approved by the Network in phase 0' } },
   { l: { it: 'Quante simulazioni lasciano nome e consenso', en: 'How many simulations leave a name and consent' },
     oggi: { it: 'oggi: lo misurate?', en: 'today: do you measure it?' },
     poi: { it: 'tasso di consenso, dal primo giorno', en: 'consent rate, from day one' },
@@ -125,13 +125,12 @@ export const MISURE = [
     estesa: true },
   { l: { it: 'Quanto il digitale porta in filiale', en: 'How much digital brings into the branch' },
     oggi: { it: 'oggi: si aggancia la firma al percorso?', en: 'today: is the signature tied back to the path?' },
-    poi: { it: 'appuntamenti nati online, chiusi e non chiusi', en: 'appointments born online, closed and not closed' },
-    poiLungo: { it: 'appuntamenti nati online, chiusi e non chiusi, e costo per appuntamento', en: 'appointments born online, closed and not closed, and cost per appointment' },
+    poi: { it: 'appuntamenti nati online, chiusi e non chiusi, e costo per appuntamento', en: 'appointments born online, closed and not closed, and cost per appointment' },
     estesa: true },
   { l: { it: 'Quanto costa una richiesta firmata, per canale', en: 'What a signed application costs, per channel' },
     oggi: { it: 'oggi: per canale, o sul percorso?', en: 'today: per channel, or across the path?' },
     poi: { it: 'con la spesa per canale portata in piattaforma', en: 'with spend per channel brought into the platform' },
-    poiLungo: { it: 'la spesa per campagna entra ogni giorno con l’identificativo di campagna; i costi di rete dal Controllo di Gestione', en: 'campaign spend comes in daily with the campaign ID; network costs from Management Control' },
+    poiLungo: { it: 'la spesa per campagna entra ogni giorno con l’identificativo di campagna. I costi di rete dal Controllo di Gestione, con un criterio di ripartizione concordato con Canali in fase 0', en: 'campaign spend comes in daily with the campaign ID. Network costs from Management Control, with an allocation rule agreed with Channels in phase 0' },
     chiave: true },
 ];
 
@@ -150,16 +149,28 @@ export const TRIMESTRE = {
    gli erogati si leggono. X e Y non si inventano: si fissano in fase 0. */
 export const SOGLIA = [
   { k: { it: 'La soglia', en: 'The threshold' },
-    v: { it: '+X punti di simulazioni riprese sul gruppo di controllo, campione minimo Y', en: '+X points of resumed simulations versus the control group, minimum sample Y' } },
+    v: { it: 'la soglia (punti di ripresa sul controllo) e il campione minimo si calcolano in fase 0 sui vostri volumi', en: 'the threshold (resumption points versus control) and the minimum sample are calculated in phase 0 on your volumes' } },
+  { k: { it: 'Che cosa è una ripresa', en: 'What counts as a resumption' },
+    v: { it: 'un gesto della cliente entro 14 giorni, su qualunque canale: simulazione completata, documenti caricati o appuntamento preso; i giorni si fissano in fase 0', en: 'an action by the customer within 14 days, on any channel: simulation completed, documents uploaded or appointment booked; the days are set in phase 0' } },
   { k: { it: 'Il gruppo di controllo', en: 'The control group' },
-    v: { it: 'X, Y e la quota del gruppo (5-10%) si fissano in fase 0 con un calcolo dei volumi', en: 'X, Y and the group’s share (5-10%) are set in phase 0 with a volume calculation' } },
+    v: { it: 'quota del 5-10%, fissata in fase 0 sui volumi. Si estrae per browser sulla proposta del sito e per profilo sui richiami dopo il consenso; lo stesso prospect su due dispositivi è un limite noto', en: 'a 5-10% share, set in phase 0 on volumes. Drawn per browser for the site offer and per profile for follow-ups after consent; the same prospect on two devices is a known limit' } },
   { k: { it: 'Che cosa si giudica', en: 'What gets judged' },
-    v: { it: 'la soglia si giudica su riprese e appuntamenti; le firme si leggono', en: 'the threshold is judged on resumptions and appointments; signatures are read' } },
+    v: { it: 'la soglia si giudica su riprese e appuntamenti; le firme si leggono', en: 'the threshold is judged on resumptions and appointments; signatures are read' } },
+  { k: { it: 'Il vincolo per la Rete', en: 'The constraint for the Network' },
+    v: { it: 'vale a parità o miglioramento di appuntamenti tenuti e di firme per appuntamento sul controllo', en: 'it holds only with appointments kept and signatures per appointment equal to or better than control' } },
   { k: { it: 'Gli erogati', en: 'Disbursements' },
-    v: { it: 'misura del trimestre dopo, agganciata per codice pratica', en: 'measured the following quarter, matched by application code' } },
+    v: { it: 'misura del trimestre dopo, agganciata per codice pratica', en: 'measured the following quarter, matched by application code' } },
 ];
 
 /* L'ASK, in un posto solo. */
+/* Il seguito in una riga, per il taglio corto (panel, 11 nov 2026, giro 2):
+   chi riceve il taglio deve sapere che il pilota porta una licenza e come
+   esce. Le stesse tappe di prossimi-passi/slide-fasi. */
+export const SEGUITO = {
+  it: 'Fase 0 disegno · fase 1 licenza e trimestre di misura, poi si estende o si ferma.',
+  en: 'Phase 0 design · phase 1 licence and a quarter of measurement, then it extends or stops.',
+};
+
 export const ASK = {
   it: 'Un percorso solo, il mutuo, con il gruppo di controllo. Se non si muove, lo sappiamo in un trimestre.',
   en: 'One journey only, the mortgage, with a control group. If it does not move, we know within a quarter.',

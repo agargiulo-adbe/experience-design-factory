@@ -125,6 +125,20 @@ const PASSI = [
    tracciatura offline è una domanda che il referente del targeting ha
    fatto più volte, e un imbuto tutto digitale la lascia senza risposta
    proprio sulla slide che parla di misura. */
+/* 07 · LE VOCI DEL COSTO (panel, 11 nov 2026, giro 2). Diceva Sito 410 €,
+   Email 95 €, Filiale 620 €: mancava la spesa media vera (annunci, ricerca a
+   pagamento), il sito non ha una spesa sua, e una filiale «più cara» in euro
+   mette la Rete contro il pilota. Ora: euro illustrativi SOLO sulle voci a
+   pagamento; la filiale resta nell'attribuzione ma esce dalla colonna euro,
+   con il criterio da fissare in fase 0. Barre e tabella leggono le stesse
+   voci. Cifre di esempio, dichiarate. */
+const COSTI = [
+  { l: 'Annunci social', breve: 'Annunci', euro: '180 €', quota: 14 },
+  { l: 'Ricerca a pagamento', breve: 'Ricerca', euro: '240 €', quota: 12 },
+  { l: 'Email · piattaforma e produzione', breve: 'Email', euro: '95 €', quota: 16 },
+  { l: 'Sito', breve: 'Sito', euro: 'organico, nessuna spesa propria', quota: 24, organico: true },
+  { l: 'Filiale', breve: 'Filiale', euro: '', quota: 34, filiale: true },
+];
 const FUNNEL = IMBUTO.map((r) => ({ l: r.l.it, v: r.v, n: r.n, offline: r.offline }));
 ---
 
@@ -274,14 +288,15 @@ const FUNNEL = IMBUTO.map((r) => ({ l: r.l.it, v: r.v, n: r.n, offline: r.offlin
           </div>
           <div class="im-cj-attr">
             <small>Attribuzione delle richieste firmate per canale · algoritmica</small>
-            <div class="im-cj-seg"><span style="flex:42">Sito</span><span style="flex:18">Email</span><span style="flex:40" data-on>Filiale</span></div>
+            <div class="im-cj-seg">{COSTI.map((c) => <span style={`flex:${c.quota}`} data-on={c.filiale ? '' : null}>{c.breve}</span>)}</div>
           </div>
           {/* Il costo con un euro a schermo, e con la sua condizione: CJA lo
               legge solo se la spesa per canale entra in piattaforma
               (fact-check, 11 nov 2026). Cifre di esempio, dichiarate. */}
           <div class="im-cj-costo">
             <small>Costo per richiesta firmata · per canale · spesa importata</small>
-            <div class="im-cj-costo-r"><span>Sito <b>410 €</b></span><span>Email <b>95 €</b></span><span>Filiale <b>620 €</b></span></div>
+            <div class="im-cj-costo-r">{COSTI.filter((c) => !c.filiale && !c.organico).map((c) => <span>{c.breve} <b>{c.euro}</b></span>)}</div>
+            <p class="im-cj-costo-fil">Sito: organico · Filiale: criterio di costo in fase 0, con Controllo di Gestione e Canali</p>
           </div>
         </div>
       )}
@@ -304,6 +319,12 @@ const FUNNEL = IMBUTO.map((r) => ({ l: r.l.it, v: r.v, n: r.n, offline: r.offlin
   .im-cj-costo { display: grid; gap: 0.2rem; margin-top: -1.1rem; padding-bottom: 1.6rem; }
   .im-cj-costo small { font-size: clamp(0.78rem, 0.68vw, 1.5rem); font-weight: 700; color: var(--color-ink); }
   .im-cj-costo-r { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.3rem; }
+  /* Due righe di costo e quella della filiale non entravano: l'imbuto cede
+     altezza alle barre, non il tipo (che non si rimpicciolisce). */
+  .im-ado--misura .im-cj-b { height: clamp(1.6rem, 2.6vh, 4.6rem); }
+  .im-cj-seg span:nth-child(4) { background: #0d4f9e; }
+  .im-cj-seg span { min-width: 0; padding-inline: 0.35rem; }
+  .im-cj-costo-fil { margin: 0; max-width: none; font-size: clamp(0.78rem, 0.66vw, 1.45rem); line-height: 1.3; color: var(--color-ink-2); }
   .im-cj-costo-r span { padding: 0.16rem 0.45rem; border: 1px solid var(--color-grey-200); border-radius: 4px; font-size: clamp(0.78rem, 0.66vw, 1.45rem); color: var(--color-ink-2); }
   .im-cj-costo-r b { color: var(--color-ink); font-variant-numeric: tabular-nums; }
 </style>

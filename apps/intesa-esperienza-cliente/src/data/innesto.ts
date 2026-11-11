@@ -65,8 +65,15 @@ export const IPOTESI: Testo = {
   en: 'The current architecture is our assumption, to correct with you.',
 };
 
+/** La Web Analytics nel taglio corto: l'invito la chiede (panel, 11 nov 2026,
+    giro 2). Dice in una riga quello che slide-passaggio dice per esteso. */
+export const WEB_ANALYTICS: Testo = {
+  it: 'Web Analytics: Customer Journey Analytics legge quello che Adobe Analytics raccoglie già; Workspace e segmenti restano; la convivenza delle licenze si decide in fase 0.',
+  en: 'Web analytics: Customer Journey Analytics reads what Adobe Analytics already collects; Workspace and segments stay; licence overlap is decided in phase 0.',
+};
+
 /** Chi si siede al tavolo della fase 0: la riga dell'ask nel taglio corto. */
 export const TAVOLO: Testo = {
-  it: 'Fase 0: Targeting, CRM, Group Technology, Canali.',
+  it: 'Fase 0: Targeting, CRM, Group Technology, Canali.',
   en: 'Phase 0: Targeting, CRM, Group Technology, Channels.',
 };
