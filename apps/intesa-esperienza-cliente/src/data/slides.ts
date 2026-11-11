@@ -31,7 +31,7 @@ export const PAGE_REGISTRY: PageEntry[] = [
   ]},
   { slug: 'messa-a-terra', label: 'Dove ci innestiamo · Come si mette a terra (04)', slides: [
     { id: 'slide-cover', label: 'Cover: Dove ci innestiamo' },
-    { id: 'slide-innesto', label: 'L’innesto: il vostro motore resta a monte, posizione «Accanto», Real-Time CDP, Journey Optimizer · AI Decisioning e CJA' },
+    { id: 'slide-innesto', label: 'L’innesto: Adobe si aggiunge, si parte dai percorsi nuovi, Real-Time CDP, Journey Optimizer · AI Decisioning e CJA' },
     { id: 'slide-capacita', label: 'Che cosa porta ciascun componente: le capability' },
     { id: 'slide-cja-banca', label: 'Quattro risposte che una banca ottiene da CJA' },
     { id: 'slide-attribuzione', label: 'Quanto del digitale arriva in filiale' },

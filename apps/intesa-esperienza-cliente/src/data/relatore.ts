@@ -26,7 +26,7 @@ export const NOTE: Record<string, Record<string, Nota>> = {
   },
   scenario: {
     'slide-cover': { dire: 'Si parte dal dato che c’è, e spesso riguarda chi è cliente di un’altra banca.' },
-    'slide-segnale': { dire: 'Prima il dato, poi la lettura (freccia giù): il segnale più forte arriva da chi è ancora anonimo. Prima del nome si risponde con assistenti AI, annunci e sito; dopo, email, filiale e app. Sono i sette momenti che seguono. Poi si chiede: quanto tempo passa oggi fra quel gesto e una risposta?', attenzione: 'Il dato è di mercato (Nomisma e MutuiSupermarket.it, maggio 2026), non è loro. Il 45% «vuole» simulare la rata: non dire che la simula.' },
+    'slide-segnale': { dire: 'Prima il dato, poi la lettura (freccia giù): il segnale più forte arriva da chi è ancora anonimo. Finché è anonima si risponde con assistenti AI, annunci e sito; dopo, email, filiale e app. Sono i sette momenti che seguono. Poi si chiede: quanto tempo passa oggi fra quel gesto e una risposta?', attenzione: 'Il dato è di mercato (Nomisma e MutuiSupermarket.it, maggio 2026), non è loro. Il 45% «vuole» simulare la rata: non dire che la simula.' },
   },
   persona: {
     'slide-cover': { dire: 'Giulia, 34 anni, non è ancora cliente: tutto il racconto è su di lei.' },

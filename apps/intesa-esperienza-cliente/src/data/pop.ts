@@ -58,10 +58,10 @@ export const SCENE: Record<ScenaId, Scena> = {
     prodotto: 'Real-Time CDP',
     cosa: 'Tiene il profilo di clienti e prospect. Con Giulia: prima da come usa il sito, poi dall’email che lascia.',
     passi: [
-      'Giulia arriva sul sito senza lasciare il nome. Si riconosce solo il suo browser.',
+      'Giulia arriva sul sito senza lasciare l’email. Si riconosce solo il suo browser.',
       'Simula la rata, e in quell’istante entra nel gruppo «mutuo prima casa».',
       'Quando torna, il sito le propone di riprendere la simulazione.',
-      'Lascia email e consenso. Le visite fatte da anonima si uniscono al suo nome.',
+      'Lascia email e consenso. Le visite fatte da anonima si uniscono al suo profilo.',
       'Da qui Journey Optimizer e AI Decisioning sanno chi è. Il CRM di filiale non cambia.',
     ],
     nota: 'Schema illustrativo. Per personalizzare il sito serve il consenso ai cookie; per scriverle, il consenso marketing. I profili anonimi si cancellano dopo un periodo che scegliete voi, da 1 a 365 giorni.',

@@ -185,14 +185,14 @@ export const MOMENTI: Momento[] = [
     funzione: { it: 'La visita diventa un contatto', en: 'The visit becomes a contact' },
     canale: { it: 'Sito', en: 'Website' },
     gruppo: 'engagement',
-    verifica: { it: 'Oggi una visita anonima di due sere prima si ritrova quando lascia il nome, e con quale consenso?', en: 'Today, is an anonymous visit from two evenings earlier recovered when she leaves a name, and under which consent?' },
+    verifica: { it: 'Oggi una visita anonima di due sere prima si ritrova quando lascia l’email, e con quale consenso?', en: 'Today, is an anonymous visit from two evenings earlier recovered when she leaves her email, and under which consent?' },
     prodotto: 'Real-Time CDP',
     cliente: {
       chrome: 'sito', scena: 'scena-03-tavolo',
       titolo: { it: 'Simula 180.000 euro su 25 anni e lascia l’indirizzo per salvare il risultato', en: 'She simulates 180,000 euro over 25 years and leaves her address to save the result' },
       corpo: {
-        it: '180.000 euro su venticinque anni: 863 al mese. Per salvare la simulazione lascia l’indirizzo e dà il consenso. In quel momento smette di essere una visita anonima e diventa un nome, con una data.',
-        en: '180,000 euro over twenty-five years: 863 a month. To save the simulation she leaves her address and gives consent. At that moment she stops being an anonymous visit and becomes a name, with a date.',
+        it: '180.000 euro su venticinque anni: 863 al mese. Per salvare la simulazione lascia l’indirizzo e dà il consenso. In quel momento smette di essere una visita anonima e diventa un profilo, con una data.',
+        en: '180,000 euro over twenty-five years: 863 a month. To save the simulation she leaves her address and gives consent. At that moment she stops being an anonymous visit and becomes a profile, with a date.',
       },
     },
     interno: {

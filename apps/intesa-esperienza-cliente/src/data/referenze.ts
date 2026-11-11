@@ -110,7 +110,7 @@ export const MISURE = [
     oggi: { it: 'oggi: come lo sapete?', en: 'today: how do you know?' },
     poi: { it: 'si misura, con un gruppo che resta nel processo di oggi', en: 'measured, against a group that stays in today’s process' },
     poiLungo: { it: 'si misura con un gruppo che resta nel processo di oggi, approvato dalla Rete in fase 0', en: 'measured against a group that stays in today’s process, approved by the Network in phase 0' } },
-  { davanti: true, l: { it: 'Quante simulazioni lasciano nome e consenso', en: 'How many simulations leave a name and consent' },
+  { davanti: true, l: { it: 'Quante simulazioni lasciano email e consenso', en: 'How many simulations leave an email and consent' },
     oggi: { it: 'oggi: lo misurate?', en: 'today: do you measure it?' },
     poi: { it: 'tasso di consenso, dal primo giorno', en: 'consent rate, from day one' },
     poiLungo: { it: 'tasso di consenso, dal primo giorno: senza, le altre misure non partono', en: 'consent rate, from day one: without it the other measures cannot start' },
