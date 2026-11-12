@@ -120,6 +120,8 @@ export const MISURARE = {
 };
 
 /* ── Decidere: la giornata ─────────────────────────────────────────────── */
+type Blocco = { da: number; a: number; t: string; forte?: boolean };
+
 export const GIORNO = {
   eyebrow: 'La giornata in una figura',
   titolo: 'La Direzione c’è quando si vede il risultato e quando si decide',
@@ -130,13 +132,13 @@ export const GIORNO = {
     { k: 'La Direzione', blocchi: [
       { da: 9.5, a: 11.25, t: 'Apertura e prova', forte: true },
       { da: 16.75, a: 17.5, t: 'Rotta', forte: true },
-    ] },
+    ] as Blocco[] },
     { k: 'I team', blocchi: [
       { da: 9.5, a: 11.25, t: 'Apertura e prova' },
       { da: 11.5, a: 13.5, t: 'Mani sugli strumenti' },
       { da: 14.5, a: 16.75, t: 'Esempio, priorità, squadra' },
       { da: 16.75, a: 17.5, t: 'Rotta' },
-    ] },
+    ] as Blocco[] },
   ],
 };
 
