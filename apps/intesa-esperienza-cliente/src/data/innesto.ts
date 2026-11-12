@@ -20,12 +20,15 @@
  */
 type Testo = { it: string; en: string };
 
-/** Il titolo dell'innesto (feedback del team, 11 nov 2026): dice che cosa
+/** Il titolo dell'innesto (revisione del capitolo 03, 12 nov 2026: la versione
+    con l'elenco dei tre componenti andava su tre righe e usciva dall'area
+    sicura a 1440 e 1280; l'elenco sta già nei riquadri dello schema).
+    Prima: (feedback del team, 11 nov 2026): dice che cosa
     aggiunge Adobe, e non nomina i sistemi della banca. Fonte unica per il
     percorso intero e per il taglio corto. */
 export const TITOLO: Testo = {
-  it: 'Adobe si aggiunge con tempo reale, decisione e analisi multicanale',
-  en: 'Adobe adds real time, decisioning and cross-channel analysis',
+  it: 'Adobe aggiunge tre componenti ai sistemi attuali',
+  en: 'Adobe adds three components to your current systems',
 };
 
 /** La riga di confine sul motore. Frase canonica: identica ovunque compaia. */
@@ -38,16 +41,16 @@ export const CONFINE: Testo = {
 export const OGGI: { t: Testo; s?: Testo; d: Testo; forte?: boolean }[] = [
   { t: { it: 'Data lake', en: 'Data lake' }, d: { it: 'i dati dei clienti', en: 'customer data' } },
   { t: { it: 'Motore di targeting', en: 'Targeting engine' },
-    d: { it: 'target, propensione', en: 'targets, propensity' }, forte: true },
+    d: { it: 'target e modelli di propensione', en: 'targets and propensity models' }, forte: true },
   { t: { it: 'Iniziative commerciali', en: 'Commercial initiatives' }, d: { it: 'pianificate e invii massivi', en: 'scheduled and bulk sends' } },
-  { t: { it: 'Canali', en: 'Channels' }, d: { it: 'filiale, Filiale Digitale, app, sito, self, media pagato', en: 'branch, Filiale Digitale, app, site, self-service, paid media' } },
+  { t: { it: 'Canali', en: 'Channels' }, d: { it: 'filiale, Filiale Digitale, app, sito, aree self-service, media a pagamento', en: 'branch, Filiale Digitale, app, site, self-service areas, paid media' } },
 ];
 
 /** La posizione che si proietta: è quella su cui si decide il 19. */
 export const ACCANTO = {
   k: { it: 'Si parte da qui', en: 'Where we start' },
   t: { it: 'Percorsi nuovi su Journey Optimizer', en: 'New journeys on Journey Optimizer' },
-  d: { it: 'le iniziative restano come oggi', en: 'initiatives stay as they are' },
+  d: { it: 'le iniziative pianificate restano sullo strumento attuale', en: 'scheduled initiatives stay on the current tool' },
 };
 
 /** Come possono evolvere le campagne: tre tappe in ordine, nel dettaglio a
@@ -56,23 +59,23 @@ export const ACCANTO = {
     la tappa non porta un numero: porta chi la decide. */
 export const EVOLUZIONE: { segno: string; k: Testo; t: Testo; d: Testo; ora?: boolean }[] = [
   { segno: 'canali', ora: true, k: { it: 'Si parte da qui', en: 'Where we start' }, t: { it: 'Percorsi nuovi', en: 'New journeys' },
-    d: { it: 'Su Journey Optimizer partono i percorsi nuovi. Le iniziative pianificate restano dove sono.', en: 'New journeys start on Journey Optimizer. Scheduled initiatives stay where they are.' } },
-  { segno: 'flusso', k: { it: 'Se lo decidete voi', en: 'If you decide so' }, t: { it: 'Una famiglia alla volta', en: 'One family at a time' },
-    d: { it: 'Le iniziative pianificate passano su Journey Optimizer, un gruppo per volta.', en: 'Scheduled initiatives move to Journey Optimizer, one group at a time.' } },
-  { segno: 'archivio', k: { it: 'Se lo decidete voi', en: 'If you decide so' }, t: { it: 'Tutto in un posto', en: 'All in one place' },
-    d: { it: 'Percorsi e iniziative pianificate nello stesso strumento.', en: 'Journeys and scheduled initiatives in the same tool.' } },
+    d: { it: 'I nuovi percorsi automatici nascono su Journey Optimizer; le iniziative pianificate restano sullo strumento attuale.', en: 'New automated journeys are built on Journey Optimizer; scheduled initiatives stay on the current tool.' } },
+  { segno: 'flusso', k: { it: 'Opzione, a scelta della banca', en: 'Option, the bank’s choice' }, t: { it: 'Migrazione graduale', en: 'Gradual migration' },
+    d: { it: 'Le iniziative pianificate passano su Journey Optimizer una famiglia alla volta.', en: 'Scheduled initiatives move to Journey Optimizer one family at a time.' } },
+  { segno: 'archivio', k: { it: 'Opzione, a scelta della banca', en: 'Option, the bank’s choice' }, t: { it: 'Un solo strumento', en: 'One tool' },
+    d: { it: 'Percorsi e iniziative pianificate gestiti in Journey Optimizer.', en: 'Journeys and scheduled initiatives managed in Journey Optimizer.' } },
 ];
 
 /** Una cosa da decidere SUBITO, qualunque tappa si scelga: non è una tappa. */
 export const FREQUENZA: Testo = {
-  it: 'Nella fase 1 due strumenti possono scrivere alla stessa persona. Chi fissa il numero massimo di messaggi si decide in fase 0.',
-  en: 'In phase 1 two tools can write to the same person. Who sets the maximum number of messages gets decided in phase 0.',
+  it: 'Nella fase 1 due strumenti possono inviare messaggi alla stessa persona. In fase 0 si decide quale dei due applica il tetto massimo di contatti.',
+  en: 'In phase 1 two tools can send messages to the same person. Phase 0 decides which of the two applies the contact cap.',
 };
 
 /** La riga della decisione, sotto le tappe. */
 export const DECIDETE: Testo = {
-  it: 'Se e quando spostare le iniziative lo decidete voi, dopo i risultati della fase 1. Costi e tempi si stimano allora.',
-  en: 'Whether and when to move the initiatives is your call, after the phase 1 results. Cost and timing get estimated then.',
+  it: 'La banca decide se e quando spostare le iniziative dopo i risultati della fase 1; costi e tempi si stimano in quel momento.',
+  en: 'The bank decides whether and when to move initiatives after the phase 1 results; cost and timing are estimated then.',
 };
 
 /** La nota sotto lo schema («non toccare» del panel): le stesse parole nei due percorsi. */

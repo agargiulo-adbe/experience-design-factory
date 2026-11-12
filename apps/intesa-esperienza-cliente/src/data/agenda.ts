@@ -44,7 +44,7 @@ export const AGENDA: VoceAgenda[] = [
        l'attribuzione fino alla filiale) vale due slide su cinque: per questo
        sta NEL TITOLO. Fino all'11 nov era una seconda riga, l'unica del
        deck, residuo del capitolo CX Analytics confluito qui il 10 nov. */
-    titolo: { it: 'Dove ci innestiamo e che cosa si misura', en: 'Where we plug in and what gets measured' } },
+    titolo: { it: 'Dove si collega Adobe e che cosa si misura', en: 'Where Adobe connects and what gets measured' } },
   { n: '04', capitolo: 'coworker',
     titolo: { it: 'CX Enterprise Coworker', en: 'CX Enterprise Coworker' } },
   { n: '05', capitolo: 'risultati',

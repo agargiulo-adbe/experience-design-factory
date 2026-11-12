@@ -21,13 +21,13 @@ const EL = 'https://experienceleague.adobe.com/en/docs';
 export const SCENE: Record<ScenaId, Scena> = {
   cja: {
     prodotto: 'Customer Journey Analytics',
-    cosa: 'Uno strato di lettura sopra i canali: si parte da quello che Adobe Analytics raccoglie già.',
+    cosa: 'Analizza insieme i dati di tutti i canali, partendo da quelli che Adobe Analytics raccoglie già.',
     passi: [
       'Oggi sito e app si leggono in Adobe Analytics. Filiale e Filiale Digitale stanno altrove.',
-      'Customer Journey Analytics si appoggia sopra e legge quello che Analytics raccoglie già.',
+      'Customer Journey Analytics importa i dati che Adobe Analytics raccoglie già.',
       'Entrano il CRM di filiale e la Filiale Digitale, una fonte alla volta.',
-      'I segmenti e gli score del motore di targeting entrano come attributi. Il motore resta a monte.',
-      'Chi si identifica diventa un percorso solo, dalla simulazione alla firma in filiale.',
+      'I segmenti e gli score del motore di targeting entrano come attributi del profilo.',
+      'Per chi si identifica, simulazione online, contatti e firma in filiale si leggono in un unico percorso.',
       'Le richieste firmate si attribuiscono ai canali, filiale compresa.',
     ],
     nota: 'Schema illustrativo. Serve un identificativo comune fra le fonti. Finché convivono, Analytics e Customer Journey Analytics si licenziano entrambi. Quanto durano insieme si decide in fase 0.',
@@ -38,17 +38,17 @@ export const SCENE: Record<ScenaId, Scena> = {
   },
   decisioning: {
     prodotto: 'AI Decisioning',
-    cosa: 'L’arbitro fra le proposte: usa quello che il motore di targeting calcola e sceglie quale esce.',
+    cosa: 'Sceglie quale proposta mostrare, usando gli score del motore di targeting e le regole della banca.',
     passi: [
-      'Il motore di targeting resta a monte: target e propensione, come oggi. L’eleggibilità creditizia viene dal core banking.',
+      'Il motore di targeting continua a calcolare target e propensione; l’eleggibilità creditizia arriva dal core banking.',
       'Arrivano ad AI Decisioning come attributi del profilo. Eleggibilità: attributo precalcolato nel profilo, oppure passata dal vostro sistema nella richiesta di decisione.',
       'Per la stessa persona ci sono quattro proposte candidate.',
-      'Regole, consenso e politica di contatto tolgono quelle non ammesse.',
+      'Regole, consenso e politica di contatto escludono quelle non ammesse.',
       'Su chi non è ancora cliente il motore di targeting non ha punteggi: valgono la priorità dell’offerta e le regole scritte insieme.',
-      'Ne esce una sola, sul canale giusto. L’orchestrazione può restare dov’è.',
+      'Resta una sola proposta, sul canale ammesso da consenso e regole. L’invio può continuare a passare dagli strumenti attuali.',
       'Customer Journey Analytics misura l’esito sul gruppo di controllo; priorità e regole si rivedono con voi a fine trimestre.',
     ],
-    nota: 'Schema illustrativo, sistemi attuali da confermare con voi. Sul non cliente classifica l’arbitro, con le regole scritte insieme. Sul cliente la classifica resta del vostro motore, e l’arbitro applica canale, consenso e politica di contatto.',
+    nota: 'Schema illustrativo, sistemi attuali da confermare con voi. Sul non cliente la classifica la fa AI Decisioning, con le regole scritte insieme. Sul cliente la classifica resta del motore della banca; AI Decisioning applica canale, consenso e politica di contatto.',
     fonti: [
       { label: 'Formule di classifica', url: `${EL}/journey-optimizer/using/decisioning/experience-decisioning/experience-decisioning-rankings/ranking-formulas` },
       { label: 'Decisioning', url: `${EL}/journey-optimizer/using/decisioning/experience-decisioning/gs-experience-decisioning` },
@@ -56,13 +56,13 @@ export const SCENE: Record<ScenaId, Scena> = {
   },
   cdp: {
     prodotto: 'Real-Time CDP',
-    cosa: 'Tiene il profilo di clienti e non clienti. Con Giulia: prima da come usa il sito, poi dall’email che lascia.',
+    cosa: 'Costruisce il profilo di clienti e non clienti. Nel caso di Giulia: prima dal comportamento sul sito, poi dall’email che lascia.',
     passi: [
-      'Giulia arriva sul sito senza lasciare l’email. Si riconosce solo il suo browser.',
-      'Simula la rata, e in quell’istante entra nel gruppo «mutuo prima casa».',
+      'Giulia visita il sito senza identificarsi: il sistema riconosce solo il browser.',
+      'Simula la rata ed entra in tempo reale nel segmento «mutuo prima casa».',
       'Quando torna, il sito le propone di riprendere la simulazione.',
       'Lascia email e consenso. Le visite fatte da anonima si uniscono al suo profilo.',
-      'Da qui Journey Optimizer e AI Decisioning sanno chi è. Il CRM di filiale non cambia.',
+      'Da questo momento Journey Optimizer e AI Decisioning usano il suo profilo. Il CRM di filiale resta invariato.',
     ],
     nota: 'Schema illustrativo. Per personalizzare il sito serve il consenso alla profilazione; per scriverle, il consenso marketing. I profili anonimi si cancellano dopo un periodo che scegliete voi, da 1 a 365 giorni.',
     fonti: [
