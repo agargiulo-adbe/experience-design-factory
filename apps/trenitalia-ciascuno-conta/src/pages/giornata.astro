@@ -4,22 +4,20 @@ import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import Divisore from '../components/Divisore.astro';
-import Giorno from '../components/Giorno.astro';
+import Guscio from '../components/Guscio.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import Corsie from '../components/Corsie.astro';
 import Scaletta from '../components/Scaletta.astro';
 import Pianta from '../components/Pianta.astro';
 import Invito from '../components/Invito.astro';
-import { href } from '@edf/core/utils/url.js';
+import { GIORNO, SCALETTA, POSTAZIONI, INTORNO, INVITO } from '../data/contenuti';
 import foto from '../assets/generated/sole/sole-contenuto.webp';
-import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { GIORNO, SCALETTA, PROVA_SALA, POSTAZIONI, POMERIGGIO, INTORNO, INVITO } from '../data/contenuti';
 
 /**
- * Capitolo — Decidere: la giornata (atto 3), nel dettaglio.
- *
- * La giornata in una figura, ora per ora, poi i tre momenti che la reggono (la
- * prova del mattino, le mani sugli strumenti, il pomeriggio delle scelte), chi
- * c'è e dove, che cosa succede prima e dopo, e l'invito come oggetto. Chi
- * conduce che cosa, la sala, il luogo e i costi sono nello strato interno.
+ * Capitolo — Decidere: la giornata (atto 3). La giornata in due corsie, ora per
+ * ora, le tre salette, chi c’è e dove (strato interno), il prima e il dopo,
+ * l’invito come oggetto.
  */
 const SLUG = 'giornata';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -33,7 +31,6 @@ const currentPath = Astro.url.pathname;
 
   <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <!-- ── Divisore di capitolo (il fondo sta qui: Astro non propaga slot="backdrop") -->
     <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${foto.src})`}></div>
       <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
@@ -43,125 +40,52 @@ const currentPath = Astro.url.pathname;
       <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl xd-sl--fig" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">{GIORNO.eyebrow}</p>
           <h2 class="xd-h2">{GIORNO.titolo}</h2>
           <p class="xd-sub">{GIORNO.sub}</p>
         </div>
         <div class="cc-corpo">
-          <Giorno />
+          <Corsie scala={GIORNO.scala} inizio={GIORNO.inizio} fine={GIORNO.fine} corsie={GIORNO.corsie} pausa={GIORNO.pausa} />
         </div>
       </div>
     </Slide>
 
-    <Slide id="slide-scaletta" bg="primary" align="left">
+    <Slide id="slide-scaletta" bg="primary" align="left" data-tono="scuro">
       <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl xd-sl--fig" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">{SCALETTA.eyebrow}</p>
           <h2 class="xd-h2">{SCALETTA.titolo}</h2>
-          <p class="xd-sub">{SCALETTA.sub}</p>
         </div>
-        <div class="cc-corpo">
-          <Scaletta />
-        </div>
-      </div>
-    </Slide>
-
-    <Slide id="slide-prova-sala" bg="primary" align="left">
-      <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl" data-reveal>
-        <div class="xd-sl-head">
-          <p class="xd-n">{PROVA_SALA.eyebrow}</p>
-          <h2 class="xd-h2">{PROVA_SALA.titolo}</h2>
-          <p class="xd-sub">{PROVA_SALA.sub}</p>
-        </div>
-        <div class="cc-corpo">
-          <ol class="xd-passi cc-passi cc-passi--q" style="--cols:3" data-stagger>
-            {PROVA_SALA.passi.map((p) => (
-              <li class="xd-passi-i">
-                <p class="cc-passi-q">{p.q}</p>
-                <p class="xd-passi-l">{p.l}</p>
-                <p class="xd-passi-d">{p.d}</p>
-              </li>
-            ))}
-          </ol>
-          <p class="xd-chiusa" data-reveal data-reveal-delay="0.24">{PROVA_SALA.chiusa}</p>
-          <p class="cc-noi" data-r="noi-prova-sala"></p>
-        </div>
+        <div class="cc-corpo"><Scaletta /></div>
       </div>
     </Slide>
 
     <Slide id="slide-postazioni" bg="primary" align="left">
       <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl xd-sl--fig" data-reveal>
-        <div class="xd-sl-head">
-          <p class="xd-n">{POSTAZIONI.eyebrow}</p>
-          <h2 class="xd-h2">{POSTAZIONI.titolo}</h2>
-          <p class="xd-sub">{POSTAZIONI.sub}</p>
-        </div>
-        <div class="cc-corpo">
-          <Pianta />
-          <p class="xd-chiusa" data-reveal data-reveal-delay="0.24">{POSTAZIONI.chiusa}</p>
-          <p class="cc-noi" data-r="noi-postazioni"></p>
-        </div>
+      <div class="xd-sl cc-split" data-reveal>
+          <div class="xd-sl-head">
+            <h2 class="xd-h2">{POSTAZIONI.titolo}</h2>
+            <p class="xd-sub">{POSTAZIONI.sub}</p>
+            <p class="cc-noi" data-r="noi-postazioni"></p>
+          </div>
+        <div class="cc-split-fig" data-reveal data-reveal-delay="0.18"><Pianta /></div>
       </div>
     </Slide>
 
-    <Slide id="slide-pomeriggio" bg="primary" align="left">
+    <Guscio id="r-sala" scuro />
+
+    <Guscio id="r-luogo" />
+
+    <Slide id="slide-intorno" bg="primary" align="left" data-tono="scuro">
       <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">{POMERIGGIO.eyebrow}</p>
-          <h2 class="xd-h2">{POMERIGGIO.titolo}</h2>
-          <p class="xd-sub">{POMERIGGIO.sub}</p>
-        </div>
-        <div class="cc-corpo">
-          <ol class="xd-passi cc-passi cc-passi--q" style="--cols:3" data-stagger>
-            {POMERIGGIO.passi.map((p) => (
-              <li class="xd-passi-i">
-                <p class="cc-passi-q">{p.q}</p>
-                <p class="xd-passi-l">{p.l}</p>
-                <p class="xd-passi-d">{p.d}</p>
-              </li>
-            ))}
-          </ol>
-          <p class="xd-chiusa" data-reveal data-reveal-delay="0.24">{POMERIGGIO.chiusa}</p>
-          <p class="cc-noi" data-r="noi-pomeriggio"></p>
-        </div>
-      </div>
-    </Slide>
-
-    <!-- ── Chi c’è, e chi conduce · RISERVATA: guscio vuoto, il contenuto arriva dallo strato interno -->
-    <Slide id="r-sala" bg="primary" align="left" data-riservato>
-      <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl cc-r-slide" data-reveal data-r="r-sala"><p class="cc-attesa">Si carica lo strato interno…</p></div>
-    </Slide>
-
-    <!-- ── Il luogo e i costi · RISERVATA: guscio vuoto, il contenuto arriva dallo strato interno -->
-    <Slide id="r-luogo" bg="primary" align="left" data-riservato>
-      <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl cc-r-slide" data-reveal data-r="r-luogo"><p class="cc-attesa">Si carica lo strato interno…</p></div>
-    </Slide>
-
-    <Slide id="slide-intorno" bg="primary" align="left">
-      <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl" data-reveal>
-        <div class="xd-sl-head">
-          <p class="xd-n">{INTORNO.eyebrow}</p>
           <h2 class="xd-h2">{INTORNO.titolo}</h2>
-          <p class="xd-sub">{INTORNO.sub}</p>
         </div>
-        <div class="cc-corpo">
-          <ol class="xd-passi cc-passi cc-passi--q" style="--cols:4" data-stagger>
-            {INTORNO.passi.map((p) => (
-              <li class="xd-passi-i">
-                <p class="cc-passi-q">{p.q}</p>
-                <p class="xd-passi-l">{p.l}</p>
-                <p class="xd-passi-d">{p.d}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
+        <ol class="cc-tappe cc-tappe--linea" style="--cols:4" data-stagger>
+          {INTORNO.passi.map((p, i) => (
+            <li data-forte={i === 2 ? '' : undefined}><p class="cc-tappe-q">{p.q}</p><p class="cc-tappe-l">{p.l}</p><p class="cc-tappe-d">{p.d}</p></li>
+          ))}
+        </ol>
       </div>
     </Slide>
 
@@ -169,10 +93,9 @@ const currentPath = Astro.url.pathname;
       <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl cc-split cc-split--invito" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">{INVITO.eyebrow}</p>
           <h2 class="xd-h2">{INVITO.titolo}</h2>
           <p class="xd-sub">{INVITO.sub}</p>
-          <dl class="cc-spec" data-stagger>
+          <dl class="cc-spec">
             {INVITO.specifiche.map((s) => (<div class="cc-spec-i"><dt>{s.k}</dt><dd>{s.v}</dd></div>))}
           </dl>
           <p class="cc-noi" data-r="noi-invito"></p>

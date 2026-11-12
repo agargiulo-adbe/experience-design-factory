@@ -1,0 +1,36 @@
+---
+/**
+ * Il circuito dei dati, disegnato: tre fonti entrano in CJA, CJA manda il
+ * pubblico a Target, il risultato torna in CJA. Le etichette sono testo HTML
+ * accanto ai nodi (niente parole dentro l'SVG); l'SVG porta solo le linee.
+ */
+import { CIRCUITO } from '../data/contenuti';
+---
+<div class="cc-circ">
+  <ul class="cc-circ-fonti" data-stagger>
+    {CIRCUITO.fonti.map((f) => (
+      <li class:list={['cc-circ-fonte', f.n && 'cc-circ-fonte--dopo']}>
+        <p class="cc-circ-t">{f.t}</p>
+        {f.n && <p class="cc-circ-n">{f.n}</p>}
+      </li>
+    ))}
+  </ul>
+  <svg class="cc-circ-entra" viewBox="0 0 100 300" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 50 C 60 50, 40 150, 100 150" />
+    <path d="M0 150 L 100 150" />
+    <path d="M0 250 C 60 250, 40 150, 100 150" class="cc-circ-dopo" />
+  </svg>
+  <div class="cc-circ-nodo cc-circ-nodo--cuore" data-substep>
+    <p class="cc-circ-t">{CIRCUITO.cuore.t}</p>
+    <p class="cc-circ-n">{CIRCUITO.cuore.n}</p>
+  </div>
+  <svg class="cc-circ-va" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path d="M0 10 L 92 10" /><path d="M86 3 L 98 10 L 86 17" /></svg>
+  <div class="cc-circ-nodo cc-circ-nodo--azione" data-substep>
+    <p class="cc-circ-t">{CIRCUITO.azione.t}</p>
+    <p class="cc-circ-n">{CIRCUITO.azione.n}</p>
+  </div>
+  <div class="cc-circ-ritorno" data-substep>
+    <svg viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><path d="M100 0 L 100 30 L 4 30 L 4 6" /><path d="M-2 14 L 4 4 L 10 14" /></svg>
+    <p class="cc-circ-n">{CIRCUITO.ritorno}</p>
+  </div>
+</div>

@@ -4,19 +4,15 @@ import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import Divisore from '../components/Divisore.astro';
-
+import Guscio from '../components/Guscio.astro';
 import { href } from '@edf/core/utils/url.js';
-import foto from '../assets/generated/sole/sole-apertura.webp';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 
+import foto from '../assets/generated/sole/sole-apertura.webp';
 
 /**
- * Capitolo riservato — Da dove nasce.
- *
- * Per chi nel leadership team non ha seguito l'account dopo l'Adobe Day: sei mesi
- * in una linea, e la roadmap del 10 novembre con le tre idee da cui parte il
- * programma. Tutto il contenuto arriva dallo strato interno; senza token la
- * pagina non è nel flusso e si viene portati al primo capitolo pubblico.
+ * Capitolo riservato — Da dove nasce. Una slide: sei mesi in tre passaggi,
+ * dall’Adobe Day alla richiesta della Direzione Sales. Contenuto dallo strato interno.
  */
 const SLUG = 'origine';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -30,23 +26,12 @@ const currentPath = Astro.url.pathname;
 
   <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <!-- ── Divisore di capitolo (il fondo sta qui: Astro non propaga slot="backdrop") -->
     <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${foto.src})`}></div>
       <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
     </Slide>
 
-    <!-- ── Sei mesi in una linea · RISERVATA: guscio vuoto, il contenuto arriva dallo strato interno -->
-    <Slide id="r-linea" bg="primary" align="left" data-riservato>
-      <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl cc-r-slide" data-reveal data-r="r-linea"><p class="cc-attesa">Si carica lo strato interno…</p></div>
-    </Slide>
-
-    <!-- ── La roadmap del 10 novembre · RISERVATA: guscio vuoto, il contenuto arriva dallo strato interno -->
-    <Slide id="r-roadmap" bg="primary" align="left" data-riservato>
-      <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl cc-r-slide" data-reveal data-r="r-roadmap"><p class="cc-attesa">Si carica lo strato interno…</p></div>
-    </Slide>
+    <Guscio id="r-linea" scuro />
 
   </DeckContainer>
 </BaseLayout>

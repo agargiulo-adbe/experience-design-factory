@@ -115,6 +115,7 @@ const BASE = import.meta.env.BASE_URL.replace(/\/?$/, '/');
       if (l && l.r && typeof l.r[k] === 'string') {
         el.innerHTML = frag(l.r[k]);
         el.setAttribute('data-r-on', '');
+        if (window.__ccLega) window.__ccLega(el);
       }
     });
   }
@@ -192,7 +193,30 @@ const BASE = import.meta.env.BASE_URL.replace(/\/?$/, '/');
       .catch(function () { inFlight = false; document.documentElement.setAttribute('data-riservato', 'errore'); });
   }
 
+  // ── a capo: le parole di servizio restano attaccate alla parola che segue ──
+  // Vale per la copia del bundle e per quella che arriva dallo strato. Si lega
+  // UNA parola alla successiva, mai catene lunghe: una catena di spazi
+  // unificatori diventa inseparabile e sborda (audit:deck, check c).
+  var SERV = /(^|[\s(«])(a|e|o|i|il|lo|la|le|gli|un|uno|una|di|da|in|con|su|per|tra|fra|al|ai|ad|ed|del|dei|della|dello|delle|dal|dalla|nel|nella|nello|sul|sulla|col|che|se|non|come|ogni|for) (?=\S)/gi;
+  function lega(root) {
+    var w = document.createTreeWalker(root || document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        var p = n.parentElement;
+        if (!p || !p.closest('[data-slide]') || p.closest('script,style,svg,.cc-chiasmo')) return NodeFilter.FILTER_REJECT;
+        return /\s/.test(n.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
+      },
+    });
+    var n; while ((n = w.nextNode())) {
+      var v = n.nodeValue.replace(SERV, function (m, pre, wd) { return pre + wd + ' '; });
+      if (v !== n.nodeValue) n.nodeValue = v;
+    }
+    // ⚠️ La coda corta (famiglia F) NON si lega qui: provato il 12 nov 2026, tre
+    // parole unite a fine paragrafo sbordano (check c) e il gate le conta ancora.
+  }
+
   window.__ccRiservato = apply;
+  window.__ccLega = lega;
   apply();
+  lega();
 })();
 </script>

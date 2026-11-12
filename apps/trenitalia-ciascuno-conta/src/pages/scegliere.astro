@@ -4,17 +4,15 @@ import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import Divisore from '../components/Divisore.astro';
-import Ancore from '../components/Ancore.astro';
 import { href } from '@edf/core/utils/url.js';
-import foto from '../assets/generated/sole/sole-ricerca.webp';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import Corsie from '../components/Corsie.astro';
 import { SCEGLIERE, CRITERI, MISURARE } from '../data/contenuti';
+import foto from '../assets/generated/sole/sole-ricerca.webp';
 
 /**
- * Capitolo — Scegliere e misurare (atti 1 e 2).
- *
- * Che cosa si fa prima di toccare un dato, come si giudica, e le otto settimane
- * della prova. Le righe «per noi» arrivano dallo strato interno.
+ * Capitolo — Scegliere, misurare, attivare (atti 1 e 2). Quattro passi di dicembre,
+ * i criteri scritti prima, le otto settimane su due corsie (CJA e Target).
  */
 const SLUG = 'scegliere';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -28,7 +26,6 @@ const currentPath = Astro.url.pathname;
 
   <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <!-- ── Divisore di capitolo (il fondo sta qui: Astro non propaga slot="backdrop") -->
     <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${foto.src})`}></div>
       <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
@@ -38,18 +35,12 @@ const currentPath = Astro.url.pathname;
       <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">{SCEGLIERE.eyebrow}</p>
           <h2 class="xd-h2">{SCEGLIERE.titolo}</h2>
-          <p class="xd-sub">{SCEGLIERE.sub}</p>
         </div>
         <div class="cc-corpo">
-          <ol class="xd-passi cc-passi cc-passi--q" style="--cols:3" data-stagger>
+          <ol class="cc-tappe" style="--cols:4" data-stagger>
             {SCEGLIERE.passi.map((p) => (
-              <li class="xd-passi-i">
-                <p class="cc-passi-q">{p.q}</p>
-                <p class="xd-passi-l">{p.l}</p>
-                <p class="xd-passi-d">{p.d}</p>
-              </li>
+              <li><p class="cc-tappe-q">{p.q}</p><p class="cc-tappe-l">{p.l}</p><p class="cc-tappe-d">{p.d}</p></li>
             ))}
           </ol>
           <p class="cc-noi" data-r="noi-scegliere"></p>
@@ -57,35 +48,26 @@ const currentPath = Astro.url.pathname;
       </div>
     </Slide>
 
-    <Slide id="slide-criteri" bg="primary" align="left">
+    <Slide id="slide-criteri" bg="primary" align="left" data-tono="scuro">
       <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">{CRITERI.eyebrow}</p>
           <h2 class="xd-h2">{CRITERI.titolo}</h2>
-          <p class="xd-sub">{CRITERI.sub}</p>
         </div>
-        <div class="cc-corpo">
-          <Ancore items={CRITERI.ancore} cols={4} />
-        </div>
+        <dl class="cc-parole" data-stagger>
+          {CRITERI.voci.map((v) => (<div><dt>{v.k}</dt><dd>{v.b}</dd></div>))}
+        </dl>
       </div>
     </Slide>
 
     <Slide id="slide-misurare" bg="primary" align="left">
       <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl" data-reveal>
+      <div class="xd-sl xd-sl--fig" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">{MISURARE.eyebrow}</p>
           <h2 class="xd-h2">{MISURARE.titolo}</h2>
-          <p class="xd-sub">{MISURARE.sub}</p>
         </div>
         <div class="cc-corpo">
-          <ol class="cc-sett" data-stagger>
-            {MISURARE.settimane.map((w) => (
-              <li class="cc-sett-i"><p class="cc-sett-n">Sett. {w.s}</p><p class="cc-sett-t">{w.t}</p><p class="cc-sett-d">{w.d}</p></li>
-            ))}
-          </ol>
-          <p class="xd-chiusa" data-reveal data-reveal-delay="0.24">{MISURARE.chiusa}</p>
+          <Corsie scala={MISURARE.scala} inizio={MISURARE.inizio} fine={MISURARE.fine} corsie={MISURARE.corsie} intervalli />
           <p class="cc-noi" data-r="noi-misurare"></p>
         </div>
       </div>

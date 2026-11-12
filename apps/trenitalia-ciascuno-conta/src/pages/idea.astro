@@ -4,20 +4,16 @@ import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import Divisore from '../components/Divisore.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import Mattina from '../components/Mattina.astro';
 import Folla from '../components/Folla.astro';
-import Ancore from '../components/Ancore.astro';
-import { href } from '@edf/core/utils/url.js';
-import foto from '../assets/generated/sole/sole-ricerca.webp';
-import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import { MATTINA, FOLLA } from '../data/contenuti';
+import foto from '../assets/generated/sole/sole-ricerca.webp';
 
 /**
- * Capitolo — L'idea.
- *
- * Prima l'immagine di arrivo, poi il concetto. La domanda delle nove con la
- * risposta accanto è la cosa che il programma rende possibile; la folla di punti
- * è il nome detto senza spiegarlo: ogni persona conta, e si conta.
+ * Capitolo — L’idea. Prima l’immagine di arrivo (la domanda delle nove con la
+ * risposta accanto), poi il nome detto in tre parole sopra la folla di punti.
  */
 const SLUG = 'idea';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -31,7 +27,6 @@ const currentPath = Astro.url.pathname;
 
   <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <!-- ── Divisore di capitolo (il fondo sta qui: Astro non propaga slot="backdrop") -->
     <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${foto.src})`}></div>
       <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
@@ -40,28 +35,22 @@ const currentPath = Astro.url.pathname;
     <Slide id="slide-mattina" bg="primary" align="left">
       <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl cc-split" data-reveal>
-        <div class="xd-sl-head">
-          <p class="xd-n">{MATTINA.eyebrow}</p>
-          <h2 class="xd-h2">{MATTINA.titolo}</h2>
-          <p class="xd-sub">{MATTINA.sub}</p>
-          <p class="cc-noi" data-r="noi-mattina"></p>
-        </div>
+          <div class="xd-sl-head">
+            <h2 class="xd-h2">{MATTINA.titolo}</h2>
+            <p class="xd-sub">{MATTINA.sub}</p>
+            <p class="cc-noi" data-r="noi-mattina"></p>
+          </div>
         <div class="cc-split-fig" data-reveal data-reveal-delay="0.18"><Mattina /></div>
       </div>
     </Slide>
 
-    <Slide id="slide-folla" bg="primary" align="left">
-      <div slot="backdrop" class="xd-bg-piano cc-folla-chiara"><Folla /></div>
-      <div class="xd-sl" data-reveal>
-        <div class="xd-sl-head">
-          <p class="xd-n">{FOLLA.eyebrow}</p>
-          <h2 class="xd-h2">{FOLLA.titolo}</h2>
-          <p class="xd-sub">{FOLLA.sub}</p>
-        </div>
-        <div class="cc-corpo">
-          <Ancore items={FOLLA.ancore} cols={3} />
-          <p class="xd-chiusa" data-reveal data-reveal-delay="0.24">{FOLLA.chiusa}</p>
-        </div>
+    <Slide id="slide-folla" bg="primary" align="left" data-tono="scuro">
+      <div slot="backdrop" class="xd-bg-piano cc-folla-scura"><Folla /></div>
+      <div class="xd-sl cc-folla-sl" data-reveal>
+        <h2 class="xd-h2 cc-h-grande">{FOLLA.titolo}</h2>
+        <ol class="cc-tre" data-stagger>
+          {FOLLA.ancore.map((a) => (<li><p class="cc-tre-k">{a.k}</p><p class="cc-tre-t">{a.t}</p></li>))}
+        </ol>
       </div>
     </Slide>
 

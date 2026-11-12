@@ -1,0 +1,51 @@
+---
+/**
+ * Corsie su una scala comune: la giornata (ore) e le otto settimane della prova.
+ *
+ * Una corsia per chi lavora, un blocco per ogni cosa che fa. Chi guarda vede in
+ * tre secondi chi è presente quando, e dove due lavori si sovrappongono. La prima
+ * corsia è sempre visibile, le altre entrano sotto le frecce (`data-substep`);
+ * lo stato base è quello finale, quindi con «Riduci movimento» si vede tutto.
+ */
+type Blocco = { da: number; a: number; t: string; forte?: boolean };
+interface Props {
+  scala: string[];
+  inizio: number;
+  fine: number;
+  corsie: { k: string; blocchi: Blocco[] }[];
+  pausa?: { da: number; a: number; t: string };
+  /** La scala segna gli istanti (ore) o gli intervalli (settimane). */
+  intervalli?: boolean;
+}
+const { scala, inizio, fine, corsie, pausa, intervalli = false } = Astro.props as Props;
+const span = fine - inizio;
+const pos = (v: number) => (v - inizio) / span;
+const tick = (s: string, i: number) => {
+  if (intervalli) return (i + 0.5) / scala.length;
+  const [h, m] = s.split(':').map(Number);
+  return pos(h + (m || 0) / 60);
+};
+---
+<div class="cc-giorno">
+  <div class="cc-giorno-ore" aria-hidden="true">
+    <span></span>
+    <span class="cc-giorno-scala">
+      {scala.map((o, i) => <span style={`--x:${tick(o, i)}`}>{o}</span>)}
+    </span>
+  </div>
+  {corsie.map((c, i) => (
+    <div class:list={['cc-giorno-corsia', i === 0 && 'cc-giorno-corsia--dir']} data-substep={i > 0 ? '' : undefined}>
+      <p class="cc-giorno-k">{c.k}</p>
+      <div class="cc-giorno-pista" style={intervalli ? `--passo:${100 / scala.length}%` : undefined}>
+        {c.blocchi.map((b) => (
+          <span class:list={['cc-giorno-b', b.forte && 'cc-giorno-b--forte']} style={`--da:${pos(b.da)};--a:${pos(b.a)}`}>
+            <span>{b.t}</span>
+          </span>
+        ))}
+        {pausa && i === corsie.length - 1 && (
+          <span class="cc-giorno-pausa" style={`--da:${pos(pausa.da)};--a:${pos(pausa.a)}`}><span>{pausa.t}</span></span>
+        )}
+      </div>
+    </div>
+  ))}
+</div>

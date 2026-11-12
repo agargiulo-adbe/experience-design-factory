@@ -4,18 +4,15 @@ import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import Divisore from '../components/Divisore.astro';
-
+import Guscio from '../components/Guscio.astro';
 import { href } from '@edf/core/utils/url.js';
-import foto from '../assets/generated/sole/sole-rete.webp';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 
+import foto from '../assets/generated/sole/sole-rete.webp';
 
 /**
- * Capitolo riservato — Quanto vale, quanto costa.
- *
- * Il ritorno (GNARR a tre anni sul cuore CJA più Target), i prodotti che si
- * possono mettere attorno al cuore senza stime, e l'investimento: giornate per
- * persona e budget. Tutto dallo strato interno.
+ * Capitolo riservato — Quanto vale, quanto costa. Il ritorno, i prodotti attorno
+ * al cuore, come si apre l’istanza di CJA, l’investimento. Tutto dallo strato interno.
  */
 const SLUG = 'valore';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -29,35 +26,18 @@ const currentPath = Astro.url.pathname;
 
   <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <!-- ── Divisore di capitolo (il fondo sta qui: Astro non propaga slot="backdrop") -->
     <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${foto.src})`}></div>
       <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
     </Slide>
 
-    <!-- ── Il ritorno: il cuore · RISERVATA: guscio vuoto, il contenuto arriva dallo strato interno -->
-    <Slide id="r-gnarr" bg="primary" align="left" data-riservato>
-      <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl cc-r-slide" data-reveal data-r="r-gnarr"><p class="cc-attesa">Si carica lo strato interno…</p></div>
-    </Slide>
+    <Guscio id="r-gnarr" />
 
-    <!-- ── Attorno al cuore · RISERVATA: guscio vuoto, il contenuto arriva dallo strato interno -->
-    <Slide id="r-attorno" bg="primary" align="left" data-riservato>
-      <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl cc-r-slide" data-reveal data-r="r-attorno"><p class="cc-attesa">Si carica lo strato interno…</p></div>
-    </Slide>
+    <Guscio id="r-leva" scuro />
 
-    <!-- ── L’investimento · RISERVATA: guscio vuoto, il contenuto arriva dallo strato interno -->
-    <Slide id="r-sforzo" bg="primary" align="left" data-riservato>
-      <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl cc-r-slide" data-reveal data-r="r-sforzo"><p class="cc-attesa">Si carica lo strato interno…</p></div>
-    </Slide>
+    <Guscio id="r-attorno" />
 
-    <!-- ── Il conto · RISERVATA: guscio vuoto, il contenuto arriva dallo strato interno -->
-    <Slide id="r-conto" bg="primary" align="left" data-riservato>
-      <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl cc-r-slide" data-reveal data-r="r-conto"><p class="cc-attesa">Si carica lo strato interno…</p></div>
-    </Slide>
+    <Guscio id="r-conto" scuro />
 
   </DeckContainer>
 </BaseLayout>

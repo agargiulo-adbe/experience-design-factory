@@ -4,20 +4,17 @@ import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import Divisore from '../components/Divisore.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import CoBrand from '../components/CoBrand.astro';
 import Folla from '../components/Folla.astro';
-import Ancore from '../components/Ancore.astro';
-import { href } from '@edf/core/utils/url.js';
-import foto from '../assets/generated/sole/sole-rotta.webp';
-import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import { COVER, ROTTA, RUOLI, PASSO } from '../data/contenuti';
+import foto from '../assets/generated/sole/sole-rotta.webp';
 
 /**
- * Capitolo — Scalare (atto 4).
- *
- * La rotta che la giornata scrive, chi porta che cosa, e — nel livello pubblico —
- * il prossimo passo e la firma. Nel livello interno quelle due slide escono
- * (`data-pubblico`): il percorso continua nel capitolo della richiesta.
+ * Capitolo — Scalare (atto 4). Le tre tappe dopo la giornata e chi fa che cosa.
+ * Il prossimo passo e la firma esistono solo nel livello pubblico (`data-pubblico`):
+ * nell’interno il percorso continua nel capitolo della richiesta.
  */
 const SLUG = 'scalare';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -31,28 +28,21 @@ const currentPath = Astro.url.pathname;
 
   <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <!-- ── Divisore di capitolo (il fondo sta qui: Astro non propaga slot="backdrop") -->
     <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${foto.src})`}></div>
       <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
     </Slide>
 
-    <Slide id="slide-rotta" bg="primary" align="left">
+    <Slide id="slide-rotta" bg="primary" align="left" data-tono="scuro">
       <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">{ROTTA.eyebrow}</p>
           <h2 class="xd-h2">{ROTTA.titolo}</h2>
-          <p class="xd-sub">{ROTTA.sub}</p>
         </div>
-        <div class="cc-corpo">
-          <ol class="xd-passi cc-passi" style="--cols:3" data-stagger>
-            {ROTTA.passi.map((p) => (
-              <li class="xd-passi-i"><p class="xd-passi-l">{p.l}</p><p class="xd-passi-d">{p.d}</p></li>
-            ))}
-          </ol>
-          <p class="cc-noi" data-r="noi-rotta"></p>
-        </div>
+        <ol class="cc-mesi" data-stagger>
+          {ROTTA.passi.map((p) => (<li><p class="cc-mesi-l">{p.l}</p><p class="cc-mesi-d">{p.d}</p></li>))}
+        </ol>
+        <p class="cc-noi" data-r="noi-rotta"></p>
       </div>
     </Slide>
 
@@ -60,31 +50,22 @@ const currentPath = Astro.url.pathname;
       <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">{RUOLI.eyebrow}</p>
           <h2 class="xd-h2">{RUOLI.titolo}</h2>
-          <p class="xd-sub">{RUOLI.sub}</p>
         </div>
-        <div class="cc-corpo">
-          <Ancore items={RUOLI.colonne} cols={3} />
-        </div>
+        <ol class="cc-tappe cc-tappe--chi" style="--cols:3" data-stagger>
+          {RUOLI.colonne.map((c) => (<li><p class="cc-tappe-q">{c.k}</p><p class="cc-tappe-l">{c.t}</p><p class="cc-tappe-d">{c.b}</p></li>))}
+        </ol>
       </div>
     </Slide>
 
-    <Slide id="slide-passo" bg="primary" align="left" data-pubblico>
+    <Slide id="slide-passo" bg="primary" align="left" data-tono="scuro" data-pubblico>
       <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl" data-reveal>
-        <div class="xd-sl-head">
-          <p class="xd-n">{PASSO.eyebrow}</p>
-          <h2 class="xd-h2">{PASSO.titolo}</h2>
-          <p class="xd-sub">{PASSO.sub}</p>
-        </div>
-        <div class="cc-corpo">
-          <p class="xd-chiusa">{COVER.firma}</p>
-        </div>
+      <div class="xd-sl cc-folla-sl" data-reveal>
+        <h2 class="xd-h2 cc-h-grande">{PASSO.titolo}</h2>
+        <p class="xd-sub">{PASSO.sub}</p>
       </div>
     </Slide>
 
-    <!-- ── La firma — Adobe × Trenitalia (solo nel livello pubblico) -->
     <Slide id="slide-signature" data-audio="loud" bg="primary" align="center" data-pubblico>
       <div slot="backdrop" class="cc-cop-bg cc-cop-bg--firma" data-scrim>
         <Folla />

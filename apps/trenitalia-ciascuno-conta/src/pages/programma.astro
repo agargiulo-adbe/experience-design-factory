@@ -4,18 +4,18 @@ import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import Divisore from '../components/Divisore.astro';
-import Atti from '../components/Atti.astro';
 import { href } from '@edf/core/utils/url.js';
-import foto from '../assets/generated/sole/sole-viaggio.webp';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { ATTI, DATI } from '../data/contenuti';
+import Atti from '../components/Atti.astro';
+import Binari from '../components/Binari.astro';
+import Circuito from '../components/Circuito.astro';
+import { ATTI, BINARI, CIRCUITO } from '../data/contenuti';
+import foto from '../assets/generated/sole/sole-viaggio.webp';
 
 /**
- * Capitolo — Il programma.
- *
- * La visione d'insieme nel tempo, in una figura che si costruisce sotto le
- * frecce: quattro atti da dicembre a giugno. Poi il perimetro dei dati, perché
- * la prima domanda di chi decide è «su che cosa lavoriamo».
+ * Capitolo — Il programma. Tre figure: i quattro atti nel tempo, i due binari
+ * della prova (la misura completa alla giornata, i test con i primi dati), il
+ * circuito dei dati da Analytics a Target e ritorno.
  */
 const SLUG = 'programma';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -29,7 +29,6 @@ const currentPath = Astro.url.pathname;
 
   <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <!-- ── Divisore di capitolo (il fondo sta qui: Astro non propaga slot="backdrop") -->
     <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${foto.src})`}></div>
       <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
@@ -39,33 +38,29 @@ const currentPath = Astro.url.pathname;
       <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl xd-sl--fig" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">{ATTI.eyebrow}</p>
           <h2 class="xd-h2">{ATTI.titolo}</h2>
-          <p class="xd-sub">{ATTI.sub}</p>
         </div>
-        <div class="cc-corpo">
-          <Atti />
-        </div>
+        <div class="cc-corpo"><Atti /></div>
       </div>
     </Slide>
 
-    <Slide id="slide-dati" bg="primary" align="left">
+    <Slide id="slide-binari" bg="primary" align="left" data-tono="scuro">
       <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl" data-reveal>
+      <div class="xd-sl xd-sl--fig" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">{DATI.eyebrow}</p>
-          <h2 class="xd-h2">{DATI.titolo}</h2>
-          <p class="xd-sub">{DATI.sub}</p>
+          <h2 class="xd-h2">{BINARI.titolo}</h2>
         </div>
-        <div class="cc-corpo">
-          <div class="xd-num" data-stagger>
-            {DATI.cifre.map((c) => (
-              <div class="xd-num-i"><p class="xd-num-k">{c.k}</p><p class="xd-num-v">{c.v}</p></div>
-            ))}
-          </div>
-          <p class="xd-chiusa" data-reveal data-reveal-delay="0.24">{DATI.chiusa}</p>
-          <p class="cc-noi" data-r="noi-dati"></p>
+        <div class="cc-corpo"><Binari /><p class="cc-noi" data-r="noi-binari"></p></div>
+      </div>
+    </Slide>
+
+    <Slide id="slide-circuito" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--fig" data-reveal>
+        <div class="xd-sl-head">
+          <h2 class="xd-h2">{CIRCUITO.titolo}</h2>
         </div>
+        <div class="cc-corpo"><Circuito /><p class="cc-noi" data-r="noi-circuito"></p></div>
       </div>
     </Slide>
 
