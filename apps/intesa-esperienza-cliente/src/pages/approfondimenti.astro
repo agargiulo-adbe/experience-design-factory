@@ -47,13 +47,13 @@ const MAPPA = [
     { n: 'Motore di targeting', d: { it: 'target, propensione, score dei clienti', en: 'targets, propensity, customer scores' } },
     { n: 'Data lake', d: { it: 'storico e attributi dei clienti', en: 'customer history and attributes' } },
     { n: 'Core banking', d: { it: 'eleggibilità creditizia, saldi, approvazioni', en: 'credit eligibility, balances, approvals' } },
-    { n: 'CDP attuale', d: { it: 'la politica di contatto, da confermare', en: 'the contact policy, to confirm' } },
+    { n: 'CDP attuale', d: { it: 'la politica di contatto, da confermare; chi tiene profilo e tetto in fase 1 è il primo punto della fase 0', en: 'the contact policy, to confirm; who holds profile and cap in phase 1 is the first item of phase 0' } },
     { n: 'Registro dei consensi', d: { it: 'consensi e preferenze', en: 'consents and preferences' } },
     { n: 'Media pagato', d: { it: 'le piattaforme pubblicitarie', en: 'the advertising platforms' } },
   ] },
   { stato: 'nuovo', t: { it: 'Si aggiunge', en: 'Gets added' }, v: [
     { n: 'Real-Time CDP', d: { it: 'il profilo, che riceve il consenso dal registro e lo applica', en: 'the profile, which receives consent from the register and applies it' } },
-    { n: 'Journey Optimizer', d: { it: 'percorsi a evento, e l’arbitro (AI Decisioning)', en: 'event-driven journeys, and the arbiter (AI Decisioning)' } },
+    { n: 'Journey Optimizer', d: { it: 'percorsi a evento, e la scelta dell’offerta (AI Decisioning)', en: 'event-driven journeys, and offer selection (AI Decisioning)' } },
     { n: 'Customer Journey Analytics', d: { it: 'la misura unica, Analytics compreso', en: 'the one measurement, Analytics included' } },
     { n: 'Brand Visibility', d: { it: 'come comparite nelle risposte generate', en: 'how you show up in generated answers' } },
   ] },
@@ -86,7 +86,7 @@ const BV = [
   { strato: 'ottimizzazioni', fig: 'bordo', t: { it: 'Ottimizzazioni', en: 'Optimisations' },
     d: { it: 'I correttivi vanno in rete al bordo del vostro CDN (Akamai, Cloudflare, CloudFront, Fastly, Azure Front Door, o Apache), dentro il vostro change management.', en: 'Fixes ship at the edge of your CDN (Akamai, Cloudflare, CloudFront, Fastly, Azure Front Door, or Apache), inside your change management.' } },
   { strato: 'ottimizzazioni', fig: 'esito', t: { it: 'Esiti misurabili', en: 'Measurable outcomes' },
-    d: { it: 'Sessioni da assistenti sul totale, per pagina e per piattaforma, ogni settimana; con Analytics collegato, quante avviano una simulazione. Per domanda si misurano le citazioni.', en: 'Sessions from assistants over total, by page and by platform, weekly; with Analytics connected, how many start a simulation. Per question, citations are what gets measured.' } },
+    d: { it: 'Il traffico che arriva dagli assistenti, separato dal referral, per pagina e per piattaforma. Per domanda si misurano le citazioni.', en: 'Sessions from assistants over total, by page and by platform, weekly; with Analytics connected, how many start a simulation. Per question, citations are what gets measured.' } },
 ];
 
 /* L'APPROFONDIMENTO SU «CONTENT FACTORY», dopo quello su farsi trovare.
@@ -156,7 +156,7 @@ const FRECCE = [
      il profilo (l'SDK su AEM on-premise è l'integrazione più grossa, e si
      dice) e il ritorno dalla filiale, senza il quale la misura si ferma
      alla porta dello sportello. */
-  { da: 'Sito e app', a: 'Experience Platform', d: { it: 'eventi in sessione via SDK: su AEM on-premise è la prima da disegnare', en: 'in-session events via SDK: on AEM on-premise, the first to design' }, aperta: true },
+  { da: 'Sito e app', a: 'Experience Platform', d: { it: 'eventi in sessione via Web SDK su AEM on-premise: doppia raccolta o migrazione, si sceglie in fase 0', en: 'in-session events via Web SDK on on-premise AEM: dual collection, or migration with forwarding to Analytics; chosen in phase 0, and the first to design' }, aperta: true },
   { da: 'Adobe Analytics', a: 'Customer Journey Analytics', d: { it: 'gli eventi di sito e app, via connettore', en: 'site and app events, via connector' } },
   { da: 'Registro dei consensi', a: 'Real-Time CDP', d: { it: 'stato e data del consenso, in continuo', en: 'consent status and date, continuously' } },
   { da: 'Journey Optimizer', a: 'CRM di filiale', d: { it: 'lead, appuntamento e simulazione, via API del CRM', en: 'lead, appointment and simulation, via the CRM’s API' } },
@@ -358,7 +358,7 @@ const DECIDE = [
   { n: '3', t: { it: 'I vincoli', en: 'The constraints' },
     d: { it: 'Limite per offerta, consenso, capienza di un’offerta, esclusioni.', en: 'Per-offer limit, consent, an offer’s capacity, exclusions.' } },
   { n: '4', t: { it: 'La classifica', en: 'The ranking' },
-    d: { it: 'Fra le ammesse, l’ordine. Su chi non è ancora cliente il motore di targeting non ha punteggi: valgono la priorità dell’offerta e le regole scritte insieme.', en: 'Among those allowed, the order. On people who are not yet customers the targeting engine has no scores: offer priority and the rules written together apply.' } },
+    d: { it: 'Fra le ammesse, l’ordine. Sui non clienti oggi avete un punteggio o una regola? Se c’è, entra come attributo; se no, valgono la priorità dell’offerta e le regole scritte insieme.', en: 'Among those allowed, the order. Do you have a score or a rule on non-customers today? If so, it comes in as an attribute; if not, the offer’s priority and the rules written together apply.' } },
   { n: '5', t: { it: 'Il ripiego', en: 'The fallback' },
     d: { it: 'Che cosa esce quando nessuna è ammessa, dichiarato in anticipo.', en: 'What goes out when none is allowed, declared in advance.' } },
 ];
@@ -552,7 +552,7 @@ const DECIDE = [
         </div>
 
         <p class="im-fonte-riga">
-          <span data-lang-it>Il limite per offerta si conta per identità al bordo e per profilo nel percorso. Nel percorso il contatore del limite per offerta può aggiornarsi con qualche minuto di ritardo; fra bordo e hub la propagazione arriva fino a 30 minuti. Documentazione pubblica, 11 nov 2026: </span><span data-lang-en>The per-offer limit counts per identity at the edge and per profile in the journey. In the journey the per-offer limit counter may update with a few minutes’ delay; between edge and hub propagation takes up to 30 minutes. Public documentation, 11 Nov 2026: </span>
+          <span data-lang-it>Il limite per offerta si conta per identità al bordo e per profilo nel percorso. Per la funzione precedente (Offer Decisioning) la documentazione indica qualche minuto di ritardo sulla Decisioning API e fino a 30 minuti fra bordo e hub; per il nuovo Decisioning i tempi vanno riverificati. Documentazione pubblica, 11 nov 2026: </span><span data-lang-en>The per-offer limit counts per identity at the edge and per profile in the journey. For the previous capability (Offer Decisioning) the documentation gives a few minutes’ delay on the Decisioning API and up to 30 minutes between edge and hub; for the new Decisioning the timings need re-checking. Public documentation, 11 Nov 2026: </span>
           <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/decisioning/experience-decisioning/gs-experience-decisioning" target="_blank" rel="noopener">Journey Optimizer · Decisioning</a><span> · </span>
           <a href="https://experienceleague.adobe.com/en/docs/experience-cloud-kcs/kbarticles/ka-30469" target="_blank" rel="noopener">KB ka-30469</a><span> · </span>
           <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/decisioning/offer-decisioning/managing-offers-in-the-offer-library/configure-offers/add-constraints" target="_blank" rel="noopener"><span data-lang-it>limiti per offerta</span><span data-lang-en>offer capping</span></a>
@@ -665,7 +665,7 @@ const DECIDE = [
 
         <div class="im-csc-conf">
           <T as="span" class="im-csc-conf-t" it="Dove gira, e sotto quale contratto" en="Where it runs, and under which contract" />
-          <T as="span" class="im-csc-conf-d" it="Experience Platform è un servizio gestito da Adobe su Microsoft Azure, con istanza nella regione europea (Amsterdam), da fissare nel contratto. AEM e il CRM di filiale restano dove sono. Il contratto entra nel vostro registro delle informazioni DORA con l’addendum DORA di Adobe: la criticità la decidete voi nella vostra analisi d’impatto." en="Experience Platform is a service managed by Adobe on Microsoft Azure, with an instance in the European region (Amsterdam), to be fixed in the contract. AEM and the branch CRM stay where they are. The contract enters your DORA register of information with Adobe’s DORA addendum: criticality is for you to decide, in your own impact analysis." />
+          <T as="span" class="im-csc-conf-d" it="Experience Platform è un servizio gestito da Adobe su Microsoft Azure, con istanza nella regione europea (Amsterdam), da fissare nel contratto. AEM e il CRM di filiale restano dove sono. Il contratto entra nel vostro registro delle informazioni DORA con l’addendum DORA di Adobe. La criticità la decidete voi nella vostra analisi d’impatto: se il servizio sostiene una funzione critica o importante, il contratto si negozia a parte, e la valutazione di esternalizzazione resta della banca." en="Experience Platform is a service managed by Adobe on Microsoft Azure, with an instance in the European region (Amsterdam), to be fixed in the contract. AEM and the branch CRM stay where they are. The contract enters your DORA register of information with Adobe’s DORA addendum. Criticality is yours to decide in your impact analysis: if the service supports a critical or important function, the contract is negotiated separately, and the outsourcing assessment stays with the bank." />
         </div>
 
         <div class="im-dati" role="table" aria-label="Dove sta ogni dato">

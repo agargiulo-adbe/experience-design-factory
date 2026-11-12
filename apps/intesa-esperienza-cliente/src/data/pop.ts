@@ -44,7 +44,7 @@ export const SCENE: Record<ScenaId, Scena> = {
       'Arrivano ad AI Decisioning come attributi del profilo. Eleggibilità: attributo precalcolato nel profilo, oppure passata dal vostro sistema nella richiesta di decisione.',
       'Per la stessa persona ci sono quattro proposte candidate.',
       'Regole, consenso e politica di contatto escludono quelle non ammesse.',
-      'Su chi non è ancora cliente il motore di targeting non ha punteggi: valgono la priorità dell’offerta e le regole scritte insieme.',
+      'Sui non clienti oggi avete un punteggio o una regola? Se c’è, entra come attributo; se no, valgono la priorità dell’offerta e le regole scritte insieme.',
       'Resta una sola proposta, sul canale ammesso da consenso e regole. L’invio può continuare a passare dagli strumenti attuali.',
       'Customer Journey Analytics misura l’esito sul gruppo di controllo; priorità e regole si rivedono con voi a fine trimestre.',
     ],

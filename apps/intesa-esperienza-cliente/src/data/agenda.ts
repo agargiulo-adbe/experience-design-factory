@@ -48,7 +48,7 @@ export const AGENDA: VoceAgenda[] = [
   { n: '04', capitolo: 'coworker',
     titolo: { it: 'CX Enterprise Coworker', en: 'CX Enterprise Coworker' } },
   { n: '05', capitolo: 'risultati',
-    titolo: { it: 'Tre banche che lo fanno già', en: 'Three banks already doing it' } },
+    titolo: { it: 'Tre banche e Unipol: lo fanno già', en: 'Three banks and Unipol already doing it' } },
   { n: '06', capitolo: 'prossimi-passi',
     titolo: { it: 'La proposta e come si parte', en: 'The proposal and how we start' } },
 ];

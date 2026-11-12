@@ -185,17 +185,14 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Cas
   unipol: {
     slug: 'unipol', nome: 'Unipol',
     occ: { it: 'Unipol · assicurazioni, Italia', en: 'Unipol · insurance, Italy' },
-    titolo: { pre: { it: 'Unipol:', en: 'Unipol:' }, accento: { it: 'le campagne misurate anche sulle vendite offline', en: 'campaigns measured on offline sales too' } },
+    titolo: { pre: { it: 'Unipol:', en: 'Unipol:' }, accento: { it: 'agenzie e digitale nella stessa analisi', en: 'agencies and digital in one analysis' } },
     hero: {
       occ: { it: 'Agenzie, sito, app e polizze nella stessa analisi', en: 'Agencies, website, app and policies in one analysis' },
-      oggi: { k: { it: 'Tempo', en: 'Time' }, n: { it: '−90%', en: '−90%' } },
-      l: { it: 'per consegnare un’analisi integrata', en: 'to deliver an integrated analysis' },
+      oggi: { k: { it: 'Clienti', en: 'Customers' }, n: { it: '17,6 mln', en: '17.6 m' } },
+      l: { it: 'fra agenzie, sito e app', en: 'across agencies, website and app' },
     },
-    metrica: { n: '2x', l: { it: 'più veloce trovare la causa di un problema', en: 'faster to find the root cause of a problem' } },
-    nota: { it: 'Numeri dichiarati da Unipol ad Adobe Summit 2026.', en: 'Figures stated by Unipol at Adobe Summit 2026.' },
+    metrica: { n: '2.035', l: { it: 'agenzie in Italia', en: 'agencies in Italy' } },
     riquadri: [
-      { n: '17,6 mln', l: { it: 'clienti', en: 'customers' } },
-      { n: '2.000+', l: { it: 'agenzie in Italia', en: 'agencies in Italy' } },
     ],
     fascia: {
       occ: { it: 'Adobe Summit 2026 · la sessione di Unipol', en: 'Adobe Summit 2026 · Unipol’s session' },
@@ -203,7 +200,7 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Cas
       icona: 'rete',
     },
     fonte: { url: FONTI.unipol, nome: 'unipol.com · fact sheet, giugno 2026' },
-    fonteCoda: { it: ' · clienti e agenzie <span class=im-nw>al 31 dicembre 2025.</span> Modello e risultati: Unipol ad Adobe Summit 2026, <span class=im-nw>sessione CP16</span>', en: ' · customers and agencies <span class=im-nw>at 31 December 2025.</span> Model and results: Unipol at Adobe Summit 2026, <span class=im-nw>session CP16</span>' },
+    fonteCoda: { it: ' · clienti e agenzie <span class=im-nw>al 31 dicembre 2025.</span> Il modello: Unipol ad Adobe Summit 2026, <span class=im-nw>sessione CP16</span>', en: ' · customers and agencies <span class=im-nw>at 31 December 2025.</span> The model: Unipol at Adobe Summit 2026, <span class=im-nw>session CP16</span>' },
   },
 };
 
@@ -244,7 +241,7 @@ export const MISURE = [
     poi: { it: 'la regola di contatto resta vostra', en: 'the contact rule stays yours' } },
   { davanti: true, l: { it: 'Il percorso rende, e il target era giusto', en: 'Does the journey pay, and was the target right' },
     oggi: { it: 'oggi: dalla redemption?', en: 'today: from redemption?' },
-    poi: { it: 'fase 1: uplift del percorso sul controllo · fase 2: uplift per target', en: 'phase 1: journey uplift vs control · phase 2: uplift per target' },
+    poi: { it: 'fase 1: uplift del percorso sul controllo; il target in fase 2, o già in fase 1 con due regole se i volumi bastano', en: 'phase 1: journey uplift vs control; the target in phase 2, or in phase 1 with two rules if volumes allow' },
     estesa: true },
   { davanti: true, l: { it: 'Quanto il digitale porta in filiale', en: 'How much digital brings into the branch' },
     oggi: { it: 'oggi: si aggancia la firma al percorso?', en: 'today: is the signature tied back to the path?' },
@@ -295,6 +292,6 @@ export const SEGUITO = {
 };
 
 export const ASK = {
-  it: 'Un percorso solo, il mutuo, con il gruppo di controllo. Se non si muove, lo sappiamo in un trimestre.',
-  en: 'One journey only, the mortgage, with a control group. If it does not move, we know within a quarter.',
+  it: 'Un percorso solo, il mutuo, <span class=im-nw>con il gruppo di controllo.</span> Dal primo invio, un trimestre dice se le riprese si muovono.',
+  en: 'One journey only, the mortgage, with a control group. From the first send, a quarter tells whether resumptions move.',
 };
