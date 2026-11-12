@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import Divisore from '../components/Divisore.astro';
+import CoBrand from '../components/CoBrand.astro';
+import Folla from '../components/Folla.astro';
+import { href } from '@edf/core/utils/url.js';
+import foto from '../assets/generated/sole/sole-rotta.webp';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { COVER } from '../data/contenuti';
+
+/**
+ * Capitolo riservato — Che cosa vi chiediamo.
+ *
+ * I rischi detti da noi, la richiesta in chiaro (a chi, che cosa, entro quando)
+ * e i prossimi passi con le date. Chiude con la firma.
+ */
+const SLUG = 'decisione';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <!-- ── Divisore di capitolo (il fondo sta qui: Astro non propaga slot="backdrop") -->
+    <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${foto.src})`}></div>
+      <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
+    </Slide>
+
+    <!-- ── I rischi, con la contromossa · RISERVATA: guscio vuoto, il contenuto arriva dallo strato interno -->
+    <Slide id="r-rischi" bg="primary" align="left" data-riservato>
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl cc-r-slide" data-reveal data-r="r-rischi"><p class="cc-attesa">Si carica lo strato interno…</p></div>
+    </Slide>
+
+    <!-- ── Che cosa vi chiediamo · RISERVATA: guscio vuoto, il contenuto arriva dallo strato interno -->
+    <Slide id="r-richiesta" bg="primary" align="left" data-riservato>
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl cc-r-slide" data-reveal data-r="r-richiesta"><p class="cc-attesa">Si carica lo strato interno…</p></div>
+    </Slide>
+
+    <!-- ── I prossimi passi · RISERVATA: guscio vuoto, il contenuto arriva dallo strato interno -->
+    <Slide id="r-passi" bg="primary" align="left" data-riservato>
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl cc-r-slide" data-reveal data-r="r-passi"><p class="cc-attesa">Si carica lo strato interno…</p></div>
+    </Slide>
+
+    <!-- ── La firma — Adobe × Trenitalia (riservata: nel livello pubblico la firma sta in Scalare) -->
+    <Slide id="slide-signature" data-audio="loud" bg="primary" align="center" data-riservato>
+      <div slot="backdrop" class="cc-cop-bg cc-cop-bg--firma" data-scrim>
+        <Folla />
+      </div>
+      <CoBrand variant="hero" data-reveal />
+      <p class="ex-sig-line" data-reveal data-reveal-delay="0.1">{COVER.firma}</p>
+      <a href={href(base, '/')} class="edf-sig-cta" data-reveal data-reveal-delay="0.18">Ricomincia dall’inizio →</a>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

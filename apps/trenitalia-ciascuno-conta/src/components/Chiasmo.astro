@@ -1,0 +1,71 @@
+---
+/**
+ * Il titolo che cambia prospettiva: «Ciascuno conta» ⇄ «Conta ciascuno».
+ *
+ * Non è un titolo con un sottotitolo: è UNA riga in cui le due parole si
+ * scambiano di posto. Nella prima lettura ogni persona è importante; nella
+ * seconda si conta, una persona alla volta, e «conta» prende il colore e il
+ * passo di un contatore. Il doppio senso si vede invece di spiegarlo
+ * (decisione dell'owner del 12 nov 2026).
+ *
+ * Come funziona: le due parole sono due span; uno script misura le larghezze e
+ * scrive gli spostamenti in `--dx-a`/`--dx-b`, poi alterna la classe
+ * `is-scambio`. Il CSS fa scorrere le parole; a metà corsa lo script cambia
+ * l'iniziale maiuscola, così la frase resta corretta in tutte e due le letture.
+ *
+ * Stato base = «Ciascuno conta», leggibile e fermo: con «Riduci movimento» non
+ * parte niente. Il nome accessibile dice tutte e due le letture.
+ */
+interface Props { class?: string }
+const { class: cls } = Astro.props as Props;
+---
+<span class:list={['cc-chiasmo', cls]} data-chiasmo role="img" aria-label="Ciascuno conta. Conta ciascuno.">
+  <span class="cc-chiasmo-a" aria-hidden="true">Ciascuno</span>{' '}<span class="cc-chiasmo-b" aria-hidden="true">conta</span>
+</span>
+
+<script is:inline>
+(function () {
+  if (window.__ccChiasmo) { window.__ccChiasmo(); return; }
+  var timers = [];
+  function start() {
+    timers.forEach(clearInterval); timers = [];
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.querySelectorAll('[data-chiasmo]').forEach(function (el) {
+      var a = el.querySelector('.cc-chiasmo-a'), b = el.querySelector('.cc-chiasmo-b');
+      if (!a || !b) return;
+      function w(t) {
+        var m = document.createElement('span');
+        m.textContent = t; m.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;';
+        el.appendChild(m); var x = m.getBoundingClientRect().width; el.removeChild(m); return x;
+      }
+      function misura() {
+        // la riga d'arrivo calcolata sulle parole GIÀ scambiate (con la maiuscola
+        // passata da una all'altra): «Conta» comincia al margine, «ciascuno»
+        // dopo «Conta» e uno spazio. Le parole restano nel flusso con il testo
+        // nuovo, quindi lo spostamento si misura dalla loro posizione naturale.
+        var sp = w('a a') - w('aa');
+        el.style.setProperty('--dx-a', (w('Conta') + sp) + 'px');
+        el.style.setProperty('--dx-b', -(w('ciascuno') + sp) + 'px');
+      }
+      misura();
+      window.addEventListener('resize', function () { el.classList.remove('is-scambio'); a.textContent = 'Ciascuno'; b.textContent = 'conta'; requestAnimationFrame(misura); });
+      var on = false;
+      timers.push(setInterval(function () {
+        on = !on;
+        // si rimisura da fermi, a carattere caricato: la prima misura può
+        // arrivare prima di Poppins e sbagliare di qualche pixel
+        if (on) misura();
+        el.classList.toggle('is-scambio', on);
+        setTimeout(function () {
+          a.textContent = on ? 'ciascuno' : 'Ciascuno';
+          b.textContent = on ? 'Conta' : 'conta';
+        }, 380);
+      }, 3600));
+    });
+  }
+  window.__ccChiasmo = start;
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+  document.addEventListener('astro:page-load', start);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(start);
+})();
+</script>

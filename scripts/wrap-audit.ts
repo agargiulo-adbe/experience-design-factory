@@ -240,6 +240,11 @@ async function main() {
   const rilievi: Rilievo[] = [];
   for (const vp of viewports) {
     const page = await browser.newPage({ viewport: { width: vp.w, height: vp.h } });
+      // Optional: entries to seed into sessionStorage before any page script runs
+      // (e.g. the token of a two-level deck: DECK_SESSION='{"cc:riservato:t":"<uuid>"}').
+      if (process.env.DECK_SESSION) {
+        await page.addInitScript((j) => { try { const o = JSON.parse(j as string); for (const k in o) sessionStorage.setItem(k, o[k]); } catch (e) {} }, process.env.DECK_SESSION);
+      }
     for (const r of rotte) {
       await page.goto(origin + r.route, { waitUntil: 'networkidle' });
       await page.waitForTimeout(350);

@@ -1,0 +1,34 @@
+---
+/**
+ * La giornata in una figura: due corsie sulla stessa linea delle ore.
+ *
+ * Sopra la Direzione, sotto i team. Chi guarda capisce in tre secondi la scelta
+ * di fondo: ai dirigenti si chiedono l'apertura con la prova e la rotta, il
+ * resto è lavoro per chi poi porterà a terra le scelte.
+ */
+import { GIORNO } from '../data/contenuti';
+const span = GIORNO.fine - GIORNO.inizio;
+const pos = (h: number) => (h - GIORNO.inizio) / span;
+const tick = (o: string) => { const [h, m] = o.split(':').map(Number); return pos(h + m / 60); };
+---
+<div class="cc-giorno">
+  <div class="cc-giorno-ore" aria-hidden="true">
+    <span></span>
+    <span class="cc-giorno-scala">
+      {GIORNO.ore.map((o) => <span style={`--x:${tick(o)}`}>{o}</span>)}
+    </span>
+  </div>
+  {GIORNO.corsie.map((c, i) => (
+    <div class:list={['cc-giorno-corsia', i === 0 && 'cc-giorno-corsia--dir']} data-substep={i > 0 ? '' : undefined}>
+      <p class="cc-giorno-k">{c.k}</p>
+      <div class="cc-giorno-pista">
+        {c.blocchi.map((b) => (
+          <span class:list={['cc-giorno-b', b.forte && 'cc-giorno-b--forte']} style={`--da:${pos(b.da)};--a:${pos(b.a)}`}>
+            <span>{b.t}</span>
+          </span>
+        ))}
+        {i === 1 && <span class="cc-giorno-pausa" style={`--da:${pos(13.5)};--a:${pos(14.5)}`}><span>Pranzo</span></span>}
+      </div>
+    </div>
+  ))}
+</div>

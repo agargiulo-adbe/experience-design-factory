@@ -5,6 +5,10 @@
 
 ## 11. Change log recente
 
+### 2026-11-12 · Trenitalia: nasce «Ciascuno conta», la versione interna del percorso dopo la Direzione Sales
+
+Commit `68b6867`, **pubblicato** (`/trenitalia-ciascuno-conta/`). App nuova generata con `pnpm new:experience` e portata sulla **pelle della Prospettiva** (global.css copiato, non importato), tipo `interno`, spenta sullo showcase. Sei capitoli e 21 slide: il numero di ogni giorno, la prova sui dati, il percorso, la giornata, chi c'è, che cosa resta. Copertina con il chiasmo «Ciascuno conta / Conta ciascuno» sulla folla di punti (`Folla.astro`), la linea del venduto (`Venduto.astro`), la scaletta per colonne. Gate: `audit:deck` 0 HARD su 7 rotte, `audit:ink` pulito, `copy-audit` 0, `audit:og` PASS, `audit:wrap` pulito a 1920/1440 (circa 28 code corte solo a 1280). Strato interno in `/dossier/`, gated, seed `0037` git-ignorato in `docs/Ferrovie/`, `audit:dossier` PASS in produzione. Due trappole: l'id `#slide-domanda` ereditava dalla pelle copiata un fondo rosso pieno (rinominato `slide-nove`), e il tono `onDark` di `HowItWorks` su una dominante scura dava 1,05:1. ⚠️ La sera l'owner boccia il racconto: va riprogettato per la leadership → P0 in Parte 2.
+
 - **2026-11-11** · backlog: esce il P0 «la stanza Intesa del 5 novembre non è registrata» — il 5 è stato annullato dal cliente e l'incontro fissato al 19 (registro d'account, 3 nov); i P0 su «Dove ci innestiamo» e sull'invito prendono la data del 19.
 
 ### 2026-11-11 (tarda mattina) · Storia di Intesa: dopo il panel, copia, agenda e Prossimi passi

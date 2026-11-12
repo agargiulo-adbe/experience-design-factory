@@ -5,20 +5,18 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import Divisore from '../components/Divisore.astro';
 import Ancore from '../components/Ancore.astro';
-import Approfondisci from '../components/Approfondisci.astro';
 import { href } from '@edf/core/utils/url.js';
-import foto from '../assets/generated/sole/sole-viaggio.webp';
+import foto from '../assets/generated/sole/sole-ricerca.webp';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { TAPPE, CRITERI } from '../data/contenuti';
+import { SCEGLIERE, CRITERI, MISURARE } from '../data/contenuti';
 
 /**
- * Capitolo 03 — Il percorso.
+ * Capitolo — Scegliere e misurare (atti 1 e 2).
  *
- * Sei tappe, dalla scelta dei casi d'uso alla giornata. Il modello del lavoro
- * sui dati è quello dei POC congiunti di Adobe: criteri di successo scritti la
- * prima settimana, un punto fisso ogni settimana, un perimetro dichiarato.
+ * Che cosa si fa prima di toccare un dato, come si giudica, e le otto settimane
+ * della prova. Le righe «per noi» arrivano dallo strato interno.
  */
-const SLUG = 'percorso';
+const SLUG = 'scegliere';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -36,26 +34,25 @@ const currentPath = Astro.url.pathname;
       <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
     </Slide>
 
-    <Slide id="slide-tappe" bg="primary" align="left">
+    <Slide id="slide-scegliere" bg="primary" align="left">
       <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl xd-sl--fig" data-reveal>
+      <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">{TAPPE.eyebrow}</p>
-          <h2 class="xd-h2">{TAPPE.titolo}</h2>
-          <p class="xd-sub">{TAPPE.sub}</p>
+          <p class="xd-n">{SCEGLIERE.eyebrow}</p>
+          <h2 class="xd-h2">{SCEGLIERE.titolo}</h2>
+          <p class="xd-sub">{SCEGLIERE.sub}</p>
         </div>
         <div class="cc-corpo">
-          <ol class="xd-passi cc-passi" style="--cols:3" data-stagger data-reveal data-reveal-delay="0.14">
-            {TAPPE.passi.map((p, i) => (
+          <ol class="xd-passi cc-passi cc-passi--q" style="--cols:3" data-stagger>
+            {SCEGLIERE.passi.map((p) => (
               <li class="xd-passi-i">
-                <span class="xd-passi-n">{i + 1}</span>
-                <p class="cc-passi-q">{p.d.split(' · ')[1]}</p>
+                <p class="cc-passi-q">{p.q}</p>
                 <p class="xd-passi-l">{p.l}</p>
-                <p class="xd-passi-d">{p.d.split(' · ')[0]}</p>
+                <p class="xd-passi-d">{p.d}</p>
               </li>
             ))}
           </ol>
-          <Approfondisci title="Come si lavora nelle settimane della prova" voci={TAPPE.dettaglio} />
+          <p class="cc-noi" data-r="noi-scegliere"></p>
         </div>
       </div>
     </Slide>
@@ -70,6 +67,26 @@ const currentPath = Astro.url.pathname;
         </div>
         <div class="cc-corpo">
           <Ancore items={CRITERI.ancore} cols={4} />
+        </div>
+      </div>
+    </Slide>
+
+    <Slide id="slide-misurare" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">{MISURARE.eyebrow}</p>
+          <h2 class="xd-h2">{MISURARE.titolo}</h2>
+          <p class="xd-sub">{MISURARE.sub}</p>
+        </div>
+        <div class="cc-corpo">
+          <ol class="cc-sett" data-stagger>
+            {MISURARE.settimane.map((w) => (
+              <li class="cc-sett-i"><p class="cc-sett-n">Sett. {w.s}</p><p class="cc-sett-t">{w.t}</p><p class="cc-sett-d">{w.d}</p></li>
+            ))}
+          </ol>
+          <p class="xd-chiusa" data-reveal data-reveal-delay="0.24">{MISURARE.chiusa}</p>
+          <p class="cc-noi" data-r="noi-misurare"></p>
         </div>
       </div>
     </Slide>

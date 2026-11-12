@@ -296,6 +296,11 @@ async function auditViewport(browser: import('playwright').Browser, base: string
   const ctx = await browser.newContext({ viewport: { width: W, height: H }, reducedMotion: 'reduce', deviceScaleFactor: 1 });
   const page = await ctx.newPage();
   await page.addInitScript(() => { (window as unknown as { __name: (f: unknown) => unknown }).__name = (f) => f; });
+  // Optional: entries to seed into sessionStorage before any page script runs
+  // (e.g. the token of a two-level deck: DECK_SESSION='{"cc:riservato:t":"<uuid>"}').
+  if (process.env.DECK_SESSION) {
+    await page.addInitScript((j) => { try { const o = JSON.parse(j as string); for (const k in o) sessionStorage.setItem(k, o[k]); } catch (e) {} }, process.env.DECK_SESSION);
+  }
   // Optional: force a UI language (bilingual decks) before any page script runs.
   const deckLang = process.env.DECK_LANG;
   if (deckLang === 'en' || deckLang === 'it' || deckLang === 'fr') {

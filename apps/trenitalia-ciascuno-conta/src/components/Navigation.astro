@@ -45,7 +45,7 @@ function isActive(slug: string) {
           class:list={['ex-nav-link block whitespace-nowrap px-2.5 py-1.5 text-xs font-medium rounded-sm transition-colors no-underline', isActive(c.slug) && 'ex-nav-link--active']}
           aria-current={isActive(c.slug) ? 'page' : undefined}
         >
-          <span class="text-[var(--color-ardesia-chiara)] mr-1 tabular-nums">{c.num}</span>
+          <span class="text-[var(--color-ardesia-chiara)] mr-1 tabular-nums" data-cap-num={c.slug}>{c.num}</span>
           <span>{c.short}</span>
         </a>
       </li>
@@ -53,14 +53,17 @@ function isActive(slug: string) {
   </ol>
 
   <div class="flex items-center gap-3 flex-shrink-0">
-    <!-- Lo strato interno (pagina gated, contenuto in Supabase) non è un capitolo:
-         sta nel cluster destro. Sotto `lg` sparisce, perché la barra resta UNA riga. -->
+    <!-- Il segno del livello interno: c'è solo quando lo strato è caricato. -->
+    <span class="cc-tag-interno" aria-label="Documento interno Adobe, riservato">Interno · riservato</span>
+    <!-- Il dossier (pagina gated, contenuto in Supabase) non è un capitolo: sta nel
+         cluster destro, e solo nel livello interno. Sotto `lg` sparisce, perché la
+         barra resta UNA riga. -->
     <a
       href={href(base, '/dossier')}
-      class:list={['ex-nav-link hidden lg:block whitespace-nowrap px-2.5 py-1.5 text-xs font-semibold rounded-sm transition-colors no-underline', isActive('dossier') && 'ex-nav-link--active']}
+      class:list={['cc-solo-interno ex-nav-link hidden lg:block whitespace-nowrap px-2.5 py-1.5 text-xs font-semibold rounded-sm transition-colors no-underline', isActive('dossier') && 'ex-nav-link--active']}
       aria-current={isActive('dossier') ? 'page' : undefined}
     >
-      Lo strato interno
+      Il dossier
     </a>
     {SITE.langs.length > 1 && <LangToggle langs={SITE.langs} />}
     <a

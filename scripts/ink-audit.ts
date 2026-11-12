@@ -77,6 +77,11 @@ function inkAndPaper(png: PNG): { ink: RGB; paper: RGB; coverage: number } {
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ viewport: VIEWPORT, deviceScaleFactor: 1, reducedMotion: 'reduce' });
 const page = await ctx.newPage();
+  // Optional: entries to seed into sessionStorage before any page script runs
+  // (e.g. the token of a two-level deck: DECK_SESSION='{"cc:riservato:t":"<uuid>"}').
+  if (process.env.DECK_SESSION) {
+    await page.addInitScript((j) => { try { const o = JSON.parse(j as string); for (const k in o) sessionStorage.setItem(k, o[k]); } catch (e) {} }, process.env.DECK_SESSION);
+  }
 let findings = 0, measured = 0, disclosure = 0;
 
 for (const rotta of ROUTES) {

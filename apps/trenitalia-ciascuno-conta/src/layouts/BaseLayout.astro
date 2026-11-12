@@ -7,6 +7,7 @@ import DeckAudio from '@edf/core/blocks/DeckAudio.astro';
 import { SITE, OFFLINE, media } from '../data/site';
 import { CHAPTERS } from '../data/chapters';
 import SocialMeta from '@edf/core/blocks/SocialMeta.astro';
+import Riservato from '../components/Riservato.astro';
 
 /**
  * BaseLayout — «Dove può arrivare il viaggio · Adobe × Trenitalia».
@@ -92,6 +93,8 @@ const docTitle = (isHome || title === SITE_NAME || title === SITE.name) ? SITE_N
   </head>
   <body>
     <slot />
+    <!-- Il secondo livello: lo strato interno, da Supabase con il link a token. -->
+    <Riservato />
     <!-- La firma Adobe × Trenitalia: una volta qui, quindi su ogni slide di ogni capitolo. -->
     <CoBrand />
     <!-- Con che cosa è fatta la slide. NESSUN fallback: il deck generato non ha asset
@@ -519,6 +522,8 @@ const docTitle = (isHome || title === SITE_NAME || title === SITE.name) ? SITE_N
   }
 
   window.__edfInjectCustomSlides = function () {
+    // prima di tutto i due livelli: il deck conta le slide subito dopo
+    if (window.__ccRiservato) window.__ccRiservato();
     var deck = document.querySelector('[data-deck]');
     if (!deck) return;
     deck.querySelectorAll('[data-edf-custom]').forEach(function (el) { el.remove(); });

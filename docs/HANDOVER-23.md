@@ -58,3 +58,17 @@
 - **Factory Showcase** (lug): prima versione + wiring deploy `/showcase/`; skill **`experience-brief`** creata; WOW pass (screenshot Proof, sezione Skill, hero animato); sezione "Come nasce un'esperienza"; mark distintivo; KPI "12" reso verificabile. → **§13**.
 
 ---
+
+## 43. «Ciascuno conta» — Trenitalia, versione interna (`apps/trenitalia-ciascuno-conta`)
+
+> Nata il **12 nov 2026** dopo l'incontro con la Direzione Sales del 10. Concept: un programma, non un evento — una prova sui dati del cliente (POC Sales Velocity, 6-8 settimane) e una giornata di lavoro, verso la firma. Nome «Ciascuno conta» (ognuno è importante, e si conta uno per uno); chiasmo «Conta ciascuno» solo in copertina.
+
+- **Stato:** pubblicata, tipo `interno`, bozza nel registro console (`0036`), spenta sullo showcase, card nell'hub. Strato riservato in `/dossier/` (motore `DossierPage`, seed `0037` git-ignorato, link a token).
+- **Pelle:** copia della Prospettiva Sales (Poppins, ardesia `#2f394e`, rosso `#d91835`). ⚠️ Gli id `#slide-domanda`, `#slide-idea`, `#slide-problemi`, `#slide-cover`, `#slide-signature` hanno regole proprie nella pelle copiata: i primi tre non si riusano.
+- **Componenti propri:** `Folla` (concept in SVG, stato base = finale), `Venduto` (linea illustrativa senza cifre), `Scaletta`, `Ancore`, `Approfondisci` (Dettaglio del motore con tono `onLight`, voluto: su dominante scura `onDark` prende `--ink-inverse` = ardesia).
+- **Decisioni dell'owner del 12 nov (brainstorming):** il programma ha quattro fasi, **Scegliere · Misurare · Decidere · Scalare**; il deck interno è il perimetro più ampio da cui deriva la versione per il cliente; un invito cartaceo è uno dei deliverable. Date commerciali, ritorno atteso, prodotti e strategia stanno **solo** nello strato riservato e nel registro d'account (git-ignorato), non qui.
+- **Riprogettato il 12 nov sera: un deck a due livelli.** Otto capitoli (origine · idea · programma · valore · scegliere · giornata · scalare · decisione); i tre `riservato` e le righe «per noi» (`[data-r]`) arrivano da `restricted_docs.content.deck` con la RPC `get_shared_doc`, **lo stesso token del dossier**. Senza token: 5 capitoli rinumerati da 01, capitoli interni fuori da nav, agenda e frecce. Runtime in `components/Riservato.astro` (lista chiusa di tag; `style` solo per proprietà numeriche); strato generato da `docs/Ferrovie/strato-deck/genera.py` (git-ignorato) dentro il seed `0037`. Figure nuove: `Atti` (i quattro atti nel tempo, a fasi), `Giorno` (corsie Direzione/team), `Pianta`, `Invito` (bozzetto in HTML), `Mattina` (la domanda delle nove), `Chiasmo` (il titolo che scambia le parole: niente sottotitolo, decisione dell'owner).
+- ⚠️ **Il guasto da non ripetere:** `[data-riservato]` prendeva anche `<html>`, che porta lo stesso attributo come stato del livello: senza token la pagina era **vuota** e `audit:deck` dava **PASS pulito** perché non c'era niente da misurare. Corretto con `:not(html)`. Un PASS su un deck nuovo si verifica guardando uno screenshot.
+- **Gate (12 nov):** `audit:deck` 0 HARD su entrambi i livelli (105 e 120 misure; soft `a`/`i` della pelle); `audit:ink` pulito su entrambi; `copy-audit` 0 HARD su 174 stringhe; `astro check` 0; bundle pubblico senza nomi, cifre né token. Gli audit accettano ora `DECK_SESSION='{"chiave":"valore"}'` per misurare un livello che vive in sessionStorage.
+- **Pending:** panel review (P0) e validazioni (P1) in Parte 2.
+

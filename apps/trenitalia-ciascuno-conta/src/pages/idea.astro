@@ -4,21 +4,22 @@ import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import Divisore from '../components/Divisore.astro';
+import Mattina from '../components/Mattina.astro';
+import Folla from '../components/Folla.astro';
 import Ancore from '../components/Ancore.astro';
-import Approfondisci from '../components/Approfondisci.astro';
 import { href } from '@edf/core/utils/url.js';
 import foto from '../assets/generated/sole/sole-ricerca.webp';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { PROVA, DATI } from '../data/contenuti';
+import { MATTINA, FOLLA } from '../data/contenuti';
 
 /**
- * Capitolo 02 — Dalla promessa alla prova.
+ * Capitolo — L'idea.
  *
- * La forma prima del contenuto: non si propone un evento, si propone un lavoro
- * con un traguardo. I tre criteri sono anche il filtro di tutto il resto del
- * deck: ogni blocco della giornata ne serve almeno uno.
+ * Prima l'immagine di arrivo, poi il concetto. La domanda delle nove con la
+ * risposta accanto è la cosa che il programma rende possibile; la folla di punti
+ * è il nome detto senza spiegarlo: ogni persona conta, e si conta.
  */
-const SLUG = 'prova';
+const SLUG = 'idea';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -36,38 +37,30 @@ const currentPath = Astro.url.pathname;
       <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
     </Slide>
 
-    <Slide id="slide-forma" bg="primary" align="left">
+    <Slide id="slide-mattina" bg="primary" align="left">
       <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl" data-reveal>
+      <div class="xd-sl cc-split" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">{PROVA.eyebrow}</p>
-          <h2 class="xd-h2">{PROVA.titolo}</h2>
-          <p class="xd-sub">{PROVA.sub}</p>
+          <p class="xd-n">{MATTINA.eyebrow}</p>
+          <h2 class="xd-h2">{MATTINA.titolo}</h2>
+          <p class="xd-sub">{MATTINA.sub}</p>
+          <p class="cc-noi" data-r="noi-mattina"></p>
         </div>
-        <div class="cc-corpo">
-          <Ancore items={PROVA.ancore} cols={3} />
-        </div>
+        <div class="cc-split-fig" data-reveal data-reveal-delay="0.18"><Mattina /></div>
       </div>
     </Slide>
 
-    <Slide id="slide-dati" bg="primary" align="left">
-      <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl xd-sl--fig" data-reveal>
+    <Slide id="slide-folla" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano cc-folla-chiara"><Folla /></div>
+      <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">{DATI.eyebrow}</p>
-          <h2 class="xd-h2">{DATI.titolo}</h2>
-          <p class="xd-sub">{DATI.sub}</p>
+          <p class="xd-n">{FOLLA.eyebrow}</p>
+          <h2 class="xd-h2">{FOLLA.titolo}</h2>
+          <p class="xd-sub">{FOLLA.sub}</p>
         </div>
         <div class="cc-corpo">
-          <ul class="xd-num" style="--cols:4" data-stagger data-reveal data-reveal-delay="0.14">
-            {DATI.cifre.map((c) => (
-              <li class="xd-num-i">
-                <span class="xd-num-k" data-display>{c.k}</span>
-                <p class="xd-num-v">{c.v}</p>
-              </li>
-            ))}
-          </ul>
-          <p class="xd-chiusa" data-reveal data-reveal-delay="0.24">{DATI.chiusa}</p>
+          <Ancore items={FOLLA.ancore} cols={3} />
+          <p class="xd-chiusa" data-reveal data-reveal-delay="0.24">{FOLLA.chiusa}</p>
         </div>
       </div>
     </Slide>

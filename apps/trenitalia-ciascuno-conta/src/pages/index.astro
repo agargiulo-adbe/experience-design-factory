@@ -5,6 +5,7 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoBrand from '../components/CoBrand.astro';
 import Folla from '../components/Folla.astro';
+import Chiasmo from '../components/Chiasmo.astro';
 import { href } from '@edf/core/utils/url.js';
 import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
 import { SITE } from '../data/site';
@@ -14,11 +15,9 @@ import { COVER } from '../data/contenuti';
 /**
  * Copertina e agenda, su una pagina sola — la forma XD della Prospettiva.
  *
- * Il titolo è un chiasmo: «Ciascuno conta» (ognuno è importante) diventa «Conta
- * ciascuno» (si conta, uno per uno). Fermo, il secondo senso non scatta: per
- * questo la seconda riga ha l'aspetto di un contatore e arriva dopo la prima,
- * mentre sullo sfondo un punto della folla si accende e la sua vendita sale.
- * Il nome resta «Ciascuno conta»: il chiasmo vive solo qui.
+ * Il titolo è un chiasmo in movimento: «Ciascuno conta» (ognuno è importante)
+ * diventa «Conta ciascuno» (si conta, uno per uno) scambiando di posto le due
+ * parole, nella stessa riga (`Chiasmo.astro`). Niente sottotitolo che lo spieghi.
  *
  * L'agenda è generata da CHAPTERS: un capitolo in più e l'agenda lo sa.
  */
@@ -44,13 +43,10 @@ const last = CHAPTERS[CHAPTERS.length - 1];
       <div class="xd-cop" data-reveal>
         <div class="xd-cop-sx">
           <CoBrand variant="hero" class="xd-cop-lockup" data-reveal />
-          <p class="xd-cop-occ" data-reveal data-reveal-delay="0.06">{COVER.occhiello}</p>
-          <h1 class="xd-cop-t cc-cop-t" data-reveal data-reveal-delay="0.1">
-            <span class="cc-cop-uno">{SITE.name}</span>
-            <span class="cc-cop-due" aria-hidden="true">{COVER.conta}</span>
-          </h1>
+          <p class="xd-cop-occ" data-reveal data-reveal-delay="0.06" data-r="cover-occhiello">{COVER.occhiello}</p>
+          <h1 class="xd-cop-t cc-cop-t" data-reveal data-reveal-delay="0.1"><Chiasmo /></h1>
           <p class="xd-cop-l" data-reveal data-reveal-delay="0.16">{COVER.sub}</p>
-          <p class="xd-cop-tipo" data-reveal data-reveal-delay="0.22">{type.coverLine.it}</p>
+          <p class="xd-cop-tipo" data-reveal data-reveal-delay="0.22" data-r="cover-tipo">{type.coverLine.it}</p>
         </div>
 
         <nav class="xd-cop-dx" data-reveal data-reveal-delay="0.2" aria-label="I capitoli">
@@ -59,7 +55,7 @@ const last = CHAPTERS[CHAPTERS.length - 1];
             {CHAPTERS.map((c) => (
               <li>
                 <a href={href(base, '/' + c.slug)} class="xd-cop-cap">
-                  <span class="xd-cop-n">{c.num}</span>
+                  <span class="xd-cop-n" data-cap-num={c.slug}>{c.num}</span>
                   <span class="xd-cop-tit">{c.title.it}</span>
                 </a>
               </li>

@@ -89,6 +89,11 @@ for (const r of daFare) {
   const VP = SALA ? { width: 3840, height: 2160 } : { width: 1920, height: 1080 };
   const ctx = await browser.newContext({ viewport: VP, reducedMotion: 'reduce', deviceScaleFactor: 0.5 });
   const page = await ctx.newPage();
+  // Optional: entries to seed into sessionStorage before any page script runs
+  // (e.g. the token of a two-level deck: DECK_SESSION='{"cc:riservato:t":"<uuid>"}').
+  if (process.env.DECK_SESSION) {
+    await page.addInitScript((j) => { try { const o = JSON.parse(j as string); for (const k in o) sessionStorage.setItem(k, o[k]); } catch (e) {} }, process.env.DECK_SESSION);
+  }
   // esbuild inietta `__name` nelle funzioni compilate: senza questo, ogni
   // page.evaluate esplode con «__name is not defined». Stessa riga di deck-audit.
   await page.addInitScript(() => { (window as unknown as { __name: (f: unknown) => unknown }).__name = (f) => f; });

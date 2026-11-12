@@ -1,0 +1,198 @@
+---
+/**
+ * Il secondo livello del deck: lo strato interno, caricato da Supabase.
+ *
+ * Il deck pubblico è leggibile dal cliente senza danno. Con il link a token
+ * (`?t=<uuid>`, lo stesso del dossier) gli stessi indirizzi si completano:
+ * - i capitoli `riservato` (vedi data/chapters.ts) restano nel flusso;
+ * - le slide marcate `data-riservato` restano nel conteggio;
+ * - ogni `[data-r="chiave"]` prende il suo contenuto dallo strato;
+ * - le slide marcate `data-pubblico` (la chiusura per il cliente) escono.
+ *
+ * Il contenuto vive in `restricted_docs.content.deck` e arriva dalla RPC
+ * `get_shared_doc`, come il dossier: NIENTE di riservato sta nel bundle. Il
+ * renderer qui sotto è pubblico e non sa nulla del contenuto.
+ *
+ * Tempi. Il deck conta le slide al `boot()` di DeckContainer, che chiama
+ * `__edfInjectCustomSlides` prima di contare: il layout lo fa precedere da
+ * `__ccRiservato()`, quindi tutto ciò che è sincrono (token, cache in
+ * sessionStorage, rimozioni) è fatto prima del conteggio. Al primo accesso il
+ * contenuto arriva dopo: le slide riservate ci sono già, vuote e marcate in
+ * caricamento, e si riempiono senza cambiare il conteggio.
+ *
+ * Token e strato stanno in sessionStorage: valgono per la scheda e finiscono con
+ * lei. Un token che non apre niente si cancella e il deck torna pubblico.
+ *
+ * Sicurezza dell'iniezione: lo strato è scritto da noi, ma si inietta lo stesso
+ * attraverso una lista chiusa di tag e attributi (lo `style` solo per proprietà
+ * personalizzate numeriche, che servono a posizionare le barre).
+ */
+import { CHAPTERS, RISERVATI } from '../data/chapters';
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+const ORDER = CHAPTERS.map((c) => c.slug);
+const BASE = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+---
+<script is:inline define:vars={{ SUPABASE_URL, SUPABASE_ANON, ORDER, RISERVATI, BASE }}>
+(function () {
+  var TK = 'cc:riservato:t';
+  var LK = 'cc:riservato:layer';
+  var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  var inFlight = false;
+
+  function ss(k, v) {
+    try {
+      if (v === undefined) return sessionStorage.getItem(k);
+      if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v);
+    } catch (e) { return null; }
+  }
+  function token() {
+    try {
+      var v = new URLSearchParams(location.search).get('t');
+      if (v && UUID.test(v)) {
+        if (ss(TK) !== v) { ss(TK, v); ss(LK, null); }
+        return v;
+      }
+    } catch (e) {}
+    var t = ss(TK);
+    return t && UUID.test(t) ? t : null;
+  }
+  function layer() {
+    try { var l = JSON.parse(ss(LK) || 'null'); return l && l.r ? l : null; } catch (e) { return null; }
+  }
+
+  // ── percorsi ─────────────────────────────────────────────────────────────
+  function slugOf(path) {
+    var rest = path.indexOf(BASE) === 0 ? path.slice(BASE.length) : path;
+    return rest.replace(/^\/+|\/+$/g, '').split('/')[0] || '';
+  }
+  function isRis(slug) { return RISERVATI.indexOf(slug) !== -1; }
+  function publicFrom(slug, dir) {
+    var i = ORDER.indexOf(slug);
+    if (i === -1) return undefined;
+    for (var j = i; j >= 0 && j < ORDER.length; j += dir) if (!isRis(ORDER[j])) return ORDER[j];
+    return '';
+  }
+  function hrefFor(slug) { return BASE + (slug ? slug + '/' : ''); }
+
+  // ── iniezione con lista chiusa ───────────────────────────────────────────
+  var TAGS = { DIV:1, SPAN:1, P:1, STRONG:1, EM:1, B:1, I:1, BR:1, UL:1, OL:1, LI:1, H2:1, H3:1, SMALL:1, A:1, SECTION:1, FIGURE:1, FIGCAPTION:1 };
+  var ATTRS = { 'class':1, 'aria-hidden':1, 'aria-label':1, 'role':1, 'title':1,
+    'data-substep':1, 'data-reveal':1, 'data-reveal-delay':1, 'data-stagger':1, 'data-cols':1, 'data-forte':1, 'data-livello':1 };
+  var STYLE_OK = /^\s*(--[a-z0-9-]+\s*:\s*-?[0-9.]+(%|rem|em)?\s*;?\s*)+$/i;
+  function clean(node) {
+    Array.prototype.slice.call(node.childNodes).forEach(function (c) {
+      if (c.nodeType === 3) return;
+      if (c.nodeType !== 1 || !TAGS[c.tagName]) { node.removeChild(c); return; }
+      Array.prototype.slice.call(c.attributes).forEach(function (a) {
+        var n = a.name.toLowerCase();
+        if (n === 'style' && STYLE_OK.test(a.value)) return;
+        if (n === 'href' && /^https:\/\//i.test(a.value)) return;
+        if ((n === 'target' && a.value === '_blank') || (n === 'rel')) return;
+        if (!ATTRS[n]) c.removeAttribute(a.name);
+      });
+      if (c.tagName === 'A') { c.setAttribute('rel', 'noopener'); c.setAttribute('target', '_blank'); }
+      clean(c);
+    });
+  }
+  function frag(html) {
+    var doc = new DOMParser().parseFromString('<div>' + html + '</div>', 'text/html');
+    var box = doc.body.firstChild;
+    clean(box);
+    return box.innerHTML;
+  }
+
+  // ── i due livelli ────────────────────────────────────────────────────────
+  function out(el) {
+    el.removeAttribute('data-slide');
+    el.setAttribute('aria-hidden', 'true');
+    el.setAttribute('inert', '');
+    el.style.display = 'none';
+  }
+  function fill(l) {
+    document.querySelectorAll('[data-r]').forEach(function (el) {
+      var k = el.getAttribute('data-r');
+      if (l && l.r && typeof l.r[k] === 'string') {
+        el.innerHTML = frag(l.r[k]);
+        el.setAttribute('data-r-on', '');
+      }
+    });
+  }
+  function closed() {
+    var here = slugOf(location.pathname);
+    if (isRis(here)) {
+      var fwd = publicFrom(here, 1);
+      location.replace(location.origin + hrefFor(fwd || ''));
+      return;
+    }
+    // ⚠️ `:not(html)`: la radice porta lo stesso attributo come stato del livello,
+    // e senza esclusione nascondeva la pagina intera (successo il 12 nov 2026).
+    document.querySelectorAll('[data-riservato]:not(html)').forEach(out);
+    document.querySelectorAll('a[href]').forEach(function (a) {
+      var h = a.getAttribute('href') || '';
+      if (!h || h.charAt(0) === '#') return;
+      var s; try { s = slugOf(new URL(h, location.href).pathname); } catch (e) { return; }
+      if (isRis(s)) { a.setAttribute('aria-hidden', 'true'); a.setAttribute('tabindex', '-1'); var li = a.closest('li'); (li || a).style.display = 'none'; }
+    });
+    [['data-deck-next', 1], ['data-deck-prev-href', -1]].forEach(function (p) {
+      var root = document.querySelector('[' + p[0] + ']');
+      if (!root) return;
+      var cur = root.getAttribute(p[0]); if (!cur) return;
+      var s; try { s = slugOf(new URL(cur, location.href).pathname); } catch (e) { return; }
+      if (!isRis(s)) return;
+      var live = publicFrom(s, p[1]);
+      if (live !== undefined) root.setAttribute(p[0], hrefFor(live));
+    });
+    // i capitoli rimasti si rinumerano da 01
+    var n = 0, num = {};
+    ORDER.forEach(function (s) { if (!isRis(s)) { n++; num[s] = (n < 10 ? '0' : '') + n; } });
+    document.querySelectorAll('[data-cap-num]').forEach(function (el) {
+      var s = el.getAttribute('data-cap-num'); if (num[s]) el.textContent = num[s];
+    });
+  }
+  function open(l) {
+    document.querySelectorAll('[data-pubblico]').forEach(out);
+    if (l) fill(l);
+  }
+
+  function apply() {
+    var t = token();
+    var l = t ? layer() : null;
+    var h = document.documentElement;
+    if (!t) { h.setAttribute('data-riservato', 'off'); closed(); return; }
+    h.setAttribute('data-riservato', l ? 'on' : 'loading');
+    open(l);
+    if (!l) fetchLayer(t);
+  }
+
+  function fail() {
+    ss(TK, null); ss(LK, null);
+    // si torna al livello pubblico: ricaricare è il modo più semplice di ricontare
+    var u = new URL(location.href); u.searchParams.delete('t');
+    location.replace(u.toString());
+  }
+  function fetchLayer(t) {
+    if (inFlight) return;
+    if (!SUPABASE_URL || !SUPABASE_ANON) { fail(); return; }
+    inFlight = true;
+    fetch(SUPABASE_URL + '/rest/v1/rpc/get_shared_doc', {
+      method: 'POST',
+      headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON, 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ p_token: t }),
+    }).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        inFlight = false;
+        var l = data && data.deck;
+        if (!l || !l.r) { fail(); return; }
+        ss(LK, JSON.stringify(l));
+        document.documentElement.setAttribute('data-riservato', 'on');
+        fill(l);
+        try { window.__edfDeck && window.__edfDeck.syncDark && window.__edfDeck.syncDark(); } catch (e) {}
+      })
+      .catch(function () { inFlight = false; document.documentElement.setAttribute('data-riservato', 'errore'); });
+  }
+
+  window.__ccRiservato = apply;
+  apply();
+})();
+</script>

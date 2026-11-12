@@ -4,21 +4,20 @@ import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import Divisore from '../components/Divisore.astro';
-import Ancore from '../components/Ancore.astro';
-import Approfondisci from '../components/Approfondisci.astro';
+import Atti from '../components/Atti.astro';
 import { href } from '@edf/core/utils/url.js';
-import foto from '../assets/generated/sole/sole-rete.webp';
+import foto from '../assets/generated/sole/sole-viaggio.webp';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
-import { RUOLI, ESEMPIO } from '../data/contenuti';
+import { ATTI, DATI } from '../data/contenuti';
 
 /**
- * Capitolo 05 — Chi c'è.
+ * Capitolo — Il programma.
  *
- * Ruoli, non nomi: il deck si inoltra, e i nomi stanno nello strato interno.
- * La referenza è descritta senza nome finché non è confermata, insieme alla
- * sua disponibilità a raccontarsi.
+ * La visione d'insieme nel tempo, in una figura che si costruisce sotto le
+ * frecce: quattro atti da dicembre a giugno. Poi il perimetro dei dati, perché
+ * la prima domanda di chi decide è «su che cosa lavoriamo».
  */
-const SLUG = 'chi';
+const SLUG = 'programma';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -36,38 +35,36 @@ const currentPath = Astro.url.pathname;
       <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
     </Slide>
 
-    <Slide id="slide-ruoli" bg="primary" align="left">
+    <Slide id="slide-atti" bg="primary" align="left">
       <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl" data-reveal>
+      <div class="xd-sl xd-sl--fig" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">{RUOLI.eyebrow}</p>
-          <h2 class="xd-h2">{RUOLI.titolo}</h2>
-          <p class="xd-sub">{RUOLI.sub}</p>
+          <p class="xd-n">{ATTI.eyebrow}</p>
+          <h2 class="xd-h2">{ATTI.titolo}</h2>
+          <p class="xd-sub">{ATTI.sub}</p>
         </div>
         <div class="cc-corpo">
-          <Ancore items={RUOLI.colonne} cols={3} />
+          <Atti />
         </div>
       </div>
     </Slide>
 
-    <Slide id="slide-esempio" bg="primary" align="left">
+    <Slide id="slide-dati" bg="primary" align="left">
       <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl xd-sl--fig" data-reveal>
+      <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">{ESEMPIO.eyebrow}</p>
-          <h2 class="xd-h2">{ESEMPIO.titolo}</h2>
-          <p class="xd-sub">{ESEMPIO.sub}</p>
-        </div>
-        <div class="xd-ref" style="--cols:2" data-stagger data-reveal data-reveal-delay="0.14">
-          {ESEMPIO.punti.map((p) => (
-            <div class="xd-ref-b">
-              <p class="xd-ref-n">{p.n}</p>
-              <p class="xd-ref-f">{p.f}</p>
-            </div>
-          ))}
+          <p class="xd-n">{DATI.eyebrow}</p>
+          <h2 class="xd-h2">{DATI.titolo}</h2>
+          <p class="xd-sub">{DATI.sub}</p>
         </div>
         <div class="cc-corpo">
-          <p class="xd-chiusa" data-reveal data-reveal-delay="0.24">{ESEMPIO.chiusa}</p>
+          <div class="xd-num" data-stagger>
+            {DATI.cifre.map((c) => (
+              <div class="xd-num-i"><p class="xd-num-k">{c.k}</p><p class="xd-num-v">{c.v}</p></div>
+            ))}
+          </div>
+          <p class="xd-chiusa" data-reveal data-reveal-delay="0.24">{DATI.chiusa}</p>
+          <p class="cc-noi" data-r="noi-dati"></p>
         </div>
       </div>
     </Slide>

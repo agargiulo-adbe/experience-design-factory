@@ -1,0 +1,289 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   «Ciascuno conta» — il deck a due livelli e le sue figure (12 nov 2026).
+   Importato in fondo a global.css. Solo token della pelle: nessun colore nuovo,
+   tranne gli inchiostri ESPLICITI delle superfici chiare proprie (mock, invito),
+   che su un fondo dichiarato devono essere pieni (audit:ink).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── I due livelli ──────────────────────────────────────────────────────── */
+[data-r]:empty { display: none; }
+.cc-solo-interno, .cc-tag-interno { display: none !important; }
+html[data-riservato='on'] .cc-solo-interno { display: block !important; }
+@media (max-width: 1023px) { html[data-riservato='on'] .cc-solo-interno { display: none !important; } }
+html[data-riservato='on'] .cc-tag-interno, html[data-riservato='loading'] .cc-tag-interno {
+  display: inline-flex !important; align-items: center; white-space: nowrap;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.3rem 0.6rem; border-radius: 3px; background: var(--color-rosso); color: #ffffff;
+}
+@media (max-width: 640px) { html[data-riservato] .cc-tag-interno { display: none !important; } }
+
+/* La riga «per noi» su una slide pubblica: c'è solo nel livello interno. */
+.cc-noi {
+  margin: 0; max-width: 62rem; padding: 0.7rem 1rem 0.75rem 1.1rem;
+  border-left: 3px solid var(--color-rosso); background: rgba(217, 24, 53, 0.12);
+  color: var(--ink-primary); font-size: clamp(0.95rem, 0.86vw, 1.5rem); line-height: 1.5; text-wrap: pretty;
+}
+.cc-noi strong:first-child { color: var(--ink-accent); font-weight: 700; letter-spacing: 0.02em; margin-right: 0.35rem; }
+
+/* Il guscio di una slide riservata mentre lo strato arriva. */
+.cc-attesa { color: var(--ink-note); font-size: 1rem; }
+@media (prefers-reduced-motion: no-preference) { .cc-attesa { animation: cc-respiro 1.6s ease-in-out infinite; } }
+
+/* ── Slide a due colonne: testata a sinistra, figura a destra ────────────── */
+.cc-split { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(1.6rem, 3.4vw, 5rem); align-items: center; }
+.cc-split--invito { grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr); }
+.cc-split .xd-sl-head { align-content: center; }
+.cc-split-fig { min-width: 0; }
+@media (max-width: 900px) { .cc-split, .cc-split--invito { grid-template-columns: minmax(0, 1fr); } }
+
+/* ── Il mock della domanda delle nove ───────────────────────────────────── */
+.cc-mock {
+  background: #f8f9fa; color: #1b2230; border-radius: 10px; overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45); display: grid; gap: 0.9rem; padding: 0 0 1.2rem;
+}
+.cc-mock-testa {
+  display: flex; align-items: center; gap: 0.6rem; padding: 0.75rem 1.1rem;
+  background: #2f394e; color: #ffffff; font-size: clamp(0.85rem, 0.75vw, 1.3rem); font-weight: 600;
+}
+.cc-mock-pallino { width: 0.6rem; height: 0.6rem; border-radius: 99px; background: #d91835; }
+.cc-mock-ora { margin-left: auto; font-variant-numeric: tabular-nums; color: #e3e5e9; }
+.cc-mock-grafico { padding: 0 1.1rem; }
+.cc-mock .cc-venduto-linea { stroke: #606c87; }
+.cc-mock .cc-venduto-base { stroke: #c9ced6; }
+.cc-mock-chiede {
+  justify-self: end; max-width: 82%; margin: 0 1.1rem; padding: 0.7rem 0.95rem; border-radius: 12px 12px 2px 12px;
+  background: #2f394e; color: #ffffff; font-size: clamp(0.95rem, 0.86vw, 1.5rem); line-height: 1.45;
+}
+.cc-mock-risponde {
+  max-width: 90%; margin: 0 1.1rem; padding: 0.8rem 1rem; border-radius: 12px 12px 12px 2px;
+  background: #ffffff; border: 1px solid #dfe3e8; display: grid; gap: 0.5rem;
+}
+.cc-mock-risponde p { margin: 0; max-width: none; color: #1b2230; font-size: clamp(0.95rem, 0.86vw, 1.5rem); line-height: 1.45; }
+.cc-mock-azione { display: grid; gap: 0.2rem; padding-top: 0.5rem; border-top: 1px solid #dfe3e8; }
+.cc-mock-azione span { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #b51039; }
+.cc-mock-nota { margin: 1.6rem 0 0; color: var(--ink-body); font-size: 0.8rem; max-width: none; }
+
+/* ── Il programma: quattro atti sulla linea dei mesi ────────────────────── */
+.cc-atti { display: grid; gap: 0.2rem; --testo: minmax(15rem, 0.95fr); --pista: minmax(0, 1.55fr); }
+.cc-atti-testa, .cc-atto { display: grid; grid-template-columns: var(--testo) var(--pista); gap: clamp(1rem, 2vw, 2.6rem); align-items: center; }
+.cc-atti-mesi { display: grid; grid-template-columns: repeat(var(--mesi), minmax(0, 1fr)); }
+.cc-atti-mesi span {
+  font-size: clamp(0.78rem, 0.7vw, 1.25rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-note); border-left: 1px solid var(--line-subtle); padding-left: 0.4rem;
+}
+.cc-atti-righe { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.cc-atto { padding: clamp(0.55rem, 1.2vh, 1.1rem) 0; border-top: 1px solid var(--line-subtle); margin-inline: 0; }
+.cc-atto-testo { display: grid; gap: 0.2rem; min-width: 0; }
+.cc-atto-testo p { margin: 0; max-width: none; }
+.cc-atto-v { display: flex; align-items: baseline; gap: 0.6rem; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.3rem, 1.6vw, 2.8rem); color: var(--ink-primary); line-height: 1.1; }
+.cc-atto-n { font-size: 0.6em; color: var(--ink-accent); font-variant-numeric: tabular-nums; }
+.cc-atto-fa { color: var(--ink-body); font-size: clamp(0.95rem, 0.86vw, 1.5rem); line-height: 1.45; }
+.cc-atto-esce { color: var(--ink-primary); font-size: clamp(0.95rem, 0.86vw, 1.5rem); line-height: 1.45; font-weight: 600; }
+.cc-atto-esce::before { content: '→ '; color: var(--ink-accent); }
+.cc-atto-pista { position: relative; height: 100%; min-height: 3.2rem; background: repeating-linear-gradient(90deg, var(--line-subtle) 0 1px, transparent 1px calc(100% / var(--mesi, 7))); }
+.cc-atto-bar {
+  position: absolute; top: 50%; translate: 0 -50%; left: calc(var(--da) * 100%); width: calc((var(--a) - var(--da)) * 100%);
+  min-height: 2.6rem; border-radius: 4px; background: var(--color-rosso); display: flex; align-items: center; padding: 0 0.7rem; overflow: hidden;
+}
+.cc-atto:nth-child(1) .cc-atto-bar { background: #606c87; }
+.cc-atto:nth-child(2) .cc-atto-bar { background: #b51039; }
+.cc-atto-quando { font-size: clamp(0.8rem, 0.72vw, 1.3rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-accent); }
+.cc-atto-q { color: #ffffff; font-size: clamp(0.78rem, 0.72vw, 1.3rem); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cc-atto-segno { position: absolute; left: calc(var(--x) * 100%); top: -0.2rem; bottom: -0.2rem; border-left: 2px dashed var(--ink-accent); }
+.cc-atto-segno span { position: absolute; left: 0.4rem; bottom: -1.5rem; white-space: nowrap; font-size: 0.78rem; font-weight: 700; color: var(--ink-accent); }
+.cc-atto-firma { position: absolute; right: 0; top: 0; display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap;
+  font-size: clamp(0.8rem, 0.74vw, 1.3rem); font-weight: 700; color: var(--ink-accent); }
+.cc-atto-firma::after { content: ''; width: 0.75rem; height: 0.75rem; border-radius: 99px; background: var(--color-rosso); box-shadow: 0 0 0 4px rgba(217,24,53,0.2); }
+.cc-atto:last-child .cc-atto-bar { top: auto; bottom: 0.2rem; translate: none; }
+@media (max-width: 900px) {
+  .cc-atti-testa { display: none; }
+  .cc-atto { grid-template-columns: minmax(0, 1fr); }
+  .cc-atto-pista { min-height: 2.8rem; }
+}
+
+/* ── Le otto settimane ──────────────────────────────────────────────────── */
+.cc-sett { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 4fr 1fr 1fr 1fr; gap: 0.6rem; }
+.cc-sett-i { margin-inline: 0; display: grid; align-content: start; gap: 0.3rem; padding: 0.9rem 0.9rem 1rem; border-top: 3px solid var(--color-ardesia-chiara); background: rgba(255, 255, 255, 0.05); min-width: 0; }
+.cc-sett-i:nth-child(2) { border-top-color: var(--color-rosso-scuro); }
+.cc-sett-i:nth-child(4) { border-top-color: var(--color-rosso); }
+.cc-sett-i p { margin: 0; max-width: none; }
+.cc-sett-n { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-accent); font-variant-numeric: tabular-nums; }
+.cc-sett-t { font-family: var(--font-display); font-weight: 700; color: var(--ink-primary); font-size: clamp(1.02rem, 1vw, 1.8rem); line-height: 1.25; }
+.cc-sett-d { color: var(--ink-body); font-size: clamp(0.95rem, 0.86vw, 1.5rem); line-height: 1.45; }
+@media (max-width: 1100px) { .cc-sett { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .cc-sett { grid-template-columns: minmax(0, 1fr); } }
+
+/* ── La giornata in corsie ──────────────────────────────────────────────── */
+.cc-giorno { display: grid; gap: 0.8rem; --k: 10rem; }
+.cc-giorno-ore, .cc-giorno-corsia { display: grid; grid-template-columns: var(--k) minmax(0, 1fr); gap: 1.2rem; align-items: center; }
+.cc-giorno-scala { position: relative; height: 1.4rem; }
+.cc-giorno-scala span { position: absolute; left: calc(var(--x) * 100%); translate: -50% 0; font-size: clamp(0.8rem, 0.72vw, 1.3rem); font-weight: 600; color: var(--ink-note); font-variant-numeric: tabular-nums; }
+.cc-giorno-k { margin: 0; font-family: var(--font-display); font-weight: 700; color: var(--ink-primary); font-size: clamp(1rem, 1vw, 1.8rem); }
+.cc-giorno-corsia--dir .cc-giorno-k { color: var(--ink-accent); }
+.cc-giorno-pista { position: relative; height: clamp(4.2rem, 9vh, 8rem); border-radius: 6px; background: rgba(255, 255, 255, 0.05); }
+.cc-giorno-b, .cc-giorno-pausa {
+  position: absolute; top: 0.35rem; bottom: 0.35rem; left: calc(var(--da) * 100% + 2px); width: calc((var(--a) - var(--da)) * 100% - 4px);
+  border-radius: 4px; display: flex; align-items: center; padding: 0 0.7rem; overflow: hidden; background: #606c87;
+}
+.cc-giorno-b span, .cc-giorno-pausa span { color: #ffffff; font-size: clamp(0.85rem, 0.8vw, 1.4rem); font-weight: 600; line-height: 1.25; }
+.cc-giorno-b--forte { background: var(--color-rosso); }
+.cc-giorno-pausa { background: transparent; border: 1px dashed var(--line-default); }
+.cc-giorno-pausa span { color: var(--ink-note); }
+@media (max-width: 760px) { .cc-giorno { --k: 5.5rem; } .cc-giorno-b span { font-size: 0.75rem; } }
+
+/* ── La pianta delle postazioni ─────────────────────────────────────────── */
+.cc-pianta { position: relative; display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr); gap: 1rem; align-items: stretch; }
+.cc-pianta p { margin: 0; max-width: none; }
+.cc-pianta-plen { border: 2px solid var(--line-default); border-radius: 6px; padding: 1.1rem; display: grid; align-content: center; gap: 0.4rem; background: rgba(255,255,255,0.04); }
+.cc-pianta-sale { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.7rem; }
+.cc-pianta-sala { margin-inline: 0; border: 2px solid var(--color-rosso); border-radius: 6px; padding: 0.8rem 1rem; display: grid; gap: 0.2rem; background: rgba(217, 24, 53, 0.08); }
+.cc-pianta-k, .cc-pianta-n { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-accent); }
+.cc-pianta-t { font-family: var(--font-display); font-weight: 700; color: var(--ink-primary); font-size: clamp(1.02rem, 1vw, 1.8rem); line-height: 1.25; }
+.cc-pianta-b { color: var(--ink-body); font-size: clamp(0.95rem, 0.86vw, 1.5rem); line-height: 1.45; }
+@media (max-width: 760px) { .cc-pianta { grid-template-columns: minmax(0, 1fr); } }
+/* ── L'invito ───────────────────────────────────────────────────────────── */
+.cc-invito { position: relative; margin: 0 auto; height: min(62vh, 44rem); aspect-ratio: 148 / 210; max-width: 100%; }
+.cc-invito-busta { position: absolute; inset: 8% 5% 3% 11%; background: #e9e4da; border-radius: 4px; rotate: 4deg; box-shadow: 0 20px 50px rgba(0,0,0,0.45); }
+.cc-invito-carta {
+  position: absolute; inset: 3% 6% 3% 4%; rotate: -2deg; border-radius: 3px; padding: 9% 9% 8%;
+  background:
+    radial-gradient(circle, rgba(47, 57, 78, 0.16) 1.4px, transparent 1.6px) 0 0 / 14px 14px,
+    #fbfaf7;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; gap: 0.9rem;
+}
+.cc-invito-carta p { margin: 0; max-width: none; color: #2f394e; }
+.cc-invito-occ { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #2f394e; }
+.cc-invito-t { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.5rem, 2vw, 3.2rem); line-height: 1; letter-spacing: -0.02em; color: #1b2230 !important; display: grid; gap: 0.25em; margin-top: auto !important; }
+.cc-invito-filo { display: block; width: 3.5rem; height: 3px; background: #d91835; }
+.cc-invito-testo { font-size: clamp(0.95rem, 0.86vw, 1.4rem); line-height: 1.5; }
+.cc-invito-quando { font-size: clamp(0.85rem, 0.76vw, 1.25rem); font-weight: 700; font-variant-numeric: tabular-nums; }
+.cc-invito-firma { margin-top: auto !important; display: grid; gap: 0.3rem; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; }
+.cc-invito-mano { display: block; width: 8.5rem; height: 1.8rem; border-bottom: 1px solid #606c87;
+  background: no-repeat left bottom / 100% 100% url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 170 36'%3E%3Cpath d='M4 28c10-14 18-22 24-20s-6 20 2 18 14-20 20-18-4 16 4 15 10-12 16-10 0 10 8 9 16-14 26-12 6 10 14 9 20-8 44-10' fill='none' stroke='%232f394e' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"); }
+.cc-spec { margin: 0.4rem 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem 1.6rem; }
+.cc-spec-i { display: grid; gap: 0.15rem; border-top: 1px solid var(--line-subtle); padding-top: 0.5rem; }
+.cc-spec dt { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-accent); }
+.cc-spec dd { margin: 0; color: var(--ink-body); font-size: clamp(0.95rem, 0.86vw, 1.5rem); line-height: 1.45; }
+
+/* ════════════════════════════════════════════════════════════════════════
+   Il vocabolario delle slide RISERVATE. Le classi sono pubbliche e non dicono
+   niente: il contenuto che le usa arriva dallo strato interno.
+   ════════════════════════════════════════════════════════════════════════ */
+.cc-r-slide p, .cc-r-slide li { max-width: none; }
+.cc-r-k { margin: 0; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-accent); }
+.cc-r-t { margin: 0; font-family: var(--font-display); font-weight: 700; color: var(--ink-primary); font-size: clamp(1.02rem, 1vw, 1.8rem); line-height: 1.25; }
+.cc-r-b { margin: 0; color: var(--ink-body); font-size: clamp(0.95rem, 0.86vw, 1.5rem); line-height: 1.45; text-wrap: pretty; }
+.cc-r-n { margin: 0; color: var(--ink-note); font-size: clamp(0.8rem, 0.72vw, 1.25rem); line-height: 1.45; }
+
+/* La linea del tempo: tre tratti, ognuno con la sua conseguenza. */
+.cc-linea { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); gap: 1.6rem; position: relative; }
+.cc-linea::before { content: ''; position: absolute; left: 0; right: 0; top: 0.55rem; height: 2px; background: var(--line-default); }
+.cc-linea-i { margin-inline: 0; position: relative; display: grid; align-content: start; gap: 0.45rem; padding-top: 1.8rem; min-width: 0; }
+.cc-linea-i::before { content: ''; position: absolute; top: 0; left: 0; width: 1.1rem; height: 1.1rem; border-radius: 99px; background: var(--color-ardesia-chiara); border: 3px solid var(--surface-primary); }
+.cc-linea-i[data-forte]::before { background: var(--color-rosso); }
+.cc-linea-poi { margin: 0.3rem 0 0; padding-top: 0.55rem; border-top: 1px solid var(--line-subtle); color: var(--ink-primary); font-weight: 600; font-size: clamp(0.95rem, 0.86vw, 1.5rem); line-height: 1.45; }
+@media (max-width: 900px) { .cc-linea { grid-template-columns: minmax(0, 1fr); } .cc-linea::before { display: none; } }
+
+/* Le idee della roadmap: le prime tre accese, la quarta in attesa. */
+.cc-idee { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+.cc-idea { margin-inline: 0; display: grid; align-content: start; gap: 0.4rem; padding: 1rem 1rem 1.1rem; border-top: 3px solid var(--color-rosso); background: rgba(255,255,255,0.06); min-width: 0; }
+.cc-idea[data-livello='dopo'] { border-top-color: var(--line-default); background: transparent; }
+.cc-idea[data-livello='dopo'] .cc-r-t { color: var(--ink-body); }
+@media (max-width: 1100px) { .cc-idee { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .cc-idee { grid-template-columns: minmax(0, 1fr); } }
+
+/* Il GNARR: tre scenari, tre componenti impilate. */
+.cc-gnarr { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: clamp(1.4rem, 3vw, 4rem); align-items: end; }
+.cc-gnarr-barre { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.4rem; align-items: end; height: clamp(15rem, 40vh, 30rem); border-bottom: 1px solid var(--line-default); }
+.cc-gnarr-col { display: flex; flex-direction: column-reverse; height: 100%; justify-content: flex-start; gap: 2px; min-width: 0; }
+.cc-gnarr-seg { height: calc(var(--h) * 100%); min-height: 4px; border-radius: 2px; background: #606c87; }
+.cc-gnarr-seg[data-livello='2'] { background: #b51039; }
+.cc-gnarr-seg[data-livello='3'] { background: var(--color-rosso); }
+.cc-gnarr-tot { order: 99; margin: 0 0 0.4rem; font-family: var(--font-display); font-weight: 800; color: var(--ink-primary); font-size: clamp(1.4rem, 1.9vw, 3.4rem); line-height: 1; }
+.cc-gnarr-asse { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.4rem; margin-top: 0.5rem; }
+.cc-gnarr-leg { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.8rem; }
+.cc-gnarr-leg li { margin-inline: 0; display: grid; grid-template-columns: 1rem minmax(0, 1fr); gap: 0.7rem; align-items: baseline; }
+.cc-gnarr-leg li > span { width: 1rem; height: 1rem; border-radius: 2px; background: #606c87; translate: 0 0.15rem; }
+.cc-gnarr-leg li[data-livello='2'] > span { background: #b51039; }
+.cc-gnarr-leg li[data-livello='3'] > span { background: var(--color-rosso); }
+@media (max-width: 900px) { .cc-gnarr { grid-template-columns: minmax(0, 1fr); } }
+
+/* Attorno al cuore: il cuore al centro, i prodotti nell'atto in cui nascono. */
+.cc-orbita { display: grid; grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.75fr) minmax(0, 1fr); gap: 1rem 1.6rem; align-items: center; }
+.cc-orbita-col { display: grid; gap: 0.9rem; min-width: 0; }
+.cc-orbita-p { display: grid; gap: 0.25rem; padding: 0.75rem 0.9rem; border-left: 3px solid var(--line-default); background: rgba(255,255,255,0.05); }
+.cc-orbita-cuore {
+  aspect-ratio: 1; border-radius: 999px; display: grid; place-content: center; text-align: center; gap: 0.4rem; padding: 1.2rem;
+  background: radial-gradient(circle at 50% 40%, #d91835 0%, #b51039 70%); box-shadow: 0 0 0 14px rgba(217,24,53,0.14), 0 0 0 30px rgba(217,24,53,0.06);
+}
+.cc-orbita-cuore p { margin: 0; color: #ffffff; }
+.cc-orbita-cuore .cc-r-k { color: #ffffff; }
+.cc-orbita-cuore .cc-r-t { color: #ffffff; font-size: clamp(1.1rem, 1.3vw, 2.2rem); }
+@media (max-width: 900px) { .cc-orbita { grid-template-columns: minmax(0, 1fr); } .cc-orbita-cuore { max-width: 15rem; justify-self: center; } }
+
+/* Il Gantt: filoni per riga, mesi per colonna, giornate a destra. */
+.cc-gantt { display: grid; gap: 0; --mesi: 7; }
+.cc-gantt-r { display: grid; grid-template-columns: minmax(12rem, 0.9fr) minmax(0, 1.6fr) minmax(8.5rem, 0.5fr); gap: 1.2rem; align-items: center; padding: 0.5rem 0; border-top: 1px solid var(--line-subtle); }
+.cc-gantt-r--testa { border-top: 0; padding-bottom: 0.2rem; }
+.cc-gantt-mesi { display: grid; grid-template-columns: repeat(var(--mesi), minmax(0, 1fr)); }
+.cc-gantt-mesi span { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-note); border-left: 1px solid var(--line-subtle); padding-left: 0.35rem; }
+.cc-gantt-pista { position: relative; height: 1.9rem; background: repeating-linear-gradient(90deg, var(--line-subtle) 0 1px, transparent 1px calc(100% / var(--mesi))); }
+.cc-gantt-bar { position: absolute; top: 0.25rem; bottom: 0.25rem; left: calc(var(--da) / var(--mesi) * 100%); width: calc((var(--a) - var(--da)) / var(--mesi) * 100%); border-radius: 3px; background: #606c87; }
+.cc-gantt-bar[data-forte] { background: var(--color-rosso); }
+.cc-gantt-gg { margin: 0; text-align: right; font-family: var(--font-display); font-weight: 700; color: var(--ink-primary); font-size: clamp(1rem, 1vw, 1.8rem); font-variant-numeric: tabular-nums; }
+.cc-gantt-gg small { display: block; font-family: var(--font-body); font-weight: 500; font-size: 0.78rem; color: var(--ink-note); }
+@media (max-width: 900px) { .cc-gantt-r { grid-template-columns: minmax(0, 1fr) 6rem; } .cc-gantt-pista, .cc-gantt-mesi { display: none; } }
+
+/* Le cifre in fondo a una slide riservata, accanto. */
+.cc-conto { display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); gap: 1.2rem; }
+.cc-conto-i { display: grid; gap: 0.25rem; padding-top: 0.6rem; border-top: 2px solid var(--ink-accent); }
+.cc-conto-k { margin: 0; font-family: var(--font-display); font-weight: 800; color: var(--ink-primary); font-size: clamp(1.5rem, 2vw, 3.4rem); line-height: 1.05; font-variant-numeric: tabular-nums; }
+@media (max-width: 760px) { .cc-conto { grid-template-columns: minmax(0, 1fr); } }
+
+/* Righe a due colonne (etichetta · contenuto): cast, luogo, rischi, richieste. */
+.cc-righe { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--cols, 1), minmax(0, 1fr)); gap: 0 2rem; }
+.cc-riga { margin-inline: 0; display: grid; grid-template-columns: minmax(10rem, 0.42fr) minmax(0, 1fr); gap: 0.4rem 1.4rem; padding: 0.65rem 0; border-top: 1px solid var(--line-subtle); align-items: baseline; }
+.cc-riga > div { display: grid; gap: 0.2rem; min-width: 0; }
+.cc-riga[data-livello='alto'] { border-top: 2px solid var(--color-rosso); }
+@media (max-width: 760px) { .cc-riga { grid-template-columns: minmax(0, 1fr); } .cc-righe { grid-template-columns: minmax(0, 1fr); } }
+
+/* Lo stesso corpo pieno per tutte le slide riservate. */
+.cc-r-slide .cc-corpo { gap: clamp(0.9rem, 1.8vh, 1.6rem); }
+
+/* Il reset della pelle cappa ogni paragrafo di slide a 60ch (`[data-slide] p`,
+   fuori layer e caricato DOPO questo file): dentro le figure i paragrafi
+   seguono la loro colonna, quindi il limite si toglie qui a specificità piena. */
+[data-slide] :is(.cc-mock, .cc-atti, .cc-sett, .cc-pianta, .cc-invito, .cc-r-slide, .cc-spec, .cc-giorno) p { max-width: none; }
+[data-slide] p.cc-noi { max-width: 62rem; }
+[data-slide] p.cc-mock-nota { max-width: none; }
+.cc-orbita-cuore .cc-r-n { color: #ffffff; font-weight: 600; }
+.cc-gantt-r--testa > p { text-align: right; }
+
+/* Sotto i 900px d'altezza la figura del programma tiene verbo, quando ed esito:
+   la riga su che cosa si fa è già nel titolo dell'atto, e la slide non deve
+   scorrere. Non si tocca il corpo del testo. */
+@media (max-height: 920px) and (min-width: 901px) {
+  .cc-atto-fa { display: none; }
+  .cc-atto { padding: 0.4rem 0; }
+  .cc-atto-pista { min-height: 2.8rem; }
+}
+.cc-orbita-atto { display: block; margin-top: 0.1rem; font-family: var(--font-body); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-accent); }
+
+/* ── Il chiasmo: una riga, due letture ──────────────────────────────────── */
+.cc-chiasmo { display: inline-block; white-space: nowrap; }
+.cc-chiasmo-a, .cc-chiasmo-b { display: inline-block; transition: transform 760ms cubic-bezier(0.65, 0, 0.35, 1), color 500ms ease, letter-spacing 500ms ease; }
+.cc-chiasmo.is-scambio .cc-chiasmo-a { transform: translateX(var(--dx-a, 0)); }
+.cc-chiasmo.is-scambio .cc-chiasmo-b { transform: translateX(var(--dx-b, 0)); color: var(--color-rosso-chiaro); font-variant-numeric: tabular-nums; }
+.cc-invito .cc-chiasmo.is-scambio .cc-chiasmo-b { color: #b51039; }
+@media (prefers-reduced-motion: reduce) { .cc-chiasmo-a, .cc-chiasmo-b { transition: none; } }
+
+/* A 1280×800 le sette voci attorno al cuore tengono nome e atto; la riga sul
+   perché resta dai 900px d'altezza in su. */
+@media (max-height: 820px) and (min-width: 901px) { .cc-orbita .cc-r-b { display: none; } .cc-orbita-col { gap: 0.6rem; } }
+
+/* La folla su fondo chiaro (slide dell'idea): stessi punti, in ardesia leggera,
+   così gli inchiostri della slide restano quelli del fondo chiaro. */
+.cc-folla-chiara { position: absolute; inset: 0; overflow: hidden; }
+.cc-folla-chiara .cc-folla { position: absolute; inset: 0; width: 100%; height: 100%; }
+.cc-folla-chiara .cc-folla-punti circle { fill: #2f394e; opacity: 0.14; }
+.cc-folla-chiara .cc-folla-punti circle { animation: none; }

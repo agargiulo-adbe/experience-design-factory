@@ -1,0 +1,40 @@
+---
+/**
+ * Il programma in una figura: quattro atti sulla linea dei mesi.
+ *
+ * A sinistra che cosa si fa e che cosa esce, a destra quando. Le righe entrano
+ * una alla volta sotto le frecce del deck (`data-substep`): il programma si
+ * costruisce mentre lo si racconta. Lo stato base è quello finale, quindi con
+ * «Riduci movimento» si vede tutto subito.
+ *
+ * Lo slot `atti-firma`, sull'ultima riga, resta vuoto nel livello pubblico; nel
+ * livello interno segna il traguardo commerciale, che il cliente non deve leggere.
+ */
+import { ATTI } from '../data/contenuti';
+const N = ATTI.mesi.length;
+---
+<div class="cc-atti" style={`--mesi:${N}`}>
+  <div class="cc-atti-testa" aria-hidden="true">
+    <span></span>
+    <span class="cc-atti-mesi">{ATTI.mesi.map((m) => <span>{m}</span>)}</span>
+  </div>
+  <ol class="cc-atti-righe">
+    {ATTI.atti.map((a, i) => (
+      <li class="cc-atto" data-substep={i > 0 ? '' : undefined} style={`--da:${a.da / N};--a:${a.a / N}`}>
+        <div class="cc-atto-testo">
+          <p class="cc-atto-v"><span class="cc-atto-n">{a.n}</span>{a.v}</p>
+          <p class="cc-atto-quando">{a.q}</p>
+          <p class="cc-atto-fa">{a.fa}</p>
+          <p class="cc-atto-esce">{a.esce}</p>
+        </div>
+        <div class="cc-atto-pista">
+          <span class="cc-atto-bar"></span>
+          {i === ATTI.atti.length - 1 && <span class="cc-atto-firma" data-r="atti-firma"></span>}
+          {i === 1 && ATTI.segni.map((s) => (
+            <span class="cc-atto-segno" style={`--x:${s.a / N}`}><span>{s.t}</span></span>
+          ))}
+        </div>
+      </li>
+    ))}
+  </ol>
+</div>
