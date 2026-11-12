@@ -1,0 +1,2344 @@
+@import "tailwindcss";
+
+/* Scan monorepo sources — pnpm symlinks are not auto-detected by Tailwind v4 */
+@source "../../../../packages/core/src/**/*.{astro,ts,tsx,js,jsx,mjs}";
+@source "../**/*.{astro,ts,tsx,js,jsx,mjs}";
+
+/* LO STRATO XD — la grammatica visiva condivisa (copertina a due colonne con
+   l'agenda, divisore di capitolo, slide di contenuto, architettura, cifre,
+   passi, referenze, figure grandi, chiusa). Vive nel motore:
+   `packages/core/src/styles/xd.css`. Percorso relativo e non alias: `@import`
+   nel CSS lo risolve il bundler dei fogli di stile, prima che gli alias di
+   Vite entrino in gioco.
+   ⚠️ XD porta geometria e gerarchia, NON colori di marchio: quelli arrivano
+   dal contratto `--xd-*` dichiarato più sotto, con i valori di Trenitalia. */
+@import "../../../../packages/core/src/styles/xd.css";
+
+/* ═══════════════════════════════════════════════════════════════════════
+   «Dove può arrivare il viaggio» — Adobe × Trenitalia
+   Prospettiva per la Direzione Sales. Generata l'11 ottobre 2026.
+
+   IL DESIGN SYSTEM È STATO LETTO, NON RICORDATO.
+   Fonte: `pnpm brand:tokens https://www.trenitalia.com`, 11 ottobre 2026 —
+   2 fogli di stile di produzione, 831 KB di CSS analizzati. Occorrenze:
+
+     #2f394e  285×   ardesia — il COLORE DI SISTEMA (fondi, barre, stati)
+     #606c87   96×   ardesia chiara — testo secondario, bordi
+     #d91835   34×   rosso — IL MARCHIO (le Frecce, le CTA), raro per scelta
+     #b51039   10×   rosso scuro — stati premuti
+     #006666    9×   verde — accento secondario, usato con parsimonia
+     #f1f3f4   26×   chiaro di superficie   ·   #f8f9fa 17×  nebbia
+     #ffffff  240×   bianco
+
+   Il più frequente è il colore di sistema, non il marchio: qui la gerarchia si
+   vede a occhio nudo, 285 contro 34. Chi ricorda «Trenitalia è rossa» inverte
+   le parti e costruisce una skin che non è la loro.
+
+   CARATTERE — nessuna sostituta: il sito dichiara **Poppins** (26 volte) ed è
+   distribuibile (Google Fonts, Open Font License). È il caso raro in cui si usa
+   il carattere vero del cliente. Non cambiarlo per gusto.
+
+   DOMINANTE SCURA solo per copertine e capitoli (il contenuto è chiaro, vedi in
+   fondo al file). Il perché dell'impianto: un keynote si proietta in una sala con le luci
+   basse, e l'ardesia notte è un colore del loro sistema abbassato di luminosità,
+   non un fondo inventato. `--surface-inverse` è quindi la superficie CHIARA —
+   come in `trenitalia-connessioni`, con cui questa experience deve stare in piedi
+   nella stessa stanza. I rapporti di contrasto sotto sono misurati sul #1b2230.
+   ═══════════════════════════════════════════════════════════════════════ */
+@theme {
+  --color-ardesia: #2f394e;
+  --color-ardesia-notte: #1b2230;
+  --color-ardesia-media: #333e54;
+  --color-ardesia-chiara: #606c87;
+  --color-rosso: #d91835;
+  --color-rosso-scuro: #b51039;
+  --color-rosso-chiaro: #ff8d9d;
+  --color-verde: #006666;
+  --color-verde-chiaro: #4fbdb4;
+  --color-chiaro: #f1f3f4;
+  --color-nebbia: #f8f9fa;
+  --color-bianco: #ffffff;
+  --color-grigio-200: #e3e5e9;
+  --color-grigio-300: #cfd3d9;
+  --color-grigio-400: #b4b9c2;
+  --color-grigio-600: #5a6069;
+
+  --font-display: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+}
+
+:root {
+  /* Primitive — i valori letti dal CSS di produzione di trenitalia.com */
+  --color-ardesia: #2f394e;
+  --color-ardesia-notte: #1b2230;
+  --color-ardesia-media: #333e54;
+  --color-ardesia-chiara: #606c87;
+  --color-rosso: #d91835;
+  --color-rosso-rgb: 217, 24, 53;
+  --color-rosso-scuro: #b51039;
+  /* Il rosso di marchio su fondo scuro non si legge (2,9:1): questa è la sua
+     versione schiarita, e si usa SOLO come inchiostro. Il pieno resta #d91835. */
+  --color-rosso-chiaro: #ff8d9d;
+  --color-verde: #006666;
+  --color-verde-chiaro: #4fbdb4;
+  --color-chiaro: #f1f3f4;
+  --color-nebbia: #f8f9fa;
+  --color-bianco: #ffffff;
+  --color-grigio-200: #e3e5e9;
+  --color-grigio-300: #cfd3d9;
+  --color-grigio-400: #b4b9c2;
+  --color-grigio-600: #5a6069;
+
+  --font-display: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+
+  --fontWeight-regular: 400;
+  --fontWeight-medium: 500;
+  --fontWeight-semibold: 600;
+  --fontWeight-bold: 700;
+  --lineHeight-tight: 1.1;
+  --lineHeight-normal: 1.5;
+  --lineHeight-relaxed: 1.625;
+
+  /* Semantici — Surface. Dominante SCURA: il fondo è l'ardesia di sistema
+     abbassata; `secondary` è il #2f394e pieno, così il colore che regge il sito
+     si vede come superficie intera e non solo come dettaglio. `inverse` è la
+     superficie CHIARA — ribaltata in blocco, come dice il contratto. */
+  --surface-primary: var(--color-ardesia-notte);
+  --surface-secondary: var(--color-ardesia);
+  --surface-tertiary: var(--color-ardesia-media);
+  --surface-inverse: var(--color-nebbia);
+  --surface-brand: var(--color-rosso);
+
+  /* Semantici — Ink (`--ink-X` sta su `--surface-X`). Misurati sul #1b2230. */
+  --ink-primary: var(--color-bianco);       /* 15,9:1 */
+  --ink-secondary: var(--color-grigio-200); /* 11,5:1 — corpo del testo */
+  --ink-tertiary: var(--color-grigio-400);  /*  7,3:1 — note e metadati */
+  --ink-inverse: var(--color-ardesia);
+  --ink-brand: var(--color-rosso-chiaro);
+
+  /* Inchiostri che si ribaltano con la superficie. Qui il default è la versione
+     per fondo SCURO, perché la dominante è scura; le varianti chiare stanno più
+     in basso, così a parità di specificità vince l'ultima. Per il TESTO usare
+     sempre questi, mai `--color-rosso` o `--accent-*`. */
+  --ink-accent: var(--color-rosso-chiaro);
+  --ink-accent-2: var(--color-verde-chiaro);
+  --ink-note: var(--color-grigio-400);
+  --ink-body: var(--color-grigio-200);
+  --ink-link: var(--color-rosso-chiaro);
+
+  /* Semantici — Accent: i PIENI (fondi, CTA, barre). Mai come inchiostro. */
+  --accent-primary: var(--color-rosso);
+  --accent-secondary: var(--color-verde);
+  --accent-hover: var(--color-rosso-scuro);
+  --color-cta: var(--color-rosso);
+  --color-on-cta: var(--color-bianco);   /* 5,3:1 sul rosso pieno */
+
+  /* Semantici — Line */
+  --line-subtle: var(--color-ardesia-media);
+  --line-default: var(--color-ardesia-chiara);
+  --line-strong: var(--color-grigio-300);
+
+  --focus-ring: var(--color-rosso-chiaro);
+
+  /* Deck safe-area contract (px) — DeckContainer li ribalta per breakpoint */
+  --slide-safe-inset: 80px;
+  --deck-chrome-safe: 168px;
+
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --easing-default: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --easing-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+
+  /* ── Il contratto XD, con i valori di Trenitalia ────────────────────────
+     XD si porta dei pannelli scuri suoi (il divisore di capitolo, il piano
+     dell'architettura, i blocchi): questi token dicono di che colore sono.
+     Qui la dominante è GIÀ scura, quindi gli inchiostri coincidono con quelli
+     di `--surface-primary` — ma vanno dichiarati espliciti e pieni, perché un
+     bianco trasparente su un pannello di marchio scende sotto soglia e
+     `audit:ink` lo misura sui pixel. */
+  --xd-dark-bg: var(--color-ardesia-notte);
+  --xd-dark-bg-2: var(--color-ardesia);
+  --xd-dark-ink: #ffffff;
+  --xd-dark-body: #e3e5e9;
+  --xd-dark-note: #b4b9c2;
+  /* L'accento su fondo scuro è il rosso SCHIARITO: il #d91835 pieno dà 2,9:1
+     e come inchiostro non si legge. Il pieno resta `--accent-primary`. */
+  --xd-dark-accent: var(--color-rosso-chiaro);
+  --xd-dark-surface: rgba(255, 255, 255, 0.07);
+  --xd-dark-surface-2: rgba(255, 255, 255, 0.13);
+  --xd-dark-line: rgba(255, 255, 255, 0.17);
+  --xd-arch-blocco: rgba(12, 16, 24, 0.55);
+  --xd-div-pannello: linear-gradient(165deg, #2f394e 0%, #141a25 100%);
+  --xd-piano: linear-gradient(160deg, #333e54 0%, #1b2230 68%, #11161f 100%);
+
+  /* ── Gli alias che XD si aspetta ────────────────────────────────────────
+     Alcune classi di XD leggono nomi primitivi di convenzione
+     (`--color-ink`, `--color-ink-2`, `--color-grey-600`, `--color-accent-deep`,
+     `--color-on-accent`) e li usano SENZA ripiego: `.xd-div-t` prende il
+     colore da `--color-ink`, e `.xd-ref-b` ci rimette gli inchiostri scuri
+     che si porta dentro. Qui la tavolozza ha nomi suoi — ardesia, grigio,
+     rosso — quindi senza questi alias quelle variabili sono vuote: il titolo
+     del divisore eredita il bianco della dominante e sparisce sul chiaro, e
+     nessun check di layout lo vede. Sono alias, non colori nuovi. */
+  --color-ink: var(--color-ardesia-notte);
+  --color-ink-2: var(--color-ardesia);
+  --color-grey-600: var(--color-grigio-600);
+  --color-accent-deep: var(--color-rosso-scuro);
+  --color-on-accent: var(--color-bianco);
+}
+
+/* ⚠️ `.xd-ref-b` prende il fondo da `--surface-secondary` e ci rimette dentro
+   gli inchiostri SCURI: è la scelta giusta in un'experience a dominante
+   chiara, dove `secondary` è un grigio tenue. Qui `secondary` è l'ardesia
+   piena — scura — e il risultato sarebbe ardesia su ardesia. Il blocco
+   referenza diventa quindi un componente CHIARO dentro una slide scura,
+   come `.ex-card`, e gli inchiostri che XD gli mette tornano corretti. */
+.xd-ref-b { background: var(--surface-inverse); border-left-color: var(--accent-primary); }
+
+/* Le varianti CHIARE dopo le scure: stessa specificità, vince l'ultima. Lo Slide
+   rende la superficie come classe Tailwind, non come data-attribute, quindi il
+   selettore insegue la classe. Una slide che DICHIARA scuro ma rende chiara per
+   via del backdrop si marca `.tp-on-light`. */
+/* `.ex-card` sta qui perché si porta una superficie CHIARA sua (bianco al 90%)
+   dentro slide scure: senza questa riga eredita gli inchiostri del fondo scuro e
+   scrive bianco su bianco. È la regola dei componenti chiari dentro slide scure,
+   e la classe giusta è quella del motore — `.ex-card`, non `.tp-card`. */
+[data-slide].bg-\[var\(--surface-inverse\)\],
+.ex-card,
+.tp-on-light,
+.tp-card,
+.tp-panel {
+  /* `--ink-primary` e `--ink-secondary` RIBALTANO anche loro, e non è un vezzo:
+     le classi del motore (titoli, nomi, voci) li usano dando per scontata una
+     dominante chiara. Qui la dominante è scura, quindi fuori da questo blocco
+     `--ink-primary` è BIANCO — e su una slide chiara dava bianco su bianco, un
+     titolo invisibile che nessun check vede (il check h misura i bottoni, non la
+     prosa). Si ribaltano qui una volta per tutte, non slide per slide. */
+  --ink-primary: var(--color-ardesia-notte);   /* 14,8:1 sul nebbia */
+  --ink-secondary: var(--color-ardesia);       /*  9,7:1 — corpo del testo */
+  --ink-tertiary: var(--color-grigio-600);
+  --ink-accent: var(--color-rosso-scuro);      /*  7,4:1 sul nebbia */
+  --ink-accent-2: var(--color-verde);
+  --ink-note: var(--color-grigio-600);
+  --ink-body: var(--color-ardesia);
+  --ink-link: var(--color-rosso-scuro);
+}
+/* Un componente scuro dentro una slide chiara ritorna agli inchiostri scuri. */
+.tp-on-dark {
+  --ink-primary: var(--color-bianco);
+  --ink-secondary: var(--color-grigio-200);
+  --ink-tertiary: var(--color-grigio-400);
+  --ink-accent: var(--color-rosso-chiaro);
+  --ink-accent-2: var(--color-verde-chiaro);
+  --ink-note: var(--color-grigio-400);
+  --ink-body: var(--color-grigio-200);
+  --ink-link: var(--color-rosso-chiaro);
+}
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 0.5vw + 0.875rem, 1.125rem);
+    line-height: var(--lineHeight-relaxed);
+    color: var(--ink-primary);
+    background-color: var(--surface-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  body { min-height: 100dvh; font-weight: var(--fontWeight-regular); }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: var(--fontWeight-bold);
+    line-height: var(--lineHeight-tight);
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; max-width: 72ch; }
+  a {
+    color: var(--ink-link);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: color var(--duration-fast) var(--easing-default);
+  }
+  a:hover { color: var(--color-rosso); }
+  :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+  img, picture, video, canvas, svg { display: block; max-width: 100%; }
+}
+
+/* i18n — <T en it>: rende entrambe, il CSS mostra l'attiva. */
+html[data-lang="en"] [data-lang-it] { display: none !important; }
+html[data-lang="it"] [data-lang-en] { display: none !important; }
+
+.solution-hidden { display: none !important; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+}
+
+::view-transition-old(root) { animation: 180ms ease-out both fade-out; }
+::view-transition-new(root) { animation: 180ms ease-out both fade-in; }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes fade-in  { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+}
+
+.slide-inner.text-center p { margin-inline: auto; }
+
+/* Occhiello (kicker): ≥ 0.75rem per contratto di leggibilità. */
+.slide-eyebrow {
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-size: clamp(0.76rem, 0.9vw, 0.875rem);
+  color: var(--ink-accent);
+}
+
+/* TV: minimi del tipo */
+[data-slide] .text-xs { font-size: 0.875rem !important; }
+[data-slide] p.text-sm, [data-slide] p.text-xs { font-size: max(0.9375rem, inherit); }
+[data-slide] p { max-width: 60ch; }
+
+[data-admin-only] { display: none !important; }
+[data-deck-progress] { font-variant-numeric: tabular-nums; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   .ex-* — art direction di partenza (neutra). Rinominare il prefisso con due
+   lettere del cliente quando il design system vero entra (es. .sd-* per Poste).
+   Tutti i colori dietro testo in rgba esplicito o token: il parser di contrasto
+   dell'audit non legge oklab()/color-mix().
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Backdrop (solo gradienti: nessuna immagine finché non c'è un asset vero).
+   Quando arriva uno sfondo generato, passare `--bg-src: url(...)` dalla slide e
+   dichiarare `data-made-with` sulla slide (il credito è un fatto).
+
+   RISCRITTI per la dominante scura. Nel template `.ex-bg-night` poggiava su
+   `--surface-inverse` e ci stendeva sopra veli di grigio neutro (17,19,24):
+   con la dominante ribaltata quella base è la nebbia CHIARA, e i veli neutri
+   spegnevano l'ardesia del cliente — misurato sullo screenshot, il fondo usciva
+   #313337, un grigio-bruno che non appartiene a questo marchio. Ora la base è la
+   superficie giusta e i veli sono in ardesia (27,34,48), così il blu resta blu.
+   Abbinamento: slide scura `bg="primary"` → `.ex-bg-night`; slide chiara
+   `bg="inverse"` → `.ex-bg-paper`. ───────────────────────────────────────── */
+.ex-bg-night {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(110% 70% at 10% 0%, rgba(var(--color-rosso-rgb), 0.16), transparent 52%),
+    radial-gradient(75% 65% at 50% 45%, rgba(47,57,78,0.55), transparent 78%),
+    linear-gradient(rgba(27,34,48,0.55), rgba(27,34,48,0.88)),
+    var(--bg-src, none) center / cover no-repeat,
+    var(--surface-primary);
+}
+.ex-bg-paper {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(100% 70% at 90% 100%, rgba(var(--color-rosso-rgb), 0.07), transparent 55%),
+    radial-gradient(90% 60% at 8% 0%, rgba(47,57,78,0.07), transparent 60%),
+    linear-gradient(rgba(255,255,255,0.55), rgba(255,255,255,0.78)),
+    var(--bg-src, none) center / cover no-repeat,
+    var(--surface-inverse);
+}
+
+/* ── Copertina del deck ────────────────────────────────────────────────── */
+.ex-cover { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.05rem; width: 100%; max-width: 62rem; margin-inline: auto; }
+.ex-cover-lockup { margin-bottom: clamp(1.4rem, 3vh, 2.6rem); }
+.ex-cover-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(3rem, 7vw, 6.2rem); line-height: 0.98; letter-spacing: -0.04em; color: #fff; margin: 0; }
+.ex-cover-tag { font-weight: 500; font-size: clamp(1.1rem, 1.6vw, 1.55rem); line-height: 1.35; color: var(--color-rosso-chiaro); max-width: 40ch; margin: 0 auto; display: block; }
+.ex-cover-lead { font-size: clamp(1rem, 1.2vw, 1.15rem); line-height: 1.6; color: var(--color-grigio-200); max-width: 66ch; margin: 0 auto; display: block; }
+.ex-cover-note { font-size: 0.76rem; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.7; color: var(--color-grigio-400); max-width: 70ch; margin: 0 auto; display: block; }
+
+/* ── Il percorso (home) ────────────────────────────────────────────────── */
+.ex-percorso { width: 100%; max-width: 72rem; margin-inline: auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.ex-percorso-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 3.2vw, 2.8rem); line-height: 1.06; letter-spacing: -0.03em; color: var(--ink-primary); text-align: center; margin: 1rem auto 0.9rem; max-width: 32ch; display: block; }
+.ex-percorso-lead { font-size: clamp(0.98rem, 1.1vw, 1.08rem); line-height: 1.55; color: var(--ink-body); max-width: 64ch; margin: 0 auto 1.2rem; text-align: center; display: block; }
+.ex-journey { width: 100%; margin-bottom: clamp(1rem, 2vh, 1.3rem); }
+.ex-journey-card {
+  display: flex; flex-direction: column; text-align: left; text-decoration: none; min-width: 0;
+  background: rgba(255,255,255,0.9); border: 1px solid var(--line-subtle); border-radius: 12px;
+  padding: 1rem 1.25rem 0.9rem; color: var(--ink-primary);
+  transition: border-color 200ms ease, background 200ms ease;
+}
+.ex-journey-card:hover { border-color: var(--color-rosso); background: #fff; color: var(--ink-primary); }
+.ex-journey-num { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.14em; color: var(--ink-accent); font-variant-numeric: tabular-nums; margin-bottom: 0.45rem; }
+.ex-journey-name { font-family: var(--font-display); font-size: 1.12rem; font-weight: 700; line-height: 1.25; color: var(--ink-primary); }
+.ex-journey-open { margin-top: auto; padding-top: 0.6rem; font-size: 0.86rem; font-weight: 600; color: var(--ink-note); }
+.ex-journey-card:hover .ex-journey-open { color: var(--ink-accent); }
+[data-slide] .ex-journey-card p { max-width: none; margin-inline: 0; }
+
+/* CTA piena: coppia `--color-cta` / `--color-on-cta` calcolata dal generatore (WCAG AA). */
+.ex-cta {
+  display: inline-flex; align-items: center; gap: 0.75rem; padding: 0.7rem 2.1rem; border-radius: 6px;
+  font-size: clamp(1rem, 1.15vw, 1.12rem); font-weight: 600; letter-spacing: 0.02em; text-decoration: none;
+  background: var(--color-cta); color: var(--color-on-cta); transition: background 200ms ease;
+}
+.ex-cta:hover { background: var(--color-rosso-scuro); color: #ffffff; }
+
+/* ── Cover del capitolo ────────────────────────────────────────────────── */
+.ex-ch { width: 100%; max-width: 66rem; margin-inline: auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: clamp(1.1rem, 2.6vh, 1.8rem); }
+.ex-ch-num { font-family: var(--font-display); font-weight: 700; font-size: clamp(0.8rem, 0.95vw, 0.95rem); letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-accent); }
+.ex-ch-title { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; font-size: clamp(2.6rem, 5vw, 4.8rem); color: var(--ink-primary); max-width: 20ch; text-wrap: balance; }
+.ex-ch-lead { font-size: clamp(1.05rem, 1.3vw, 1.3rem); line-height: 1.55; color: var(--ink-body); max-width: 56ch; }
+.slide-inner .ex-ch p { margin-inline: auto; }
+/* L'agenda del capitolo: i tre blocchi della slide di contenuto, anticipati. Dà alla
+   cover una base e un respiro reali (check i), non riempitivo. */
+.ex-ch-agenda { margin-top: clamp(0.6rem, 2vh, 1.4rem); padding-top: clamp(1rem, 2.4vh, 1.6rem); border-top: 1px solid var(--line-subtle); width: 100%; max-width: 48rem; display: flex; flex-direction: column; align-items: center; gap: 0.9rem; }
+.ex-ch-agenda-k { font-size: 0.76rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; color: var(--ink-note); }
+.ex-ch-agenda ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: center; flex-wrap: wrap; gap: clamp(1.2rem, 3vw, 2.6rem); }
+.ex-ch-agenda li { display: inline-flex; align-items: center; gap: 0.6rem; font-size: 1rem; font-weight: 600; color: var(--ink-primary); white-space: nowrap; }
+.ex-ch-agenda-n { width: 1.7rem; height: 1.7rem; border-radius: 50%; background: rgba(var(--color-rosso-rgb), 0.28); color: var(--color-rosso-chiaro); font-size: 0.82rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+/* ── Slide di contenuto: UNA colonna (max 72rem) per tutto, così i blocchi a
+   bandiera condividono il bordo (check m dell'audit). ─────────────────────── */
+.ex-content { width: 100%; max-width: 72rem; margin-inline: auto; text-align: left; }
+.ex-head { margin-bottom: clamp(1rem, 2.4vh, 1.6rem); }
+.ex-head-title { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.025em; line-height: 1.06; font-size: clamp(1.8rem, 3vw, 2.9rem); color: var(--ink-primary); max-width: 26ch; text-wrap: balance; margin-top: 1rem; }
+.ex-head-lead { font-size: clamp(0.98rem, 1.12vw, 1.12rem); line-height: 1.55; color: var(--ink-body); max-width: 68ch; margin-top: 1rem; }
+
+.ex-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.9rem, 1.8vw, 1.5rem); }
+.ex-card {
+  min-width: 0; background: rgba(255,255,255,0.9); border: 1px solid var(--line-subtle); border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04); padding: 1.25rem 1.3rem 1.2rem; display: flex; flex-direction: column; height: 100%;
+}
+.ex-card-k { font-size: 0.76rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-accent); margin-bottom: 0.55rem; }
+.ex-card-t { font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; line-height: 1.25; color: var(--ink-primary); margin-bottom: 0.5rem; }
+.ex-card-b { color: var(--ink-body); font-size: 0.98rem; line-height: 1.5; }
+.ex-src { margin-top: clamp(0.9rem, 2vh, 1.3rem); font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.6; color: var(--ink-note); text-align: left; }
+.ex-src a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+
+/* Il reset centra ogni <p> (`.slide-inner.text-center p`) e lo cappa a 60ch:
+   dentro i blocchi a bandiera la larghezza la governa il contenitore. */
+.slide-inner .ex-content p { margin-inline: 0; }
+[data-slide] .ex-card p, [data-slide] p.ex-src { max-width: none; }
+[data-slide] p.ex-head-lead { max-width: 68ch; }
+
+/* ── Slide-firma ───────────────────────────────────────────────────────── */
+.ex-sig-line { margin-top: clamp(1.4rem, 3vh, 2.4rem); font-size: clamp(1.05rem, 1.4vw, 1.35rem); line-height: 1.5; color: var(--color-grigio-200); text-align: center; max-width: 44ch; display: block; margin-inline: auto; }
+
+/* ── Deck chrome (WCAG AA, valori ESPLICITI) ──────────────────────────────
+   Il bottone si porta uno sfondo bianco suo, quindi il suo inchiostro non può
+   essere `--ink-primary`: quel token segue la dominante dell'experience, e qui
+   la dominante è scura — bianco su bianco, 1,17:1, nove fallimenti del check h.
+   Dove lo sfondo è esplicito, esplicito dev'essere anche l'inchiostro. */
+[data-deck] .deck-btn { color: #1b2230; background: rgba(255,255,255,0.92); border-color: var(--color-grigio-300); }
+[data-deck] .deck-btn:hover { color: var(--accent-primary); border-color: var(--accent-primary); }
+[data-deck] .deck-progress { color: var(--color-ardesia); }
+/* Sulle slide scure il chrome si ribalta (il deck marca data-on-dark). */
+[data-deck][data-on-dark] .deck-btn { color: #fff; background: rgba(17,19,24,0.9); border-color: var(--color-ardesia); }
+[data-deck][data-on-dark] .deck-progress { color: var(--color-grigio-200); }
+
+[data-deck] .slide-backdrop { overflow: clip; }
+
+/* ── Custom slides (Admin Console) — in sync con l'anteprima dell'admin ─── */
+.cs-content { display: flex; flex-direction: column; align-items: center; text-align: center; gap: clamp(1rem, 2.2vh, 2rem); width: 100%; max-width: 68rem; margin-inline: auto; }
+.cs-eyebrow { margin-bottom: 0.25rem; }
+.cs-title { font-family: var(--font-display); font-weight: 700; line-height: 1.04; letter-spacing: -0.02em; font-size: clamp(2rem, 4.4vw, 4rem); }
+.cs-prose { font-size: clamp(1.05rem, 1.5vw, 1.4rem); line-height: 1.6; max-width: 54ch; }
+.cs-prose > * + * { margin-top: 0.9em; }
+.cs-prose h3 { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.4rem, 2.2vw, 2rem); line-height: 1.2; }
+.cs-prose strong { font-weight: 600; }
+.cs-prose a { color: var(--ink-link); text-decoration: underline; }
+.cs-prose ul, .cs-prose ol { text-align: left; padding-left: 1.4em; display: inline-block; }
+.cs-prose ul { list-style: disc; } .cs-prose ol { list-style: decimal; }
+.cs-media { width: 100%; max-width: 56rem; border-radius: 8px; overflow: hidden; aspect-ratio: 16 / 9; background: rgba(17,19,24,0.06); }
+.cs-media img, .cs-media video, .cs-media iframe { width: 100%; height: 100%; object-fit: cover; border: 0; display: block; }
+.cs-caption { font-size: clamp(0.85rem, 1vw, 1rem); color: var(--ink-tertiary); margin-top: 0.5rem; }
+.cs-slide[data-cs-tone="dark"] .cs-title { color: var(--ink-primary); }
+.cs-slide[data-cs-tone="dark"] .cs-prose { color: var(--ink-secondary); }
+.cs-slide[data-cs-tone="light"] .cs-title { color: #fff; }
+.cs-slide[data-cs-tone="light"] .cs-prose { color: var(--color-grigio-200); }
+.cs-slide[data-cs-tone="light"] .slide-eyebrow { color: var(--color-rosso-chiaro); }
+
+/* ── Nav: UNA barra (rail + cluster destro), mai a capo ────────────────── */
+/* La barra ha un fondo bianco ESPLICITO, quindi deve portarsi anche gli inchiostri
+   espliciti: fuori dalle slide `--ink-primary` segue la dominante dell'experience,
+   che qui è scura, e il nome del deck usciva bianco su bianco su ogni pagina. */
+.ex-nav {
+  background: rgba(255,255,255,0.94); border-bottom: 1px solid var(--line-subtle); backdrop-filter: blur(6px);
+  --ink-primary: var(--color-ardesia-notte);
+  --ink-secondary: var(--color-ardesia);
+  --ink-accent: var(--color-rosso-scuro);
+  --ink-note: var(--color-grigio-600);
+}
+.ex-nav-link { color: var(--color-ardesia); }
+.ex-nav-link:hover { color: var(--ink-accent); background: var(--color-chiaro); }
+.ex-nav-link--active { color: var(--ink-accent); background: var(--color-chiaro); border: 1px solid rgba(var(--color-rosso-rgb), 0.3); }
+.ex-mark { display: inline-flex; width: 1.75rem; height: 1.75rem; flex-shrink: 0; }
+.ex-mark svg { width: 100%; height: 100%; display: block; }
+
+/* ── Compattazione sotto i 900 px di altezza (1280×800, 1440×900): si stringono
+   spazi e contenitori, non il tipo: il corpo resta ≥ 0,95rem. ─────────────── */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Componenti di questa Prospettiva (.tp-*)
+   Minimi di leggibilità rispettati: corpo ≥ 0.95rem con interlinea ≥ 1.5,
+   titoli di scheda ≥ 1rem, occhielli ≥ 0.75rem. Se un blocco non ci sta,
+   si taglia la copia o si divide la slide — non si rimpicciolisce il tipo.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Citazione / affermazione grande, su slide centrata ────────────────── */
+.tp-quote { width: 100%; max-width: 58rem; margin-inline: auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: clamp(0.9rem, 2.2vh, 1.5rem); }
+.tp-quote-big {
+  font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em;
+  font-size: clamp(1.6rem, 2.9vw, 2.65rem); line-height: 1.18; color: var(--ink-primary);
+  max-width: 24ch; text-wrap: balance; margin-inline: auto;
+}
+.tp-quote-big strong { color: var(--ink-accent); font-weight: 800; }
+.tp-quote-after { font-size: clamp(1rem, 1.2vw, 1.18rem); line-height: 1.6; color: var(--ink-body); max-width: 56ch; margin-inline: auto; }
+.tp-quote-after strong { color: var(--ink-primary); font-weight: 700; }
+.tp-quote .ex-src { text-align: center; }
+
+/* Numero da copertina: unico per slide, e marcato data-display perché l'audit
+   non lo misuri come prosa (check a). */
+.tp-big-number {
+  font-family: var(--font-display); font-weight: 800; letter-spacing: -0.04em;
+  font-size: clamp(4.5rem, 11vw, 9rem); line-height: 0.95; color: var(--ink-accent);
+  font-variant-numeric: tabular-nums; overflow-wrap: anywhere; max-width: none;
+}
+
+/* ── La domanda centrale del deck ──────────────────────────────────────── */
+.tp-domanda {
+  font-family: var(--font-display); font-weight: 800; letter-spacing: -0.03em;
+  font-size: clamp(1.9rem, 3.6vw, 3.2rem); line-height: 1.1; color: var(--ink-primary);
+  max-width: 24ch; text-wrap: balance; margin-inline: auto;
+}
+.tp-domanda-sub { font-size: clamp(1rem, 1.2vw, 1.18rem); line-height: 1.6; color: var(--ink-body); max-width: 58ch; margin-inline: auto; }
+.tp-domanda-sub strong { color: var(--ink-primary); font-weight: 700; }
+/* Su fondo di marchio l'inchiostro è quello che regge sul rosso pieno, non il token
+   che segue la dominante: lo sfondo è esplicito, l'inchiostro pure.
+   ATTENZIONE alla classe: `bg="brand"` sullo Slide rende `bg-[var(--accent-primary)]`,
+   NON `--surface-brand`. Con il selettore sbagliato la regola non si applica e non
+   se ne accorge nessuno — qui il sottotitolo restava grigio, 4,03:1 sul rosso.
+   Bianco PIENO e non al 92%: la trasparenza lo riporta sotto la soglia AA. */
+[data-slide].bg-\[var\(--accent-primary\)\] .tp-domanda,
+[data-slide].bg-\[var\(--accent-primary\)\] .tp-domanda-sub strong,
+[data-slide].bg-\[var\(--accent-primary\)\] .tp-domanda-sub { color: #ffffff; }
+[data-slide].bg-\[var\(--accent-primary\)\] .slide-eyebrow { color: #ffffff; }
+/* La riga dei perimetri e quella delle fonti stanno sulla stessa slide di marchio:
+   `--ink-note` sul rosso pieno misura 2,58:1 — sotto AA, e `audit:deck` non guarda il
+   testo, solo i bottoni. Qui l'inchiostro è esplicito come tutto il resto del blocco. */
+.tp-domanda-peri { font-size: clamp(0.92rem, 1vw, 1.02rem); line-height: 1.55; max-width: 56ch; margin-inline: auto; margin-top: clamp(0.8rem, 1.6vh, 1.2rem); color: var(--ink-body); }
+[data-slide].bg-\[var\(--accent-primary\)\] .tp-domanda-peri,
+[data-slide].bg-\[var\(--accent-primary\)\] .ex-src,
+[data-slide].bg-\[var\(--accent-primary\)\] .ex-src a { color: #ffffff; }
+
+/* ── La mappa dei quattro punti ────────────────────────────────────────── */
+.tp-mappa { width: 100%; display: flex; flex-direction: column; gap: 0; }
+.tp-mappa-row { display: grid; grid-template-columns: 3.4rem 1fr; gap: clamp(0.8rem, 1.4vw, 1.3rem); align-items: start; padding: clamp(0.7rem, 1.5vh, 1rem) 0; border-top: 1px solid var(--line-subtle); }
+.tp-mappa-row:first-child { border-top: 0; padding-top: 0; }
+.tp-mappa-n { font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--ink-accent); font-variant-numeric: tabular-nums; line-height: 1.2; }
+.tp-mappa-body { display: grid; gap: 0.25rem; min-width: 0; }
+.tp-mappa-dove { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-note); }
+.tp-mappa-t { font-family: var(--font-display); font-size: clamp(1.02rem, 1.25vw, 1.2rem); font-weight: 700; line-height: 1.3; color: var(--ink-primary); }
+.tp-mappa-b { font-size: clamp(0.95rem, 1.05vw, 1.03rem); line-height: 1.52; color: var(--ink-body); max-width: 86ch; }
+
+/* ── Numeri del referto ────────────────────────────────────────────────── */
+.tp-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(0.8rem, 1.6vw, 1.3rem); }
+.tp-stat { min-width: 0; border: 1px solid var(--line-subtle); border-radius: 10px; padding: clamp(0.9rem, 1.6vh, 1.2rem) clamp(0.9rem, 1.3vw, 1.15rem); background: color-mix(in srgb, var(--surface-secondary) 55%, transparent); display: flex; flex-direction: column; gap: 0.35rem; }
+.tp-stat-v { font-family: var(--font-display); font-size: clamp(2.1rem, 3.4vw, 3rem); font-weight: 800; line-height: 1; letter-spacing: -0.03em; color: var(--ink-accent); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+/* Lo span che porta il count-up è INLINE-BLOCK, non inline: con un corpo da
+   48px e line-height 1 il riquadro di uno span inline si calcola sulle metriche
+   del carattere, sborda sotto la riga e il check `e` lo legge come testo sopra
+   l'etichetta che sta più giù. Inline-block gli dà un riquadro pari alla riga. */
+.tp-stat-v > span, .tp-big-number > span { display: inline-block; line-height: 1; vertical-align: baseline; }
+.tp-stat-su { font-size: 0.92rem; font-weight: 600; letter-spacing: 0; color: var(--ink-note); margin-left: 0.38rem; }
+.tp-stat-l { font-family: var(--font-display); font-size: clamp(1rem, 1.12vw, 1.08rem); font-weight: 700; line-height: 1.32; color: var(--ink-primary); }
+.tp-stat-s { font-size: clamp(0.95rem, 1vw, 1rem); line-height: 1.5; color: var(--ink-body); }
+/* I testi stanno dentro una scheda che ha già la sua larghezza: qui togliere il
+   cap dei paragrafi è sicuro, perché a contenere è la colonna della griglia. */
+[data-slide] .tp-stat p, [data-slide] .tp-mappa-b, [data-slide] .tp-domande-row { max-width: none; }
+
+/* ── La domanda che facciamo al cliente, in evidenza ───────────────────── */
+.tp-ask { border-left: 3px solid var(--accent-primary); padding: clamp(0.8rem, 1.6vh, 1.1rem) 0 clamp(0.8rem, 1.6vh, 1.1rem) clamp(0.9rem, 1.4vw, 1.25rem); display: grid; gap: 0.4rem; }
+.tp-ask-k { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-accent); }
+.tp-ask-t { font-size: clamp(1rem, 1.18vw, 1.14rem); line-height: 1.58; color: var(--ink-primary); max-width: 72ch; }
+
+/* ── Le domande aperte ─────────────────────────────────────────────────── */
+.tp-domande { width: 100%; display: flex; flex-direction: column; gap: 0; }
+.tp-domande-row { font-size: clamp(1rem, 1.16vw, 1.12rem); line-height: 1.55; color: var(--ink-primary); padding: clamp(0.7rem, 1.5vh, 0.95rem) 0 clamp(0.7rem, 1.5vh, 0.95rem) 1.5rem; border-top: 1px solid var(--line-subtle); position: relative; }
+.tp-domande-row:first-child { border-top: 0; padding-top: 0; }
+.tp-domande-row::before { content: '?'; position: absolute; left: 0; top: clamp(0.7rem, 1.5vh, 0.95rem); font-family: var(--font-display); font-weight: 800; color: var(--ink-accent); }
+.tp-domande-row:first-child::before { top: 0; }
+
+/* ── Il percorso come linea con sette fermate ──────────────────────────── */
+.tp-linea { width: 100%; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0; margin: clamp(0.8rem, 2vh, 1.4rem) 0 clamp(1rem, 2.2vh, 1.5rem); position: relative; }
+/* La rotaia: una riga sola dietro le fermate, dal primo all'ultimo pallino. */
+.tp-linea::before { content: ''; position: absolute; left: 7.15%; right: 7.15%; top: 0.47rem; height: 2px; background: var(--line-default); }
+.tp-linea-stop { min-width: 0; }
+.tp-linea-link { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; text-align: center; text-decoration: none; padding: 0 0.3rem; min-height: 2.75rem; }
+.tp-linea-dot { width: 0.95rem; height: 0.95rem; border-radius: 50%; background: var(--surface-inverse); border: 2px solid var(--line-default); position: relative; z-index: 1; transition: background var(--duration-fast) var(--easing-default), border-color var(--duration-fast) var(--easing-default); }
+.tp-linea-num { font-size: 0.76rem; font-weight: 700; letter-spacing: 0.12em; color: var(--ink-note); font-variant-numeric: tabular-nums; }
+.tp-linea-name { font-family: var(--font-display); font-size: clamp(0.95rem, 1.02vw, 1.02rem); font-weight: 700; line-height: 1.28; color: var(--ink-primary); text-wrap: balance; }
+.tp-linea-link:hover .tp-linea-dot { background: var(--accent-primary); border-color: var(--accent-primary); }
+.tp-linea-link:hover .tp-linea-name { color: var(--ink-accent); }
+
+@media (max-height: 900px) {
+  .ex-head { margin-bottom: 0.7rem; }
+  .ex-head-title { font-size: clamp(1.5rem, 2.3vw, 2.1rem); }
+  .ex-head-lead { font-size: 0.95rem; line-height: 1.45; }
+  .ex-cards { gap: 0.8rem; }
+  .ex-card { padding: 0.9rem 1rem; }
+  .ex-card-b { font-size: 0.95rem; line-height: 1.42; }
+  .ex-src { margin-top: 0.6rem; font-size: 0.75rem; line-height: 1.45; }
+  .ex-ch-title { font-size: clamp(2.1rem, 4.2vw, 3.6rem); }
+  .ex-ch-lead { font-size: clamp(1rem, 1.2vw, 1.15rem); }
+  .ex-percorso-title { font-size: clamp(1.6rem, 2.4vw, 2.2rem); margin: 0.8rem auto 0.7rem; }
+  .ex-percorso-lead { margin-bottom: 0.8rem; }
+  .ex-journey-card { padding: 0.75rem 0.95rem 0.7rem; }
+  .ex-journey-num { margin-bottom: 0.3rem; }
+  /* Sotto i 900 px l'affordance «Apri il capitolo» cede lo spazio alla griglia. */
+  .ex-journey-open { display: none; }
+}
+
+/* ── Strumenti elencati dentro un disclosure ───────────────────────────── */
+/* gap ≥ 16px: il check `g` vuole almeno quello fra blocchi di testo impilati. */
+/* ── «Che cosa serve, concretamente»: i pezzi che occorrono ───────────────
+   Il corpo del drill-down NON dichiara un colore suo: eredita quello della
+   slide, che nel motore è bianco. Su una slide chiara questo vuol dire testo
+   bianco su nebbia — illeggibile, e nessun check lo vede (il check `h` misura i
+   bottoni, non la prosa; `audit:ink` lo vede solo a blocco aperto). Visto il
+   20 ott 2026 sul drill-down del capitolo 05. Si dichiara qui, una volta, con
+   l'inchiostro che si ribalta da sé. */
+[data-slide] .hiw-body,
+[data-slide] .hiw-body p { color: var(--ink-body); }
+
+/* ≥16px fra blocchi di testo impilati: è il check `g` del ritmo verticale, e
+   dentro una disclosure l'audit lo rimisura come HARD. */
+/* ── Ancore ───────────────────────────────────────────────────────────────
+   Una card porta un occhiello, un titolo e un paragrafo: tre di fila sono il
+   muro di testo che la regola «ancore, non prosa» esiste per togliere. Chi
+   guarda legge, e mentre legge non ascolta. L'ancora tiene l'occhiello e il
+   NOME — sei parole al massimo — e il paragrafo passa dietro lo «Scopri come»,
+   dove si apre per rispondere a una domanda invece di stare addosso a chi parla.
+   Niente scatola piena: un filo sopra e aria. Il peso lo porta il nome. */
+.tp-ancore {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: clamp(1.1rem, 2.4vw, 2.8rem);
+  margin-top: clamp(1rem, 1.8vh, 1.7rem);
+}
+.tp-anc { border-top: 2px solid var(--ink-accent); padding-top: 0.7rem; min-width: 0; }
+.tp-anc-k {
+  font-size: clamp(0.72rem, 0.78vw, 0.8rem);
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-note);
+  margin: 0; margin-inline: 0; max-width: none;
+}
+.tp-anc-n {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.42vw, 1.42rem);
+  font-weight: 700;
+  line-height: 1.22;
+  color: var(--ink-primary);
+  margin: 0.3rem 0 0; margin-inline: 0; max-width: none;
+  text-wrap: balance;
+}
+/* Il corpo sotto un'ancora: lo porta SOLO la slide che dice che cosa esce
+   chiede qualcosa, dove le tre voci sono una risposta e non un titolo.
+   Altrove le ancore restano nomi, che è il loro mestiere. */
+/* La misura di un'idea, sotto le sue capability nella mappa di chiusura. */
+.tp-mi-mis {
+  margin: 0.5rem 0 0; margin-inline: 0; max-width: none;
+  font-size: clamp(0.82rem, 0.68vw, 1.3rem); line-height: 1.4;
+  color: var(--ink-note); font-style: italic;
+}
+.tp-anc-b {
+  margin: 0.45rem 0 0; margin-inline: 0; max-width: none;
+  font-size: clamp(0.95rem, 0.88vw, 1.5rem); line-height: 1.5;
+  color: var(--ink-body);
+}
+/* La riga che chiude il punto della slide, sotto le ancore. */
+.tp-ancore-dopo {
+  margin-top: clamp(0.8rem, 1.3vh, 1.2rem);
+  font-size: clamp(0.98rem, 1.1vw, 1.1rem);
+  line-height: 1.55;
+  color: var(--ink-body);
+  max-width: 72ch;
+}
+
+/* ── «Che cosa serve»: i pezzi, in una riga ───────────────────────────────
+   Era un elenco a colonne con una descrizione per pezzo. Dal 26 ott il
+   dettaglio si apre su figure, che il meccanismo lo mostrano: l'elenco lo
+   ripeteva in parole e, sommato alle figure, portava la slide aperta fuori
+   dalla safe-area. Resta il nome e lo stato, su una riga sola. */
+.tp-serve {
+  font-size: clamp(0.86rem, 0.92vw, 0.94rem);
+  line-height: 1.6;
+  color: var(--ink-note);
+  max-width: none;
+}
+.tp-serve-sep { opacity: 0.55; }
+.tp-serve-n { font-weight: 600; color: var(--ink-body); white-space: nowrap; }
+/* La pastiglia è uno pseudo-elemento: nella riga resta un solo elemento di
+   testo, e il check `e` non ha niente da intersecare. Porta la PAROLA oltre al
+   colore — un colore da solo non è un'informazione. */
+.tp-serve-n::before {
+  content: attr(data-eti);
+  display: inline-block;
+  font-size: 0.7em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.1em 0.45em;
+  margin-right: 0.35rem;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+}
+.tp-serve-n[data-stato='avete']::before { color: var(--ink-accent-2); }
+/* «prezzo già fissato» è una terza cosa, e si vede: non è loro oggi, ma non è
+   nemmeno da negoziare. Prende l'accento del marchio, che qui è inchiostro. */
+.tp-serve-n[data-stato='nuovo']::before { color: var(--ink-note); }
+/* ⚠️ LA LEGENDA È USCITA DA TUTTE LE SLIDE (6 nov 2026). «già vostro, nel
+   contratto · si aggiunge, oggi non c'è» spiegava due pastiglie che si
+   spiegano da sole, e in fondo a ogni drill-down ripeteva la stessa riga: una
+   chiave di lettura che serve sei volte è il segno che il simbolo non
+   funziona, non che manchi la chiave. Il simbolo ora porta la parola, e dove
+   i prodotti sono molti si raggruppano per stato (`PezziPerStato.astro`).
+   La regola resta nei dati — `LEGENDA` in `contenuti.ts` — perché le etichette
+   vengono da lì. */
+.tp-serve-leg { display: none; }
+
+.tp-tools { display: grid; gap: 1.05rem; margin-top: 0.9rem; }
+.tp-tools li { font-size: clamp(0.95rem, 1.02vw, 1.02rem); line-height: 1.5; color: var(--ink-body); }
+.tp-tools-n { font-weight: 700; color: var(--ink-primary); }
+.tp-tools-n::after { content: ' — per'; font-weight: 400; color: var(--ink-note); }
+
+/* ── La coda di frase orfana (famiglia `F` di `audit:wrap`) ────────────────
+   `text-wrap: balance` bilancia le RIGHE e non sa niente delle frasi: un testo
+   di due frasi si spezza dentro la prima e lascia l'ultima — due parole e un
+   punto — da sola a capo. Il rimedio NON è lo spazio unificatore: legare una
+   frase intera la rende inseparabile e a questo corpo sborda (check `c`, HARD).
+   Un blocco in linea sì: il browser preferisce rompere FRA le frasi, e se una
+   non ci sta la manda a capo intera senza mai sbordare.
+   `vertical-align: top` non è un dettaglio: allineati alla linea di base, due
+   blocchi in linea su righe consecutive hanno scatole che si sovrappongono di
+   qualche pixel, e il check `e` (testo-su-testo, HARD) lo vede. */
+.ex-frase { display: inline-block; vertical-align: top; }
+
+/* ── Link alle fonti pubbliche ─────────────────────────────────────────────
+   Regola della Factory: ogni fonte pubblica citata in una slide porta il suo
+   link. Lo stile è sobrio di proposito — una fonte non è una CTA: eredita
+   l'inchiostro del testo e si distingue per la sottolineatura, che si accende
+   d'accento al passaggio. Così resta leggibile (il contrasto è quello del testo
+   che la ospita) e non ruba l'occhio al contenuto della slide. */
+[data-slide] .ex-src a,
+[data-slide] .tp-tools-n a,
+[data-slide] .tp-serve-n a,
+[data-slide] .hiw-body a,
+[data-slide] .tp-quote-after a,
+[data-slide] .ex-card-b a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-color var(--duration-fast) var(--easing-default), color var(--duration-fast) var(--easing-default);
+}
+[data-slide] .ex-src a:hover,
+[data-slide] .tp-tools-n a:hover,
+[data-slide] .tp-serve-n a:hover,
+[data-slide] .hiw-body a:hover,
+[data-slide] .tp-quote-after a:hover,
+[data-slide] .ex-card-b a:hover { color: var(--ink-accent); text-decoration-color: currentColor; }
+[data-slide] a:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: 2px; }
+
+/* ── Responsive dei componenti .tp-* ───────────────────────────────────── */
+@media (max-width: 1100px) {
+  .tp-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 860px) {
+  /* La linea si raddrizza: da orizzontale a verticale, la rotaia passa a sinistra. */
+  .tp-linea { grid-template-columns: 1fr; }
+  .tp-linea::before { left: 0.47rem; right: auto; top: 0.5rem; bottom: 0.5rem; width: 2px; height: auto; }
+  .tp-linea-link { flex-direction: row; align-items: center; gap: 0.7rem; text-align: left; padding: 0.45rem 0; }
+  .tp-linea-name { text-wrap: pretty; }
+  .tp-mappa-row { grid-template-columns: 2.6rem 1fr; }
+  .tp-stats { grid-template-columns: 1fr; }
+}
+
+/* ── XD, gli scostamenti di questa pelle ─────────────────────────────────
+   Il ritmo verticale fra il titolo di copertina e il suo lead: XD lascia
+   0,75rem, che a 1920 fanno 14px e il check `g` vuole almeno 16. Si alza lo
+   spazio, non si tocca il tipo — è la direzione che il contratto consente. */
+.xd-cop-sx { gap: 0.95rem; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   IL MOCKUP DI UN'IDEA — `.mk-*`, lo strato XD
+   Una schermata grande e riconoscibile, non quattro disegnini: il registro
+   è quello che si proietta (skills/experience-design/references/xd.md).
+   ⚠️ È un COMPONENTE CHIARO dentro slide scure: si rimette gli inchiostri,
+   se no eredita il bianco della dominante e scrive bianco su bianco.
+   ═══════════════════════════════════════════════════════════════════════ */
+.mk { width: 100%; display: flex; justify-content: center; }
+.mk-schermo {
+  width: 100%; max-width: 46rem; border-radius: 14px; overflow: hidden;
+  background: var(--color-bianco); border: 1px solid var(--color-grigio-300);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34);
+  --ink-primary: var(--color-ardesia-notte);
+  --ink-secondary: var(--color-ardesia);
+  --ink-tertiary: var(--color-grigio-600);
+  color: var(--color-ardesia-notte);
+}
+.mk-barra {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.6rem 1rem; background: var(--color-rosso);
+}
+.mk-barra::before {
+  content: ''; width: 0.62rem; height: 0.62rem; flex: none;
+  border-radius: 2px; background: var(--color-bianco);
+}
+.mk-barra-t {
+  font-family: var(--font-display); font-weight: 700; color: var(--color-bianco);
+  font-size: clamp(0.84rem, 0.72vw, 1.5rem); letter-spacing: 0.02em;
+}
+.mk-corpo { display: grid; gap: 0.7rem; padding: 1rem 1.15rem 1.15rem; }
+
+/* — la risposta generata — */
+.mk-dom { margin: 0; font-size: clamp(1rem, 0.95vw, 1.8rem); font-weight: 700; color: var(--color-ardesia-notte); }
+.mk-risposta {
+  display: grid; gap: 0.6rem; padding: 0.8rem 0.9rem; border-radius: 10px;
+  background: var(--color-nebbia); border-left: 3px solid var(--color-grigio-300);
+}
+.mk-risposta p { margin: 0; max-width: none; font-size: clamp(0.9rem, 0.78vw, 1.6rem); line-height: 1.45; color: var(--color-ardesia); }
+.mk-card {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.6rem;
+  padding: 0.55rem 0.75rem; border-radius: 8px;
+  background: var(--color-bianco); border: 1px solid var(--color-grigio-300);
+  border-left: 3px solid var(--color-rosso);
+}
+.mk-card-m { font-family: var(--font-display); font-weight: 700; font-size: clamp(0.94rem, 0.82vw, 1.68rem); color: var(--color-ardesia-notte); }
+.mk-card-o { font-size: clamp(0.82rem, 0.68vw, 1.46rem); color: var(--color-rosso-scuro); font-weight: 700; }
+.mk-fonti-k { margin: 0; font-size: clamp(0.76rem, 0.62vw, 1.36rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-grigio-600); }
+.mk-fonti { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.mk-chip {
+  padding: 0.3rem 0.7rem; border-radius: 999px;
+  font-size: clamp(0.82rem, 0.68vw, 1.46rem); font-weight: 600;
+  background: var(--color-chiaro); color: var(--color-grigio-600);
+  border: 1px solid var(--color-grigio-300);
+}
+.mk-chip--on { background: var(--color-rosso); color: var(--color-bianco); border-color: var(--color-rosso); }
+
+/* — l'itinerario intermodale — */
+.mk-occ { margin: 0; font-size: clamp(0.76rem, 0.62vw, 1.36rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-grigio-600); }
+.mk-tratte { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.4rem; }
+.mk-tratte li {
+  display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) auto;
+  align-items: baseline; gap: 0.3rem 0.8rem;
+  padding: 0.62rem 0.8rem; border-radius: 8px;
+  background: var(--color-nebbia); border-left: 3px solid var(--color-ardesia-chiara);
+}
+.mk-tratte li[data-ultimo] { border-left-color: var(--color-rosso); background: var(--color-chiaro); }
+.mk-tratta-m { font-family: var(--font-display); font-weight: 700; font-size: clamp(0.92rem, 0.8vw, 1.64rem); color: var(--color-ardesia-notte); }
+.mk-tratta-d { font-size: clamp(0.86rem, 0.72vw, 1.52rem); color: var(--color-ardesia); }
+.mk-tratta-o { font-variant-numeric: tabular-nums; font-weight: 700; font-size: clamp(0.86rem, 0.72vw, 1.52rem); color: var(--color-grigio-600); }
+.mk-totale {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+  padding: 0.7rem 0.9rem; border-radius: 8px; background: var(--color-ardesia-notte);
+}
+.mk-totale span { font-size: clamp(0.88rem, 0.74vw, 1.56rem); color: var(--color-grigio-200); }
+.mk-totale strong { font-family: var(--font-display); font-size: clamp(1.2rem, 1.1vw, 2.2rem); color: var(--color-bianco); }
+
+/* — le varianti di contenuto — */
+.mk-master {
+  display: grid; gap: 0.2rem; padding: 0.7rem 0.9rem; border-radius: 8px;
+  background: var(--color-ardesia-notte);
+}
+.mk-master-k { font-size: clamp(0.74rem, 0.6vw, 1.32rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-rosso-chiaro); }
+.mk-master-t { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.02rem, 0.9vw, 1.84rem); color: var(--color-bianco); }
+.mk-varianti { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; }
+.mk-varianti li {
+  display: grid; gap: 0.25rem; padding: 0.7rem 0.6rem; border-radius: 8px;
+  background: var(--color-nebbia); border: 1px solid var(--color-grigio-300);
+  border-top: 3px solid var(--color-rosso);
+}
+.mk-varianti li[data-attesa] { border-top-style: dashed; border-top-color: var(--color-grigio-400); }
+.mk-var-l { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.02rem, 0.9vw, 1.84rem); color: var(--color-ardesia-notte); }
+.mk-var-d { font-size: clamp(0.8rem, 0.66vw, 1.42rem); color: var(--color-grigio-600); }
+
+/* — la scrivania dell'agenzia — */
+.mk-rete-griglia { display: grid; gap: 0.5rem; }
+.mk-rete-b {
+  display: grid; gap: 0.2rem; padding: 0.68rem 0.85rem; border-radius: 8px;
+  background: var(--color-nebbia); border-left: 3px solid var(--color-ardesia-chiara);
+}
+.mk-rete-b[data-on] { border-left-color: var(--color-rosso); background: var(--color-chiaro); }
+.mk-rete-k { font-size: clamp(0.74rem, 0.6vw, 1.32rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-grigio-600); }
+.mk-rete-v { font-size: clamp(0.92rem, 0.8vw, 1.64rem); font-weight: 700; line-height: 1.3; color: var(--color-ardesia-notte); }
+
+.mk-nota { margin: 0; max-width: none; font-size: clamp(0.82rem, 0.68vw, 1.46rem); line-height: 1.4; color: var(--color-grigio-600); }
+
+@media (max-height: 900px) {
+  .mk-corpo { gap: 0.5rem; padding: 0.8rem 0.95rem 0.95rem; }
+  .mk-tratte li { padding: 0.48rem 0.7rem; }
+  .mk-varianti li { padding: 0.55rem 0.5rem; }
+  .mk-rete-b { padding: 0.52rem 0.75rem; }
+}
+@media (max-width: 900px) {
+  .mk-varianti { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .mk-tratte li { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ── La slide dell'idea: mockup a sinistra, prova a destra ───────────────
+   La colonna del mockup è la più larga: in XD la schermata È il contenuto, e
+   il testo accanto la nomina. Le due colonne si allineano in alto, se no la
+   cifra galleggia a metà di un mockup alto. */
+.tp-idea {
+  display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(0, 1fr);
+  gap: clamp(1.1rem, 2.2vw, 2.6rem); align-items: stretch; width: 100%;
+}
+/* ⚠️ `stretch` e non `start`: con `start` la colonna del mockup restava
+   incollata in alto e quella dei blocchi scendeva molto più giù — i due lati
+   non chiudevano alla stessa quota e la slide pendeva. Ora le due colonne
+   hanno la stessa altezza e il mockup si centra dentro la sua, così lo spazio
+   è coperto in modo simmetrico qualunque sia la lunghezza della colonna
+   destra. */
+.tp-idea-sx { min-width: 0; display: grid; align-content: center; }
+.tp-idea-dx { min-width: 0; display: grid; gap: 0.7rem; align-content: center; }
+
+/* ── I BOX CHE SI SCOPRONO A MANO ─────────────────────────────────────────
+   Chiesto il 9 nov 2026: la colonna destra entra un box alla volta, quando
+   chi parla preme ↓. Lo spazio resta riservato, così il mockup non si muove.
+   ⚠️ `visibility: hidden` ACCANTO a `opacity: 0`: una fase non ancora entrata
+   è ASSENTE, se no i gate misurano testo invisibile. Con «Riduci movimento»
+   e senza JavaScript è tutto visibile: è lo stato che `audit:deck` misura. */
+[data-substep] {
+  opacity: 0; visibility: hidden; transform: translateY(10px);
+  transition: opacity 320ms ease-out, transform 320ms ease-out, visibility 0s linear 320ms;
+}
+[data-substep][data-substep-active] {
+  opacity: 1; visibility: visible; transform: none;
+  transition: opacity 320ms ease-out, transform 320ms ease-out, visibility 0s;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-substep] { opacity: 1; visibility: visible; transform: none; transition: none; }
+}
+html:not(.js) [data-substep] { opacity: 1; visibility: visible; transform: none; }
+
+.tp-box {
+  min-width: 0; margin-inline: 0; padding: 0.85rem 1.1rem; border-radius: 10px;
+  background: var(--xd-dark-surface); border: 1px solid var(--xd-dark-line);
+  border-left: 3px solid var(--ink-accent);
+}
+.tp-box-k {
+  margin: 0 0 0.25rem; max-width: none; font-size: 0.75rem; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-accent);
+}
+.tp-box-t {
+  margin: 0; max-width: none; font-family: var(--font-display); font-weight: 600;
+  font-size: clamp(1.02rem, 0.98vw, 1.9rem); line-height: 1.32; color: var(--xd-dark-ink); text-wrap: pretty;
+}
+.tp-box-b {
+  margin: 0.2rem 0 0; max-width: none; font-size: clamp(0.95rem, 0.86vw, 1.62rem);
+  line-height: 1.5; color: var(--xd-dark-body);
+}
+.tp-box--due { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 1.2rem; }
+.tp-box--ponte { background: transparent; border-color: transparent; border-left-color: var(--ink-accent); }
+.tp-box .xd-num { margin: 0; padding: 0; border: 0; }
+/* Una cifra sola sta in riga con la sua frase: la colonna destra ora porta i
+   box, e l'altezza si recupera qui, mai sul corpo del testo. */
+.tp-box .xd-num[style*="--cols:1"] .xd-num-i {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 1rem;
+}
+/* Su schermi bassi la colonna dei box si allarga, così i nomi dei prodotti non
+   vanno a capo, e l'etichetta sopra la frase cede il posto. */
+@media (max-height: 920px) and (min-width: 1101px) {
+  .tp-idea { grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr); }
+  .tp-box { padding: 0.6rem 0.95rem; }
+  .tp-box > .tp-box-k:first-child { display: none; }
+}
+/* Dentro la colonna stretta, cifra e referenza partono dal bordo della
+   colonna e non dalla pagina: è il check `m`, ed è HARD. */
+.tp-idea-dx .xd-ref { max-width: none; }
+.tp-ref-set { font-family: var(--font-body); font-weight: 600; font-size: clamp(0.84rem, 0.72vw, 1.5rem); color: var(--ink-tertiary); letter-spacing: 0; }
+
+@media (max-width: 1100px) {
+  .tp-idea { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+}
+
+/* Il ponte sotto la citazione d'apertura: è il punto della slide, e si vede
+   che è una frase. Stessa forma della chiusa XD, perché fa lo stesso mestiere. */
+.tp-quote-ponte {
+  margin: 0.4rem auto 0; max-width: 58ch;
+  padding-left: 0.9rem; border-left: 3px solid var(--accent-primary);
+  font-size: clamp(1rem, 1vw, 1.78rem); line-height: 1.5; font-weight: 600;
+  color: var(--ink-primary); text-align: left;
+}
+
+/* ── Le otto domande, e il referto per intero ────────────────────────────
+   Vivono dentro un «Scopri come»: sono il dettaglio che risponde a «quali
+   domande?» e «e il resto dei numeri?». Il tipo resta sopra il minimo del
+   contratto — un elenco che si apre in sala si legge, o non serve. */
+.tp-dom-k {
+  margin: 0.6rem 0 0.3rem; font-size: 0.95rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-note);
+}
+.tp-dom {
+  list-style: none; margin: 0 0 0.9rem; padding: 0; display: grid; gap: 0.3rem;
+  /* Otto voci in colonna aprono un blocco più alto del viewport (check `exp`,
+     HARD). Due colonne lo dimezzano senza toccare il corpo del testo. */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.tp-dom li {
+  display: grid; grid-template-columns: 1.6rem minmax(0, 1fr) 2.2rem;
+  align-items: baseline; gap: 0.6rem; margin-inline: 0;
+  padding: 0.38rem 0.6rem; border-radius: 6px; background: rgba(255, 255, 255, 0.05);
+}
+.tp-dom-n { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink-accent); font-size: 0.95rem; }
+.tp-dom-t { font-size: 1rem; line-height: 1.4; color: var(--ink-body); }
+.tp-dom-l { font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; color: var(--ink-note); text-align: right; }
+
+.tp-ref-tab { width: 100%; border-collapse: collapse; margin: 0.3rem 0 0.7rem; }
+.tp-ref-tab th, .tp-ref-tab td {
+  text-align: left; padding: 0.45rem 0.6rem; font-size: 1rem; line-height: 1.35;
+  border-bottom: 1px solid var(--line-subtle); color: var(--ink-body);
+}
+.tp-ref-tab th {
+  font-size: 0.86rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--ink-note);
+}
+.tp-ref-tab td:nth-child(2), .tp-ref-tab td:nth-child(3),
+.tp-ref-tab th:nth-child(2), .tp-ref-tab th:nth-child(3) {
+  text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.tp-ref-tab td:nth-child(3) { font-weight: 700; color: var(--ink-primary); }
+
+/* Sotto i 900 px di altezza il blocco aperto deve rientrare nel viewport (check
+   `exp`, HARD): si stringono spaziature e padding, MAI il corpo del testo. */
+@media (max-height: 900px) {
+  .tp-dom { gap: 0.22rem; margin-bottom: 0.6rem; }
+  .tp-dom li { padding: 0.26rem 0.5rem; }
+  .tp-dom-k { margin: 0.4rem 0 0.22rem; }
+  .tp-ref-tab { margin: 0.2rem 0 0.4rem; }
+  .tp-ref-tab th, .tp-ref-tab td { padding: 0.3rem 0.5rem; }
+}
+
+/* 1280×800 è il viewport più stretto del contratto, e lì mancavano ~25px:
+   il titolo entrava nella safe-area (check `c`, HARD) con il blocco aperto.
+   Si recuperano dalle spaziature del blocco, non dal corpo del testo. */
+@media (max-height: 820px) {
+  .tp-dom li { padding: 0.2rem 0.5rem; }
+  .tp-dom { gap: 0.18rem; margin-bottom: 0.45rem; }
+  .tp-ref-tab th, .tp-ref-tab td { padding: 0.22rem 0.5rem; }
+  [data-slide] .hiw-body > * + * { margin-top: 0.45rem; }
+}
+
+/* L'agenda di capitolo è cresciuta quando ha smesso di essere scritta a mano:
+   cinque voci invece di tre, su tre righe. Con un «Scopri come» aperto, a
+   1280×800, il blocco intero sfonda la safe-area (check `c` dentro `exp`,
+   HARD). Si stringono le spaziature dell'agenda — non il corpo, che resta a
+   1rem come vuole il contratto di leggibilità. */
+@media (max-height: 860px) {
+  .ex-ch-agenda { margin-top: 0.5rem; padding-top: 0.7rem; gap: 0.5rem; }
+  .ex-ch-agenda ul { gap: 0.5rem 1.4rem; }
+  .ex-ch-agenda-n { width: 1.45rem; height: 1.45rem; font-size: 0.78rem; }
+}
+
+/* Con «Il referto per intero» aperto, a 1280×800 la slide dei numeri sfora la
+   safe-area di una trentina di pixel. Si stringe la griglia delle cifre, che è
+   l'elemento più alto; le cifre restano della stessa dimensione. */
+@media (max-height: 820px) {
+  .tp-stats { gap: 0.6rem; }
+}
+@media (max-height: 820px) {
+  /* Mancavano quattro pixel. Li dà lo spazio sopra la riga di fonte. */
+  .ex-content > .ex-src { margin-top: 0.35rem; }
+  .tp-ref-tab { margin-bottom: 0.25rem; }
+}
+
+/* ── Il territorio: 4% contro 96% ─────────────────────────────────────────
+   Registro XD: una figura grande, non quattro disegnini. Il 4% è una scheggia
+   accesa d'accento, il 96% la fascia che resta — e la sproporzione si legge in
+   un secondo da otto metri, che è il mestiere di questa slide.
+   ⚠️ Nessuna parola dentro l'SVG: le etichette sono HTML, così crescono con la
+   radice e su una parete di sala si leggono ancora. */
+.tp-territorio { width: 100%; max-width: 72rem; display: grid; gap: 0.7rem; }
+.tp-terr-fig { width: 100%; height: auto; aspect-ratio: 1000 / 70; display: block; }
+.tp-terr-resto { fill: rgba(255, 255, 255, 0.09); stroke: var(--xd-dark-line); stroke-width: 1.5; }
+.tp-terr-quota { fill: var(--accent-primary); }
+.tp-terr-eti { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr); gap: 0.6rem 1.4rem; }
+.tp-terr-e {
+  margin: 0; max-width: none; min-width: 0;
+  font-size: clamp(0.92rem, 0.8vw, 1.64rem); line-height: 1.4; color: var(--xd-dark-body);
+}
+.tp-terr-e span {
+  display: block; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.7rem, 2vw, 3.9rem); line-height: 1.05;
+  letter-spacing: -0.02em; color: var(--xd-dark-ink);
+}
+.tp-terr-e--on span { color: var(--xd-dark-accent); }
+@media (max-width: 900px) { .tp-terr-eti { grid-template-columns: minmax(0, 1fr); } }
+
+/* ── Il divisore di capitolo, con la dominante di questa pelle ───────────
+   XD compone il divisore per una dominante CHIARA: il titolo prende
+   `--color-ink`, l'inchiostro scuro, su un fondo chiaro. Qui la dominante è
+   scura e quel titolo uscirebbe ardesia su ardesia — invisibile, e nessun
+   check di layout lo vede. Si ribalta qui, una volta per tutte.
+   Il pannello di destra resta scuro (gli inchiostri `--xd-dark-*` ci stanno
+   sopra misurati) e prende un bordo di marchio: è l'unico rosso della slide,
+   e dice di che colore è questo deck senza coprire la fotografia. */
+.xd-div-t { color: var(--ink-primary); }
+.xd-div-num { color: var(--ink-accent); }
+.xd-div-bg::after { border-left: 4px solid var(--accent-primary); }
+/* La fotografia è un duotone scuro su un fondo scuro: senza una vignettatura
+   il confine sinistro non si legge come un campo, si legge come una macchia. */
+.xd-div-bg::before { filter: brightness(1.14) saturate(1.06); }
+
+/* L'agenda dentro il pannello del divisore: ancore, non voci di menu. Resta
+   piccola e silenziosa — il divisore è un respiro, non una slide di contenuto
+   — ma c'è, perché una copertina di capitolo che non dice dove si va lascia
+   chi guarda a indovinare. */
+.xd-div-ag {
+  list-style: none; margin: 0.9rem 0 0; padding: 0.9rem 0 0;
+  display: grid; gap: 0.42rem; border-top: 1px solid var(--xd-dark-line);
+}
+.xd-div-ag li {
+  display: grid; grid-template-columns: 1.35rem minmax(0, 1fr);
+  align-items: baseline; gap: 0.5rem; margin-inline: 0;
+  font-size: clamp(0.86rem, 0.74vw, 1.5rem); line-height: 1.3;
+  color: var(--xd-dark-body);
+}
+.xd-div-ag-n {
+  font-weight: 700; font-variant-numeric: tabular-nums;
+  font-size: clamp(0.76rem, 0.64vw, 1.34rem); color: var(--xd-dark-accent);
+}
+@media (max-height: 860px) {
+  .xd-div-ag { margin-top: 0.6rem; padding-top: 0.6rem; gap: 0.3rem; }
+}
+
+/* ── Due correzioni che la grammatica XD richiede a questa pelle ─────────
+   1 · XD lascia 0,4rem fra occhiello, titolo e lead: sono 7px, e il check `g`
+   vuole almeno 16 fra due blocchi di testo impilati. Da solo sarebbe SOFT, ma
+   `exp` ri-misura tutto a blocco aperto e il suo esito è HARD: 33 rilievi in
+   un colpo. Si alza lo spazio, non si tocca il tipo. */
+.xd-sl-head { gap: 0.9rem; }
+/* 2 · Su una slide di MARCHIO il fondo è il rosso pieno, e la riga di fonte
+   eredita l'inchiostro terziario: 2,58:1, sotto soglia, e il check `h` misura
+   ogni link come CTA. Su un fondo dichiarato l'inchiostro va esplicito e
+   pieno — è la stessa regola degli inchiostri che si ribaltano. */
+[data-slide].bg-\[var\(--accent-primary\)\] .xd-fonte,
+[data-slide].bg-\[var\(--accent-primary\)\] .xd-fonte a,
+/* Stessa ragione per l'occhiello: `--ink-accent` è il rosso schiarito, e su
+   un fondo di marchio rosso dà 2,31:1 — rosa su rosso. Un accento non è un
+   inchiostro, e su una superficie dichiarata l'inchiostro va esplicito. */
+[data-slide].bg-\[var\(--accent-primary\)\] .xd-n { color: #ffffff; }
+
+/* ── Il filo dei quattro punti ───────────────────────────────────────────
+   La mappa del deck: una linea, quattro fermate, un'ancora ciascuna. Il
+   paragrafo che spiega sta dietro «Scopri come» — in sala si apre solo se lo
+   chiedono. Le colonne delle etichette hanno la stessa griglia dei nodi, così
+   ogni ancora cade sotto la sua fermata. */
+.tp-filo { width: 100%; display: grid; gap: 0.2rem; }
+.tp-filo-fig { width: 100%; height: clamp(1.6rem, 2.2vw, 3.2rem); display: block; margin-bottom: -1.05rem; }
+/* ⚠️ `--xd-dark-line` è un bianco trasparente: su una slide chiara la
+   linea spariva. `--line-default` si ribalta con la superficie. */
+.tp-filo-l { stroke: var(--line-default); stroke-width: 2; }
+.tp-filo-n { fill: var(--accent-primary); }
+.tp-filo-eti {
+  list-style: none; margin: 0; padding: 0;
+  --g: 1.2rem;
+  display: grid; grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr)); gap: 0 var(--g);
+}
+.tp-filo-eti li { display: grid; gap: 0.28rem; justify-items: center; text-align: center; min-width: 0; margin-inline: 0; position: relative; }
+/* Il pallino della fermata: CSS e non SVG, così resta tondo. Si siede sulla
+   linea, che l'SVG sopra disegna da bordo a bordo delle colonne estreme. */
+.tp-filo-eti li::before {
+  content: ''; width: 0.78rem; height: 0.78rem; border-radius: 50%;
+  background: var(--accent-primary); margin-bottom: 0.3rem;
+}
+.tp-filo-num {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(0.78rem, 0.66vw, 1.38rem); letter-spacing: 0.1em;
+  color: var(--ink-accent); font-variant-numeric: tabular-nums;
+}
+.tp-filo-dove {
+  font-size: clamp(0.78rem, 0.64vw, 1.38rem); font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-note);
+}
+.tp-filo-t {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1rem, 0.94vw, 1.86rem); line-height: 1.26;
+  color: var(--ink-primary); text-wrap: balance;
+}
+/* La riga sotto una fermata del filo: la porta solo la slide che dice che
+   cosa va previsto, dove ogni fermata è un passo e non un'etichetta. */
+.tp-filo-b {
+  display: block; margin-top: 0.3rem;
+  font-size: clamp(0.92rem, 0.8vw, 1.44rem); line-height: 1.5;
+  color: var(--ink-body); text-wrap: pretty;
+}
+/* Di chi è il tavolo — due parole sotto ogni fermata (6 nov 2026, panel).
+   Inchiostro di nota e non accento: dice una condizione, non una leva, e un
+   accento qui ruberebbe lo sguardo alla fermata. Il corpo resta sopra il
+   minimo del contratto di leggibilità anche a 1280. */
+.xd-div-tav {
+  margin-top: 0.5rem;
+  font-size: clamp(0.86rem, 0.66vw, 1.34rem); line-height: 1.4;
+  color: var(--ink-note); font-style: italic;
+}
+.tp-filo-tav {
+  display: block;
+  font-size: clamp(0.8rem, 0.62vw, 1.3rem); line-height: 1.3;
+  color: var(--ink-note); font-style: italic;
+}
+@media (max-width: 900px) {
+  .tp-filo-eti { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; }
+  .tp-filo-fig { display: none; }
+}
+
+/* A 1280×800, con un «Scopri come» aperto, cinque slide sforavano la
+   safe-area di 3-9 pixel: il minimo, ma il check `c` dentro `exp` è HARD.
+   Si recuperano dallo spazio DENTRO il blocco aperto — non dal corpo del
+   testo, e non dai salti fra blocchi di testo, che il check `g` misura. */
+@media (max-height: 820px) {
+  [data-slide] .hiw-body { padding-top: 0.25rem; }
+  [data-slide] .hiw-body > * + * { margin-top: 0.55rem !important; }
+  [data-slide] .hiw-body .xd-fig { height: clamp(2.8rem, 3.6vw, 5rem); margin-bottom: 0.3rem; }
+}
+
+/* 1280×800 con un blocco aperto: servono ~50 px, e si prendono tutti dalle
+   SPAZIATURE — figura del drill-down, respiro fra i blocchi, padding dei
+   riquadri. Il corpo del testo non scende di un punto: è il contratto di
+   leggibilità, e una slide che si legge male in sala non la salva nessun gate. */
+@media (max-height: 820px) {
+  /* ⚠️ SOLO sulle slide marcate `data-stretto`. Stringere il respiro fra i
+     blocchi su TUTTE le slide faceva risalire il check `g` da 9 a 27 rilievi:
+     SOFT, ma è un peggioramento vero del ritmo pagato per un problema che
+     hanno sei slide su trentaquattro. Si marca chi ne ha bisogno. */
+  [data-stretto] .xd-sl { gap: 0.5rem; }
+  [data-slide] .hiw-body { padding-top: 0; }
+  [data-slide] .dett-fig-box { padding: 0.4rem !important; }
+  [data-slide] .dett-voce { gap: 0.35rem !important; }
+  [data-slide] .dett-testo { gap: 0.28rem !important; }
+  [data-slide] .xd-fig { height: clamp(2.4rem, 3.2vw, 4.4rem); margin-bottom: 0.25rem; }
+  .tp-filo-fig { height: 2rem; }
+  .tp-filo { gap: 0.1rem; }
+}
+@media (max-height: 820px) {
+  [data-slide] .dett-fig-box { padding: 0.3rem !important; }
+  [data-stretto] .xd-sl { gap: 0.45rem; }
+}
+@media (max-height: 820px) {
+  /* La figura del drill-down ha un rapporto 120×72: a 15rem di larghezza sono
+     162 px di altezza, e due voci riempiono il blocco da sole. Si stringe la
+     larghezza — il disegno resta leggibile, il testo non si tocca. */
+  [data-slide] .dett-fig { max-width: 11rem !important; }
+}
+/* La variante «la figura è il contenuto» stringe ancora di più la testa
+   (0,3rem = 5px) e vince per specificità sulla regola qui sopra: il check `g`
+   la trovava su tutte le slide d'idea. Stesso minimo, stessa ragione. */
+.xd-sl--fig .xd-sl-head { gap: 0.9rem; }
+
+/* ── La cronologia ───────────────────────────────────────────────────────
+   Stessa grammatica della mappa dei quattro punti: le due slide stanno nello
+   stesso capitolo e devono somigliarsi. La tappa di oggi è l'unica accesa. */
+.tp-crono .tp-filo-num { font-size: clamp(0.84rem, 0.72vw, 1.5rem); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-note); }
+.tp-crono .tp-filo-t { font-size: clamp(0.94rem, 0.86vw, 1.7rem); }
+.tp-crono li[data-ora] .tp-filo-num { color: var(--ink-accent); }
+.tp-crono li[data-ora]::before { box-shadow: 0 0 0 5px rgba(var(--color-rosso-rgb), 0.22); }
+.tp-crono li:not([data-ora])::before { background: var(--line-default); }
+
+/* ── Il ventaglio dei mercati ────────────────────────────────────────────
+   Una sola origine, più destinazioni: è la figura che dice quello che la
+   slide afferma. Le linee sono SVG, le etichette HTML — così crescono con la
+   radice e su una parete di sala si leggono ancora. */
+.tp-vent { width: 100%; display: grid; gap: 0.3rem; }
+.tp-vent-fig { width: 100%; height: clamp(2.6rem, 3.4vw, 5rem); display: block; }
+.tp-vent-r { stroke: var(--line-default); stroke-width: 1.6; }
+.tp-vent-o { fill: var(--accent-primary); }
+.tp-vent-eti {
+  list-style: none; margin: 0; padding: 0; order: -1;
+  display: grid; grid-template-columns: repeat(var(--cols, 5), minmax(0, 1fr)); gap: 0 0.8rem;
+}
+.tp-vent-eti li {
+  margin-inline: 0; min-width: 0; text-align: center;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(0.92rem, 0.84vw, 1.66rem); line-height: 1.24;
+  color: var(--ink-primary); text-wrap: balance;
+}
+.tp-vent-o {
+  display: inline-block; width: 0.62rem; height: 0.62rem; border-radius: 50%;
+  background: var(--accent-primary); margin-right: 0.5rem; vertical-align: middle;
+}
+.tp-vent-base {
+  margin: 0; max-width: none; text-align: center;
+  font-size: clamp(0.8rem, 0.68vw, 1.44rem); font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-accent);
+}
+@media (max-width: 900px) {
+  .tp-vent-fig { display: none; }
+  .tp-vent-eti { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+}
+@media (max-height: 820px) {
+  /* Con la cronologia in pagina, il blocco aperto della slide del contesto
+     sforava: si stringe la linea del tempo, non il testo. */
+  .tp-crono .tp-filo-fig { height: 1.4rem; margin-bottom: -0.9rem; }
+  .tp-crono .tp-filo-eti li::before { width: 0.6rem; height: 0.6rem; margin-bottom: 0.2rem; }
+  .tp-crono .tp-filo-eti { --g: 0.8rem; gap: 0 var(--g); }
+}
+@media (max-height: 820px) {
+  [data-stretto] .dett-fig { max-width: 9rem !important; }
+}
+@media (max-height: 820px) {
+  [data-stretto] .dett-fig { max-width: 7.5rem !important; }
+}
+
+/* ── Il contorno arretra quando un dettaglio si apre ─────────────────────
+   Il check `b` dell'audit guarda i comandi del deck: NON vede la firma
+   co-brand né il credito «creato con», che vivono fuori dalla slide. Su
+   `ricerca/slide-canale`, con il blocco aperto, la riga di fonte arrivava a
+   1013px e la firma partiva da 1005: otto pixel di sovrapposizione, misurati,
+   che nessun gate segnalava. Il motore marca `html[data-hiw-open]` apposta, e
+   la regola di `CLAUDE.md` dice che è la pelle a far arretrare il contorno —
+   la stessa leva con cui il motore nasconde il comando audio.
+   Si spegne l'opacità, non si sposta: spostare la firma la farebbe ballare a
+   ogni apertura, e il lockup `hero` non c'entra (lì la firma fissa è già
+   spenta dal runtime). */
+html[data-hiw-open] .edf-cobrand--chrome,
+html[data-hiw-open] .edf-madewith {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-hiw-open] .edf-cobrand--chrome,
+  html[data-hiw-open] .edf-madewith { transition: none; }
+}
+
+/* ── I tre livelli sulla slide dell'idea ─────────────────────────────────
+   Idea (il titolo) → capability → prodotti. Nasce dal dry run del 5 nov:
+   i nomi dei prodotti stavano tutti dentro il drill-down, e in sala Adobe
+   non si vedeva. Qui salgono nello strato che si proietta, piccoli ma
+   presenti: la pastiglia dice se un prodotto è già loro o si aggiunge. */
+.tp-liv { display: grid; gap: 0.3rem; padding-top: 0.75rem; border-top: 1px solid var(--line-subtle); }
+.tp-liv-k {
+  margin: 0; max-width: none; font-size: clamp(0.74rem, 0.6vw, 1.32rem);
+  font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-note);
+}
+.tp-liv-k + .tp-liv-k { margin-top: 0.45rem; }
+.tp-liv-cap { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.22rem; }
+.tp-liv-cap li {
+  margin-inline: 0; padding-left: 0.85rem; position: relative;
+  font-size: clamp(0.9rem, 0.78vw, 1.6rem); line-height: 1.36;
+  font-weight: 700; color: var(--ink-primary);
+}
+.tp-liv-cap li::before {
+  content: ''; position: absolute; left: 0; top: 0.52em;
+  width: 0.32rem; height: 0.32rem; border-radius: 50%; background: var(--accent-primary);
+}
+@media (max-height: 900px) { .tp-liv { padding-top: 0.5rem; gap: 0.22rem; } }
+
+/* ── La mappa delle quattro idee ─────────────────────────────────────────
+   Quattro colonne: numero, idea, che cosa serve saper fare, con che cosa.
+   Apre il percorso e lo richiude. Le pastiglie vanno a capo dentro la
+   colonna — in quattro colonne strette un elenco in riga si spezza male. */
+.tp-mi {
+  list-style: none; margin: 0; padding: 0; width: 100%;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 clamp(1rem, 1.8vw, 2.2rem);
+}
+.tp-mi-i {
+  min-width: 0; margin-inline: 0; display: grid; gap: 0.35rem; align-content: start;
+  padding-top: 0.8rem; border-top: 3px solid var(--accent-primary);
+}
+.tp-mi-n {
+  margin: 0; max-width: none; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(0.8rem, 0.68vw, 1.44rem); letter-spacing: 0.1em;
+  color: var(--ink-accent); font-variant-numeric: tabular-nums;
+}
+.tp-mi-t {
+  margin: 0; max-width: none; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.05rem, 0.98vw, 1.95rem); line-height: 1.22;
+  color: var(--ink-primary); text-wrap: balance;
+}
+.tp-mi-cap { list-style: none; margin: 0.15rem 0 0.35rem; padding: 0; display: grid; gap: 0.2rem; }
+.tp-mi-cap li {
+  margin-inline: 0; font-size: clamp(0.86rem, 0.74vw, 1.52rem); line-height: 1.34;
+  color: var(--ink-body);
+}
+/* Dentro la mappa le pastiglie si impilano: la riga unica è pensata per una
+   colonna larga, qui ne ha un quarto. */
+/* ⚠️ `.tp-serve-n` nasce `white-space: nowrap`, ed è giusto nella riga unica
+   per cui è stato scritto: il nome di un prodotto non si spezza a metà. In
+   una colonna larga un quarto di pagina, però, quel nowrap faceva **uscire i
+   nomi dalla colonna e sovrapporli a quella accanto** — testo su testo, che
+   è il check `e` ed è HARD. Qui la pastiglia e il nome diventano una riga
+   che può andare a capo; il nome resta intero. */
+.tp-mi-cap li { overflow-wrap: anywhere; }
+@media (max-height: 900px) { .tp-mi-i { padding-top: 0.55rem; gap: 0.25rem; } }
+@media (max-width: 900px) { .tp-mi { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem; } }
+
+/* ── I PRODOTTI RAGGRUPPATI PER STATO ─────────────────────────────────────
+   L'etichetta si dice una volta, come intestazione, e i prodotti stanno
+   sotto: così il tag non può separarsi dal nome che qualifica — che è il
+   difetto che questa forma esiste per chiudere — e non si ripete sei volte
+   per colonna.
+   La distinzione fra i due stati la portano TRE cose insieme, non il colore
+   da solo: la posizione (già vostri sempre per primi), la barra a sinistra, e
+   la parola in chiaro. Un colore da solo non è un'informazione. */
+.tp-pz { display: grid; gap: 0.6rem; margin: 0; min-width: 0; }
+.tp-pz-g {
+  min-width: 0; display: grid; gap: 0.2rem;
+  padding-left: 0.6rem; border-left: 3px solid currentColor;
+}
+.tp-pz-g[data-stato='avete'] { color: var(--ink-accent-2); }
+.tp-pz-g[data-stato='nuovo'] { color: var(--ink-accent); }
+.tp-pz-k {
+  margin: 0; max-width: none;
+  font-size: clamp(0.74rem, 0.6vw, 1.3rem); font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: currentColor;
+}
+.tp-pz-l { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.18rem; }
+/* Il nome del prodotto NON eredita il colore del gruppo: su quattro colonne
+   sei nomi colorati diventano un muro, e il verde su fondo chiaro scende
+   sotto soglia a corpo piccolo. Il colore resta all'intestazione e alla
+   barra, il nome prende l'inchiostro del testo. */
+/* Due colonne: il punto del prodotto, poi il nome. Il punto tiene la sua
+   colonna, quindi i nomi restano incolonnati anche quando uno va a capo —
+   che è metà della leggibilità di questo blocco. */
+.tp-pz-v {
+  margin-inline: 0; min-width: 0;
+  display: grid; grid-template-columns: 0.62em minmax(0, 1fr); gap: 0.05rem 0.5rem;
+  align-items: start;
+  font-size: clamp(0.86rem, 0.74vw, 1.5rem); line-height: 1.32;
+  color: var(--ink-body);
+}
+/* IL COLORE DEL PRODOTTO sta qui e non nel nome: il nome deve restare
+   inchiostro leggibile su fondo chiaro e su fondo scuro, e il colore che
+   qualifica lo STATO è già quello del gruppo. Dettaglio in `contenuti.ts`. */
+.tp-pz-p {
+  width: 0.62em; height: 0.62em; margin-top: 0.42em; border-radius: 50%;
+  background: var(--c); flex: none;
+}
+.tp-pz-n { font-weight: 600; overflow-wrap: anywhere; color: var(--ink-body); }
+/* ⚠️ Il link eredita `currentColor` dal gruppo e uscirebbe verde o rosso: sei
+   nomi colorati per colonna sono un muro, e il verde su fondo chiaro scende
+   sotto soglia a corpo piccolo. L'inchiostro è esplicito, il colore resta
+   all'intestazione e alla barra. Specificità sufficiente a battere la regola
+   di base sui link. */
+.tp-pz .tp-pz-n a { color: var(--ink-body); text-decoration-color: var(--line-subtle); }
+.tp-pz .tp-pz-n a:hover { text-decoration-color: var(--ink-accent); }
+.tp-pz-a { grid-column: 2; font-size: 0.88em; color: var(--ink-note); overflow-wrap: anywhere; }
+@media (max-height: 900px) {
+  .tp-pz { gap: 0.45rem; }
+  .tp-pz-g { gap: 0.12rem; }
+}
+/* A 1280×800 lo strato aperto arriva a filo dei comandi del deck: qui si
+   recuperano i pixel sulle spaziature, mai sul corpo del testo. */
+/* Sulla slide dell'idea la colonna destra porta cinque blocchi: frase, cifra,
+   capability, prodotti e referenza. Coi prodotti raggruppati è cresciuta, e a
+   1280×800 sul capitolo del contenuto — che ha sei prodotti, il massimo — il
+   titolo usciva dalla safe-area in alto (check `c`, HARD, misurato il 6 nov).
+   Qui si recuperano i pixel sulle spaziature e sulle frecce, mai sul corpo. */
+@media (max-height: 860px) {
+  .tp-idea-dx { gap: 0.5rem; }
+  .tp-box { padding: 0.6rem 0.95rem; }
+  .tp-idea-dx .xd-ref-b { padding-top: 0.6rem; padding-bottom: 0.6rem; }
+  .tp-idea-dx .tp-pz { gap: 0.3rem; }
+  .tp-idea-dx .tp-pz-g { gap: 0.08rem; }
+  .tp-idea-dx .tp-pz-l { gap: 0.08rem; }
+}
+@media (max-height: 820px) {
+  .tp-pz { gap: 0.32rem; }
+  .tp-pz-l { gap: 0.1rem; }
+  .tp-pz-v { line-height: 1.26; }
+  .tp-mi-i { gap: 0.18rem; padding-top: 0.45rem; }
+}
+
+/* ── LA BUSSOLA DELLE QUATTRO IDEE ────────────────────────────────────────
+   Il «siamo qui» sul divisore di capitolo. Vive nella colonna di sinistra,
+   sotto il titolo, e si tiene nella metà che la fotografia non occupa: lo
+   sfondo del divisore porta la foto da 40% a 68%, quindi la bussola si cappa
+   a 30ch e non ci finisce sopra.
+   Il bordo sinistro è quello del titolo e del numero di capitolo — il check
+   `m` misura i blocchi a bandiera di primo livello, e un elenco rientrato
+   sarebbe una riga storta. */
+.tp-bus { display: grid; gap: 0.5rem; margin: 0; max-width: 34rem; min-width: 0; }
+.tp-bus-k {
+  margin: 0; max-width: none; font-size: clamp(0.78rem, 0.62vw, 1.4rem);
+  font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-tertiary);
+}
+.tp-bus-l {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 0.3rem 0.95rem;
+}
+.tp-bus-i {
+  display: flex; align-items: baseline; gap: 0.38rem; min-width: 0;
+  font-size: clamp(0.9rem, 0.76vw, 1.6rem); line-height: 1.3;
+  color: var(--ink-tertiary);
+}
+.tp-bus-n { font-weight: 700; font-variant-numeric: tabular-nums; }
+.tp-bus-t { overflow-wrap: anywhere; }
+/* L'idea che si sta aprendo: accento, grassetto e un punto pieno davanti.
+   Il punto è un `::before` e non un carattere nel markup: un glifo dentro il
+   testo entrerebbe nelle misure degli a capo. */
+.tp-bus-i[data-qui] { color: var(--ink-accent); font-weight: 700; }
+.tp-bus-i[data-qui]::before {
+  content: ''; flex: none; align-self: center;
+  width: 0.42em; height: 0.42em; border-radius: 50%;
+  background: var(--accent-primary);
+}
+@media (max-height: 820px) {
+  .tp-bus { gap: 0.35rem; }
+  .tp-bus-l { gap: 0.25rem 0.8rem; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   NOTE PER CHI PRESENTA (`/relatore/`)
+   Non è una slide: è un foglio che si tiene aperto sul portatile mentre si
+   presenta, e si legge DI SBIECO. Quindi la gerarchia fa tutto il lavoro —
+   ogni riga è marcata da un'etichetta sempre nello stesso posto e sempre
+   dello stesso colore, così l'occhio trova «il fatto» senza leggere.
+   Fondo chiaro di proposito: si guarda alla luce di una sala riunioni, non
+   proiettato, e il deck scuro qui stancherebbe.
+   ══════════════════════════════════════════════════════════════════════════ */
+.rel {
+  --rel-ink: #1b2230;
+  --rel-ink-2: #41495a;
+  --rel-ink-3: #6b7486;
+  --rel-linea: #dfe3ea;
+  max-width: 62rem; margin: 0 auto; padding: 6.5rem 1.5rem 5rem;
+  color: var(--rel-ink); background: transparent;
+}
+body:has(.rel) { background: #f7f8fa; }
+
+.rel-top { border-bottom: 2px solid var(--rel-ink); padding-bottom: 1.6rem; margin-bottom: 2.4rem; }
+.rel-oc {
+  margin: 0; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--accent-primary);
+}
+.rel-h1 {
+  margin: 0.3rem 0 0; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.9rem, 3.4vw, 2.9rem); line-height: 1.08; letter-spacing: -0.02em;
+}
+.rel-sub { margin: 0.5rem 0 0; max-width: 46rem; font-size: 1rem; line-height: 1.55; color: var(--rel-ink-2); }
+
+.rel-meta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-top: 1.4rem; }
+.rel-meta-i { display: grid; gap: 0.15rem; min-width: 0; padding-left: 0.7rem; border-left: 3px solid var(--rel-linea); }
+.rel-meta-k { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--rel-ink-3); }
+.rel-meta-v { font-size: 0.95rem; line-height: 1.4; color: var(--rel-ink); }
+.rel-meta-v a { color: var(--accent-primary); }
+
+.rel-tre, .rel-ask { margin-top: 1.4rem; padding: 0.9rem 1.1rem; border-radius: 0.5rem; }
+.rel-tre { background: #eef1f6; }
+.rel-tre-k, .rel-ask-k {
+  margin: 0 0 0.4rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--rel-ink-3);
+}
+.rel-tre-l { margin: 0; padding-left: 1.3rem; display: grid; gap: 0.3rem; list-style: decimal; }
+.rel-tre-l li::marker { color: var(--accent-primary); font-weight: 700; }
+.rel-tre-l li { font-size: 0.98rem; line-height: 1.45; color: var(--rel-ink); }
+.rel-ask { background: var(--rel-ink); }
+.rel-ask-k { color: #aeb8ca; }
+.rel-ask-v {
+  margin: 0; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem); line-height: 1.35; color: #ffffff;
+}
+.rel-buco {
+  margin: 1.1rem 0 0; padding: 0.7rem 0.9rem; border-radius: 0.4rem;
+  background: #fdeaed; color: #8f1020; font-size: 0.92rem; line-height: 1.45;
+}
+
+.rel-cap { margin-top: 2.6rem; }
+.rel-cap-h { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.6rem 0.9rem; }
+.rel-cap-n {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.1rem;
+  color: var(--accent-primary); font-variant-numeric: tabular-nums;
+}
+.rel-cap-t { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.25rem, 2vw, 1.6rem); line-height: 1.2; }
+.rel-cap-m {
+  font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--rel-ink-3); padding: 0.12rem 0.5rem; border: 1px solid var(--rel-linea); border-radius: 999px;
+}
+.rel-cap-a { margin-left: auto; font-size: 0.86rem; color: var(--accent-primary); white-space: nowrap; }
+.rel-cap-p { margin: 0.35rem 0 0; font-size: 0.95rem; line-height: 1.5; color: var(--rel-ink-2); font-style: italic; }
+
+.rel-sl { list-style: none; margin: 0.9rem 0 0; padding: 0; display: grid; gap: 0; }
+.rel-s {
+  display: grid; grid-template-columns: 13rem minmax(0, 1fr); gap: 0 1.2rem;
+  padding: 0.85rem 0; border-top: 1px solid var(--rel-linea);
+}
+.rel-s-id { display: grid; gap: 0.1rem; align-content: start; min-width: 0; }
+.rel-s-n { font-size: 0.74rem; font-weight: 700; color: var(--rel-ink-3); font-variant-numeric: tabular-nums; }
+.rel-s-e { font-weight: 700; font-size: 0.95rem; line-height: 1.3; color: var(--rel-ink); overflow-wrap: anywhere; }
+.rel-s-c { display: grid; gap: 0.4rem; min-width: 0; }
+
+/* L'etichetta è un blocco a larghezza fissa a inizio riga: nello scorrere la
+   pagina le quattro famiglie stanno incolonnate, e si trova «il fatto» senza
+   leggere la frase. */
+.rel-tag {
+  font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--rel-ink-3); padding-top: 0.28em;
+}
+.rel-tag--f { color: #1f6f52; }
+.rel-tag--d { color: #2a5ea8; }
+.rel-tag--a { color: #a61b2b; }
+/* Due colonne vere, non un'etichetta inline: con l'inline la seconda riga
+   rifluisce sotto il tag e la colonna del testo si perde. Qui le quattro
+   famiglie restano incolonnate per tutta la pagina, ed è il motivo per cui si
+   legge di sbieco. */
+.rel-dire, .rel-fatto, .rel-chiede, .rel-att {
+  margin: 0; max-width: none; display: grid;
+  grid-template-columns: 6.4rem minmax(0, 1fr); gap: 0 0.7rem;
+  font-size: 0.97rem; line-height: 1.5; color: var(--rel-ink);
+}
+.rel-dire { font-weight: 600; }
+.rel-fatto, .rel-chiede { color: var(--rel-ink-2); }
+.rel-att { color: #8f1020; }
+.rel-d { font-style: italic; }
+
+.rel-cap--taglio { border-top: 2px solid var(--rel-ink); padding-top: 1.6rem; margin-top: 3rem; }
+.rel-fine { margin-top: 3rem; padding-top: 1.1rem; border-top: 1px solid var(--rel-linea); }
+.rel-fine p { margin: 0; font-size: 0.86rem; line-height: 1.5; color: var(--rel-ink-3); }
+
+@media (max-width: 760px) {
+  .rel { padding-top: 5.5rem; }
+  .rel-meta { grid-template-columns: minmax(0, 1fr); }
+  .rel-s { grid-template-columns: minmax(0, 1fr); gap: 0.4rem; }
+  .rel-tag { min-width: 0; display: block; margin: 0 0 0.1rem; }
+}
+@media print {
+  body:has(.rel) { background: #ffffff; }
+  .rel { padding-top: 1rem; max-width: none; }
+  .rel-cap { break-inside: avoid; }
+  .rel-s { break-inside: avoid; }
+}
+
+/* ── La mappa dei prodotti, in tabella ─────────────────────────────────────
+   9 nov 2026: quattro colonne di elenchi facevano muro. Una riga per idea. */
+/* Quello che cede il posto: con il dettaglio aperto il blocco non serve più, e
+   la slide resta dentro la safe-area senza rimpicciolire il tipo. */
+.xd-sl:has([data-hiw-on]) .tp-cede { display: none; }
+
+/* 9 nov 2026 — allineamento con il cliente: quattro ancore sui problemi chiave,
+   due moltiplicatori, la fascia dei prodotti proiettata, la dipendenza di ogni
+   fase. Dove il drill-down si apre, la fascia cede (`.tp-cede`): mai rimpicciolire. */
+.tp-ancore--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.tp-stats--due { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 900px) {
+  .tp-ancore--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) { .tp-ancore--4, .tp-stats--due { grid-template-columns: minmax(0, 1fr); } }
+
+
+/* ── LA STRISCIA ADOBE E LE ETICHETTE SUL MOCKUP (9 nov 2026) ─────────────────
+   Fondo bianco e inchiostri espliciti: sta su slide scure e chiare. La forma della
+   tessera porta lo stato insieme alla parola. Il marchio resta nel suo rosso. */
+.tp-adobe { display: grid; gap: clamp(0.7rem, 1.2vw, 1.4rem); align-items: stretch; width: 100%; margin-inline: 0; padding: clamp(0.6rem, 1.1vh, 0.95rem) clamp(0.8rem, 1.1vw, 1.2rem); border-radius: 12px; background: var(--color-bianco); color: var(--color-ardesia-notte); box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22); text-align: left; }
+.tp-adobe-m { display: grid; align-content: center; justify-items: start; gap: 0.1rem; min-width: 0; }
+.tp-adobe-m img { display: block; width: 100%; max-width: 6.6rem; height: auto; }
+.tp-adobe-n { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.05rem, 1.15vw, 2rem); line-height: 1.15; color: var(--color-ardesia-notte); }
+.tp-adobe-s { font-size: 0.78rem; line-height: 1.25; font-weight: 600; color: var(--color-ardesia); }
+.tp-adobe-g { display: grid; align-content: start; gap: 0.3rem; min-width: 0; }
+.tp-adobe-k { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-ardesia); }
+.tp-adobe-l { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--c, 1), minmax(0, 1fr)); gap: 0.5rem; }
+.tp-adobe-t { display: grid; align-content: start; gap: 0.12rem; min-width: 0; margin-inline: 0; padding: clamp(0.4rem, 0.8vh, 0.65rem) clamp(0.55rem, 0.7vw, 0.8rem); border-radius: 8px; border: 2px solid var(--color-ardesia-notte); }
+.tp-adobe-t[data-stato='avete'] { background: var(--color-chiaro); border-color: var(--color-chiaro); color: var(--color-ardesia-notte); }
+.tp-adobe-t[data-stato='nuovo'] { background: var(--color-ardesia-notte); border-color: var(--color-ardesia-notte); color: var(--color-bianco); }
+.tp-adobe-p { font-family: var(--font-display); font-weight: 700; font-size: clamp(1rem, 1.02vw, 1.8rem); line-height: 1.22; overflow-wrap: break-word; }
+[data-slide] .tp-adobe-p a { color: inherit; text-decoration-color: currentColor; text-underline-offset: 0.16em; text-decoration-thickness: 1px; }
+.tp-adobe-a { font-size: clamp(0.95rem, 0.86vw, 1.55rem); line-height: 1.4; overflow-wrap: anywhere; }
+.mk-riga { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; min-width: 0; }
+.mk-pins { display: inline-flex; gap: 0.35rem; flex-wrap: wrap; }
+.mk-pin { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.14rem 0.5rem; border-radius: 999px; background: var(--color-ardesia-notte); color: var(--color-bianco); font-size: clamp(0.76rem, 0.62vw, 1.36rem); font-weight: 700; line-height: 1.3; white-space: nowrap; }
+.mk-pin svg { width: 0.9em; height: 0.9em; fill: currentColor; flex-shrink: 0; }
+.mk-barra .mk-pin { margin-left: auto; }
+@media (max-width: 900px) {
+  .tp-adobe { grid-template-columns: minmax(0, 1fr) !important; }
+  .tp-adobe-l { grid-template-columns: minmax(0, 1fr); }
+}
+/* Su uno schermo basso la fonte finiva sotto i comandi del deck, e il
+   check `b` non vede la firma. Si toglie la riga di servizio, mai si rimpicciolisce. */
+@media (max-height: 860px) { .tp-adobe .tp-adobe-a { display: none; } }
+
+/* ── CHI SIAMO — tre righe: etichetta a sinistra, contenuto a destra ──────────
+   Gli inchiostri si ribaltano con la superficie: la slide è su fondo chiaro. */
+.tp-chi { display: grid; width: 100%; }
+.tp-chi-r { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: clamp(1rem, 2vw, 2.4rem); align-items: center; padding: clamp(0.7rem, 1.5vh, 1.15rem) 0; border-top: 1px solid var(--line-default); margin-inline: 0; text-align: left; }
+.tp-chi-k { font-family: var(--font-display); font-weight: 700; font-size: clamp(1rem, 1.05vw, 1.85rem); line-height: 1.25; color: var(--ink-accent); }
+.tp-chi-team, .tp-chi-fasi { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(0.7rem, 1.2vw, 1.4rem); }
+.tp-chi-team { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.tp-chi-team li { display: flex; align-items: center; gap: 0.65rem; min-width: 0; margin-inline: 0; }
+.tp-chi-ph { flex: none; display: grid; place-items: center; width: clamp(2.6rem, 3vw, 4.8rem); aspect-ratio: 1; border-radius: 50%; border: 2px dashed var(--ink-note); font-size: 0.82rem; font-weight: 700; color: var(--ink-note); }
+.tp-chi-p { display: grid; min-width: 0; line-height: 1.3; }
+.tp-chi-p strong { font-size: clamp(1rem, 1vw, 1.75rem); color: var(--ink-primary); }
+.tp-chi-p span { font-size: clamp(0.95rem, 0.86vw, 1.55rem); color: var(--ink-body); }
+.tp-chi-fasi { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.tp-chi-fasi li { display: grid; align-content: start; gap: 0.2rem; min-width: 0; margin-inline: 0; padding-top: 0.45rem; border-top: 3px solid var(--ink-accent); }
+.tp-chi-fasi strong { font-family: var(--font-display); font-size: clamp(1rem, 1.02vw, 1.8rem); line-height: 1.25; color: var(--ink-primary); }
+.tp-chi-fasi span { font-size: clamp(0.95rem, 0.86vw, 1.55rem); line-height: 1.4; color: var(--ink-body); }
+.tp-chi-storia .tp-filo-eti li { align-content: start; }
+.tp-chi-storia .tp-filo-eti { --g: 0.8rem; gap: 0 var(--g); }
+.tp-chi-storia li[data-ora] .tp-filo-t { color: var(--ink-accent); }
+@media (max-width: 900px) {
+  .tp-chi-r { grid-template-columns: minmax(0, 1fr); }
+  .tp-chi-team, .tp-chi-fasi { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tp-chi-storia .tp-filo-fig { display: none; }
+  .tp-chi-storia .tp-filo-eti { grid-template-columns: minmax(0, 1fr); gap: 0.8rem; }
+}
+
+/* ── Copertine di capitolo: titolo a sinistra, fotografia solare fino al bordo ──
+   9 nov 2026: niente pannello a destra. La foto sfuma sul fondo prima del titolo,
+   così l'inchiostro del titolo resta sul fondo scuro e il contrasto non dipende
+   dall'immagine. */
+.xd-div-bg::before { inset: 0 0 0 36%; filter: none; -webkit-mask-image: linear-gradient(to right, transparent, #000 26% 100%); mask-image: linear-gradient(to right, transparent, #000 26% 100%); }
+/* Il velo in basso: il credito Firefly e i comandi del deck stanno sulla foto, e su
+   una foto luminosa il credito spariva. */
+.xd-div-bg::after { inset: auto 0 0 0; height: 24%; border: 0; box-shadow: none; background: linear-gradient(to top, rgba(20, 26, 37, 0.9), rgba(20, 26, 37, 0)); }
+.xd-div { grid-template-columns: minmax(0, 1fr); }
+
+/* ── Chi siamo: foto del team e offerta a tessere con lo strato Coworker ───────
+   Tessere e strato si ispirano alla slide Adobe «Nuova era, nuovi strumenti»: gradiente
+   viola-rosso, fascia che sormonta. Tinte abbastanza scure da reggere il bianco. */
+.tp-chi-foto { flex: none; display: block; width: clamp(3rem, 3.6vw, 5.6rem); height: auto; aspect-ratio: 1; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 2px var(--color-bianco), 0 0 0 4px var(--accent-primary); }
+.tp-chi-team li { gap: 0.8rem; }
+.tp-chi-off { display: grid; min-width: 0; }
+.tp-chi-off .tp-chi-fasi { gap: 0.5rem; }
+.tp-chi-off .tp-chi-fasi li { border-top: 0; border-radius: 10px 10px 0 0; padding: 0.55rem 0.75rem 1.5rem; }
+.tp-chi-off .tp-chi-fasi li:nth-child(1) { background: linear-gradient(160deg, #6b3fc4, #8a3bab); }
+.tp-chi-off .tp-chi-fasi li:nth-child(2) { background: linear-gradient(160deg, #8a3bab, #a03a8f); }
+.tp-chi-off .tp-chi-fasi li:nth-child(3) { background: linear-gradient(160deg, #a03a8f, #ad3874); }
+.tp-chi-off .tp-chi-fasi li:nth-child(4) { background: linear-gradient(160deg, #ad3874, #b4365a); }
+.tp-chi-off .tp-chi-fasi li:nth-child(5) { background: linear-gradient(160deg, #b4365a, #b73a2c); }
+.tp-chi-off .tp-chi-fasi strong, .tp-chi-off .tp-chi-fasi span { color: var(--color-bianco); }
+.tp-chi-cw { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; gap: 0.7rem; flex-wrap: wrap; margin: -1rem 0 0; padding: clamp(0.5rem, 1vh, 0.8rem) 1rem; border-radius: 12px; color: var(--color-bianco); background: linear-gradient(100deg, #1e2a80 0%, #1e2a80 42%, #145f80 58%, #7a4a10 78%, #8f2a1f 100%); box-shadow: 0 8px 22px rgba(20, 26, 37, 0.38); text-align: center; }
+.tp-chi-cw svg { width: 1.25em; height: auto; fill: currentColor; flex: none; }
+.tp-chi-cw strong { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.1rem, 1.2vw, 2.1rem); color: var(--color-bianco); }
+.tp-chi-cw span { font-size: clamp(0.95rem, 0.9vw, 1.6rem); color: var(--color-bianco); }
+@media (max-height: 860px) {
+  .tp-chi-r { padding: 0.45rem 0; }
+  .tp-chi-off .tp-chi-fasi li { padding: 0.4rem 0.6rem 1.35rem; }
+  .tp-chi-off .tp-chi-fasi span { line-height: 1.3; }
+  .tp-chi-foto { width: 2.8rem; }
+}
+@media (max-height: 860px) { .tp-chi-r { grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr); gap: 0.8rem; } }
+/* Tessere della striscia Adobe: stessa altezza fra «già vostro» e «si aggiunge». */
+.tp-adobe-g { grid-template-rows: auto 1fr; align-content: stretch; }
+.tp-adobe-l { align-items: stretch; }
+
+/* ── LA ROADMAP: un binario in posa ───────────────────────────────────────────
+   Rotaie e traverse sono due bordi e un gradiente ripetuto. Posato = rosso pieno,
+   ancora da posare = tratteggiato. Il dettaglio di ogni fase resta a bandiera, e la
+   riga sulla dipendenza chiude tutte le colonne alla stessa quota. */
+.tp-rm { --s: clamp(2.8rem, 3.2vw, 5.4rem); --gap: clamp(1rem, 1.5vw, 2.6rem); --r: clamp(0.7rem, 0.72vw, 1.2rem); list-style: none; margin: clamp(0.5rem, 1.4vh, 1.2rem) 0 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: 0; width: 100%; margin-bottom: clamp(0.6rem, 1.4vh, 1.1rem); }
+.tp-rm li { position: relative; padding-right: var(--gap); display: grid; grid-template-rows: var(--s) auto auto 1fr auto; justify-items: start; min-width: 0; margin-inline: 0; text-align: left; }
+.tp-rm li::after { content: ''; position: absolute; z-index: 0; top: calc((var(--s) - var(--r)) / 2); left: var(--s); right: 0; height: var(--r); box-sizing: border-box; border-block: 2px solid var(--c); background: repeating-linear-gradient(90deg, var(--c) 0 2px, transparent 2px 13px); }
+.tp-rm li:last-child::after { right: 0; -webkit-mask-image: linear-gradient(to right, #000 35%, transparent); mask-image: linear-gradient(to right, #000 35%, transparent); }
+.tp-rm li[data-tratto='posato'] { --c: var(--accent-primary); }
+.tp-rm li[data-tratto='pronto'], .tp-rm li[data-tratto='da-posare'] { --c: var(--ink-note); }
+.tp-rm li[data-tratto='pronto']::after, .tp-rm li[data-tratto='da-posare']::after { border-block-style: dashed; }
+.tp-rm-n { position: relative; z-index: 1; display: grid; place-items: center; width: var(--s); height: var(--s); border-radius: 50%; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.35rem, 1.5vw, 2.5rem); line-height: 1; font-variant-numeric: lining-nums; color: var(--color-bianco); background: var(--accent-primary); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.34); }
+.tp-rm li[data-tratto='da-posare'] .tp-rm-n { background: var(--color-ardesia-notte); box-shadow: inset 0 0 0 2px var(--ink-note), 0 8px 22px rgba(0, 0, 0, 0.34); }
+.tp-rm-q { margin: clamp(0.75rem, 1.4vh, 1.1rem) 0 0; max-width: none; font-size: clamp(0.8rem, 0.72vw, 1.4rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.3; color: var(--ink-note); }
+.tp-rm-t { margin: 0.3rem 0 0; max-width: none; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.12rem, 1.28vw, 2.2rem); line-height: 1.24; letter-spacing: -0.01em; color: var(--ink-primary); text-wrap: balance; }
+.tp-rm-b { margin: 0.45rem 0 0; max-width: none; font-size: clamp(0.95rem, 0.92vw, 1.65rem); line-height: 1.5; color: var(--ink-body); }
+.tp-rm-d { margin: 0.7rem 0 0; max-width: none; display: flex; align-items: center; gap: 0.45rem; font-size: clamp(0.86rem, 0.8vw, 1.45rem); font-weight: 700; line-height: 1.3; color: var(--ink-accent); }
+.tp-rm-d::before { content: ''; flex: none; width: 0.6em; height: 0.6em; border-radius: 50%; background: currentColor; }
+.tp-rm li[data-tratto='da-posare'] .tp-rm-d::before { background: transparent; box-shadow: inset 0 0 0 2px currentColor; }
+@media (max-height: 860px) { .tp-rm { --s: 2.7rem; } .tp-rm-b { line-height: 1.38; } }
+@media (max-width: 900px) {
+  .tp-rm { grid-template-columns: minmax(0, 1fr); row-gap: 1.5rem; }
+  .tp-rm li { grid-template-rows: none; padding-right: 0; padding-left: calc(var(--s) + 0.9rem); }
+  .tp-rm-n { position: absolute; left: 0; top: 0; }
+  .tp-rm-q { margin-top: 0; }
+  .tp-rm li::after { top: var(--s); bottom: -1.5rem; left: calc((var(--s) - var(--r)) / 2); right: auto; width: var(--r); height: auto; border-block: 0; border-inline: 2px solid var(--c); background: repeating-linear-gradient(180deg, var(--c) 0 2px, transparent 2px 13px); }
+  .tp-rm li[data-tratto='pronto']::after, .tp-rm li[data-tratto='da-posare']::after { border-inline-style: dashed; }
+  .tp-rm li:last-child::after { display: none; }
+}
+
+/* La fascia trasversale della roadmap: i contenuti non sono una fase, valgono per tutte. */
+.tp-rm-strato { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1.2rem; width: 100%; margin-inline: 0; padding: clamp(0.7rem, 1.4vh, 1.1rem) clamp(1rem, 1.4vw, 1.7rem); border-radius: 12px; background: var(--accent-primary); color: var(--color-bianco); box-shadow: 0 10px 26px rgba(0, 0, 0, 0.3); text-align: left; }
+.tp-rm-strato strong { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.15rem, 1.4vw, 2.4rem); line-height: 1.2; color: var(--color-bianco); }
+.tp-rm-strato span { font-size: clamp(0.95rem, 0.95vw, 1.7rem); line-height: 1.4; color: var(--color-bianco); }
+
+/* Slide dell'idea: mockup e riquadri iniziano e finiscono alla stessa quota. */
+.tp-idea-sx { align-content: stretch; }
+.tp-idea-sx .mk { height: 100%; align-items: stretch; }
+.tp-idea-sx .mk-schermo { height: 100%; width: 100%; display: flex; flex-direction: column; }
+.tp-idea-sx .mk-corpo { flex: 1; display: grid; align-content: center; }
+.tp-idea-dx { align-content: stretch; }
+.tp-idea-dx > .tp-box, .tp-idea-dx > .xd-ref { display: grid; align-content: center; }
+/* Sugli schermi intorno agli 880 px la slide dell'idea toccava nav e firma: si recupera sugli spazi. */
+@media (max-height: 960px) and (min-width: 901px) {
+  .tp-idea-dx { gap: 0.5rem; }
+  .tp-box { padding: 0.55rem 0.95rem; }
+  .tp-idea-dx .xd-ref-b { padding-top: 0.55rem; padding-bottom: 0.55rem; }
+  .tp-adobe { padding-block: 0.5rem; }
+  .tp-adobe-t { padding-block: 0.35rem; }
+  .tp-adobe-a { line-height: 1.3; }
+}
+
+/* Agenda in copertina: la voce che raccoglie le quattro idee ha il colore di marchio. */
+.xd-cop .xd-cop-cap.tp-cop-idee { background: var(--accent-primary); border-color: var(--accent-primary); }
+.xd-cop .xd-cop-cap.tp-cop-idee .xd-cop-n, .xd-cop .xd-cop-cap.tp-cop-idee .xd-cop-tit { color: var(--color-bianco); }
+.xd-cop .xd-cop-cap .xd-cop-n { white-space: nowrap; }
+
+.xd-cop .xd-cop-cap { grid-template-columns: 3.6rem minmax(0, 1fr); }
+.xd-cop .xd-cop-n { flex: none; width: 3.6rem; }
+
+/* ── I quattro fatti: il legame ad Adobe e il gancio verso la domanda ──────────
+   Sequenza unica quando la slide diventa attiva: la graffa si disegna, entra il
+   marchio, poi il binario corre verso destra. Lo stato di base è quello finale. */
+.tp-probl { row-gap: clamp(0.5rem, 1vh, 0.8rem); }
+.tp-lega { grid-column: 1 / -1; position: relative; display: grid; justify-items: center; min-width: 0; margin-inline: 0; }
+.tp-lega-u { position: relative; display: block; width: 75%; height: clamp(0.8rem, 1.5vh, 1.2rem); box-sizing: border-box; border: 2px solid var(--ink-note); border-top: 0; border-radius: 0 0 8px 8px; }
+.tp-lega-u::before { content: ''; position: absolute; left: 33.33%; width: 33.33%; top: 0; bottom: 0; box-sizing: border-box; border-inline: 2px solid var(--ink-note); }
+.tp-lega-u::after { content: ''; position: absolute; left: 50%; top: 100%; height: clamp(0.5rem, 1vh, 0.8rem); width: 2px; margin-left: -1px; background: var(--ink-note); }
+.tp-lega-n { grid-column: 2 / 4; justify-self: center; margin: 0; max-width: none; display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.35rem 0.95rem 0.35rem 0.75rem; border-radius: 999px; background: var(--color-bianco); box-shadow: 0 8px 20px rgba(27, 34, 48, 0.16); font-family: var(--font-display); font-weight: 700; font-size: clamp(1rem, 1.02vw, 1.8rem); line-height: 1.2; color: var(--color-ardesia-notte); }
+.tp-lega-n svg { width: 1.2em; height: auto; fill: #eb1000; flex: none; }
+@keyframes tp-disegna { from { clip-path: inset(0 50% 0 50%); } to { clip-path: inset(0 0 0 0); } }
+@keyframes tp-entra { from { opacity: 0; transform: translateY(8px) scale(0.96); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: no-preference) {
+  #slide-problemi:not([data-substep-index='0']) .tp-lega-u { animation: tp-disegna 620ms cubic-bezier(0.16, 1, 0.3, 1) backwards; }
+  #slide-problemi:not([data-substep-index='0']) .tp-lega-n { animation: tp-entra 520ms cubic-bezier(0.16, 1, 0.3, 1) 300ms backwards; }
+
+  /* La domanda si apre dalla punta del binario: il colore allaga la carta e la
+     frase sul terzo operatore arriva da lì. */
+  @keyframes tp-arriva { 0% { opacity: 0; transform: translate(33vw, 9vh); } 18% { opacity: 1; } 100% { opacity: 1; transform: none; } }
+  @keyframes tp-compare { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes tp-allarga { from { clip-path: inset(var(--tp-g-t, 58%) var(--tp-g-r, 6%) var(--tp-g-b, 27%) var(--tp-g-l, 74%) round 12px); } to { clip-path: inset(0 0 0 0 round 0); } }
+  #slide-domanda::before { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none; background: var(--xd-piano, var(--color-ardesia-notte)); }
+  #slide-domanda::after { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none; background: var(--accent-primary); animation: tp-allarga 900ms cubic-bezier(0.65, 0, 0.2, 1) both; }
+  #slide-domanda .tp-quote { position: relative; z-index: 1; }
+  #slide-domanda .tp-gancio-a { display: inline-block; animation: tp-arriva 1000ms cubic-bezier(0.16, 1, 0.3, 1) 200ms backwards; }
+  #slide-domanda .tp-gancio-b { display: block; animation: tp-compare 500ms ease-out 1050ms backwards; }
+}
+@media (max-width: 900px) { .tp-lega, .tp-lega-n { grid-column: 1 / -1; } }
+
+/* Le due frasi del raccordo stanno su righe proprie anche senza movimento. */
+.tp-gancio-a, .tp-gancio-b { display: block; }
+
+/* ── REVISIONE DI COERENZA (9 nov 2026) ───────────────────────────────────────
+   Una sola misura per tutto il percorso. Il contenuto si fermava a 1404 px su 1920 e
+   lasciava 400 px vuoti a destra contro i 115 a sinistra: ora occupa la safe-area.
+   I titoli di contenuto erano di due corpi (40 e 50 px): ora uno solo. */
+[data-slide] .xd-sl { max-width: 94rem; }
+[data-slide] .xd-sl .xd-h2 { font-size: clamp(1.55rem, 2.3vw, 2.75rem); line-height: 1.14; max-width: 34ch; }
+[data-slide] .xd-sl .xd-sub { font-size: clamp(1rem, 1.02vw, 1.8rem); line-height: 1.5; max-width: 72ch; }
+[data-slide] .xd-sl .xd-chiusa { font-size: clamp(1rem, 1.02vw, 1.8rem); max-width: 80ch; }
+[data-slide] .xd-sl .xd-sl-head { gap: 0.45rem; }
+
+/* Le linee del tempo stanno a bandiera, come il resto della slide e la roadmap. */
+.tp-crono .tp-filo-fig { display: none; }
+.tp-crono .tp-filo-eti li { justify-items: start; align-content: start; text-align: left; }
+.tp-crono .tp-filo-eti li::before { position: relative; z-index: 1; width: 0.7rem; height: 0.7rem; }
+.tp-crono .tp-filo-eti { position: relative; }
+.tp-crono .tp-filo-eti::before { content: ''; position: absolute; top: calc(0.35rem - 1px); left: 0; right: calc((100% - (var(--cols, 5) - 1) * var(--g)) / var(--cols, 5)); height: 2px; background: var(--line-default); }
+
+/* La barra resta su una riga e mostra tutte le voci anche sui portatili. */
+@media (max-width: 1500px) { .ex-nav-link > span:first-child:not(:only-child) { display: none; } }
+@media (max-width: 900px) { .tp-crono .tp-filo-eti::before { display: none; } }
+
+/* Il mockup parte dallo stesso bordo del titolo e chiude a filo della colonna. */
+.tp-idea-sx .mk-schermo { max-width: none; }
+@media (max-height: 860px) { .tp-rm-strato { padding-block: 0.5rem; } }
+
+/* ── I mockup delle quattro idee: la schermata è la protagonista ───────────────
+   9 nov 2026, notte. Erano elenchi larghi quanto il testo accanto, al 27-35% della
+   pagina, con il corpo sotto il minimo. Ora la colonna è la più larga, la schermata
+   prende l'altezza che resta e nessun corpo scende sotto il contratto. */
+@media (min-width: 901px) {
+  #slide-idea .tp-idea { grid-template-columns: minmax(0, 1.62fr) minmax(0, 1fr); }
+  #slide-idea .tp-idea-sx .mk-schermo { min-height: clamp(19rem, 42vh, 46rem); }
+}
+/* Sui portatili la colonna di destra torna più larga: stretta, il testo va a capo
+   e la riga sfonda in basso. Le altezze minime cedono, il corpo no. */
+@media (min-width: 901px) and (max-height: 900px) {
+  #slide-idea .tp-idea { grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr); }
+  #slide-idea .tp-idea-sx .mk-schermo { min-height: 0; }
+  #slide-idea .mk-promo { min-height: 5.6rem; }
+  #slide-idea .mk-master { min-height: 8rem; }
+  #slide-idea .mk-mercati { grid-template-rows: minmax(3.2rem, 1fr) auto; }
+  #slide-idea .mk-percorso li { min-height: 3.8rem; padding-block: 0.4rem; }
+  #slide-idea .mk-tessere li, #slide-idea .mk-poi li { padding-block: 0.32rem; }
+  #slide-idea .mk-ordine li { padding-block: 0.28rem; }
+  #slide-idea .mk-ordine-n { width: 1.8rem; height: 1.8rem; }
+  #slide-idea .mk-campo { padding-block: 0.18rem; }
+  #slide-idea .mk-home-t { gap: 0.3rem; }
+  #slide-idea .mk-cta { padding-block: 0.26rem; }
+  #slide-idea .mk-home-h { font-size: 1.3rem; }
+}
+.tp-idea-sx .mk-corpo--piena { align-content: stretch; grid-auto-rows: auto; }
+.mk-corpo--piena > :first-child { min-height: 0; }
+/* Un solo blocco cresce, gli altri stanno alla loro misura: se no l'avanzo si
+   divide in parti uguali e le tessere restano mezze vuote. */
+.tp-idea-sx .mk-corpo--piena:has(> .mk-tessere) { grid-template-rows: minmax(0, 1fr) auto; }
+.tp-idea-sx .mk-corpo--piena:has(> .mk-ordine) { grid-template-rows: auto minmax(0, 1fr); }
+.tp-idea-sx .mk-corpo--piena:has(> .mk-percorso) { grid-template-rows: minmax(0, 1fr) auto auto; }
+.tp-idea-sx .mk-corpo--piena:has(> .mk-ricerca) { grid-template-rows: auto minmax(0, 1fr) auto; }
+
+/* Prima e dopo stanno nella stessa cella: l'altezza è quella della più alta. */
+.mk-fasi { display: grid; width: 100%; height: 100%; }
+.mk-fase { grid-area: 1 / 1; min-width: 0; }
+.mk-fase--prima { transition: opacity 320ms ease-out; }
+[data-slide]:not([data-substep-index='0']) .mk-fase--prima { opacity: 0; visibility: hidden; }
+@media (prefers-reduced-motion: reduce) { .mk-fase--prima { opacity: 0; visibility: hidden; } }
+html:not(.js) .mk-fase--prima { opacity: 0; visibility: hidden; }
+
+/* La fotografia non impone l'altezza: riempie quella che la schermata le lascia. */
+.mk-foto { position: relative; min-height: 0; overflow: hidden; border-radius: 10px; background: var(--color-nebbia); }
+.mk-foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+.mk-ricerca { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)) auto; gap: 0.5rem; align-items: stretch; }
+.mk-ricerca .mk-cta { display: grid; place-items: center; }
+.mk-promo { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(0.8rem, 1.2vw, 2rem); min-height: clamp(9rem, 20vh, 22rem); }
+.mk-promo-k { font-size: clamp(0.76rem, 0.72vw, 1.36rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-grigio-600); }
+.mk-home-t { display: grid; align-content: center; justify-items: start; gap: clamp(0.5rem, 1vh, 1rem); min-width: 0; }
+.mk-home-h { margin: 0; max-width: none; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.5rem, 1.75vw, 3.2rem); line-height: 1.12; color: var(--color-ardesia-notte); }
+.mk-campo { display: grid; gap: 0.1rem; padding: 0.42rem 0.7rem; border-radius: 8px; border: 1px solid var(--color-grigio-300); background: var(--color-bianco); font-size: clamp(0.95rem, 0.92vw, 1.7rem); font-weight: 600; color: var(--color-ardesia-notte); }
+.mk-campo small, .mk-tessere small, .mk-mercato-t small, .mk-percorso small, .mk-poi small { font-size: clamp(0.76rem, 0.72vw, 1.36rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-grigio-600); }
+.mk-cta { padding: 0.5rem 1.3rem; border-radius: 8px; background: var(--color-rosso-scuro); color: var(--color-bianco); font-family: var(--font-display); font-weight: 700; font-size: clamp(0.95rem, 0.92vw, 1.7rem); }
+
+.mk-tessere { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+.mk-tessere li { display: grid; gap: 0.12rem; align-content: start; padding: 0.6rem 0.75rem; border-radius: 8px; background: var(--color-nebbia); border-top: 3px solid var(--color-grigio-300); }
+.mk-tessere li[data-on] { border-top-color: var(--color-rosso); background: var(--color-chiaro); }
+.mk-tessere strong { font-family: var(--font-display); font-size: clamp(1rem, 0.95vw, 1.8rem); color: var(--color-ardesia-notte); }
+.mk-tessere span { font-size: clamp(0.95rem, 0.9vw, 1.68rem); line-height: 1.35; color: var(--color-ardesia); }
+
+/* Il contenuto: la campagna, e le versioni per mercato. */
+.mk-master { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(0.8rem, 1.2vw, 2rem); min-height: clamp(11rem, 26vh, 28rem); background: none; padding: 0; }
+.mk-master-t { display: grid; align-content: center; justify-items: start; gap: 0.55rem; min-width: 0; }
+.mk-mercati { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.6rem, 1vw, 1.6rem); }
+/* Righe condivise fra le colonne: una didascalia su due righe non accorcia più la sua foto. */
+.mk-mercati { grid-template-rows: minmax(clamp(5.5rem, 13vh, 16rem), 1fr) auto; }
+.mk-mercati li { display: grid; grid-row: span 2; grid-template-rows: subgrid; row-gap: 0.5rem; min-width: 0; }
+.mk-mercato-t { display: grid; gap: 0.1rem; }
+.mk-mercato-t strong { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.15rem, 1.3vw, 2.4rem); line-height: 1.15; color: var(--color-ardesia-notte); }
+.mk-mercato-t span { font-size: clamp(0.95rem, 0.9vw, 1.68rem); line-height: 1.35; color: var(--color-ardesia); }
+
+/* La risposta: tre posizioni, e l'ultima è la loro. */
+.mk-bolla { justify-self: end; margin: 0; max-width: none; padding: 0.6rem 1rem; border-radius: 14px 14px 3px 14px; background: var(--color-ardesia-notte); color: var(--color-bianco); font-weight: 700; font-size: clamp(1.05rem, 1.1vw, 2rem); }
+.mk-ordine { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-rows: 1fr; gap: 0.5rem; }
+.mk-ordine li { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 0.9rem; padding: 0.6rem 0.9rem; border-radius: 10px; background: var(--color-nebbia); }
+.mk-ordine li[data-trenitalia] { background: var(--color-chiaro); }
+.mk-ordine-n { display: grid; place-items: center; width: 2.3rem; height: 2.3rem; border-radius: 50%; background: var(--color-ardesia); color: var(--color-bianco); font-family: var(--font-display); font-weight: 800; font-size: clamp(1.05rem, 1.05vw, 1.9rem); }
+li[data-trenitalia] .mk-ordine-n { background: var(--color-rosso-scuro); }
+.mk-ordine-t { display: grid; gap: 0.05rem; font-size: clamp(1rem, 1vw, 1.85rem); color: var(--color-ardesia); }
+.mk-ordine-t strong { font-family: var(--font-display); font-size: clamp(1.1rem, 1.15vw, 2.1rem); color: var(--color-ardesia-notte); }
+.mk-evidenza { position: absolute; inset: 0; border-radius: 10px; box-shadow: inset 0 0 0 3px var(--color-rosso); pointer-events: none; }
+
+/* L'agenzia: il percorso del codice, senza un numero. */
+.mk-percorso { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.1rem, 1.6vw, 2.6rem); }
+.mk-percorso li { position: relative; display: grid; align-content: start; gap: 0.25rem; min-height: clamp(6.5rem, 15vh, 15rem); padding: 0.75rem 0.9rem; border-radius: 10px; background: var(--color-nebbia); border-top: 3px solid var(--color-ardesia-chiara); }
+.mk-percorso li[data-on] { background: var(--color-chiaro); border-top-color: var(--color-rosso); }
+/* La freccia sta sul blocco che SEGUE, a sinistra: oltre il bordo destro
+   allargherebbe lo scorrimento della scheda (check c). */
+.mk-percorso li:not(:first-child)::before { content: ''; position: absolute; top: 50%; left: calc(-1 * clamp(1.1rem, 1.6vw, 2.6rem) + 0.28rem); width: 0.55rem; height: 0.55rem; border-top: 2px solid var(--color-ardesia); border-right: 2px solid var(--color-ardesia); transform: translateY(-50%) rotate(45deg); }
+.mk-percorso strong { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.08rem, 1.5vw, 2.7rem); line-height: 1.22; color: var(--color-ardesia-notte); }
+.mk-poi { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+.mk-poi li { display: grid; gap: 0.1rem; padding: 0.55rem 0.75rem; border-radius: 8px; border: 1px solid var(--color-grigio-300); }
+.mk-poi span { font-size: clamp(0.95rem, 0.9vw, 1.68rem); line-height: 1.35; color: var(--color-ardesia); }
+
+/* Il corpo che restava dal vecchio elenco, riportato al minimo del contratto. */
+.mk-tratta-d { font-size: clamp(0.95rem, 0.9vw, 1.68rem); }
+.mk-nota { font-size: clamp(0.95rem, 0.88vw, 1.6rem); }
+
+@media (max-width: 900px) {
+  .mk-promo, .mk-master, .mk-percorso, .mk-tessere, .mk-ricerca, .mk-mercati { grid-template-columns: minmax(0, 1fr); }
+  .mk-mercati { grid-template-rows: none; }
+  .mk-mercati li { grid-row: auto; grid-template-rows: 8rem auto; }
+  .mk-promo, .mk-master { min-height: 0; }
+  .mk-foto { min-height: 8rem; }
+  .mk-percorso li:not(:first-child)::before { display: none; }
+  .mk-ordine li { grid-template-columns: auto minmax(0, 1fr); }
+}
+
+/* ── La domanda centrale: il tipo più grande del percorso ──────────────────────
+   Era 57 px, meno del titolo di una copertina di capitolo, sulla frase che regge il
+   deck. Ora prende la larghezza della pagina su una riga, e tutto il resto arretra. */
+.tp-quote:has(> .tp-domanda) { max-width: none; gap: clamp(1rem, 2.4vh, 2rem); }
+[data-slide] .tp-quote > .tp-domanda { font-size: clamp(2.6rem, 5.8vw, 16rem); line-height: 1.04; letter-spacing: -0.035em; max-width: none; white-space: nowrap; }
+[data-slide] .tp-quote > .tp-domanda-sub { font-size: clamp(1.1rem, 1.5vw, 3rem); line-height: 1.4; max-width: 56ch; }
+@media (max-width: 900px) { [data-slide] .tp-quote > .tp-domanda { white-space: normal; text-wrap: balance; } }
+
+/* ── La mappa delle idee: lo stesso linguaggio della striscia Adobe ────────────
+   Pannello chiaro, tessera piena = già vostro, bordata = si aggiunge. La forma porta
+   lo stato insieme alla parola, e vale uguale su slide scure e chiare perché il
+   pannello si porta i suoi inchiostri. */
+@media (max-height: 860px) {
+}
+
+/* Su uno schermo basso la colonna delle capacità cede il posto ai prodotti: mai rimpicciolire. */
+@media (max-height: 860px) and (min-width: 901px) {
+}
+/* Su telefono ogni idea è un blocco, e l'etichetta sta sopra le tessere. */
+@media (max-width: 900px) {
+}
+
+/* ═══ LE REGOLE DEL DECK (9 nov 2026) ═══════════════════════════════════════════
+   Il colore dice che tipo di slide è:
+     copertina e firma = clip · capitolo = fotografia · la domanda = rosso ·
+     contenuto = chiaro (blocco in fondo al file).
+   Il titolo sta sempre alla stessa altezza: passando da una slide all'altra non salta.
+   Sotto il titolo, il corpo si centra nello spazio che resta.
+   Tre soli contenitori: la voce (filetto rosso in alto), il riquadro (fondo appena
+   più chiaro, un bordo sottile) e il pannello chiaro (Adobe, mockup, mappa). */
+@media (min-width: 901px) {
+  /* La riserva del motore è simmetrica e sprecava spazio in alto: qui il titolo parte
+     sotto la barra (T) e il corpo si ferma sopra i comandi (R). */
+  [data-slide] .slide-inner:has(> .xd-sl) { --t: calc(60px + max(1.4rem, 2.6vh)); --r: 104px; height: calc(100dvh - var(--t) - var(--r)); max-height: none !important; margin-top: calc(var(--t) - var(--r)); justify-content: flex-start; }
+  [data-slide] .slide-inner > .xd-sl { flex: 1 1 auto; min-height: 0; padding-bottom: 9vh; }
+  [data-slide] .slide-inner > .xd-sl > .xd-sl-head + * { margin-top: auto; }
+  [data-slide] .slide-inner > .xd-sl > :last-child { margin-bottom: auto; }
+}
+[data-slide] .tp-box, [data-slide] .tp-stat, [data-slide] .tp-ask, [data-slide] .xd-sl .xd-chiusa, [data-slide] .xd-ref-b {
+  background: rgba(255, 255, 255, 0.055); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 10px;
+}
+[data-slide] .tp-ask, [data-slide] .xd-sl .xd-chiusa { padding: clamp(0.7rem, 1.4vh, 1rem) clamp(1rem, 1.2vw, 1.5rem); max-width: none; }
+[data-slide] .xd-ref-b { padding: clamp(0.6rem, 1.2vh, 0.9rem) 1.1rem; }
+[data-slide] .xd-ref-b .xd-ref-n, [data-slide] .xd-ref-b .xd-marchio--testo { color: var(--xd-dark-ink); }
+[data-slide] .xd-ref-b .xd-ref-f, [data-slide] .xd-ref-b .tp-ref-set { color: var(--xd-dark-body); }
+[data-slide] .tp-ask-t { max-width: none; }
+@media (max-height: 860px) and (min-width: 901px) { .tp-rm-b { display: none; } }
+
+/* ── La concorrenza: l'unica tessera rossa, poi il riflettore ──────────────────
+   Il suo rosso è lo stesso della slide dopo: con → la tessera si allarga e la diventa.
+   Con ↓ il resto arretra e l'occhio resta qui. */
+.tp-focus { position: absolute; width: 0; height: 0; }
+
+/* Le otto domande sono il campione della misura: si leggono dal fondo della sala. */
+[data-slide] .tp-dom { gap: clamp(0.5rem, 1vh, 0.8rem) clamp(0.6rem, 0.8vw, 1rem); }
+[data-slide] .tp-dom li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; column-gap: clamp(0.8rem, 1vw, 1.6rem); min-height: clamp(3.4rem, 8.4vh, 6.4rem); padding: clamp(0.5rem, 1.1vh, 0.9rem) clamp(1rem, 1.3vw, 2rem); border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 10px; background: rgba(255, 255, 255, 0.055); }
+[data-slide] .tp-dom .tp-dom-n { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 1.8vw, 3rem); line-height: 1; color: var(--ink-accent); min-width: 1.1em; }
+[data-slide] .tp-dom .tp-dom-t { font-size: clamp(1.1rem, 1.36vw, 2.4rem); line-height: 1.3; font-weight: 500; color: var(--ink-primary); }
+[data-slide] .tp-dom .tp-dom-l { font-size: clamp(0.8rem, 0.74vw, 1.35rem); font-weight: 700; letter-spacing: 0.08em; color: var(--ink-note); }
+
+/* ── La mappa delle idee: un percorso, non una tabella ─────────────────────────
+   Quattro colonne sullo stesso binario della roadmap. Tessera piena = già vostro,
+   bordata = da aggiungere: la forma porta lo stato, la legenda lo dice una volta. */
+.tp-rt-w { display: grid; gap: clamp(0.7rem, 1.5vh, 1.2rem); width: 100%; margin-inline: 0; }
+.tp-rt { --s: clamp(2.8rem, 3.2vw, 5.4rem); --r: clamp(0.7rem, 0.72vw, 1.2rem); list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(4, auto); width: 100%; }
+.tp-rt:not([data-capability]) { grid-template-rows: repeat(3, auto); }
+.tp-rt > li { position: relative; display: grid; grid-row: span 4; grid-template-rows: subgrid; row-gap: clamp(0.5rem, 1vh, 0.8rem); align-content: start; min-width: 0; margin-inline: 0; padding-right: clamp(1rem, 1.5vw, 2.4rem); padding-top: calc(var(--s) + clamp(0.5rem, 1vh, 0.8rem)); text-align: left; }
+.tp-rt:not([data-capability]) > li { grid-row: span 3; }
+.tp-rt > li::after { content: ''; position: absolute; top: calc((var(--s) - var(--r)) / 2); left: var(--s); right: 0; height: var(--r); box-sizing: border-box; border-block: 2px solid var(--ink-note); background: repeating-linear-gradient(90deg, var(--ink-note) 0 2px, transparent 2px 13px); }
+.tp-rt > li:last-child::after { -webkit-mask-image: linear-gradient(to right, #000 35%, transparent); mask-image: linear-gradient(to right, #000 35%, transparent); }
+.tp-rt-n { position: absolute; z-index: 1; top: 0; left: 0; display: grid; place-items: center; width: var(--s); height: var(--s); border-radius: 50%; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.3rem, 1.4vw, 2.4rem); line-height: 1; color: var(--color-bianco); background: var(--accent-primary); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.34); }
+[data-slide] a.tp-rt-t { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.3rem, 1.6vw, 2.8rem); line-height: 1.2; letter-spacing: -0.01em; color: var(--ink-primary); text-decoration: none; }
+[data-slide] a.tp-rt-t:hover { color: var(--ink-accent); }
+[data-slide] p.tp-rt-c { margin: 0; max-width: none; font-size: clamp(0.95rem, 0.92vw, 1.65rem); line-height: 1.4; color: var(--ink-body); }
+.tp-rt-g { list-style: none; margin: 0; padding: 0; display: grid; align-content: start; gap: clamp(0.3rem, 0.6vh, 0.45rem); min-width: 0; }
+.tp-rt-g > li { margin-inline: 0; padding: clamp(0.3rem, 0.7vh, 0.5rem) clamp(0.6rem, 0.7vw, 1rem); border-radius: 8px; box-sizing: border-box; border: 2px solid var(--color-bianco); font-family: var(--font-display); font-weight: 700; font-size: clamp(0.98rem, 0.95vw, 1.7rem); line-height: 1.25; }
+.tp-rt-g[data-stato='nuovo'] > li { background: var(--color-bianco); color: var(--color-ardesia-notte); }
+.tp-rt-g[data-stato='avete'] > li { background: transparent; color: var(--color-bianco); }
+.tp-rt-g a { color: inherit; text-decoration: none; }
+.tp-rt-g a:hover { text-decoration: underline; text-underline-offset: 0.16em; }
+[data-slide] p.tp-rt-leg { margin: 0; max-width: none; display: flex; flex-wrap: wrap; gap: 0.3rem 1.6rem; font-size: clamp(0.82rem, 0.76vw, 1.4rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-body); }
+.tp-rt-leg span::before { content: ''; display: inline-block; width: 0.85em; height: 0.85em; margin-right: 0.5em; border-radius: 3px; box-sizing: border-box; border: 2px solid var(--color-bianco); vertical-align: -0.08em; }
+.tp-rt-leg span[data-stato='nuovo']::before { background: var(--color-bianco); }
+@media (max-height: 860px) and (min-width: 901px) {
+  .tp-rt { --s: 2.5rem; }
+  [data-slide] p.tp-rt-c { display: none; }
+  .tp-rt-g > li { padding-block: 0.16rem; }
+}
+@media (max-width: 900px) {
+  .tp-rt, .tp-rt:not([data-capability]) { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; row-gap: 1.3rem; }
+  .tp-rt > li, .tp-rt:not([data-capability]) > li { grid-row: auto; grid-template-rows: none; padding-right: 0; padding-top: 0; padding-left: calc(var(--s) + 0.8rem); }
+  .tp-rt > li::after { display: none; }
+  [data-slide] .tp-dom { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* L'incrocio: il disegno dice il titolo, solo la parte in comune è accesa. */
+.tp-inc { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(2rem, 4vw, 6rem); align-items: center; width: 100%; margin-inline: 0; }
+.tp-inc-fig { position: relative; height: clamp(11rem, 36vh, 30rem); aspect-ratio: 440 / 280; margin-inline: 0; }
+.tp-inc-fig svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.tp-inc-fig circle { fill: rgba(255, 255, 255, 0.05); stroke: var(--ink-note); stroke-width: 1.5; }
+.tp-inc-fig path { fill: var(--accent-primary); }
+[data-slide] .tp-inc-fig p { position: absolute; top: 50%; width: 27%; margin: 0; max-width: none; transform: translate(-50%, -50%); text-align: center; font-family: var(--font-display); font-weight: 700; font-size: clamp(0.98rem, 1.02vw, 1.8rem); line-height: 1.25; color: var(--ink-body); }
+[data-slide] .tp-inc-fig p[data-on] { color: var(--color-bianco); }
+.tp-inc-v { display: grid; gap: clamp(0.9rem, 2vh, 1.6rem); min-width: 0; }
+@media (max-width: 900px) { .tp-inc { grid-template-columns: minmax(0, 1fr); } .tp-inc-fig { height: auto; width: 100%; } }
+
+/* Slide dei problemi, tre tempi: quattro punti uguali · ↓ Adobe · ↓ la concorrenza in rosso.
+   Il rosso è dietro al testo, così il testo non si sposta quando la tessera si accende. */
+#slide-problemi[data-substep-index='0'] .tp-lega, #slide-problemi[data-substep-index='0'] .tp-lega-n { opacity: 0; visibility: hidden; }
+.tp-probl [data-gancio] { position: relative; isolation: isolate; }
+.tp-probl [data-gancio]::before { content: ''; position: absolute; z-index: -1; inset: -2px 0 -0.8rem -1rem; border-radius: 12px; background: var(--accent-primary); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.34); opacity: 0; transition: opacity 380ms ease-out; }
+.tp-probl [data-gancio] .tp-anc-k, .tp-probl [data-gancio] .tp-anc-n { transition: color 380ms ease-out; }
+#slide-problemi .tp-crono, #slide-problemi .tp-anc:not([data-gancio]), #slide-problemi .xd-fonte { transition: opacity 420ms ease-out; }
+#slide-problemi[data-substep-index='2'] .tp-crono, #slide-problemi[data-substep-index='2'] .tp-anc:not([data-gancio]), #slide-problemi[data-substep-index='2'] .tp-lega, #slide-problemi[data-substep-index='2'] .tp-lega-n, #slide-problemi[data-substep-index='2'] .xd-fonte { opacity: 0.3; }
+#slide-problemi[data-substep-index='2'] [data-gancio] { border-top-color: transparent; }
+#slide-problemi[data-substep-index='2'] [data-gancio]::before { opacity: 1; }
+#slide-problemi[data-substep-index='2'] [data-gancio] .tp-anc-k, #slide-problemi[data-substep-index='2'] [data-gancio] .tp-anc-n { color: var(--color-bianco); }
+
+/* La colonna del contenuto prende la larghezza che serve ai nomi lunghi: una riga sola. */
+
+/* ═══ IL CONTENUTO È CHIARO (9 nov 2026) ═══════════════════════════════════════
+   Copertine, capitoli, la domanda e la firma restano foto, clip e rosso: lì non si
+   legge, si cambia passo. Le slide di contenuto stanno sul chiaro, perché:
+   · trenitalia.com è bianco (240 occorrenze) e l'ardesia è il colore dei dettagli;
+   · sul fondo scuro il rosso di marchio faceva 3,1:1 e diventava rosa, un colore
+     che il cliente non ha: sul chiaro torna il suo #b51039 (6,4:1);
+   · il deck viene inoltrato e letto di giorno su un portatile.
+   ⚠️ Il selettore esclude per id, non ribalta i token in :root: copertine e capitoli
+   dipendono ancora dalla dominante scura. La striscia Adobe resta ardesia: è l'unico
+   blocco scuro, tiene il peso della pagina, e il lockup ufficiale è quello per fondi
+   scuri (Red-White). */
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) {
+  --surface-primary: var(--color-nebbia);
+  --surface-secondary: var(--color-bianco);
+  --surface-tertiary: var(--color-chiaro);
+  --surface-inverse: var(--color-ardesia-notte);
+  --ink-primary: var(--color-ardesia-notte);
+  --ink-secondary: var(--color-ardesia);
+  --ink-tertiary: var(--color-grigio-600);
+  --ink-body: var(--color-ardesia);
+  --ink-note: var(--color-grigio-600);
+  --ink-accent: var(--color-rosso-scuro);
+  --ink-accent-2: var(--color-verde);
+  --ink-brand: var(--color-rosso-scuro);
+  --ink-link: var(--color-rosso-scuro);
+  --ink-inverse: var(--color-bianco);
+  --line-subtle: var(--color-grigio-200);
+  --line-default: var(--color-grigio-300);
+  --line-strong: var(--color-ardesia-chiara);
+  --xd-dark-bg: var(--color-nebbia);
+  --xd-dark-ink: var(--color-ardesia-notte);
+  --xd-dark-body: var(--color-ardesia);
+  --xd-dark-note: var(--color-grigio-600);
+  --xd-dark-accent: var(--color-rosso-scuro);
+  --xd-dark-surface: var(--color-bianco);
+  --xd-dark-surface-2: var(--color-chiaro);
+  --xd-dark-line: var(--color-grigio-300);
+  --xd-piano: linear-gradient(160deg, #ffffff 0%, var(--color-chiaro) 100%);
+  color: var(--color-ardesia-notte);
+}
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-box, [data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-stat, [data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-ask, [data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .xd-sl .xd-chiusa, [data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .xd-ref-b, [data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-dom li {
+  background: var(--color-bianco); border-color: var(--color-grigio-300);
+}
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .mk-schermo { box-shadow: 0 10px 28px rgba(27, 34, 48, 0.14); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-terr-resto { fill: rgba(27, 34, 48, 0.07); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-inc-fig circle { fill: rgba(27, 34, 48, 0.04); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-inc-fig p[data-on] { color: var(--color-ardesia-notte); }
+
+/* La striscia Adobe: l'unico blocco scuro. Piena = si aggiunge, a filetto = già nel Gruppo. */
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-adobe { background: var(--color-ardesia); border-color: var(--color-ardesia); box-shadow: 0 10px 26px rgba(27, 34, 48, 0.18); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-adobe-k { color: var(--color-grigio-200); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-adobe-t[data-stato='avete'] { background: transparent; border-color: rgba(255, 255, 255, 0.45); color: var(--color-bianco); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-adobe-t[data-stato='nuovo'] { background: var(--color-bianco); border-color: var(--color-bianco); color: var(--color-ardesia-notte); }
+
+/* La mappa: stessa grammatica, sul chiaro. */
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-rt-g > li { border-color: var(--color-ardesia); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-rt-g[data-stato='nuovo'] > li { background: var(--color-ardesia); color: var(--color-bianco); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-rt-g[data-stato='avete'] > li { background: transparent; color: var(--color-ardesia-notte); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-rt-leg span::before { border-color: var(--color-ardesia); }
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-rt-leg span[data-stato='nuovo']::before { background: var(--color-ardesia); }
+[data-slide] p.tp-rt-m { margin: 0; max-width: none; font-size: clamp(0.95rem, 0.9vw, 1.6rem); line-height: 1.35; color: var(--ink-body); }
+[data-slide] p.tp-rt-m strong { display: block; font-size: clamp(0.76rem, 0.72vw, 1.3rem); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-accent); }
+@media (max-height: 960px) and (min-width: 901px) { [data-slide] p.tp-rt-m { display: none; } }
+@media (min-width: 901px) {
+  .tp-rt[data-capability] { grid-template-rows: repeat(5, auto); }
+  .tp-rt[data-capability] > li { grid-row: span 5; }
+}
+
+/* La barra del mockup dice che cosa si sta guardando: con il prima/dopo porta il
+   messaggio della schermata, e a 15 px era il testo più piccolo della pagina. */
+.mk-barra { padding: clamp(0.65rem, 1.1vh, 1rem) clamp(1rem, 1.2vw, 1.6rem); gap: clamp(0.6rem, 0.7vw, 1rem); }
+.mk-barra::before { width: 0.8em; height: 0.8em; font-size: clamp(1.15rem, 1.4vw, 2.5rem); }
+.mk-barra-t { font-size: clamp(1.15rem, 1.4vw, 2.5rem); line-height: 1.2; letter-spacing: -0.005em; }
+@media (min-width: 901px) and (max-height: 900px) {
+  .mk-barra { padding-block: 0.42rem; }
+  .mk-barra-t, .mk-barra::before { font-size: 1.1rem; }
+}
+
+/* Dove lavora oggi ciò che è già nel Gruppo, sulla mappa. Sta qui e non in pop.css:
+   la pagina della mappa non monta nessun pop-in, e quel foglio non arriverebbe. */
+.tp-rt-g > li:has(.tp-rt-per) { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
+.tp-rt-per { white-space: nowrap; font-family: var(--font-body); font-size: clamp(0.78rem, 0.72vw, 1.25rem); font-weight: 500; text-align: right; line-height: 1.25; }
+
+/* Nel Gruppo ma non in Trenitalia: il filetto si spezza, lo stato resta «già nel Gruppo». */
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-adobe-t[data-altrove],
+[data-slide]:not(#slide-cover, #slide-domanda, #slide-signature) .tp-rt-g > li[data-altrove] { border-style: dashed; }
+.tp-adobe-t[data-altrove] .tp-per > li { border-style: dashed; }
+
+/* Una campagna letta per canale (agenzie). Barre senza cifre: è un esempio. */
+.tp-idea-sx .mk-corpo--piena:has(> .mk-canali) { grid-template-rows: minmax(0, 1fr) auto; }
+.mk-canali { display: grid; align-content: center; gap: clamp(0.5rem, 1.2vh, 1.1rem); min-height: 0; }
+[data-slide] p.mk-canali-t { margin: 0; max-width: none; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; text-align: left; }
+.mk-canali-t strong { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.25rem, 1.6vw, 2.9rem); color: var(--color-ardesia-notte); }
+.mk-canali-t span { font-size: clamp(0.95rem, 0.9vw, 1.68rem); color: var(--color-ardesia); }
+.mk-canali ul { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(0.3rem, 0.8vh, 0.7rem); }
+.mk-canali li { margin: 0; display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) 5.5rem; align-items: center; gap: 0.75rem; font-size: clamp(1rem, 1vw, 1.8rem); font-weight: 600; color: var(--color-ardesia-notte); }
+.mk-canali i { display: block; width: var(--v); height: clamp(0.8rem, 1.7vh, 1.5rem); border-radius: 0.2rem; background: var(--color-grigio-300); }
+.mk-canali b { font-weight: 600; text-align: right; }
+.mk-canali li[data-on] { font-weight: 700; }
+.mk-canali li[data-on] i { background: var(--color-rosso); }
+
+/* La mappa in chiusura: una riga per idea, sulle stesse colonne. Niente binario e niente
+   numeri, che sono della Roadmap. Niente pannello: lo divide il filetto. */
+[data-forma='righe'] { --col: minmax(0, 1.25fr) minmax(0, 1.4fr) minmax(0, 1.35fr) minmax(0, 1.65fr) minmax(0, 1.25fr); --spazio: clamp(0.9rem, 1.3vw, 2.2rem); gap: 0; }
+.tp-rt-testa { display: grid; grid-template-columns: var(--col); column-gap: var(--spazio); padding-bottom: clamp(0.3rem, 0.8vh, 0.6rem); font-size: clamp(0.82rem, 0.76vw, 1.4rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-note); }
+[data-forma='righe'] .tp-rt { display: block; }
+[data-forma='righe'] .tp-rt > li { display: grid; grid-row: auto; grid-template-columns: var(--col); grid-template-rows: none; column-gap: var(--spazio); align-items: start; padding: clamp(0.5rem, 1.5vh, 1.15rem) 0; border-top: 1px solid var(--color-grigio-300); }
+[data-forma='righe'] .tp-rt > li:last-child { border-bottom: 1px solid var(--color-grigio-300); }
+[data-forma='righe'] .tp-rt > li > * { grid-row: 1; }
+[data-forma='righe'] a.tp-rt-t { grid-column: 1; font-size: clamp(1.2rem, 1.45vw, 2.5rem); }
+[data-forma='righe'] p.tp-rt-c { grid-column: 2; }
+[data-forma='righe'] .tp-rt-g[data-stato='avete'] { grid-column: 3; }
+[data-forma='righe'] .tp-rt-g[data-stato='nuovo'] { grid-column: 4; }
+[data-forma='righe'] p.tp-rt-m { grid-column: 5; }
+[data-forma='righe'] .tp-rt > li::after, [data-forma='righe'] .tp-rt-n, [data-slide] [data-forma='righe'] p.tp-rt-leg, [data-slide] [data-forma='righe'] p.tp-rt-m strong { display: none; }
+[data-forma='righe'] .tp-rt-g { display: flex; flex-wrap: wrap; align-items: flex-start; }
+[data-forma='righe'] .tp-rt-g > li { max-width: 100%; }
+[data-forma='righe'] .tp-rt-g > li:has(.tp-rt-per) { flex-wrap: wrap; gap: 0 0.5rem; }
+/* Sotto i 960 di altezza «Il numero» non si mostra: colonna e intestazione escono insieme. */
+@media (max-height: 960px) and (min-width: 901px) {
+  [data-forma='righe'] { --col: minmax(0, 1.15fr) minmax(0, 1.7fr) minmax(0, 1.4fr) minmax(0, 1.85fr); }
+  [data-forma='righe'] .tp-rt > li { padding-block: 0.4rem; }
+  .tp-rt-testa span:nth-child(5) { display: none; }
+}
+@media (max-height: 860px) and (min-width: 901px) {
+  [data-forma='righe'] { --col: minmax(0, 1.2fr) minmax(0, 1.5fr) minmax(0, 2.3fr); }
+  .tp-rt-testa span:nth-child(2) { display: none; }
+  [data-forma='righe'] .tp-rt-g[data-stato='avete'] { grid-column: 2; }
+  [data-forma='righe'] .tp-rt-g[data-stato='nuovo'] { grid-column: 3; }
+}
+@media (max-width: 900px) {
+  .tp-rt-testa { display: none; }
+  [data-forma='righe'] .tp-rt > li { grid-template-columns: minmax(0, 1fr); row-gap: 0.5rem; padding-left: 0; }
+  [data-forma='righe'] .tp-rt > li > * { grid-column: 1; grid-row: auto; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   «CIASCUNO CONTA» — quello che questo deck aggiunge alla pelle della
+   Prospettiva. Tutto il resto (token, XD, ancore, divisori) è la stessa mano.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* La folla che conta: punti fermi, uno che si accende, la linea che sale.
+   Stato BASE = finale; il movimento si aggiunge solo senza «Riduci movimento». */
+.cc-cop-bg { position: absolute; inset: 0; background: var(--surface-primary); overflow: hidden; }
+.cc-cop-bg::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  /* velo più pieno a sinistra, dove sta il testo: la folla resta viva a destra */
+  background: linear-gradient(90deg, rgba(27, 34, 48, 0.94) 0%, rgba(27, 34, 48, 0.86) 46%, rgba(27, 34, 48, 0.35) 100%);
+}
+.cc-cop-bg--firma::after { background: radial-gradient(ellipse at center, rgba(27, 34, 48, 0.9) 0%, rgba(27, 34, 48, 0.62) 70%); }
+.cc-folla { position: absolute; inset: 0; width: 100%; height: 100%; }
+.cc-folla-punti circle { fill: var(--color-ardesia-chiara); opacity: 0.55; }
+.cc-folla-uno { fill: var(--color-rosso); }
+.cc-folla-alone { fill: none; stroke: var(--color-rosso); stroke-width: 2; opacity: 0.45; }
+.cc-folla-linea { fill: none; stroke: var(--color-rosso); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .cc-folla-punti circle { animation: cc-respiro 6s ease-in-out infinite; animation-delay: calc(var(--d) * -0.26s); }
+  .cc-folla-uno { animation: cc-accendi 1.2s 0.6s both cubic-bezier(0.2, 0.8, 0.2, 1); transform-box: fill-box; transform-origin: center; }
+  .cc-folla-alone { animation: cc-alone 3.2s 1.4s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+  .cc-folla-linea { animation: cc-sale 2.4s 1.5s both cubic-bezier(0.45, 0, 0.2, 1); }
+}
+@keyframes cc-respiro { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.7; } }
+@keyframes cc-accendi { from { transform: scale(0.2); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes cc-alone { from { transform: scale(0.6); opacity: 0.6; } to { transform: scale(2.2); opacity: 0; } }
+@keyframes cc-sale { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+
+/* Il chiasmo: la prima riga è la lettura calda, la seconda ha l'aspetto di un
+   contatore (cifre tabulari, spaziatura larga, rosso schiarito). Fermo restano
+   tutte e due, così l'imperativo si legge anche in un'anteprima stampata. */
+.cc-cop-t { display: grid; gap: 0.15em; }
+.cc-cop-uno { display: block; }
+.cc-cop-due {
+  display: block; font-weight: 600; font-size: 0.52em; letter-spacing: 0.14em;
+  text-transform: uppercase; font-variant-numeric: tabular-nums; color: var(--ink-accent);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cc-cop-due { animation: cc-scambio 0.9s 1.3s both cubic-bezier(0.2, 0.8, 0.2, 1); }
+}
+@keyframes cc-scambio { from { opacity: 0; transform: translateY(0.4em); letter-spacing: 0.5em; } to { opacity: 1; transform: none; letter-spacing: 0.14em; } }
+
+/* Una domanda grande quanto la pagina. */
+.cc-cit {
+  font-family: var(--font-display); font-weight: 700; color: var(--ink-primary);
+  font-size: clamp(2rem, 3.6vw, 6.4rem); line-height: 1.08; letter-spacing: -0.02em;
+  margin: 0.4rem 0 0.2rem; max-width: 22ch; text-wrap: balance;
+}
+.cc-domanda { display: grid; gap: clamp(0.6rem, 1.4vh, 1.4rem); }
+
+/* Ancore a colonne fissate, quando auto-fit darebbe un'ultima riga zoppa. */
+.cc-ancore[data-cols] { grid-template-columns: repeat(var(--cc-cols), minmax(0, 1fr)); }
+@media (max-width: 1100px) { .cc-ancore[data-cols="5"] { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 900px) {
+  .cc-ancore[data-cols] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .cc-ancore[data-cols] { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* La scaletta: ora a sinistra, blocco a destra; i blocchi con la Direzione
+   portano un filo rosso. Su telefono resta una colonna, che è già la sua forma. */
+.cc-scal { list-style: none; margin: clamp(0.6rem, 1.2vh, 1.2rem) 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.55rem 2.2rem; }
+.cc-scal-i { display: grid; grid-template-columns: 4.4rem minmax(0, 1fr); gap: 0.9rem; align-items: baseline; padding: 0.55rem 0 0.6rem; border-top: 1px solid var(--line-subtle, rgba(255,255,255,0.16)); margin-inline: 0; }
+.cc-scal-i--dir { border-top: 2px solid var(--color-rosso); }
+.cc-scal-o { font-family: var(--font-display); font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink-accent); font-size: clamp(0.98rem, 0.95vw, 1.7rem); }
+.cc-scal-c { display: grid; gap: 0.2rem; min-width: 0; }
+.cc-scal-t { font-family: var(--font-display); font-weight: 700; color: var(--ink-primary); font-size: clamp(1.02rem, 1vw, 1.8rem); line-height: 1.25; }
+.cc-scal-dir { margin-left: 0.6rem; font-size: 0.68em; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-note); white-space: nowrap; }
+.cc-scal-d { color: var(--ink-body); font-size: clamp(0.95rem, 0.86vw, 1.5rem); line-height: 1.45; }
+@media (max-width: 900px) { .cc-scal { grid-template-columns: minmax(0, 1fr); } }
+
+/* «Scopri come»: `.hiw-body` del motore non dichiara un colore, e la pelle lo
+   rimette — se no il drill-down eredita un inchiostro che nessun gate guarda
+   a blocco chiuso. */
+.cc-dett { margin-top: clamp(0.7rem, 1.4vh, 1.2rem); max-width: 76rem; }
+.cc-dett .dett-ancora > p { color: var(--ink-primary); }
+.cc-dett .dett-riga > p { color: var(--ink-body); }
+.cc-dett .dett-nota > p { color: var(--ink-note); }
+.cc-dett .fg { color: var(--ink-tertiary); }
+.cc-dett .dett-fig-box { border-color: var(--line-subtle); }
+.cc-dett .xd-fig { height: clamp(2.3rem, 2.9vw, 4.2rem); margin-bottom: 0.28rem; }
+
+/* Il ritmo della testata: la Prospettiva la stringe a 0,45rem (8px, sotto i 16
+   del check `g`) per far entrare slide più dense. Qui le slide portano meno, e
+   la testata respira come chiede il contratto. */
+[data-slide] .xd-sl .xd-sl-head { gap: max(16px, 0.9rem); }
+
+/* Il corpo della slide in un contenitore solo: è lui che si centra nello spazio
+   sotto la testata. Senza, l'ultimo figlio era lo script del «Scopri come» e il
+   corpo scivolava in fondo, lasciando un buco al centro. */
+.cc-corpo { display: flex; flex-direction: column; gap: clamp(0.9rem, 1.8vh, 1.6rem); min-width: 0; }
+
+/* Le tappe: a bandiera e a corpo pieno. Il passo XD centrato e a 0,64vw dava
+   descrizioni da 12px a 1920: in sala non si leggono. */
+.cc-passi { gap: clamp(1.4rem, 3vh, 2.6rem) clamp(1.6rem, 2.4vw, 3rem); }
+.cc-passi .xd-passi-i { justify-items: start; text-align: left; border-top: 2px solid var(--ink-accent); padding-top: 0.8rem; }
+.cc-passi .xd-passi-n { display: none; }
+.cc-passi .xd-passi-l { font-size: clamp(1.1rem, 1.3vw, 2.2rem); line-height: 1.2; }
+.cc-passi .xd-passi-d { font-size: clamp(0.98rem, 0.95vw, 1.7rem); line-height: 1.45; color: var(--ink-body); }
+
+/* La scaletta si legge per colonna, non a zig-zag: prima tutta la mattina. */
+@media (min-width: 901px) {
+  .cc-scal { grid-template-rows: repeat(4, auto); grid-auto-flow: column; }
+}
+/* La data di una tappa sta sopra il nome, in piccolo e d'accento: in coda alla
+   descrizione andava a capo da sola («settimane / 2–5»). */
+.cc-passi-q { margin: 0; max-width: none; font-size: clamp(0.8rem, 0.72vw, 1.3rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-accent); font-variant-numeric: tabular-nums; }
+/* Le cifre sono il contenuto della slide: crescono invece di lasciare il vuoto. */
+[data-slide] .cc-corpo .xd-num-k { font-size: clamp(2.4rem, 3.6vw, 6.4rem); color: var(--ink-accent); }
+/* Le righe brevi sotto le ancore non chiudono su una parola sola: è il lavoro
+   di `pretty`, che gli spazi unificatori da soli non fanno (anzi: una catena
+   legata diventa una coda da tre parole che va a capo tutta insieme). */
+[data-slide] .tp-anc-b, [data-slide] .xd-sub, [data-slide] .xd-passi-d, [data-slide] .xd-ref-f,
+[data-slide] .xd-num-v, [data-slide] .cc-scal-d, [data-slide] .xd-chiusa, [data-slide] .xd-cop-l { text-wrap: pretty; }
+
+/* Il venduto di ogni giorno: la linea è struttura, il calo è l'unico accento. */
+.cc-venduto { display: block; width: 100%; height: auto; max-height: 16vh; overflow: visible; }
+.cc-venduto--grande { max-height: 24vh; margin: clamp(0.4rem, 1.5vh, 1.4rem) 0; }
+.cc-venduto-base { fill: none; stroke: var(--line-subtle, rgba(0,0,0,0.12)); stroke-width: 1.5; }
+.cc-venduto-linea { fill: none; stroke: var(--ink-note); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+.cc-venduto-calo { fill: none; stroke: var(--color-rosso); stroke-width: 4; stroke-linecap: round; }
+.cc-venduto-punto { fill: var(--color-rosso); }
+.cc-venduto-alone { fill: none; stroke: var(--color-rosso); stroke-width: 2; opacity: 0.4; }
+@media (prefers-reduced-motion: no-preference) {
+  [data-slide-active] .cc-venduto-linea, .cc-venduto-linea { animation: cc-sale 1.8s 0.3s both cubic-bezier(0.45, 0, 0.2, 1); }
+  .cc-venduto-alone { animation: cc-alone 2.8s 1.6s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+}

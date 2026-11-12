@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import Divisore from '../components/Divisore.astro';
+import Ancore from '../components/Ancore.astro';
+import Approfondisci from '../components/Approfondisci.astro';
+import { href } from '@edf/core/utils/url.js';
+import foto from '../assets/generated/sole/sole-ricerca.webp';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { PROVA, DATI } from '../data/contenuti';
+
+/**
+ * Capitolo 02 — Dalla promessa alla prova.
+ *
+ * La forma prima del contenuto: non si propone un evento, si propone un lavoro
+ * con un traguardo. I tre criteri sono anche il filtro di tutto il resto del
+ * deck: ogni blocco della giornata ne serve almeno uno.
+ */
+const SLUG = 'prova';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <!-- ── Divisore di capitolo (il fondo sta qui: Astro non propaga slot="backdrop") -->
+    <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${foto.src})`}></div>
+      <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
+    </Slide>
+
+    <Slide id="slide-forma" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">{PROVA.eyebrow}</p>
+          <h2 class="xd-h2">{PROVA.titolo}</h2>
+          <p class="xd-sub">{PROVA.sub}</p>
+        </div>
+        <div class="cc-corpo">
+          <Ancore items={PROVA.ancore} cols={3} />
+        </div>
+      </div>
+    </Slide>
+
+    <Slide id="slide-dati" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--fig" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">{DATI.eyebrow}</p>
+          <h2 class="xd-h2">{DATI.titolo}</h2>
+          <p class="xd-sub">{DATI.sub}</p>
+        </div>
+        <div class="cc-corpo">
+          <ul class="xd-num" style="--cols:4" data-stagger data-reveal data-reveal-delay="0.14">
+            {DATI.cifre.map((c) => (
+              <li class="xd-num-i">
+                <span class="xd-num-k" data-display>{c.k}</span>
+                <p class="xd-num-v">{c.v}</p>
+              </li>
+            ))}
+          </ul>
+          <p class="xd-chiusa" data-reveal data-reveal-delay="0.24">{DATI.chiusa}</p>
+        </div>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

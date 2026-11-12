@@ -1,0 +1,34 @@
+---
+/**
+ * Il venduto di ogni giorno — trenta giorni di una linea che va su e giù, e
+ * l'ultimo punto che scende. Non è un dato: è la forma della domanda delle
+ * nove («ieri il venduto è sceso: perché?»). Valori illustrativi e dichiarati
+ * come tali nel testo accanto; nessuna cifra sull'asse, perché una cifra
+ * inventata in un deck del cliente è peggio di nessuna cifra.
+ *
+ * Niente parole dentro l'SVG. Stato base = finale; il tratto si disegna solo
+ * senza «Riduci movimento».
+ */
+interface Props { grande?: boolean }
+const { grande = false } = Astro.props as Props;
+const W = 1200;
+const H = 220;
+// una settimana che si ripete (il venerdì e la domenica pesano), più un rumore fisso
+const base = [0.62, 0.58, 0.6, 0.66, 0.82, 0.7, 0.78];
+const pts = Array.from({ length: 30 }, (_, i) => {
+  const v = base[i % 7] + (((i * 37) % 11) - 5) / 120 + i * 0.004;
+  return i === 29 ? 0.34 : v;
+});
+const x = (i: number) => 20 + (i * (W - 60)) / 29;
+const y = (v: number) => H - 20 - v * (H - 50);
+const d = pts.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)} ${y(v).toFixed(1)}`).join(' ');
+const ultimo = { x: x(29), y: y(pts[29]) };
+const prima = { x: x(28), y: y(pts[28]) };
+---
+<svg class:list={['cc-venduto', grande && 'cc-venduto--grande']} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMinYMid meet" aria-hidden="true" focusable="false">
+  <path class="cc-venduto-base" d={`M20 ${H - 20} H${W - 40}`} />
+  <path class="cc-venduto-linea" d={d} pathLength="1" />
+  <path class="cc-venduto-calo" d={`M${prima.x} ${prima.y} L${ultimo.x} ${ultimo.y}`} />
+  <circle class="cc-venduto-alone" cx={ultimo.x} cy={ultimo.y} r="18" />
+  <circle class="cc-venduto-punto" cx={ultimo.x} cy={ultimo.y} r="7" />
+</svg>

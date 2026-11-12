@@ -394,6 +394,26 @@ export const EXPERIENCES: Experience[] = [
       it: 'Generata dallo scheletro «Blueprint»: 6 capitoli, una copertina e una firma. Copy e design system arrivano ancora dal brief.',
     },
   },
+  {
+    slug: 'trenitalia-ciascuno-conta',
+    name: 'Ciascuno conta',
+    client: 'Trenitalia',
+    type: 'interno',
+    brandLabel: 'Trenitalia',
+    url: `${LIVE}/trenitalia-ciascuno-conta/`,
+    shot: 'shots/trenitalia-ciascuno-conta.webp',
+    accent: '#d91835',
+    sections: 6,
+    defaultPublished: false,
+    tag: {
+      en: '6 chapters · IT · internal',
+      it: '6 capitoli · IT · interno',
+    },
+    desc: {
+      en: 'The «Ciascuno conta» path for Trenitalia’s Sales Directorate: a proof on their data, then a working day. Internal layer gated.',
+      it: 'Il percorso «Ciascuno conta» per la Direzione Sales di Trenitalia: una prova sui loro dati, poi una giornata di lavoro. Strato interno gated.',
+    },
+  },
 ];
 
 /** Le experience mostrate quando lo stato remoto non è leggibile (fail-closed). */

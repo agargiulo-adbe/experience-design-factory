@@ -1,0 +1,33 @@
+---
+import DocLayout from '../layouts/DocLayout.astro';
+import DossierPage from '@edf/core/blocks/doc/DossierPage.astro';
+
+// ── Pagina RISERVATA (Adobe internal) — «Lo strato interno» ────────────────
+// Orfana dal flusso del deck e noindex. Il contenuto confidenziale NON sta nel
+// bundle statico: vive in Supabase (`restricted_docs`, RLS) e si carica solo
+// 1) dopo login (super admin o ruolo su questa experience), oppure 2) via
+// secret-link `?t=<uuid>`, senza login.
+// Seed (git-ignorato): docs/Ferrovie/0037_seed_trenitalia_ciascuno_conta_dossier.sql
+//
+// Perché sta qui e non nel deck: il deck si scrive perché il cliente possa
+// leggerlo senza danno, ed è la base della versione per la Direzione Sales.
+// Persone per nome, strategia, GNARR, costi e compliance sono solo nostri.
+//
+// Rendering del motore condiviso: qui restano lo slug e il guscio; la palette
+// Trenitalia → `--dw-*` sta nel DocLayout.
+---
+<DocLayout
+  title="Ciascuno conta — lo strato interno"
+  description="Adobe internal — documento riservato (accesso ristretto)."
+  noindex={true}
+>
+  <DossierPage
+    docSlug="trenitalia-ciascuno-conta"
+    title="Ciascuno conta — lo strato interno"
+    base={import.meta.env.BASE_URL}
+    supabaseUrl={import.meta.env.PUBLIC_SUPABASE_URL ?? ''}
+    supabaseAnon={import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? ''}
+    deckHref="/experience-design-factory/trenitalia-ciascuno-conta/"
+    deckLabel="Apri il deck ↗"
+  />
+</DocLayout>

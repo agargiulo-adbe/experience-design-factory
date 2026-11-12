@@ -1,0 +1,47 @@
+---
+/**
+ * IL DIVISORE DI CAPITOLO — la forma XD, adattata alla dominante scura.
+ *
+ * Due campi: il titolo grande a sinistra e la fotografia, solare, fino al bordo
+ * destro (9 nov 2026: via il pannello con il punto del capitolo). È il momento in cui la pagina
+ * non deve dire altro: in sala si capisce di aver cambiato capitolo prima di
+ * leggere, ed è metà del ritmo di un deck.
+ *
+ * ⚠️ XD COMPONE IL DIVISORE PER UNA DOMINANTE CHIARA: `bg="secondary"`, e il
+ * titolo prende `--color-ink`, cioè l'inchiostro scuro. Qui `--surface-secondary`
+ * è l'ardesia PIENA — scura — e il titolo uscirebbe ardesia su ardesia:
+ * invisibile, e nessun check di layout lo vedrebbe (il check `h` misura i
+ * bottoni, non la prosa). Quindi la slide dichiara `bg="primary"` e la pelle
+ * ribalta `.xd-div-t`. È la regola degli inchiostri che si ribaltano con la
+ * superficie, applicata a un componente del motore.
+ *
+ * ⚠️ IL FONDO LO METTE LA PAGINA, non questo componente: Astro non propaga
+ * `slot="backdrop"` attraverso un componente, e un `<div slot="backdrop">`
+ * scritto qui dentro finirebbe nel contenuto, in posizione assoluta sopra il
+ * testo. Il difetto non si vede aprendo la pagina: si vede misurando i pixel.
+ */
+
+interface Props {
+  num: string;
+  titolo: string;
+  /** Il punto del capitolo: oggi non si rende, resta nei dati. */
+  punto?: string;
+  /** Lo slug del capitolo, per accendere la bussola. */
+  slug: string;
+  /** Di chi è il tavolo: una riga sotto il punto, dove il capitolo tocca il
+   *  perimetro di un'altra direzione. Vive in `chapters.ts`. */
+  tavolo?: string;
+  /** Mostra la bussola delle quattro idee con questo capitolo acceso. Si passa
+   *  solo sui quattro capitoli che SONO un'idea: sull'apertura e sulla domanda
+   *  le idee non sono ancora state dette, e anticiparle sul divisore toglie
+   *  alla slide che le annuncia il suo mestiere. */
+  bussola?: boolean;
+}
+const { num, titolo, slug, bussola = false } = Astro.props as Props;
+---
+<div class="xd-div" data-reveal>
+  <div class="xd-div-sx">
+    <p class="xd-div-num">Capitolo {num}</p>
+    <h2 class="xd-div-t">{titolo}</h2>
+  </div>
+</div>

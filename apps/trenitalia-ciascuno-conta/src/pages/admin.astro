@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdminConsole from '@edf/core/blocks/admin/AdminConsole.astro';
+import { href } from '@edf/core/utils/url.js';
+import { SITE } from '../data/site';
+
+const base = import.meta.env.BASE_URL;
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+interface SlideEntry { id: string; label: string; }
+interface PageEntry { slug: string; label: string; slides: SlideEntry[]; }
+
+// Ogni slide del deck, pagina per pagina: è ciò che il tab «Capitoli e slide»
+// accende e spegne. Ogni <Slide id> nuova va registrata qui.
+const PAGE_REGISTRY: PageEntry[] = [
+  { slug: 'index', label: 'Ciascuno conta (00)', slides: [
+    { id: 'slide-cover', label: 'Copertina e capitoli' },
+  ]},
+  { slug: 'numero', label: 'Il numero di ogni giorno (01)', slides: [
+    { id: 'slide-cover',   label: 'Divisore — Il numero di ogni giorno' },
+    { id: 'slide-numero',  label: 'Il venduto del giorno prima' },
+    { id: 'slide-nove',    label: 'La domanda delle nove' },
+  ]},
+  { slug: 'prova', label: 'Dalla promessa alla prova (02)', slides: [
+    { id: 'slide-cover', label: 'Divisore — Dalla promessa alla prova' },
+    { id: 'slide-forma', label: 'La forma: tre criteri' },
+    { id: 'slide-dati',  label: 'Sui vostri dati' },
+  ]},
+  { slug: 'percorso', label: 'Il percorso (03)', slides: [
+    { id: 'slide-cover',   label: 'Divisore — Il percorso' },
+    { id: 'slide-tappe',   label: 'Sei tappe' },
+    { id: 'slide-criteri', label: 'I criteri di successo' },
+  ]},
+  { slug: 'giornata', label: 'La giornata (04)', slides: [
+    { id: 'slide-cover',      label: 'Divisore — La giornata' },
+    { id: 'slide-scaletta',   label: 'La giornata, ora per ora' },
+    { id: 'slide-postazioni', label: 'Le mani sugli strumenti' },
+    { id: 'slide-priorita',   label: 'Le priorità, scelte insieme' },
+  ]},
+  { slug: 'chi', label: 'Chi c\'è (05)', slides: [
+    { id: 'slide-cover',   label: 'Divisore — Chi c\'è' },
+    { id: 'slide-ruoli',   label: 'Al tavolo' },
+    { id: 'slide-esempio', label: 'Chi l\'ha già fatto' },
+  ]},
+  { slug: 'rotta', label: 'Che cosa resta (06)', slides: [
+    { id: 'slide-cover',     label: 'Divisore — Che cosa resta' },
+    { id: 'slide-rotta',     label: 'La rotta a tre tappe' },
+    { id: 'slide-passo',     label: 'Il prossimo passo' },
+    { id: 'slide-signature', label: 'La firma — Adobe × Trenitalia' },
+  ]},
+];
+
+interface SolutionEntry {
+  id: string; name: string; shortName: string;
+  pillar: string; description: string; appearsIn: string[];
+}
+
+// Segnaposto: il deck generato non ha slide gated. Sostituire con le soluzioni
+// Adobe che l'experience propone davvero (nomi verificati, vedi memoria
+// adobe-product-naming-2026) e marcare le slide con `data-solution="<id>"`.
+const SOLUTIONS: SolutionEntry[] = [
+  { id: 'piattaforma', name: 'Adobe Experience Cloud — segnaposto', shortName: 'Adobe', pillar: 'piattaforma',
+    description: 'Sostituire con i prodotti Adobe che il deck propone, uno per voce, con il nome per esteso.', appearsIn: ['Il numero di ogni giorno', 'Dalla promessa alla prova', 'Il percorso', 'La giornata', 'Chi c\'è', 'Che cosa resta'] },
+];
+
+const PILLAR_LABELS: Record<string, string> = { piattaforma: 'Piattaforma' };
+const PILLAR_ORDER = ['piattaforma'];
+const PILLAR_COLORS: Record<string, string> = { piattaforma: '#d91835' };
+
+const solutionGroups = PILLAR_ORDER
+  .map((pillar) => ({ pillar, label: PILLAR_LABELS[pillar], color: PILLAR_COLORS[pillar], solutions: SOLUTIONS.filter((s) => s.pillar === pillar) }))
+  .filter((g) => g.solutions.length > 0);
+
+const allSolutionIds = SOLUTIONS.map((s) => s.id);
+const deckHref = href(base, '/');
+// I dossier interni di questa experience, se ne ha: la console è il posto dove
+// chi presenta trova il deck e il documento che prepara la stanza. Quando nasce
+// un `dossier.astro`, si aggiunge qui — restano gated, il link non li apre.
+const DOSSIERS: { href: string; label?: string }[] = [
+  { href: href(base, '/dossier'), label: 'Lo strato interno' },
+];
+---
+<BaseLayout title={`Console — ${SITE.name} · ${SITE.client}`}>
+  <AdminConsole
+    projectSlug={SITE.slug}
+    projectName={SITE.name}
+    clientLabel={`Adobe × ${SITE.client}`}
+    deckHref={deckHref}
+    dossiers={DOSSIERS}
+    pages={PAGE_REGISTRY}
+    solutionGroups={solutionGroups}
+    allSolutionIds={allSolutionIds}
+    supabaseUrl={SUPABASE_URL}
+    supabaseAnonKey={SUPABASE_ANON_KEY}
+  />
+</BaseLayout>

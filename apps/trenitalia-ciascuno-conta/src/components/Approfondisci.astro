@@ -1,0 +1,31 @@
+---
+/**
+ * «Scopri come» nella forma del motore: per ogni voce un micro-diagramma, l'ancora
+ * che lo nomina e UNA riga. Venti parole al massimo: se non bastano, la voce
+ * porta due cose e va divisa.
+ *
+ * ⚠️ Tono `onLight` su una dominante SCURA, ed è voluto: `onDark` del motore
+ * prende `--ink-inverse`, che qui è l'ardesia (la superficie inversa è chiara),
+ * e il «Scopri come» usciva ardesia su ardesia, 1,05:1. `onLight` prende
+ * `--ink-secondary`, che in questa pelle è il grigio chiaro sul fondo scuro.
+ */
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
+import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
+import Figura from './Figura.astro';
+
+interface Voce { fig: string; a: string; r: string }
+interface Props { title: string; voci: Voce[] }
+const { title, voci } = Astro.props as Props;
+---
+<HowItWorks title={title} tone="onLight" class="cc-dett">
+  <Dettaglio>
+    {voci.map((v) => (
+      <DettaglioVoce>
+        <Figura k={v.fig as any} />
+        <p slot="ancora">{v.a}</p>
+        <p slot="riga">{v.r}</p>
+      </DettaglioVoce>
+    ))}
+  </Dettaglio>
+</HowItWorks>

@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import Divisore from '../components/Divisore.astro';
+import Ancore from '../components/Ancore.astro';
+import Approfondisci from '../components/Approfondisci.astro';
+import { href } from '@edf/core/utils/url.js';
+import foto from '../assets/generated/sole/sole-rete.webp';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { RUOLI, ESEMPIO } from '../data/contenuti';
+
+/**
+ * Capitolo 05 — Chi c'è.
+ *
+ * Ruoli, non nomi: il deck si inoltra, e i nomi stanno nello strato interno.
+ * La referenza è descritta senza nome finché non è confermata, insieme alla
+ * sua disponibilità a raccontarsi.
+ */
+const SLUG = 'chi';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <!-- ── Divisore di capitolo (il fondo sta qui: Astro non propaga slot="backdrop") -->
+    <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${foto.src})`}></div>
+      <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
+    </Slide>
+
+    <Slide id="slide-ruoli" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">{RUOLI.eyebrow}</p>
+          <h2 class="xd-h2">{RUOLI.titolo}</h2>
+          <p class="xd-sub">{RUOLI.sub}</p>
+        </div>
+        <div class="cc-corpo">
+          <Ancore items={RUOLI.colonne} cols={3} />
+        </div>
+      </div>
+    </Slide>
+
+    <Slide id="slide-esempio" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--fig" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">{ESEMPIO.eyebrow}</p>
+          <h2 class="xd-h2">{ESEMPIO.titolo}</h2>
+          <p class="xd-sub">{ESEMPIO.sub}</p>
+        </div>
+        <div class="xd-ref" style="--cols:2" data-stagger data-reveal data-reveal-delay="0.14">
+          {ESEMPIO.punti.map((p) => (
+            <div class="xd-ref-b">
+              <p class="xd-ref-n">{p.n}</p>
+              <p class="xd-ref-f">{p.f}</p>
+            </div>
+          ))}
+        </div>
+        <div class="cc-corpo">
+          <p class="xd-chiusa" data-reveal data-reveal-delay="0.24">{ESEMPIO.chiusa}</p>
+        </div>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import Divisore from '../components/Divisore.astro';
+import Ancore from '../components/Ancore.astro';
+import Approfondisci from '../components/Approfondisci.astro';
+import { href } from '@edf/core/utils/url.js';
+import foto from '../assets/generated/sole/sole-viaggio.webp';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { TAPPE, CRITERI } from '../data/contenuti';
+
+/**
+ * Capitolo 03 — Il percorso.
+ *
+ * Sei tappe, dalla scelta dei casi d'uso alla giornata. Il modello del lavoro
+ * sui dati è quello dei POC congiunti di Adobe: criteri di successo scritti la
+ * prima settimana, un punto fisso ogni settimana, un perimetro dichiarato.
+ */
+const SLUG = 'percorso';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <!-- ── Divisore di capitolo (il fondo sta qui: Astro non propaga slot="backdrop") -->
+    <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${foto.src})`}></div>
+      <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
+    </Slide>
+
+    <Slide id="slide-tappe" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--fig" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">{TAPPE.eyebrow}</p>
+          <h2 class="xd-h2">{TAPPE.titolo}</h2>
+          <p class="xd-sub">{TAPPE.sub}</p>
+        </div>
+        <div class="cc-corpo">
+          <ol class="xd-passi cc-passi" style="--cols:3" data-stagger data-reveal data-reveal-delay="0.14">
+            {TAPPE.passi.map((p, i) => (
+              <li class="xd-passi-i">
+                <span class="xd-passi-n">{i + 1}</span>
+                <p class="cc-passi-q">{p.d.split(' · ')[1]}</p>
+                <p class="xd-passi-l">{p.l}</p>
+                <p class="xd-passi-d">{p.d.split(' · ')[0]}</p>
+              </li>
+            ))}
+          </ol>
+          <Approfondisci title="Come si lavora nelle settimane della prova" voci={TAPPE.dettaglio} />
+        </div>
+      </div>
+    </Slide>
+
+    <Slide id="slide-criteri" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">{CRITERI.eyebrow}</p>
+          <h2 class="xd-h2">{CRITERI.titolo}</h2>
+          <p class="xd-sub">{CRITERI.sub}</p>
+        </div>
+        <div class="cc-corpo">
+          <Ancore items={CRITERI.ancore} cols={4} />
+        </div>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

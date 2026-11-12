@@ -208,6 +208,15 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
     { name: 'prossimi-passi', route: '/experience-design-factory/bper-sopra-quello-che-avete/prossimi-passi/' },
     { name: 'dieci-minuti',   route: '/experience-design-factory/bper-sopra-quello-che-avete/dieci-minuti/' },
   ],
+  'trenitalia-ciascuno-conta': [
+    { name: 'home',      route: '/experience-design-factory/trenitalia-ciascuno-conta/' },
+    { name: 'numero',    route: '/experience-design-factory/trenitalia-ciascuno-conta/numero/' },
+    { name: 'prova',     route: '/experience-design-factory/trenitalia-ciascuno-conta/prova/' },
+    { name: 'percorso',  route: '/experience-design-factory/trenitalia-ciascuno-conta/percorso/' },
+    { name: 'giornata',  route: '/experience-design-factory/trenitalia-ciascuno-conta/giornata/' },
+    { name: 'chi',       route: '/experience-design-factory/trenitalia-ciascuno-conta/chi/' },
+    { name: 'rotta',     route: '/experience-design-factory/trenitalia-ciascuno-conta/rotta/' },
+  ],
 };
 
 /** Il nome dell'app ricavato dalla cartella da cui si lancia il comando. */
@@ -231,4 +240,5 @@ export const CWD_ALIAS: Record<string, string> = {
   'unipol-cinque-domande': 'unipol-cinque-domande',
   'bper-sopra-quello-che-avete': 'bper-sopra-quello-che-avete',
   'bper': 'bper-sopra-quello-che-avete',
+  'trenitalia-ciascuno-conta': 'trenitalia-ciascuno-conta',
 };

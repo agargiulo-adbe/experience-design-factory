@@ -1,0 +1,42 @@
+---
+/**
+ * La folla che conta — l'immagine del concept, in codice.
+ *
+ * Milioni di viaggiatori sono una trama di punti; uno si accende, riceve la sua
+ * proposta, e la sua vendita si somma a una linea che sale. Persone che
+ * diventano numeri, numeri che restano persone: è il doppio senso di «Ciascuno
+ * conta» reso senza spiegarlo, e toglie al titolo il tono da campagna sociale.
+ *
+ * ⚠️ Niente parole dentro l'SVG: sulla parete non crescerebbero con la radice.
+ * ⚠️ Lo stato BASE è quello finale (punto acceso, linea disegnata): con «Riduci
+ * movimento» non parte niente e la figura si legge lo stesso.
+ * ⚠️ Vive nello slot `backdrop` della pagina, dietro uno scrim: la mette la
+ * pagina, perché Astro non propaga `slot="backdrop"` attraverso un componente.
+ */
+const COLS = 34;
+const ROWS = 18;
+const W = 1600;
+const H = 900;
+const dots: { x: number; y: number; d: number }[] = [];
+for (let r = 0; r < ROWS; r++) {
+  for (let c = 0; c < COLS; c++) {
+    // una griglia appena irregolare: una folla, non un foglio a quadretti
+    const jx = ((c * 37 + r * 53) % 17) - 8;
+    const jy = ((c * 29 + r * 41) % 13) - 6;
+    dots.push({ x: 40 + c * 47 + jx, y: 40 + r * 48 + jy, d: (c * 7 + r * 11) % 23 });
+  }
+}
+// Il punto acceso sta a destra dell'agenda, e la linea sale lungo il bordo:
+// passando dietro le voci dei capitoli le tagliava.
+const UNO = { x: 1480, y: 730 };
+---
+<svg class="cc-folla" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+  <g class="cc-folla-punti">
+    {dots.map((p) => (
+      <circle cx={p.x} cy={p.y} r="2.6" style={`--d:${p.d}`} />
+    ))}
+  </g>
+  <path class="cc-folla-linea" d={`M${UNO.x} ${UNO.y} C ${UNO.x + 70} ${UNO.y - 90}, ${UNO.x + 110} ${UNO.y - 380}, ${W - 30} 70`} pathLength="1" />
+  <circle class="cc-folla-alone" cx={UNO.x} cy={UNO.y} r="26" />
+  <circle class="cc-folla-uno" cx={UNO.x} cy={UNO.y} r="9" />
+</svg>

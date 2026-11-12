@@ -48,6 +48,15 @@ Experiences today (tipo tra parentesi, vedi Tassonomia):
   brief sono in slide come **domande dichiarate** e non come promesse, perché la verifica alla
   fonte li ha smentiti o lasciati aperti (vedi «Lo strato XD»). Spenta sullo showcase.
 
+- **Ciascuno conta** — Trenitalia [Interno] (IT, `apps/trenitalia-ciascuno-conta`, 12 nov 2026):
+  la versione interna Adobe del percorso proposto alla Direzione Sales dopo la Prospettiva —
+  una prova sui dati (POC Sales Velocity), poi una giornata di lavoro, poi la rotta. **Stessa
+  pelle della Prospettiva** (global.css copiato, non importato). Il deck è scritto perché il
+  cliente possa leggerlo senza danno ed è la base della versione customer-facing; lo strato
+  solo nostro (persone, strategia, GNARR, costi, compliance) sta in `/dossier/`, gated, seed
+  git-ignorato in `docs/Ferrovie/`. ⚠️ Gli id `#slide-domanda`, `#slide-idea`,
+  `#slide-problemi` hanno regole proprie nella pelle copiata: non riusarli. Spenta sullo showcase.
+
 Plus **`apps/aperture-email`** (`/aperture-email/`) — **Aperture**, deck bilingue IT/EN di **ricerca individuale** (osservatorio sul tracciamento nelle email dei brand; fonti citate senza interpretazione, vendor‑neutral, hub‑only: non va in showcase/atelier). Plus **`apps/factory-showcase`** (`/showcase/`) — an internal bilingual **scroll‑site** (NOT a deck) that presents the Factory itself to Adobe leadership/colleagues, the shareable **intake skill** `skills/experience-brief/`, and the **`panel-review` skill** `skills/panel-review/` (global via `~/.claude/skills/panel-review`; repo adapter `.claude/panel-review.md`): blind stakeholder personas + fact-checker + arbiter on any deliverable before handover. Full detail in `docs/HANDOVER.md` §13.
 
 Only public Adobe capabilities / demo material — **no reserved client IP**, and **no

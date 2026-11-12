@@ -1,0 +1,302 @@
+---
+/**
+ * Figura — il vocabolario dei micro-diagrammi che stanno dentro un «Scopri come».
+ *
+ * Perché non è testo: il dettaglio si apre in sala per rispondere a una domanda,
+ * e in quel momento un paragrafo è inutile — chi presenta deve poter puntare una
+ * cosa che si vede. Ogni figura porta UN meccanismo, si muove una volta sola
+ * quando il blocco si apre, e non contiene nessuna parola: l'ancora sotto la
+ * nomina. Così è immune alla famiglia `S` di `audit:ritmo` (nessun corpo che si
+ * rimpicciolisce sulla parete) e ai gate sugli a capo.
+ *
+ * Il tratto, la regola dell'accento e la curva dell'animazione stanno nel
+ * MOTORE (`packages/core/src/blocks/Dettaglio.astro`): qui c'è solo geometria.
+ * Se stessero nell'app, due deck disegnerebbero con due mani diverse.
+ *
+ * Colore: la struttura è in `currentColor` e si ribalta da sola con la slide.
+ * L'accento (`.fg-a`) sta SOLO sull'elemento che porta il significato, ed è
+ * `--ink-accent`, che la pelle ribalta: un accento non è un inchiostro.
+ *
+ * Il vocabolario è quello dei meccanismi di QUESTO deck — dove si perde una
+ * vendita prima che qualcuno salga sul treno. Un disegno gradua al motore
+ * quando un secondo deck chiede lo stesso, non prima.
+ */
+interface Props {
+  k:
+    // 03 · dove vi nominano
+    | 'risposta-citata' | 'pagina-che-manca' | 'pubblicare-dove-si-pubblica'
+    // 03 · il secondo tempo del canale
+    | 'richiamata-dal-viaggiatore' | 'offerta-nella-conversazione'
+    // 04 · dentro l'offerta
+    | 'tre-tracce-un-percorso' | 'indistinguibile' | 'prova-su-una-parte'
+    // 04 · la collaborazione sui dati
+    | 'due-lati-un-incrocio' | 'nessuno-consegna'
+    // 05 · il contenuto
+    | 'materiale-che-si-moltiplica' | 'un-posto-solo' | 'chi-chiede-chi-approva'
+    // 06 · il canale delle agenzie
+    | 'rete-muta' | 'venduto-per-agenzia' | 'materiale-che-converte'
+    // 01 · il vostro anno
+    | 'concorrente-in-piu' | 'tetto-del-prezzo' | 'finestra-aperta'
+    // 04 · quello che è già partito
+    | 'rete-su-gomma' | 'sosta-prenotata' | 'biglietto-unico';
+}
+const { k } = Astro.props;
+---
+{/* aria-hidden di proposito: l'ancora e la riga sotto la figura DICONO la
+    stessa cosa a parole. Un aria-label qui la farebbe leggere due volte. */}
+<svg class="fg dett-fig" viewBox="0 0 120 72" aria-hidden="true">
+  {/* ── 03 · quando il viaggio si cerca con un assistente ─────────────── */}
+  {k === 'risposta-citata' && (
+    <g>
+      {/* una domanda entra, la risposta esce citando tre fonti: una sola è vostra */}
+      <circle class="fg-f" cx="12" cy="36" r="4" />
+      <path class="fg-s fg-draw" d="M18 36 H44" />
+      <rect class="fg-s" x="46" y="22" width="26" height="28" rx="4" />
+      <path class="fg-s fg-draw" style="--i:2" d="M74 36 H88" />
+      <circle class="fg-s fg-in" style="--i:3" cx="104" cy="16" r="5" />
+      <circle class="fg-a-f fg-in" style="--i:4" cx="104" cy="36" r="5" />
+      <circle class="fg-s fg-in" style="--i:5" cx="104" cy="56" r="5" />
+    </g>
+  )}
+  {k === 'pagina-che-manca' && (
+    <g>
+      {/* tre pagine esistono, una no: è quella che la risposta userebbe */}
+      {[8, 44, 80].map((x, i) => (
+        <rect class="fg-s fg-in" style={`--i:${i}`} x={x} y="30" width="26" height="34" rx="3" />
+      ))}
+      {[8, 44].map((x) => (<path class="fg-s" d={`M${x + 6} 40 H${x + 20}`} />))}
+      {[8, 44].map((x) => (<path class="fg-s" d={`M${x + 6} 48 H${x + 16}`} />))}
+      <rect class="fg-s fg-a fg-d-fine" x="80" y="30" width="26" height="34" rx="3" />
+      <path class="fg-s fg-a" d="M93 40 V54" /><path class="fg-s fg-a" d="M86 47 H100" />
+      <path class="fg-s fg-a fg-draw" style="--i:3" d="M20 18 C54 6, 76 10, 93 24" />
+    </g>
+  )}
+  {k === 'pubblicare-dove-si-pubblica' && (
+    <g>
+      {/* il flusso di pubblicazione resta quello: l'innesto è a monte */}
+      {[10, 40, 70].map((x, i) => (<rect class="fg-s fg-in" style={`--i:${i}`} x={x} y="42" width="22" height="18" rx="3" />))}
+      <path class="fg-s" d="M34 51 H38" /><path class="fg-s" d="M64 51 H68" />
+      <path class="fg-s fg-a fg-draw" style="--i:3" d="M98 51 H112" />
+      <circle class="fg-a-f fg-drop" cx="21" cy="16" r="5" />
+      <path class="fg-s fg-a fg-d fg-drop" style="--i:1" d="M21 23 V38" />
+    </g>
+  )}
+
+  {k === 'richiamata-dal-viaggiatore' && (
+    <g>
+      {/* è il viaggiatore a chiamarvi in causa: la mano parte da lui, non da voi */}
+      <circle class="fg-f" cx="14" cy="36" r="5" />
+      <rect class="fg-s" x="30" y="20" width="56" height="32" rx="5" />
+      <path class="fg-s" d="M38 31 H66" /><path class="fg-s" d="M38 41 H56" />
+      <path class="fg-s fg-a fg-draw" d="M20 36 H28" />
+      <rect class="fg-s fg-a fg-in" style="--i:3" x="88" y="28" width="20" height="16" rx="4" />
+      <circle class="fg-a-f fg-in" style="--i:4" cx="98" cy="36" r="3" />
+    </g>
+  )}
+  {k === 'offerta-nella-conversazione' && (
+    <g>
+      {/* la conversazione continua, e dentro ci entra l'offerta */}
+      <path class="fg-s" d="M10 18 H52" /><path class="fg-s" d="M10 28 H40" />
+      <rect class="fg-s fg-a fg-drop" x="26" y="36" width="68" height="26" rx="4" />
+      <path class="fg-s fg-a" d="M34 46 H70" /><path class="fg-s fg-a" d="M34 54 H58" />
+      <circle class="fg-a-f fg-in" style="--i:4" cx="84" cy="50" r="4" />
+    </g>
+  )}
+
+  {/* ── 04 · un viaggio, non più prodotti ─────────────────────────────── */}
+  {k === 'tre-tracce-un-percorso' && (
+    <g>
+      {/* treno, gomma e sosta letti come una cosa sola */}
+      {[14, 36, 58].map((y, i) => (
+        <path class="fg-s fg-draw" style={`--i:${i}`} d={`M8 ${y} C36 ${y}, 40 36, 62 36`} />
+      ))}
+      {[14, 36, 58].map((y, i) => (<circle class="fg-f-soft fg-in" style={`--i:${i}`} cx="8" cy={y} r="3.4" />))}
+      <path class="fg-s fg-a fg-draw" style="--i:4" d="M62 36 H108" />
+      <circle class="fg-a-f fg-in" style="--i:5" cx="108" cy="36" r="4.4" />
+    </g>
+  )}
+  {k === 'indistinguibile' && (
+    <g>
+      {/* nel momento dell'acquisto due persone diverse sono lo stesso punto */}
+      <circle class="fg-s" cx="14" cy="18" r="6" /><circle class="fg-s" cx="14" cy="54" r="6" />
+      <path class="fg-s fg-d" d="M22 18 H52" /><path class="fg-s fg-d" d="M22 54 H52" />
+      <rect class="fg-s fg-a" x="56" y="24" width="24" height="24" rx="4" />
+      <path class="fg-s" d="M84 36 H104" />
+      <circle class="fg-f-soft fg-in" style="--i:4" cx="110" cy="36" r="5" />
+    </g>
+  )}
+  {k === 'prova-su-una-parte' && (
+    <g>
+      {/* una fetta della rete prova un'altra proposta, e si misura */}
+      {[12, 32, 52].map((y) => (<rect class="fg-s" x="10" y={y} width="96" height="14" rx="3" />))}
+      <rect class="fg-a-f-soft fg-grow" x="10" y="32" width="96" height="14" rx="3" />
+      <path class="fg-s fg-a fg-draw" style="--i:3" d="M64 39 H102" />
+      <circle class="fg-a-f fg-in" style="--i:4" cx="106" cy="39" r="3.6" />
+    </g>
+  )}
+
+  {k === 'due-lati-un-incrocio' && (
+    <g>
+      {/* due aziende, un luogo neutro in mezzo: si incrocia chi interessa a entrambe */}
+      <circle class="fg-s" cx="18" cy="36" r="14" />
+      <circle class="fg-s" cx="102" cy="36" r="14" />
+      <rect class="fg-s fg-a fg-d-fine" x="46" y="22" width="28" height="28" rx="5" />
+      <path class="fg-s fg-draw" d="M32 36 H44" />
+      <path class="fg-s fg-draw" style="--i:1" d="M76 36 H88" />
+      <circle class="fg-a-f fg-in" style="--i:4" cx="60" cy="36" r="4.4" />
+    </g>
+  )}
+  {k === 'nessuno-consegna' && (
+    <g>
+      {/* ciascuno tiene i suoi: la barriera resta, passa solo il conteggio */}
+      {[14, 30, 46].map((y, i) => (<circle class="fg-a-f fg-in" style={`--i:${i}`} cx="20" cy={y + 6} r="4.2" />))}
+      {[14, 30, 46].map((y, i) => (<circle class="fg-s fg-d-fine fg-in" style={`--i:${i + 2}`} cx="100" cy={y + 6} r="4.2" />))}
+      <path class="fg-s fg-a fg-d" d="M60 6 V66" />
+      <path class="fg-s fg-a fg-draw" style="--i:4" d="M44 36 H56" />
+      <path class="fg-s fg-a fg-draw" style="--i:4" d="M64 36 H76" />
+    </g>
+  )}
+
+  {/* ── 05 · il contenuto che l'offerta richiede ──────────────────────── */}
+  {k === 'materiale-che-si-moltiplica' && (
+    <g>
+      {/* una squadra sola, e il materiale che si moltiplica per mercati e lingue */}
+      <rect class="fg-s" x="8" y="28" width="22" height="16" rx="3" />
+      <path class="fg-s fg-draw" d="M32 36 H46" />
+      {[6, 22, 38, 54].map((y, i) => (
+        <rect class="fg-f-soft fg-in" style={`--i:${i}`} x="50" y={y} width="16" height="12" rx="2" />
+      ))}
+      {[6, 22, 38, 54].map((y, i) => (
+        <rect class="fg-f-soft fg-in" style={`--i:${i + 1}`} x="70" y={y} width="16" height="12" rx="2" />
+      ))}
+      {[6, 22, 38, 54].map((y, i) => (
+        <rect class="fg-f-soft fg-in" style={`--i:${i + 2}`} x="90" y={y} width="16" height="12" rx="2" />
+      ))}
+    </g>
+  )}
+  {k === 'un-posto-solo' && (
+    <g>
+      {/* nasce, si approva, si traduce e si misura dentro lo stesso perimetro */}
+      <rect class="fg-s fg-a" x="8" y="12" width="104" height="48" rx="6" />
+      {[18, 44, 70].map((x, i) => (<rect class="fg-s fg-in" style={`--i:${i}`} x={x} y="26" width="20" height="20" rx="3" />))}
+      <path class="fg-s" d="M40 36 H42" /><path class="fg-s" d="M66 36 H68" />
+      <circle class="fg-a-f fg-in" style="--i:3" cx="100" cy="36" r="4.4" />
+    </g>
+  )}
+  {k === 'chi-chiede-chi-approva' && (
+    <g>
+      {/* la richiesta attraversa chi produce e chi approva, e si vede dov'è */}
+      <circle class="fg-f" cx="12" cy="36" r="4.4" />
+      <path class="fg-s fg-draw" d="M18 36 H34" />
+      <rect class="fg-s fg-in" x="36" y="24" width="22" height="24" rx="3" />
+      <path class="fg-s fg-draw" style="--i:2" d="M60 36 H74" />
+      <rect class="fg-s fg-a fg-in" style="--i:3" x="76" y="24" width="22" height="24" rx="3" />
+      <path class="fg-s fg-a" d="M82 36 L86 41 L94 31" />
+      <path class="fg-s fg-a fg-draw" style="--i:4" d="M100 36 H112" />
+    </g>
+  )}
+
+  {/* ── 06 · il canale delle agenzie ──────────────────────────────────── */}
+  {k === 'rete-muta' && (
+    <g>
+      {/* la rete vende ogni giorno, e indietro torna solo il consuntivo */}
+      <circle class="fg-s fg-a" cx="18" cy="36" r="9" />
+      {[[52, 12], [52, 36], [52, 60], [84, 24], [84, 48]].map(([x, y], i) => (
+        <circle class="fg-s fg-in" style={`--i:${i}`} cx={x} cy={y} r="5" />
+      ))}
+      <path class="fg-s fg-draw" d="M28 32 L46 14" /><path class="fg-s fg-draw" style="--i:1" d="M28 36 H46" />
+      <path class="fg-s fg-draw" style="--i:2" d="M28 41 L46 58" />
+      <path class="fg-s fg-d-fine" d="M58 12 L78 23" /><path class="fg-s fg-d-fine" d="M58 59 L78 49" />
+      <path class="fg-s fg-a fg-d" d="M96 36 H112" />
+    </g>
+  )}
+  {k === 'venduto-per-agenzia' && (
+    <g>
+      {/* lo stesso canale, finalmente letto per rete, per agenzia e per prodotto */}
+      <path class="fg-s fg-d" d="M10 64 H112" />
+      {[[16, 22], [34, 40], [52, 30], [70, 52], [88, 36]].map(([x, h], i) => (
+        <rect class="fg-f-soft fg-rise" style={`--i:${i}`} x={x} y={64 - h} width="13" height={h} rx="2" />
+      ))}
+      <rect class="fg-a-f fg-rise" style="--i:3" x="70" y="12" width="13" height="52" rx="2" />
+      <path class="fg-s fg-a fg-draw" style="--i:5" d="M10 10 H112" />
+    </g>
+  )}
+
+  {/* ── 01 · il vostro anno, visto da fuori ───────────────────────────── */}
+  {k === 'concorrente-in-piu' && (
+    <g>
+      {/* su un binario che era di due, entra un terzo */}
+      <path class="fg-s" d="M8 20 H112" /><path class="fg-s" d="M8 36 H112" />
+      <path class="fg-s fg-a fg-d fg-draw" style="--i:2" d="M8 54 H112" />
+      {[20, 36].map((y, i) => (<circle class="fg-f fg-in" style={`--i:${i}`} cx="26" cy={y} r="4" />))}
+      <circle class="fg-a-f fg-in" style="--i:3" cx="26" cy="54" r="4" />
+    </g>
+  )}
+  {k === 'tetto-del-prezzo' && (
+    <g>
+      {/* la leva lavora, ma verso l'alto c'è un tetto */}
+      <path class="fg-s fg-a" d="M8 14 H112" />
+      {[[16, 26], [38, 38], [60, 32], [82, 44]].map(([x, h], i) => (
+        <rect class="fg-f-soft fg-rise" style={`--i:${i}`} x={x} y={64 - h} width="16" height={h} rx="2" />
+      ))}
+      <path class="fg-s fg-a fg-d" d="M98 20 V40" />
+      <path class="fg-s fg-a" d="M98 20 L94 26" /><path class="fg-s fg-a" d="M98 20 L102 26" />
+    </g>
+  )}
+  {k === 'finestra-aperta' && (
+    <g>
+      {/* una finestra aperta sulla linea del tempo: adesso si decide */}
+      <path class="fg-s fg-d" d="M8 48 H112" />
+      {[20, 56, 92].map((x, i) => (<circle class="fg-s fg-in" style={`--i:${i}`} cx={x} cy="48" r="4.4" />))}
+      <rect class="fg-a-f-soft fg-grow" x="38" y="12" width="40" height="52" rx="3" />
+      <path class="fg-s fg-a" d="M38 12 V64" /><path class="fg-s fg-a" d="M78 12 V64" />
+    </g>
+  )}
+
+  {/* ── 04 · quello che è già partito ─────────────────────────────────── */}
+  {k === 'rete-su-gomma' && (
+    <g>
+      {/* dalla rotaia si dirama la gomma, e arriva dove il treno non va */}
+      <path class="fg-s" d="M8 24 H62" />
+      {[[62, 24, 100, 10], [62, 24, 104, 30], [62, 24, 96, 52]].map(([x1, y1, x2, y2], i) => (
+        <path class="fg-s fg-a fg-draw" style={`--i:${i}`} d={`M${x1} ${y1} C${x1 + 20} ${y1}, ${x2 - 18} ${y2}, ${x2} ${y2}`} />
+      ))}
+      {[[100, 10], [104, 30], [96, 52]].map(([x, y], i) => (
+        <circle class="fg-a-f fg-in" style={`--i:${i + 2}`} cx={x} cy={y} r="3.8" />
+      ))}
+      <circle class="fg-f" cx="12" cy="24" r="4" />
+    </g>
+  )}
+  {k === 'sosta-prenotata' && (
+    <g>
+      {/* il pezzo di viaggio che comincia prima del treno */}
+      <rect class="fg-s fg-a fg-in" x="10" y="26" width="26" height="20" rx="3" />
+      <path class="fg-s fg-draw" style="--i:1" d="M40 36 H58" />
+      <rect class="fg-s" x="60" y="26" width="46" height="20" rx="3" />
+      <path class="fg-s fg-d" d="M23 52 V64" /><path class="fg-s fg-d" d="M23 8 V20" />
+    </g>
+  )}
+  {k === 'biglietto-unico' && (
+    <g>
+      {/* due tratte diverse, un biglietto solo */}
+      <path class="fg-s" d="M10 22 H52" /><path class="fg-s fg-d" d="M10 50 H52" />
+      <path class="fg-s fg-draw" d="M52 22 C66 22, 64 36, 74 36" />
+      <path class="fg-s fg-draw" style="--i:1" d="M52 50 C66 50, 64 36, 74 36" />
+      <rect class="fg-s fg-a fg-in" style="--i:3" x="76" y="26" width="32" height="20" rx="4" />
+      <path class="fg-s fg-a" d="M84 36 H100" />
+    </g>
+  )}
+
+  {k === 'materiale-che-converte' && (
+    <g>
+      {/* lo stesso materiale, e solo una parte vende */}
+      {[[10, 12], [40, 12], [70, 12], [10, 42], [40, 42], [70, 42]].map(([x, y], i) => (
+        <rect class="fg-s fg-in" style={`--i:${i}`} x={x} y={y} width="22" height="18" rx="2" />
+      ))}
+      <rect class="fg-s fg-a" x="40" y="12" width="22" height="18" rx="2" />
+      <rect class="fg-s fg-a" x="10" y="42" width="22" height="18" rx="2" />
+      <path class="fg-s fg-a fg-draw" style="--i:4" d="M98 21 H112" />
+      <path class="fg-s fg-a fg-draw" style="--i:5" d="M98 51 H112" />
+    </g>
+  )}
+</svg>
