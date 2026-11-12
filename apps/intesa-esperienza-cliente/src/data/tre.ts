@@ -22,7 +22,7 @@ export const TRE: Cosa[] = [
   },
   {
     n: '2', gruppo: 'engagement', prodotto: 'Adobe Experience Platform',
-    t: { it: 'Ingaggio del cliente e del prospect', en: 'Customer and prospect engagement' },
+    t: { it: 'Ingaggio di clienti e non clienti', en: 'Engaging customers and non-customers' },
     riga: { it: 'La proposta giusta a ogni persona, su ogni canale.', en: 'The right proposal for each person, on every channel.' },
   },
   {

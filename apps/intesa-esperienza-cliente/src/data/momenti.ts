@@ -78,6 +78,11 @@ export interface Momento {
       sé, e in sala nessuno deve difendere una scelta già fatta. */
   verifica: { it: string; en: string };
   prodotto: string;
+  /** COME ARRIVA SUL VOSTRO CANALE (check col referente, 11 nov 2026): i
+      mockup sono semplificati, e i Canali e Group Technology vogliono sapere
+      che cosa è prodotto Adobe, che cosa entra via API sul loro front-end e
+      che cosa sviluppano loro. «Anche solo un accenno»: una riga, non una slide. */
+  messa: { it: string; en: string };
   cliente: {
     chrome: ChromeCliente;
     scena: string;
@@ -131,6 +136,7 @@ export const MOMENTI: Momento[] = [
     gruppo: 'trovare',
     verifica: { it: 'Oggi sapete su quali domande venite citati, e su quali no?', en: 'Do you know today which questions cite you, and which do not?' },
     prodotto: 'Brand Visibility',
+    messa: { it: 'Prodotto Adobe: agisce sui vostri contenuti', en: 'An Adobe product: it acts on your content' },
     cliente: {
       chrome: 'assistente', scena: 'scena-01-divano',
       titolo: { it: 'Chiede a un assistente AI quale mutuo scegliere e trova Intesa Sanpaolo', en: 'She asks an AI assistant which mortgage to choose and finds Intesa Sanpaolo' },
@@ -155,10 +161,12 @@ export const MOMENTI: Momento[] = [
     dove: { it: 'Sui social', en: 'On social media' },
     short: { it: 'Vede l’annuncio', en: 'Sees the ad' },
     funzione: { it: 'Annuncio su misura', en: 'A tailored ad' },
+    tessera: { it: 'Controlli di compliance mentre si produce; un processo che si può agentizzare', en: 'Compliance checks during production; a process that can be agentised' },
     canale: { it: 'Social', en: 'Social' },
     gruppo: 'contenuto',
     verifica: { it: 'Oggi l’informativa si applica alla produzione, o si verifica in revisione?', en: 'Today, is the disclosure applied at production, or checked at review?' },
     prodotto: 'GenStudio for Performance Marketing',
+    messa: { it: 'Prodotto Adobe; l’annuncio arriva spento in Meta', en: 'An Adobe product; the ad lands paused in Meta' },
     cliente: {
       chrome: 'feed', scena: 'scena-02-bar',
       titolo: { it: 'Vede un annuncio sul mutuo per la prima casa a Torino', en: 'She sees an ad for a first-home mortgage in Turin' },
@@ -169,7 +177,7 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'genstudio', scena: 'lavoro-02-contenuti',
-      titolo: { it: 'Il team crea dodici annunci da un solo brief, controllati sulle linee guida', en: 'The team creates twelve ads from one brief, checked against the guidelines' },
+      titolo: { it: 'Dodici annunci da un solo brief, con i controlli di compliance dentro la produzione', en: 'Twelve ads from one brief, with compliance checks built into production' },
       corpo: {
         it: 'Il tempo se ne va soprattutto nelle approvazioni. Varianti controllate contro le linee guida di marchio e di canale mentre si producono; le informative restano nell’iter di approvazione legale. Su chi non vi conosce ancora, un messaggio generico non lo recupera poi la relazione.',
         en: 'Most of the time goes into approvals. Variants are checked against brand and channel guidelines while they are produced; disclosures stay in the legal approval process. With someone who does not know you yet, no relationship later makes up for a generic message.',
@@ -187,6 +195,7 @@ export const MOMENTI: Momento[] = [
     gruppo: 'engagement',
     verifica: { it: 'Oggi una visita anonima di due sere prima si ritrova quando lascia l’email, e con quale consenso?', en: 'Today, is an anonymous visit from two evenings earlier recovered when she leaves her email, and under which consent?' },
     prodotto: 'Real-Time CDP',
+    messa: { it: 'Simulatore vostro; i dati li raccoglie il Web SDK', en: 'Your simulator; the Web SDK collects the data' },
     cliente: {
       chrome: 'sito', scena: 'scena-03-tavolo',
       titolo: { it: 'Simula 180.000 euro su 25 anni e lascia l’indirizzo per salvare il risultato', en: 'She simulates 180,000 euro over 25 years and leaves her address to save the result' },
@@ -197,10 +206,10 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'profilo', scena: 'lavoro-03-dati',
-      titolo: { it: 'Quando lascia l’email, le due sessioni anonime (raccolte col consenso ai cookie) si uniscono al suo profilo', en: 'When she leaves her email, the two anonymous sessions (collected under cookie consent) merge into her profile' },
+      titolo: { it: 'Quando lascia l’email, le due sessioni sotto pseudonimo (raccolte col consenso) si uniscono al suo profilo', en: 'When she leaves her email, the two pseudonymous sessions (collected under consent) merge into her profile' },
       corpo: {
-        it: 'Le visite anonime delle sere prima si uniscono al profilo quando arriva un identificativo, l’email. Serve che il consenso ai cookie ci fosse già: se manca, si riparte dalla simulazione di oggi. Nel CRM non ha una scheda cliente: può avere un lead.',
-        en: 'Her anonymous visits from the previous evenings merge into the profile when an identifier arrives, the email, if cookie consent was already there. If not, it starts from today’s simulation. In the CRM she has no customer record: she can have a lead.',
+        it: 'Le visite anonime delle sere prima si uniscono al profilo quando arriva un identificativo, l’email. Serve che il consenso alla profilazione ci fosse già: se manca, si riparte dalla simulazione di oggi. Nel CRM non ha una scheda cliente: può avere un lead.',
+        en: 'Her anonymous visits from the previous evenings merge into the profile when an identifier arrives, the email, if profiling consent was already there. If not, it starts from today’s simulation. In the CRM she has no customer record: she can have a lead.',
       },
     },
   },
@@ -215,6 +224,7 @@ export const MOMENTI: Momento[] = [
     gruppo: 'engagement',
     verifica: { it: 'Oggi la politica di contatto si valuta quando si sceglie, o si applica all’invio?', en: 'Today, is the contact policy weighed when choosing, or applied at send time?' },
     prodotto: 'Journey Optimizer · AI Decisioning',
+    messa: { it: 'La proposta arriva via API; il componente è vostro', en: 'The offer arrives over API; the component is yours' },
     cliente: {
       chrome: 'sito', scena: 'scena-04-documenti',
       titolo: { it: 'Si ferma perché le manca un documento', en: 'She stops because a document is missing' },
@@ -241,8 +251,9 @@ export const MOMENTI: Momento[] = [
     funzione: { it: 'Un richiamo, più canali', en: 'One follow-up, several channels' },
     canale: { it: 'Email', en: 'Email' },
     gruppo: 'engagement',
-    verifica: { it: 'Oggi quanto passa fra il gesto di un prospect e il primo contatto?', en: 'Today, how long passes between a prospect’s action and the first contact?' },
+    verifica: { it: 'Oggi quanto passa fra il gesto di un non cliente e il primo contatto?', en: 'Today, how long passes between a non-customer’s action and the first contact?' },
     prodotto: 'Journey Optimizer',
+    messa: { it: 'Canale nativo di Journey Optimizer', en: 'A native Journey Optimizer channel' },
     cliente: {
       chrome: 'posta', scena: 'scena-05-colazione',
       titolo: { it: 'Riceve un’email e completa la richiesta', en: 'She gets an email and completes the application' },
@@ -271,6 +282,7 @@ export const MOMENTI: Momento[] = [
     gruppo: 'engagement',
     verifica: { it: 'Oggi che cosa arriva al CRM di filiale, di una persona non ancora cliente?', en: 'Today, what reaches the branch CRM about someone who is not yet a customer?' },
     prodotto: 'Journey Optimizer',
+    messa: { it: 'Lead e simulazione nel vostro CRM, via API', en: 'Lead and simulation in your CRM, over API' },
     cliente: {
       chrome: 'filiale', scena: 'scena-06-filiale',
       titolo: { it: 'In filiale trova un gestore che conosce già il suo percorso', en: 'In the branch she finds an adviser who already knows her journey' },
@@ -304,6 +316,7 @@ export const MOMENTI: Momento[] = [
     gruppo: 'piattaforma',
     verifica: { it: 'Oggi sapete quale momento ha prodotto il cliente, o solo quanto ha reso il canale?', en: 'Today, do you know which moment produced the customer, or only what the channel returned?' },
     prodotto: 'Customer Journey Analytics',
+    messa: { it: 'Dati di filiale via file o connettore', en: 'Branch data by file or connector' },
     cliente: {
       chrome: 'app', scena: 'scena-07-casa',
       titolo: { it: 'Firma la richiesta e apre il conto: da oggi la pratica è nell’app', en: 'She signs the application and opens an account: from today the file is in the app' },
@@ -314,7 +327,7 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'misura', scena: 'lavoro-07-misura',
-      titolo: { it: 'Si vede dove si perdono i potenziali clienti, filiale compresa', en: 'You can see where prospects are lost, branch included' },
+      titolo: { it: 'Si vede dove si perdono i non clienti, filiale compresa', en: 'You can see where non-customers are lost, branch included' },
       corpo: {
         it: 'A che serve qui: manca una misura sola dall’assistente alla firma. Senza quella nessuno sa quale dei sette momenti ha prodotto la cliente, né su quale investire il mese dopo. Appuntamento tenuto, pratica e delibera tornano dal CRM di filiale nello stesso dato. Il numero da guardare è quanto costa una richiesta firmata, per canale, una volta portata in piattaforma la spesa, e dove si perdono le altre.',
         en: 'What it is for: there is no single measurement from the assistant to the signature. Without it nobody knows which of the seven moments produced the customer, or where to invest next month. Appointment held, application and approval come back from the branch CRM into the same data. The number to watch is what a signed application costs, per channel, once spend is in the platform, and where others are lost.',

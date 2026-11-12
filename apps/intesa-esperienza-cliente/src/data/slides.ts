@@ -33,13 +33,14 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-cover', label: 'Cover: Dove ci innestiamo e che cosa si misura' },
     { id: 'slide-innesto', label: 'L’innesto: Adobe si aggiunge, si parte dai percorsi nuovi, Real-Time CDP, Journey Optimizer · AI Decisioning e CJA' },
     { id: 'slide-capacita', label: 'Che cosa porta ciascun componente: le capability' },
+    { id: 'slide-chiave', label: 'Una chiave sola tiene insieme la storia, da non cliente a cliente' },
     { id: 'slide-cja-banca', label: 'Quattro risposte che una banca ottiene da CJA' },
     { id: 'slide-attribuzione', label: 'Quanto del digitale arriva in filiale' },
     { id: 'slide-ritorno', label: 'Quello che si misura sul mutuo nel primo trimestre cambia le regole del secondo' },
   ]},
   { slug: 'coworker', label: 'CX Enterprise Coworker (04)', slides: [
     { id: 'slide-cover', label: 'Cover: divisore del capitolo' },
-    { id: 'slide-cosa',  label: 'Che cos’è Coworker: chat, agenti, dove gira' },
+    { id: 'slide-cosa',  label: 'Che cos’è Coworker: a parole, fino all’approvazione, dove gira' },
     { id: 'slide-video', label: 'Video demo con i dati del cliente: slot da console' },
   ]},
   { slug: 'risultati', label: 'Tre banche che lo fanno già (05)', slides: [

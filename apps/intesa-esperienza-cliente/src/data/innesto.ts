@@ -36,10 +36,10 @@ export const CONFINE: Testo = {
 
 /** L'architettura di oggi, a grandi blocchi: un'ipotesi, e la slide lo dichiara. */
 export const OGGI: { t: Testo; s?: Testo; d: Testo; forte?: boolean }[] = [
-  { t: { it: 'Data warehouse', en: 'Data warehouse' }, d: { it: 'i dati dei clienti', en: 'customer data' } },
+  { t: { it: 'Data lake', en: 'Data lake' }, d: { it: 'i dati dei clienti', en: 'customer data' } },
   { t: { it: 'Motore di targeting', en: 'Targeting engine' },
     d: { it: 'target, propensione', en: 'targets, propensity' }, forte: true },
-  { t: { it: 'Campagne', en: 'Campaigns' }, d: { it: 'campagne pianificate e invii massivi, come oggi', en: 'scheduled campaigns and bulk sends, as today' } },
+  { t: { it: 'Iniziative commerciali', en: 'Commercial initiatives' }, d: { it: 'pianificate e invii massivi', en: 'scheduled and bulk sends' } },
   { t: { it: 'Canali', en: 'Channels' }, d: { it: 'filiale, Filiale Digitale, app, sito, self, media pagato', en: 'branch, Filiale Digitale, app, site, self-service, paid media' } },
 ];
 
@@ -47,7 +47,7 @@ export const OGGI: { t: Testo; s?: Testo; d: Testo; forte?: boolean }[] = [
 export const ACCANTO = {
   k: { it: 'Si parte da qui', en: 'Where we start' },
   t: { it: 'Percorsi nuovi su Journey Optimizer', en: 'New journeys on Journey Optimizer' },
-  d: { it: 'le campagne restano come oggi', en: 'campaigns stay as they are' },
+  d: { it: 'le iniziative restano come oggi', en: 'initiatives stay as they are' },
 };
 
 /** Come possono evolvere le campagne: tre tappe in ordine, nel dettaglio a
@@ -56,11 +56,11 @@ export const ACCANTO = {
     la tappa non porta un numero: porta chi la decide. */
 export const EVOLUZIONE: { segno: string; k: Testo; t: Testo; d: Testo; ora?: boolean }[] = [
   { segno: 'canali', ora: true, k: { it: 'Si parte da qui', en: 'Where we start' }, t: { it: 'Percorsi nuovi', en: 'New journeys' },
-    d: { it: 'Su Journey Optimizer partono i percorsi nuovi. Le campagne pianificate restano dove sono.', en: 'New journeys start on Journey Optimizer. Scheduled campaigns stay where they are.' } },
+    d: { it: 'Su Journey Optimizer partono i percorsi nuovi. Le iniziative pianificate restano dove sono.', en: 'New journeys start on Journey Optimizer. Scheduled initiatives stay where they are.' } },
   { segno: 'flusso', k: { it: 'Se lo decidete voi', en: 'If you decide so' }, t: { it: 'Una famiglia alla volta', en: 'One family at a time' },
-    d: { it: 'Le campagne pianificate passano su Journey Optimizer, un gruppo per volta.', en: 'Scheduled campaigns move to Journey Optimizer, one group at a time.' } },
+    d: { it: 'Le iniziative pianificate passano su Journey Optimizer, un gruppo per volta.', en: 'Scheduled initiatives move to Journey Optimizer, one group at a time.' } },
   { segno: 'archivio', k: { it: 'Se lo decidete voi', en: 'If you decide so' }, t: { it: 'Tutto in un posto', en: 'All in one place' },
-    d: { it: 'Percorsi e campagne pianificate nello stesso strumento.', en: 'Journeys and scheduled campaigns in the same tool.' } },
+    d: { it: 'Percorsi e iniziative pianificate nello stesso strumento.', en: 'Journeys and scheduled initiatives in the same tool.' } },
 ];
 
 /** Una cosa da decidere SUBITO, qualunque tappa si scelga: non è una tappa. */
@@ -71,8 +71,8 @@ export const FREQUENZA: Testo = {
 
 /** La riga della decisione, sotto le tappe. */
 export const DECIDETE: Testo = {
-  it: 'Se e quando spostare le campagne lo decidete voi, dopo i risultati della fase 1. Costi e tempi si stimano allora.',
-  en: 'Whether and when to move the campaigns is your call, after the phase 1 results. Cost and timing get estimated then.',
+  it: 'Se e quando spostare le iniziative lo decidete voi, dopo i risultati della fase 1. Costi e tempi si stimano allora.',
+  en: 'Whether and when to move the initiatives is your call, after the phase 1 results. Cost and timing get estimated then.',
 };
 
 /** La nota sotto lo schema («non toccare» del panel): le stesse parole nei due percorsi. */

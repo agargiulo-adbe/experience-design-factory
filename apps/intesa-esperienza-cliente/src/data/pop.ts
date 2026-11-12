@@ -48,7 +48,7 @@ export const SCENE: Record<ScenaId, Scena> = {
       'Ne esce una sola, sul canale giusto. L’orchestrazione può restare dov’è.',
       'Customer Journey Analytics misura l’esito sul gruppo di controllo; priorità e regole si rivedono con voi a fine trimestre.',
     ],
-    nota: 'Schema illustrativo, sistemi attuali da confermare con voi. Sul prospect classifica l’arbitro, con le regole scritte insieme. Sul cliente la classifica resta del vostro motore, e l’arbitro applica canale, consenso e politica di contatto.',
+    nota: 'Schema illustrativo, sistemi attuali da confermare con voi. Sul non cliente classifica l’arbitro, con le regole scritte insieme. Sul cliente la classifica resta del vostro motore, e l’arbitro applica canale, consenso e politica di contatto.',
     fonti: [
       { label: 'Formule di classifica', url: `${EL}/journey-optimizer/using/decisioning/experience-decisioning/experience-decisioning-rankings/ranking-formulas` },
       { label: 'Decisioning', url: `${EL}/journey-optimizer/using/decisioning/experience-decisioning/gs-experience-decisioning` },
@@ -56,7 +56,7 @@ export const SCENE: Record<ScenaId, Scena> = {
   },
   cdp: {
     prodotto: 'Real-Time CDP',
-    cosa: 'Tiene il profilo di clienti e prospect. Con Giulia: prima da come usa il sito, poi dall’email che lascia.',
+    cosa: 'Tiene il profilo di clienti e non clienti. Con Giulia: prima da come usa il sito, poi dall’email che lascia.',
     passi: [
       'Giulia arriva sul sito senza lasciare l’email. Si riconosce solo il suo browser.',
       'Simula la rata, e in quell’istante entra nel gruppo «mutuo prima casa».',
@@ -64,7 +64,7 @@ export const SCENE: Record<ScenaId, Scena> = {
       'Lascia email e consenso. Le visite fatte da anonima si uniscono al suo profilo.',
       'Da qui Journey Optimizer e AI Decisioning sanno chi è. Il CRM di filiale non cambia.',
     ],
-    nota: 'Schema illustrativo. Per personalizzare il sito serve il consenso ai cookie; per scriverle, il consenso marketing. I profili anonimi si cancellano dopo un periodo che scegliete voi, da 1 a 365 giorni.',
+    nota: 'Schema illustrativo. Per personalizzare il sito serve il consenso alla profilazione; per scriverle, il consenso marketing. I profili anonimi si cancellano dopo un periodo che scegliete voi, da 1 a 365 giorni.',
     fonti: [
       { label: 'Segmentazione edge', url: `${EL}/experience-platform/segmentation/methods/edge-segmentation` },
       { label: 'Profili anonimi', url: `${EL}/experience-platform/profile/pseudonymous-profiles` },

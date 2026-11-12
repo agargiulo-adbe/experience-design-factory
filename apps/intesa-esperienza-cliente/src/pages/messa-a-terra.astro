@@ -44,7 +44,7 @@ const DETTAGLI = href(base, '/approfondimenti');
 const EL = 'https://experienceleague.adobe.com/en/docs';
 const CAPACITA = [
   { p: 'Real-Time CDP', k: 'riconosce', r: { it: 'Riconosce', en: 'Recognises' }, v: [
-    { it: 'Profilo anche anonimo', en: 'Profiles for anonymous visitors' },
+    { it: 'Profilo anche sotto pseudonimo', en: 'Profiles under a pseudonym too' },
     { it: 'Unisce le sessioni quando arriva un identificativo', en: 'Merges sessions when an identifier arrives' },
     { it: 'Segmenti in tempo reale', en: 'Real-time segments' },
   ], g: { it: 'la riconosce quando lascia l’email', en: 'recognises her when she leaves her email' } },
@@ -101,6 +101,23 @@ const TOCCHI = [
 ];
 const PERCORSO = [34, 44, 92, 62, 30, 72];
 
+/* UNA CHIAVE, UNA STORIA (check col referente, 11 nov 2026). Le due tavole
+   che ha chiesto stanno in una: l'«omni tracking» — un comportamento seguito
+   su proprietà digitali e fisiche, in momenti distinti, con una chiave che
+   ricostruisce la storia — e la «translation» da non cliente a cliente, dove
+   oggi la storia si perde. È quella che lui chiama la killer application per il
+   Controllo di Gestione. Il momento 01 non sta qui: la risposta di un
+   assistente non si osserva, e la slide non finge di vederla. Le fonti sono in
+   calce: stitching di CJA (finestra per pacchetto) e Identity Service. */
+const CHIAVE = [
+  { m: '02', dove: { it: 'Sito, dall’annuncio', en: 'Site, from the ad' }, k: { it: 'Pseudonimo del browser', en: 'Browser pseudonym' } },
+  { m: '03', dove: { it: 'Simulazione', en: 'Simulation' }, k: { it: 'Pseudonimo + email, col consenso', en: 'Pseudonym + email, with consent' }, unisce: true },
+  { m: '04', dove: { it: 'Sito, si ferma', en: 'Site, stops' }, k: { it: 'Email', en: 'Email' } },
+  { m: '05', dove: { it: 'Email', en: 'Email' }, k: { it: 'Email', en: 'Email' } },
+  { m: '06', dove: { it: 'Filiale', en: 'Branch' }, k: { it: 'Email e telefono', en: 'Email and phone' } },
+  { m: '07', dove: { it: 'Firma e app', en: 'Signing and app' }, k: { it: 'Codice cliente', en: 'Customer number' }, cliente: true },
+];
+
 /* IL MOTORE DI TARGETING RESTA (panel del 30 ott 2026, P0). Davanti a chi i
    target li costruisce, «nessuno decide» suonava «il vostro lavoro non serve»:
    il posto esiste, manca la decisione su chi non è cliente. Spostata qui dallo
@@ -148,6 +165,18 @@ const RITORNO = [
         <T as="h2" class="im-ado-t" it={TITOLO.it} en={TITOLO.en} />
         <T as="p" class="im-inn-confine" it={CONFINE.it} en={CONFINE.en} />
         <div class="im-inn">
+          {/* DUE CORNICI (check col referente, 11 nov 2026). Sopra, il perimetro
+              che la banca ha già: non si sostituisce, si delimita. Sotto, i tre
+              componenti Adobe dentro una piattaforma sola, Experience Platform:
+              lo stesso profilo e le stesse regole per clienti e non clienti, che
+              è la differenza da dire senza nominare nessuno. Sono elementi della
+              griglia, non pseudo-elementi: il testo si traduce e l'audit lo vede. */}
+          <div class="im-inn-cornice im-inn-cornice--oggi" aria-hidden="true">
+            <T as="span" class="im-inn-legenda" it="Il perimetro che avete già" en="What you already have" />
+          </div>
+          <div class="im-inn-cornice im-inn-cornice--aep" aria-hidden="true">
+            <span class="im-inn-legenda im-inn-legenda--aep">Adobe Experience Platform</span>
+          </div>
           <ol class="im-inn-oggi">
             {OGGI.map((n, i) => (
               <li class="im-inn-n" data-forte={n.forte ? '' : null}>
@@ -164,8 +193,8 @@ const RITORNO = [
               anonimo, che si unisce al profilo quando la persona lascia l'email. */}
           <div class="im-inn-cdp" data-substep>
             <button type="button" class="im-inn-b im-inn-b--cdp" data-pp-open aria-haspopup="dialog" aria-label="Real-Time CDP: come funziona">
-              <span class="im-inn-t">Real-Time CDP</span>
-              <T as="span" class="im-inn-d" it="Il profilo di clienti e prospect, anche anonimi" en="Profiles of customers and prospects, even anonymous ones" />
+              <span class="im-inn-t">Real-Time CDP <span class="im-inn-m" title="Momento di Giulia">03</span></span>
+              <T as="span" class="im-inn-d" it="Clienti e non clienti, anche pseudonimi" en="Customers and non-customers, even pseudonymous" />
               <span class="im-inn-piu" aria-hidden="true">+</span>
             </button>
             <InnestoPop scena="cdp" />
@@ -178,7 +207,7 @@ const RITORNO = [
               <span class="im-inn-f" data-su><T as="span" it="quale proposta" en="which proposal" /></span>
             </div>
             <button type="button" class="im-inn-b" data-pp-open aria-haspopup="dialog">
-              <span class="im-inn-t">Journey Optimizer · AI Decisioning</span>
+              <span class="im-inn-t">Journey Optimizer · AI Decisioning <span class="im-inn-m" title="Momenti di Giulia">04 · 05 · 06</span></span>
               <T as="span" class="im-inn-d" it="I percorsi partono da quello che fa il cliente, e un motore di decisione AI sceglie l’offerta giusta" en="Journeys start from what the customer does, and an AI decisioning engine picks the right offer" />
               <span class="im-inn-piu" aria-hidden="true">+</span>
             </button>
@@ -189,7 +218,7 @@ const RITORNO = [
             <span class="im-inn-f im-inn-f--lungo"><T as="span" it="gli esiti" en="outcomes" /></span>
             <span class="im-inn-f im-inn-f--ritorno" data-su><T as="span" it="il risultato" en="the result" /></span>
             <button type="button" class="im-inn-b im-inn-b--largo" data-pp-open aria-haspopup="dialog">
-              <span class="im-inn-t">Customer Journey Analytics</span>
+              <span class="im-inn-t">Customer Journey Analytics <span class="im-inn-m" title="Momento di Giulia">07</span></span>
               <T as="span" class="im-inn-d" it="Completa Adobe Analytics con i dati di filiale, Filiale Digitale e CRM" en="Extends Adobe Analytics with branch, Filiale Digitale and CRM data" />
               <span class="im-inn-piu" aria-hidden="true">+</span>
             </button>
@@ -207,7 +236,7 @@ const RITORNO = [
           <T as="strong" class="im-accanto-t" it={ACCANTO.t.it} en={ACCANTO.t.en} />
           <T as="span" class="im-accanto-d" it={ACCANTO.d.it} en={ACCANTO.d.en} />
         </div>
-        <HowItWorks title="Come possono evolvere le campagne" label="Come possono evolvere le campagne" tone="onDark" class="ex-dett">
+        <HowItWorks title="Come possono evolvere le iniziative" label="Come possono evolvere le iniziative" tone="onDark" class="ex-dett">
           {/* Tre tappe in fila con la freccia fra l'una e l'altra: la prima è
               accesa (si parte da lì), le altre due dicono chi le decide. La
               frequenza è una decisione di fase 0, non una tappa: sta sotto. */}
@@ -261,6 +290,43 @@ const RITORNO = [
         <p class="im-fonte-riga">
           <span data-lang-it>Documentazione: </span><span data-lang-en>Documentation: </span>
           {DOC.map((d, k) => <>{k > 0 && ' · '}<a href={d.u} target="_blank" rel="noopener">{d.l}</a></>)}
+        </p>
+      </div>
+    </Slide>
+
+
+    <Slide id="slide-chiave" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Una chiave sola, dal sito alla filiale e oltre la firma" en="One key, from the site to the branch and past the signature" />
+        <T as="p" class="im-ado-l" it="Quando un non cliente diventa cliente, quello che ha fatto prima resta attaccato a lui." en="When a non-customer becomes a customer, what they did before stays attached to them." />
+
+        <div class="im-chv">
+          <ol class="im-chv-l">
+            {CHIAVE.map((c) => (
+              <li class="im-chv-i" data-cliente={c.cliente ? '' : null}>
+                <span class="im-chv-m">{c.m}</span>
+                <T as="span" class="im-chv-dove" it={c.dove.it} en={c.dove.en} />
+                <T as="span" class="im-chv-k" it={c.k.it} en={c.k.en} />
+                {c.unisce && <T as="span" class="im-chv-nota" it="le visite di prima si uniscono" en="earlier visits join up" />}
+              </li>
+            ))}
+          </ol>
+          <div class="im-chv-barra" data-substep>
+            <T as="span" class="im-chv-prima" it="Non cliente" en="Non-customer" />
+            <T as="span" class="im-chv-dopo" it="Cliente da oggi, con la sua storia" en="Customer from today, with their history" />
+          </div>
+          {/* Con che strumenti si fa (la sua ultima domanda, 11 nov): una riga,
+              non il dettaglio. Il «come lo traccio» canale per canale si fa al
+              tavolo tecnico. */}
+          <T as="p" class="im-chv-raccolta" it="Come entrano i dati: Edge per sito e app · file per filiale, IVR e ATM · connettori per il CRM" en="How data comes in: Edge for site and app · files for branch, IVR and ATM · connectors for the CRM" />
+          <T as="p" class="im-chv-esito" data-substep it="Per il Controllo di Gestione: si vede quale iniziativa ha portato la firma in filiale, e quanto vale il canale fisico." en="For management control: you can see which initiative led to the branch signature, and what the physical channel is worth." />
+        </div>
+
+        <p class="im-fonte-riga">
+          <span data-lang-it>Le visite sotto pseudonimo si attribuiscono alla persona dentro una finestra che dipende dal pacchetto, da 1 a 30 giorni. Il consenso resta nel vostro registro. </span><span data-lang-en>Pseudonymous visits are attributed to the person within a window that depends on the package, from 1 to 30 days. Consent stays in your register. </span>
+          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/stitching/overview" target="_blank" rel="noopener">Customer Journey Analytics · stitching</a><span> · </span>
+          <a href="https://experienceleague.adobe.com/en/docs/experience-platform/identity/home" target="_blank" rel="noopener">Identity Service</a>
         </p>
       </div>
     </Slide>
