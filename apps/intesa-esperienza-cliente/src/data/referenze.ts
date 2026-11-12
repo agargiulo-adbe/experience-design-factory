@@ -189,7 +189,7 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Cas
     hero: {
       occ: { it: 'Agenzie, sito, app e polizze nella stessa analisi', en: 'Agencies, website, app and policies in one analysis' },
       oggi: { k: { it: 'Clienti', en: 'Customers' }, n: { it: '17,6 mln', en: '17.6 m' } },
-      l: { it: 'fra agenzie, sito e app', en: 'across agencies, website and app' },
+      l: { it: 'del gruppo, al 31 dicembre 2025', en: 'of the group, at 31 December 2025' },
     },
     metrica: { n: '2.035', l: { it: 'agenzie in Italia', en: 'agencies in Italy' } },
     riquadri: [
@@ -200,7 +200,7 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Cas
       icona: 'rete',
     },
     fonte: { url: FONTI.unipol, nome: 'unipol.com · fact sheet, giugno 2026' },
-    fonteCoda: { it: ' · clienti e agenzie <span class=im-nw>al 31 dicembre 2025.</span> Il modello: Unipol ad Adobe Summit 2026, <span class=im-nw>sessione CP16</span>', en: ' · customers and agencies <span class=im-nw>at 31 December 2025.</span> The model: Unipol at Adobe Summit 2026, <span class=im-nw>session CP16</span>' },
+    fonteCoda: { it: ' · clienti e agenzie <span class=im-nw>al 31 dicembre 2025.</span> Il modello: Unipol ad Adobe Summit 2026', en: ' · customers and agencies <span class=im-nw>at 31 December 2025.</span> The model: Unipol at Adobe Summit 2026' },
   },
 };
 

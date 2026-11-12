@@ -182,7 +182,6 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
     { name: 'approfondimenti',  route: '/experience-design-factory/intesa-esperienza-cliente/approfondimenti/' },
     { name: 'coworker',   route: '/experience-design-factory/intesa-esperienza-cliente/coworker/' },
     { name: 'risultati',  route: '/experience-design-factory/intesa-esperienza-cliente/risultati/' },
-    { name: 'analytics',  route: '/experience-design-factory/intesa-esperienza-cliente/analytics/' },
     { name: 'prossimi-passi', route: '/experience-design-factory/intesa-esperienza-cliente/prossimi-passi/' },
     { name: 'dieci-minuti', route: '/experience-design-factory/intesa-esperienza-cliente/dieci-minuti/' },
   ],
