@@ -218,6 +218,7 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
     { name: 'giornata', route: '/experience-design-factory/trenitalia-ciascuno-conta/giornata/' },
     { name: 'scalare', route: '/experience-design-factory/trenitalia-ciascuno-conta/scalare/' },
     { name: 'decisione', route: '/experience-design-factory/trenitalia-ciascuno-conta/decisione/' },
+    { name: 'annex', route: '/experience-design-factory/trenitalia-ciascuno-conta/annex/' },
   ],
 };
 

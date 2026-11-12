@@ -5,6 +5,10 @@
 
 ## 11. Change log recente
 
+### 2026-11-13 · «Ciascuno conta»: ricostruzione completata, in attesa di push e seed
+
+Livello pubblico e strato interno rifatti secondo le decisioni del 12 sera: tesi in apertura, tre direttrici, prova in due stadi con il cancello, GNARR del primo anno con le ipotesi, matrice dell'effort, annex in un capitolo 09 riservato. Gate verdi su entrambi i livelli (0 HARD). **Committata, non pushata:** push e seed vanno insieme. Dettaglio in §43 (Parte 23).
+
 ### 2026-11-12 (sera) · «Ciascuno conta»: il deck interno riscritto, copertine da Adobe Stock, e una ricostruzione in corso
 
 `b125ac3` (pubblicato): deck interno riscritto per il leadership team, da 37 a 35 slide, testo circa dimezzato, chiaro e scuro alternati, corpi più grandi, figure nuove; `audit:deck` 0 HARD su entrambi i livelli, `audit:ink` pulito, `copy-audit` 0/0. `230e18f` (pubblicato): otto copertine di capitolo da Adobe Stock. Poi, nella stessa sera, l'owner ha cambiato il disegno della prova (sequenziale con un cancello, vedi §43) e chiesto la tesi in apertura, le tre direttrici, la matrice dell'effort e un annex: **ricostruzione iniziata e non committata**. Decisioni archiviate nella cartella d'account git-ignorata. Dettaglio in §43 (Parte 23).

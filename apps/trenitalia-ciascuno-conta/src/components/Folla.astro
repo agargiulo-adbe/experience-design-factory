@@ -26,17 +26,35 @@ for (let r = 0; r < ROWS; r++) {
     dots.push({ x: 40 + c * 47 + jx, y: 40 + r * 48 + jy, d: (c * 7 + r * 11) % 23 });
   }
 }
-// Il punto acceso sta a destra dell'agenda, e la linea sale lungo il bordo:
-// passando dietro le voci dei capitoli le tagliava.
-const UNO = { x: 1480, y: 730 };
+// Ciascuno si accende, uno alla volta, e ogni vendita fa salire di un gradino la
+// linea in basso: la folla diventa un conto. I punti accesi stanno a destra,
+// dove il velo è leggero e l'agenda non li copre.
+const accesi = dots
+  .filter((p) => p.x > 860 && p.x < 1560 && p.y > 110 && p.y < 690 && (p.x * 3 + p.y * 7) % 11 === 0)
+  .slice(0, 14)
+  .sort((a, b) => (a.x * 0.6 + a.y) - (b.x * 0.6 + b.y));
+const N = accesi.length;
+const X0 = 880, X1 = 1560, Y0 = 860, Y1 = 600;
+let gradini = `M${X0} ${Y0}`;
+accesi.forEach((_, i) => {
+  const x = X0 + ((i + 1) / N) * (X1 - X0);
+  const y = Y0 - ((i + 1) / N) * (Y0 - Y1);
+  gradini += ` H${x.toFixed(1)} V${y.toFixed(1)}`;
+});
 ---
-<svg class="cc-folla" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+<svg class="cc-folla" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" style={`--n:${N}`}>
   <g class="cc-folla-punti">
     {dots.map((p) => (
       <circle cx={p.x} cy={p.y} r="2.6" style={`--d:${p.d}`} />
     ))}
   </g>
-  <path class="cc-folla-linea" d={`M${UNO.x} ${UNO.y} C ${UNO.x + 70} ${UNO.y - 90}, ${UNO.x + 110} ${UNO.y - 380}, ${W - 30} 70`} pathLength="1" />
-  <circle class="cc-folla-alone" cx={UNO.x} cy={UNO.y} r="26" />
-  <circle class="cc-folla-uno" cx={UNO.x} cy={UNO.y} r="9" />
+  <g class="cc-folla-accesi">
+    {accesi.map((p, i) => (
+      <g style={`--i:${i}`}>
+        <circle class="cc-folla-alone" cx={p.x} cy={p.y} r="16" />
+        <circle class="cc-folla-uno" cx={p.x} cy={p.y} r="6.5" />
+      </g>
+    ))}
+  </g>
+  <path class="cc-folla-linea" d={gradini} pathLength="1" />
 </svg>

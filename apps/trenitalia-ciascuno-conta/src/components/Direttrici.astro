@@ -1,0 +1,31 @@
+---
+/**
+ * Le tre direttrici del programma, ognuna con una figura che si muove quando
+ * la slide entra: la prova (due barre, chi riceve la proposta vende di più),
+ * la risposta (una lancetta che fa un giro: un minuto), il consenso (quattro
+ * punti che convergono sullo stesso tavolo). Le figure sono solo geometria:
+ * le parole stanno nel testo accanto. Lo stato base è quello finale, quindi
+ * con «Riduci movimento» si leggono ferme.
+ */
+import { FOLLA } from '../data/contenuti';
+---
+<ol class="cc-dirs" data-stagger>
+  {FOLLA.ancore.map((a) => (
+    <li class="cc-dirs-i" data-dir={a.k}>
+      <div class="cc-dirs-fig" aria-hidden="true">
+        {a.k === 'prova' && (
+          <svg viewBox="0 0 120 90"><line class="cc-f-asse" x1="10" y1="80" x2="110" y2="80" /><rect class="cc-f-b1" x="28" y="44" width="24" height="36" /><rect class="cc-f-b2" x="68" y="18" width="24" height="62" /></svg>
+        )}
+        {a.k === 'risposta' && (
+          <svg viewBox="0 0 120 90"><circle class="cc-f-quad" cx="60" cy="45" r="36" /><line class="cc-f-lancetta" x1="60" y1="45" x2="60" y2="15" /><circle class="cc-f-perno" cx="60" cy="45" r="4" /></svg>
+        )}
+        {a.k === 'consenso' && (
+          <svg viewBox="0 0 120 90"><rect class="cc-f-tavolo" x="42" y="31" width="36" height="28" rx="4" /><circle class="cc-f-p cc-f-p1" cx="60" cy="16" r="7" /><circle class="cc-f-p cc-f-p2" cx="98" cy="45" r="7" /><circle class="cc-f-p cc-f-p3" cx="60" cy="74" r="7" /><circle class="cc-f-p cc-f-p4" cx="22" cy="45" r="7" /></svg>
+        )}
+      </div>
+      <p class="cc-dirs-t">{a.t}</p>
+      <p class="cc-dirs-b">{a.b}</p>
+      {a.k === 'risposta' && <p class="cc-dirs-var">{FOLLA.variabili.map((v) => <span>{v}</span>)}</p>}
+    </li>
+  ))}
+</ol>

@@ -55,6 +55,8 @@ export const CHAPTERS: Chapter[] = [
     punto: 'Dalla prova al lavoro di ogni giorno, con un responsabile per ogni tappa.', foto: 'rotta' },
   { slug: 'decisione', num: '08', title: t('Che cosa vi chiediamo'), short: 'La richiesta',
     punto: '', foto: 'rotta', riservato: true },
+  { slug: 'annex', num: '09', title: t('Annex: i punti da validare'), short: 'Annex',
+    punto: '', foto: 'rotta', riservato: true },
 ];
 
 export const RISERVATI = CHAPTERS.filter((c) => c.riservato).map((c) => c.slug);

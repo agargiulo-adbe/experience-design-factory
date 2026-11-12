@@ -18,7 +18,7 @@
 
 export const COVER = {
   occhiello: 'Una proposta di lavoro · novembre 2026',
-  sub: 'Una prova sui dati di trenitalia.com e LeFrecce, due test dal vivo su Target, poi una giornata in cui si sceglie che cosa portare a scala.',
+  sub: 'Dimostrare sui vostri dati che parlare a ciascun viaggiatore fa vendere di più, e farne il lavoro di ogni giorno.',
   firma: 'Ciascuno conta',
 };
 
@@ -36,26 +36,30 @@ export const MATTINA = {
 };
 
 export const FOLLA = {
-  titolo: 'A ogni viaggiatore la sua proposta, e ogni vendita contata',
+  titolo: 'Il programma serve a tre cose',
   ancore: [
-    { k: 'Vendere', t: 'Che cosa fa vendere di più' },
-    { k: 'Capire', t: 'Il perché di un calo in un minuto' },
-    { k: 'Scegliere', t: 'Le priorità decise insieme' },
+    { k: 'prova', t: 'La prova', b: 'Quale proposta fa vendere di più, misurato sul venduto' },
+    { k: 'risposta', t: 'La risposta in un minuto', b: 'Perché il venduto cala, guardando tutte le variabili' },
+    { k: 'consenso', t: 'Il consenso', b: 'Direzione Sales, FS Technology e Accenture scelgono insieme' },
   ],
+  variabili: ['sito e app', 'biglietterie', 'agenzie e OTA', 'prezzo e offerta', 'concorrenza', 'calendario', 'perturbazioni'],
+  chiusa: 'Ogni passo del programma serve ad almeno una delle tre.',
 };
 
 /* ── Il programma ──────────────────────────────────────────────────────── */
+export const DIRETTRICI: Record<string, string> = { prova: 'La prova', risposta: 'La risposta', consenso: 'Il consenso' };
+
 export const ATTI = {
   titolo: 'Quattro atti, da dicembre a giugno',
   mesi: ['dic', 'gen', 'feb', 'mar', 'apr', 'mag', 'giu'],
   atti: [
-    { n: '1', v: 'Scegliere', q: 'dicembre', da: 0, a: 1,
-      esce: 'Due casi d’uso, validati con Accenture' },
-    { n: '2', v: 'Misurare e attivare', q: 'gen – feb · 8 settimane', da: 1, a: 3,
-      esce: 'La misura in CJA, due test su Target' },
-    { n: '3', v: 'Decidere', q: 'marzo', da: 3, a: 4,
-      esce: 'La giornata: risultati e priorità' },
-    { n: '4', v: 'Scalare', q: 'apr – giu', da: 4, a: 7,
+    { n: '1', v: 'Scegliere', q: 'dicembre', serve: ['consenso'], da: 0, a: 1,
+      esce: 'I casi d’uso, validati con Accenture' },
+    { n: '2', v: 'Capire e provare', q: 'dic – feb · cancello a fine gennaio', serve: ['risposta', 'prova'], da: 0.5, a: 3,
+      esce: 'Dove si perde la vendita, e un test sul venduto' },
+    { n: '3', v: 'Decidere', q: 'marzo', serve: ['prova', 'consenso'], da: 3, a: 4,
+      esce: 'La giornata: dai risultati al consenso' },
+    { n: '4', v: 'Scalare', q: 'apr – giu', serve: ['risposta', 'consenso'], da: 4, a: 7,
       esce: 'I primi casi d’uso in produzione' },
   ],
   segni: [
@@ -63,16 +67,18 @@ export const ATTI = {
   ],
 };
 
-/** I due binari della prova: la misura arriva completa alla giornata, i test
- *  arrivano con i primi dati e chiudono ad aprile. Mesi da dicembre (0) a giugno (7). */
-export const BINARI = {
-  titolo: 'La giornata si apre con la misura completa e con i primi dati dei test',
-  mesi: ['dic', 'gen', 'feb', 'mar', 'apr', 'mag', 'giu'],
-  corsie: [
-    { k: 'La misura', b: 'CJA su trenitalia.com e LeFrecce', da: 1, a: 3, alla: 'completa' },
-    { k: 'I test', b: 'Due attività su Target, messe in opera da Accenture', da: 1.6, a: 4.6, alla: 'primi dati' },
+/** La prova in sequenza, con un cancello a metà: prima la risposta sui dati
+ *  storici, poi il test dal vivo, e la giornata solo quando la prova è chiusa.
+ *  «Misurato sul venduto», mai «comprovato»: in quattro settimane si osserva
+ *  l'effetto con il suo margine, anche nullo, e per una prova basta. */
+export const SEQUENZA = {
+  titolo: 'La prova si chiude prima della giornata, in due stadi',
+  passi: [
+    { q: 'dic – gen', l: 'La risposta', d: 'Sui dati storici, dove\u00a0si perde la vendita fra trenitalia.com e\u00a0LeFrecce' },
+    { q: 'fine gennaio', l: 'Il cancello', d: 'Il passaggio fra i due siti si legge per viaggiatore, o\u00a0in\u00a0aggregato', cancello: true },
+    { q: 'febbraio', l: 'La prova', d: 'Un test su Target su trenitalia.com, con il criterio scritto\u00a0prima' },
+    { q: 'marzo', l: 'La giornata', d: 'Si parte dai risultati per costruire il\u00a0consenso', forte: true },
   ],
-  giornata: 3.25,
 };
 
 /** Il circuito dei dati: da dove arrivano, dove diventano un pubblico, dove si
@@ -82,7 +88,7 @@ export const CIRCUITO = {
   fonti: [
     { t: 'Analytics di trenitalia.com' },
     { t: 'Analytics di LeFrecce' },
-    { t: 'CartaFreccia', n: 'in un secondo tempo' },
+    { t: 'CartaFreccia', n: 'ipotesi, non bloccante' },
   ],
   cuore: { t: 'Customer Journey Analytics', n: 'Il pubblico di ogni caso d’uso' },
   azione: { t: 'Adobe Target su trenitalia.com', n: 'La proposta, messa in opera da Accenture' },
@@ -113,20 +119,18 @@ export const CRITERI = {
 type Blocco = { da: number; a: number; t: string; forte?: boolean };
 
 export const MISURARE = {
-  titolo: 'Otto settimane: in CJA la misura, su Target i test',
-  scala: ['sett. 1', '2', '3', '4', '5', '6', '7', '8'],
-  inizio: 0, fine: 8,
+  titolo: 'In CJA la risposta da dicembre, su Target il test a febbraio',
+  scala: ['dicembre', 'gennaio', 'febbraio'],
+  inizio: 0, fine: 3,
   corsie: [
     { k: 'CJA', blocchi: [
-      { da: 0, a: 1, t: 'Accessi' },
-      { da: 1, a: 3, t: 'I dati in CJA' },
-      { da: 3, a: 6, t: 'Misura e pubblici' },
-      { da: 6, a: 7, t: 'Anteprima', forte: true },
-      { da: 7, a: 8, t: 'Giornata' },
+      { da: 0.4, a: 1, t: 'Accessi e dati' },
+      { da: 1, a: 2, t: 'La risposta sullo storico', forte: true },
+      { da: 2, a: 3, t: 'La lettura del test' },
     ] as Blocco[] },
     { k: 'Target', blocchi: [
-      { da: 2, a: 4, t: 'Si preparano' },
-      { da: 4, a: 8, t: 'I test girano', forte: true },
+      { da: 1.4, a: 2, t: 'Si prepara' },
+      { da: 2, a: 3, t: 'Il test gira', forte: true },
     ] as Blocco[] },
   ],
 };
@@ -156,7 +160,7 @@ export const SCALETTA = {
   titolo: 'La mattina i risultati, il pomeriggio le scelte',
   voci: [
     { o: '09:30', t: 'Apertura', d: 'La Direzione Sales accoglie la sala', dir: true },
-    { o: '10:00', t: 'I risultati', d: 'La misura, i primi dati dei test, le domande', dir: true },
+    { o: '10:00', t: 'I risultati', d: 'Dove si perde la vendita, il test, le domande', dir: true },
     { o: '11:30', t: 'Le mani sugli strumenti', d: 'Tre postazioni a rotazione' },
     { o: '14:30', t: 'Chi l’ha già fatto', d: 'Un’azienda di viaggio e il suo modello' },
     { o: '15:15', t: 'Le priorità', d: 'Dieci casi d’uso, ne restano tre' },
