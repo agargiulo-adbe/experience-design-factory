@@ -5,6 +5,10 @@
 
 ## 11. Change log recente
 
+### 2026-11-12 (sera) · «Ciascuno conta»: il deck interno riscritto, copertine da Adobe Stock, e una ricostruzione in corso
+
+`b125ac3` (pubblicato): deck interno riscritto per il leadership team, da 37 a 35 slide, testo circa dimezzato, chiaro e scuro alternati, corpi più grandi, figure nuove; `audit:deck` 0 HARD su entrambi i livelli, `audit:ink` pulito, `copy-audit` 0/0. `230e18f` (pubblicato): otto copertine di capitolo da Adobe Stock. Poi, nella stessa sera, l'owner ha cambiato il disegno della prova (sequenziale con un cancello, vedi §43) e chiesto la tesi in apertura, le tre direttrici, la matrice dell'effort e un annex: **ricostruzione iniziata e non committata**. Decisioni archiviate nella cartella d'account git-ignorata. Dettaglio in §43 (Parte 23).
+
 ### 2026-11-12 · Trenitalia: nasce «Ciascuno conta», la versione interna del percorso dopo la Direzione Sales
 
 Commit `68b6867`, **pubblicato** (`/trenitalia-ciascuno-conta/`). App nuova generata con `pnpm new:experience` e portata sulla **pelle della Prospettiva** (global.css copiato, non importato), tipo `interno`, spenta sullo showcase. Sei capitoli e 21 slide: il numero di ogni giorno, la prova sui dati, il percorso, la giornata, chi c'è, che cosa resta. Copertina con il chiasmo «Ciascuno conta / Conta ciascuno» sulla folla di punti (`Folla.astro`), la linea del venduto (`Venduto.astro`), la scaletta per colonne. Gate: `audit:deck` 0 HARD su 7 rotte, `audit:ink` pulito, `copy-audit` 0, `audit:og` PASS, `audit:wrap` pulito a 1920/1440 (circa 28 code corte solo a 1280). Strato interno in `/dossier/`, gated, seed `0037` git-ignorato in `docs/Ferrovie/`, `audit:dossier` PASS in produzione. Due trappole: l'id `#slide-domanda` ereditava dalla pelle copiata un fondo rosso pieno (rinominato `slide-nove`), e il tono `onDark` di `HowItWorks` su una dominante scura dava 1,05:1. ⚠️ La sera l'owner boccia il racconto: va riprogettato per la leadership → P0 in Parte 2.
