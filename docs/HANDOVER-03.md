@@ -5,6 +5,10 @@
 
 ## 11. Change log recente
 
+### 2026-11-12 (sera) · Storia di Intesa: il check col referente, il capitolo 03 rivisto, due giri di panel
+
+Branch `feat/intesa-check-calabrese` (`7eb8b71` → `5d6980a`), **non su `main`**. Vocabolario della banca su tutto il deck, capitolo 03 «Integrazione» con le cornici e la slide `slide-chiave`, una riga per momento su prodotto/API/front-end, Coworker senza Chat/Projects e con un video segnaposto, team a sei. Panel a due giri: sei condizionati, medie scese rispetto all'11 (chiarezza 3, rischio 3); applicati «Tre banche» → «Tre banche e Unipol», Unipol senza le cifre del Summit, gli score sui non clienti come domanda, il trimestre dal primo invio. Gate a 0 HARD. Dossier `0031` riscritto per il 19, non applicato. Dettaglio in **§42.15 (Parte 19)**; escono dal backlog il P0 «panel mancante» e il P1 «decisioni dopo il 9 nov».
+
 ### 2026-11-12 · Trenitalia: nasce «Ciascuno conta», la versione interna del percorso dopo la Direzione Sales
 
 Commit `68b6867`, **pubblicato** (`/trenitalia-ciascuno-conta/`). App nuova generata con `pnpm new:experience` e portata sulla **pelle della Prospettiva** (global.css copiato, non importato), tipo `interno`, spenta sullo showcase. Sei capitoli e 21 slide: il numero di ogni giorno, la prova sui dati, il percorso, la giornata, chi c'è, che cosa resta. Copertina con il chiasmo «Ciascuno conta / Conta ciascuno» sulla folla di punti (`Folla.astro`), la linea del venduto (`Venduto.astro`), la scaletta per colonne. Gate: `audit:deck` 0 HARD su 7 rotte, `audit:ink` pulito, `copy-audit` 0, `audit:og` PASS, `audit:wrap` pulito a 1920/1440 (circa 28 code corte solo a 1280). Strato interno in `/dossier/`, gated, seed `0037` git-ignorato in `docs/Ferrovie/`, `audit:dossier` PASS in produzione. Due trappole: l'id `#slide-domanda` ereditava dalla pelle copiata un fondo rosso pieno (rinominato `slide-nove`), e il tono `onDark` di `HowItWorks` su una dominante scura dava 1,05:1. ⚠️ La sera l'owner boccia il racconto: va riprogettato per la leadership → P0 in Parte 2.

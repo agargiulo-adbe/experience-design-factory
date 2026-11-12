@@ -330,3 +330,32 @@ Analisi chiesta dall'owner: lo stesso capitolo aveva fino a tre nomi diversi (ag
 - **Coworker**: «Agentico» non è un modulo pubblico → «Projects · in arrivo, non ancora disponibile»; l'attivazione «passa dal team Adobe e va confermata», senza legarla al settore (la distinzione per settore regge solo su fonte interna); la frase-formula sul piano riscritta.
 - **Coerenze**: la demo Coworker usa le 12 ore di m-05 (non 48); il consenso di m-03 è «via email», coerente con m-04; spesa per canale e 91% di TSB detti in un modo solo; tolto il tetto di contatti «filiale compresa» (non documentato) e la formula «Ogni giro migliora il prossimo».
 - **Restano aperti** (fatti del cliente o decisioni): Adobe Analytics «che avete» solo da fonte interna; eventi del sito via SDK e via connettore; incrementalità degli annunci di ripresa; sub-fornitori DORA e regione dei log di Brand Visibility; peso di Crédit Agricole contro TSB; una riga per la Rete in Coworker.
+
+## 42.15 Storia di Intesa · il check col referente, la revisione del capitolo 03 e il panel del 12 novembre
+
+Branch **`feat/intesa-check-calabrese`** (worktree separato, `main` intatto per scelta dell'owner): `7eb8b71`, `81d745a`, `5d84aa0`, `5d6980a`. **Non è su `main`**: il sito pubblico mostra ancora lo stato dell'11.
+
+### Che cosa è entrato
+- **Il check col referente dell'11 nov** (registro d'account, riservato). Il suo ufficio lavora sui clienti già acquisiti; il racconto va tenuto completo e in equilibrio fra chi acquisisce e chi gestisce; la cosa che vale di più per loro e per il Controllo di Gestione è una chiave che ricostruisce la storia del cliente fra canali digitali e fisici. **Vocabolario della banca su tutto il deck**: non clienti (non prospect), pseudonimo (non cookie), data lake, iniziative commerciali. Le citazioni delle referenze di altre banche restano con le loro parole.
+- **Capitolo 03** rinominato «Dove si collega Adobe e che cosa si misura» (barra: «Integrazione»): cornice sul perimetro esistente e cornice Experience Platform sui tre componenti, con il numero del momento di Giulia su ciascuno; slide nuova **`slide-chiave`** (pseudonimo → email → NDG, la storia che non si perde alla firma, Edge/file/connettori, fonti: stitching di CJA e Identity Service); copia rivista riga per riga su una revisione del team (slogan, metafore come «arbitro», rassicurazione ripetuta). Il titolo dell'innesto proposto con l'elenco dei tre componenti usciva dall'area sicura a 1440 e 1280: ora è «Adobe aggiunge tre componenti ai sistemi attuali».
+- **I sette momenti**: un campo `messa` per momento (che cosa è prodotto Adobe, che cosa entra via API, che cosa resta del front-end della banca), reso sotto la tessera del prodotto; momento 02 con i controlli di compliance in produzione (Content checks e Activate di GenStudio, verificati su Experience League).
+- **Coworker**: tolta la distinzione Chat/Projects; video della demo in pagina da un link pubblico AEM in una costante (`VIDEO_DEMO`). ⚠️ È un **segnaposto con un altro marchio**: non si proietta.
+- **Team** a sei: il product marketing non è in sala il 19.
+
+### Il panel del 12 novembre (due giri)
+Stesse sei personas dell'11, fact-checker, arbitro; pacchetto d'evidenza rigenerato dal branch con i pop-up estratti dal DOM. Verdetti `docs/<Cliente>/PANEL-VERDICT-2026-11-12-round1.md` e `-round2.md` (git-ignorati).
+
+| Asse | 11 nov g2 | 12 nov g1 | 12 nov g2 |
+|---|---|---|---|
+| credibilità dei fatti | 4,0 | 4,0 | 4,0 |
+| rilevanza | 4,0 | 3,5 | 3,67 |
+| chiarezza | 4,0 | 3,0 | 3,0 |
+| rischio (5 = nessuno) | 3,67 | 3,0 | 3,0 |
+| azionabilità | 4,0 | 3,33 | 3,67 |
+
+Sei «condizionato» su sei in entrambi i giri. **I voti sono scesi rispetto all'11**: il capitolo 03 è più denso (circa 870 parole fra schermata e pop-up) e il panel ha letto i prossimi passi senza mesi né regola d'uscita. Applicati: «Tre banche» era falso (i casi sono quattro, uno è Unipol) → «Tre banche e Unipol»; cifre Unipol del Summit tolte (nessun link pubblico); l'assenza di score sui non clienti diventa domanda ovunque; il trimestre si conta dal primo invio; costo «attribuito» e controllo che giudica; NDG; base giuridica col DPO; DORA con criticità ed esternalizzazione in capo alla banca; tempi del Decisioning attribuiti alla funzione precedente. La rotta `analytics/` è un rimando: tolta da `deck-routes` (finiva nel pacchetto come doppione).
+
+**Non applicati, di proposito**: passaggio Analytics → CJA nel percorso principale (l'11 l'owner l'aveva rimesso negli approfondimenti); togliere IVR e ATM dalla chiave (li ha nominati il referente); pop-up fuori dall'innesto e Coworker in backup (scelte dell'owner); mesi, licenza, chi paga la fase 0 (servono AE e Solutions Consulting, non si inventano). Sono nel backlog (Parte 2).
+
+### Gate e stato
+`audit:deck` 0 HARD su 180 slide × viewport (202 con la rotta di rimando), `copy-audit` 0 HARD su 1.720 stringhe, `audit:wrap` pulito, `audit:taglio` allineato, `audit:ink` pulito. Slide toccate guardate a 1920 e a 1280. Il **dossier** di `intesa-innesto` (seed `0031`, riservato) è riscritto per il 19 — stanza a 27, check dell'11, obiezioni con la risposta, buchi aperti — ma **non è applicato su Supabase**.
