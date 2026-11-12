@@ -333,7 +333,7 @@ Analisi chiesta dall'owner: lo stesso capitolo aveva fino a tre nomi diversi (ag
 
 ## 42.15 Storia di Intesa · il check col referente, la revisione del capitolo 03 e il panel del 12 novembre
 
-Branch **`feat/intesa-check-calabrese`** (worktree separato, `main` intatto per scelta dell'owner): `7eb8b71`, `81d745a`, `5d84aa0`, `5d6980a`. **Non è su `main`**: il sito pubblico mostra ancora lo stato dell'11.
+Branch **`feat/intesa-check-referente`** (worktree separato, `main` intatto per scelta dell'owner): `7eb8b71`, `81d745a`, `5d84aa0`, `5d6980a`. **Non è su `main`**: il sito pubblico mostra ancora lo stato dell'11.
 
 ### Che cosa è entrato
 - **Il check col referente dell'11 nov** (registro d'account, riservato). Il suo ufficio lavora sui clienti già acquisiti; il racconto va tenuto completo e in equilibrio fra chi acquisisce e chi gestisce; la cosa che vale di più per loro e per il Controllo di Gestione è una chiave che ricostruisce la storia del cliente fra canali digitali e fisici. **Vocabolario della banca su tutto il deck**: non clienti (non prospect), pseudonimo (non cookie), data lake, iniziative commerciali. Le citazioni delle referenze di altre banche restano con le loro parole.
