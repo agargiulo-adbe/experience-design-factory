@@ -1,0 +1,34 @@
+---
+/**
+ * I due binari della prova, sulla linea dei mesi.
+ *
+ * Sopra la misura in CJA, che arriva completa alla giornata. Sotto i test su
+ * Target, che alla giornata portano i primi dati e chiudono ad aprile. La riga
+ * verticale è la giornata: si vede dove ciascun binario la attraversa. Il
+ * traguardo commerciale (slot `binari-firma`) esiste solo nel livello interno.
+ */
+import { BINARI } from '../data/contenuti';
+const N = BINARI.mesi.length;
+---
+<div class="cc-binari" style={`--mesi:${N};--g:${BINARI.giornata / N}`}>
+  <div class="cc-binari-mesi" aria-hidden="true">
+    <span></span>
+    <span class="cc-binari-scala">{BINARI.mesi.map((m) => <span>{m}</span>)}</span>
+  </div>
+  {BINARI.corsie.map((c, i) => (
+    <div class="cc-binario" data-substep={i > 0 ? '' : undefined}>
+      <div class="cc-binario-t">
+        <p class="cc-binario-k">{c.k}</p>
+        <p class="cc-binario-b">{c.b}</p>
+      </div>
+      <div class="cc-binario-pista">
+        <span class="cc-binario-bar" data-i={i} style={`--da:${c.da / N};--a:${c.a / N}`}></span>
+        <span class="cc-binario-alla" style={`--x:${BINARI.giornata / N}`}>{c.alla}</span>
+      </div>
+    </div>
+  ))}
+  <div class="cc-binari-giornata" aria-hidden="true">
+    <span></span>
+    <span class="cc-binari-linea"><span class="cc-binari-g">La giornata</span><span class="cc-binari-firma" data-r="binari-firma"></span></span>
+  </div>
+</div>
