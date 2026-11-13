@@ -9,6 +9,64 @@
      divisa in quattro parti a confini ### — questa continua dal change log della Parte 3 e prosegue
      nella Parte 14, poi nella Parte 17 (coda di luglio). Ribilanciata il 13 ott 2026 -->
 
+### Change log — Trenitalia Direzione Sales: lo strato XD, le figure recuperate, l'indice che non mente e il 96% che torna (2026-11-03) → §37 (Parte 16)
+
+**Cinque commit fra le 13:04 e le 17:57, tutti su `apps/trenitalia-prospettiva-sales`** tranne il
+primo, che è una regola. La giornata ha un filo solo: **il deck aveva profondità e non aveva
+superficie**, e metterle insieme ha richiesto prima di separarle a parole.
+
+**La regola: XD e micro-diagrammi sono due registri, e non si sostituiscono** (`fe52899`, BINDING
+in `CLAUDE.md` e in `skills/experience-design/references/xd.md`). L'XD è **quello che si
+proietta** — immagine, mockup, una cifra, poche parole; i micro-diagrammi sono **quello che si
+apre**, piccoli e molti, dietro «Scopri come». Scambiarli non è un errore di gusto: produce una
+slide che non funziona nella stanza in cui va. ⚠️ **Nessun gate lo misura**, per questo la regola
+sta scritta e non in un check.
+
+**Lo strato XD entra nell'app** (`2a78984`): `@import` del motore più il contratto `--xd-*` coi
+valori di Trenitalia e gli alias che XD si aspetta — senza i quali il titolo del divisore eredita
+il bianco della dominante e **sparisce sul chiaro**. Due slide diventano una: **la copertina porta
+anche l'agenda**, generata da `CHAPTERS`, quindi non può divergere da ciò che si proietta; il velo
+è stato ricalibrato (movimento misurato **0,29 su 255**) perché sotto la clip ora c'è un indice di
+link e il check `h` li misura come CTA. Nascono **quattro slide d'idea**, una per capitolo, con
+forma e contenuto in un posto solo (`SlideIdea.astro` + `data/idee.ts`). Il **ponte
+sull'internazionalizzazione** è riscritto perché regga davanti a due letture opposte presenti nella
+stessa sala — la parola è del Direttore Sales, ma in azienda c'è chi la legge come traslazione
+dell'esistente: l'argomento diventa «quello che costruite per l'Italia è la stessa cosa che vi
+porta fuori». Referenze **Telmore** e **Santander Brasil**, verbatim in `sources.ts`; tre storie
+del travel **scartate perché la loro pagina non risponde** dal nostro percorso di rete.
+
+**Le ancore e le figure, recuperate da un ramo mai pubblicato** (`c8dee1c`). Il ramo
+`feat/trenitalia-sales-ancore` era fermo dal 27 ottobre; riletto con la regola dei due registri in
+mano, **non era un'alternativa allo strato XD ma il suo strato di profondità**: ventidue
+micro-figure dentro i blocchi «Scopri come» più il giro di ancore che toglie prosa. La misura lo
+conferma: `audit:ritmo` passa da **4 slide su 40 con un elemento visivo a 14 su 40**.
+
+**L'indice non può più mentire** (`6eecdf6`, da una revisione interna del 3 nov). Il rilievo: la
+copertina del capitolo 01 annunciava «Il 96% che resta» e la slide dopo parlava d'altro. Guardando
+il resto, il difetto era più largo: **tre capitoli su sette non annunciavano niente**, e dove
+c'era, l'agenda contava tre voci su cinque o sei slide. ⚠️ **Nessun gate confronta un indice con il
+suo contenuto: l'ha trovato una persona.** Il registro delle slide esce da `admin.astro` e va in
+`src/data/slides.ts`, da cui l'admin accende/spegne **e** la copertina di capitolo rende le stesse
+voci. Nello stesso commit **le otto domande si vedono**: il deck le contava senza mostrarle mai e
+due slide dopo citava una risposta che chi guarda non poteva ricollegare al campione; elenco e
+referto sono divisi, e **la divisione è una misura** — insieme non entrano in nessuna disclosure, e
+tre posizioni sono state provate, due scartate dal check `exp` (HARD).
+
+**Torna il 96%, che era l'apertura concordata col cliente** (`be607a0`). Verificando il rilievo,
+la cosa è risultata più grave di un indice sbagliato: **l'agenda mandata alla segreteria il 9
+ottobre dice, parola per parola, che si apre con il 96%**. Il 20 ott la slide era stata tolta per
+una ragione giusta (aprire un documento del 2026 con la dichiarazione dell'anno prima invita a
+sentirsi dire «quello lo dicevate allora»), ma **nessuno ha confrontato il deck con l'agenda che
+gli avevamo mandato**. Torna nel registro XD, con la vecchiaia del dato gestita come prescrive la
+regola: data in chiaro nell'occhiello e nella fonte, e subito dopo le sue parole del 2026. ⚠️ **Due
+fonti che non si mescolano**: il 96% è suo e verbatim (L'Agenzia di Viaggi, 13 ott 2025); il
+75%/4% è dato di contesto che circola attorno al suo intervento (Travel Quotidiano, 15 ott 2025) e
+**non gli si attribuisce**. Non entra nel taglio «In dieci minuti», che resta a sette slide.
+
+**Gate a fine giornata:** `audit:deck` **0 HARD** su 9 rotte × 3 viewport · `audit:ink` **PULITO**
+su 521 blocchi · `copy-audit` **0 HARD** su 394 stringhe · `audit:fonti` nessun link rotto ·
+`audit:taglio` ALLINEATO · `audit:ritmo` **15 slide su 41** con un elemento visivo.
+
 ### Change log — Intesa: il deck del 5 novembre entra nella Storia, lo slug dice l'incontro, e la Factory va in rete (2026-10-30) → §42 (Parte 18)
 
 **Ventiquattro commit fra le 22:35 del 29 e le 08:32 del 30.** L'experience nata il 28 ott come

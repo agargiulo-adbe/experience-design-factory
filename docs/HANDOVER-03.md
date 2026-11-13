@@ -9,9 +9,19 @@
 
 `0051c96` ricostruzione (tesi, direttrici, prova con cancello, GNARR, matrice, annex), pubblicata con lo strato v3. `0131149` (pubblicato): lo script dei due livelli si riesegue a ogni pagina (`data-astro-rerun`), così una pagina in cache non lascia l'Annex nella nav pubblica; il prossimo passo diventa una linea. `4a3502b` **presentazione + annex** in un documento solo, tutto dietro il token, con «Il dettaglio →» e il ritorno. `4796ea3` **l'apertura** a tutta pagina. Gli ultimi due sono **committati, non pushati**, e lo strato v4 non è caricato. Dettaglio in §43.
 
+### 2026-11-13 · Storia di Intesa: un giorno di revisione con l'owner, ultrawide, verifiche su Fluffy
+Branch `feat/intesa-check-referente`, da `06782cb` a `c7f12c4`, in `main` dal merge del 13 nov. Dettaglio in §42.16 (Parte 19).
+- **Schermo intero sul 21:9:** l'unità del deck passa da `vw` a `--vu` (16:9 inscritto); slide in un 16:9 al centro e radice del tipo che cresce oltre 1920. `audit:deck --ultrawide` nuovo; tolleranza di `e` proporzionale alla radice.
+- **Copia e struttura:** capitoli coi nomi di prima, copertina «dal primo segnale alla firma», Financial Services ricca, slide-chi senza prodotti, «Orchestrare» che si apre da sola, schema d'integrazione con frecce verso Canali e strumento di campagna, colonna del momento di Giulia, legenda «Prodotto Adobe», «non‑cliente», «Next Best Experience».
+- **Gate:** a capo puliti, taglio allineato, `audit:deck` senza HARD nuovi (soft `a`/`i` e `e` d'artefatto sui 21:9); zip offline rigenerato a ogni commit.
+
 ### 2026-11-12 (sera) · «Ciascuno conta»: il deck interno riscritto, copertine da Adobe Stock, e una ricostruzione in corso
 
 `b125ac3` (pubblicato): deck interno riscritto per il leadership team, da 37 a 35 slide, testo circa dimezzato, chiaro e scuro alternati, corpi più grandi, figure nuove; `audit:deck` 0 HARD su entrambi i livelli, `audit:ink` pulito, `copy-audit` 0/0. `230e18f` (pubblicato): otto copertine di capitolo da Adobe Stock. Poi, nella stessa sera, l'owner ha cambiato il disegno della prova (sequenziale con un cancello, vedi §43) e chiesto la tesi in apertura, le tre direttrici, la matrice dell'effort e un annex: **ricostruzione iniziata e non committata**. Decisioni archiviate nella cartella d'account git-ignorata. Dettaglio in §43 (Parte 23).
+
+### 2026-11-12 (sera) · Storia di Intesa: il check col referente, il capitolo 03 rivisto, due giri di panel
+
+Branch `feat/intesa-check-referente` (`7eb8b71` → `5d6980a`), in `main` dal merge del 13 nov. Vocabolario della banca su tutto il deck, capitolo 03 «Integrazione» con le cornici e la slide `slide-chiave`, una riga per momento su prodotto/API/front-end, Coworker senza Chat/Projects e con un video segnaposto, team a sei. Panel a due giri: sei condizionati, medie scese rispetto all'11 (chiarezza 3, rischio 3); applicati «Tre banche» → «Tre banche e Unipol», Unipol senza le cifre del Summit, gli score sui non clienti come domanda, il trimestre dal primo invio. Gate a 0 HARD. Dossier `0031` riscritto per il 19 e applicato in produzione; titolo della pagina corretto (`800a6ee`); branch rinominato senza il nome del referente. Dettaglio in **§42.15 (Parte 19)**; escono dal backlog il P0 «panel mancante» e il P1 «decisioni dopo il 9 nov».
 
 ### 2026-11-12 · Trenitalia: nasce «Ciascuno conta», la versione interna del percorso dopo la Direzione Sales
 
@@ -440,61 +450,3 @@ app verde. CI e Deploy verdi, nove rotte su nove a 200.
 
 ⚠️ **Il verdetto del panel resta quello del 12 ottobre** e da allora il deck è stato riscritto tre
 volte: resta la voce **P0** in §10.
-
-### Change log — Trenitalia Direzione Sales: lo strato XD, le figure recuperate, l'indice che non mente e il 96% che torna (2026-11-03) → §37 (Parte 16)
-
-**Cinque commit fra le 13:04 e le 17:57, tutti su `apps/trenitalia-prospettiva-sales`** tranne il
-primo, che è una regola. La giornata ha un filo solo: **il deck aveva profondità e non aveva
-superficie**, e metterle insieme ha richiesto prima di separarle a parole.
-
-**La regola: XD e micro-diagrammi sono due registri, e non si sostituiscono** (`fe52899`, BINDING
-in `CLAUDE.md` e in `skills/experience-design/references/xd.md`). L'XD è **quello che si
-proietta** — immagine, mockup, una cifra, poche parole; i micro-diagrammi sono **quello che si
-apre**, piccoli e molti, dietro «Scopri come». Scambiarli non è un errore di gusto: produce una
-slide che non funziona nella stanza in cui va. ⚠️ **Nessun gate lo misura**, per questo la regola
-sta scritta e non in un check.
-
-**Lo strato XD entra nell'app** (`2a78984`): `@import` del motore più il contratto `--xd-*` coi
-valori di Trenitalia e gli alias che XD si aspetta — senza i quali il titolo del divisore eredita
-il bianco della dominante e **sparisce sul chiaro**. Due slide diventano una: **la copertina porta
-anche l'agenda**, generata da `CHAPTERS`, quindi non può divergere da ciò che si proietta; il velo
-è stato ricalibrato (movimento misurato **0,29 su 255**) perché sotto la clip ora c'è un indice di
-link e il check `h` li misura come CTA. Nascono **quattro slide d'idea**, una per capitolo, con
-forma e contenuto in un posto solo (`SlideIdea.astro` + `data/idee.ts`). Il **ponte
-sull'internazionalizzazione** è riscritto perché regga davanti a due letture opposte presenti nella
-stessa sala — la parola è del Direttore Sales, ma in azienda c'è chi la legge come traslazione
-dell'esistente: l'argomento diventa «quello che costruite per l'Italia è la stessa cosa che vi
-porta fuori». Referenze **Telmore** e **Santander Brasil**, verbatim in `sources.ts`; tre storie
-del travel **scartate perché la loro pagina non risponde** dal nostro percorso di rete.
-
-**Le ancore e le figure, recuperate da un ramo mai pubblicato** (`c8dee1c`). Il ramo
-`feat/trenitalia-sales-ancore` era fermo dal 27 ottobre; riletto con la regola dei due registri in
-mano, **non era un'alternativa allo strato XD ma il suo strato di profondità**: ventidue
-micro-figure dentro i blocchi «Scopri come» più il giro di ancore che toglie prosa. La misura lo
-conferma: `audit:ritmo` passa da **4 slide su 40 con un elemento visivo a 14 su 40**.
-
-**L'indice non può più mentire** (`6eecdf6`, da una revisione interna del 3 nov). Il rilievo: la
-copertina del capitolo 01 annunciava «Il 96% che resta» e la slide dopo parlava d'altro. Guardando
-il resto, il difetto era più largo: **tre capitoli su sette non annunciavano niente**, e dove
-c'era, l'agenda contava tre voci su cinque o sei slide. ⚠️ **Nessun gate confronta un indice con il
-suo contenuto: l'ha trovato una persona.** Il registro delle slide esce da `admin.astro` e va in
-`src/data/slides.ts`, da cui l'admin accende/spegne **e** la copertina di capitolo rende le stesse
-voci. Nello stesso commit **le otto domande si vedono**: il deck le contava senza mostrarle mai e
-due slide dopo citava una risposta che chi guarda non poteva ricollegare al campione; elenco e
-referto sono divisi, e **la divisione è una misura** — insieme non entrano in nessuna disclosure, e
-tre posizioni sono state provate, due scartate dal check `exp` (HARD).
-
-**Torna il 96%, che era l'apertura concordata col cliente** (`be607a0`). Verificando il rilievo,
-la cosa è risultata più grave di un indice sbagliato: **l'agenda mandata alla segreteria il 9
-ottobre dice, parola per parola, che si apre con il 96%**. Il 20 ott la slide era stata tolta per
-una ragione giusta (aprire un documento del 2026 con la dichiarazione dell'anno prima invita a
-sentirsi dire «quello lo dicevate allora»), ma **nessuno ha confrontato il deck con l'agenda che
-gli avevamo mandato**. Torna nel registro XD, con la vecchiaia del dato gestita come prescrive la
-regola: data in chiaro nell'occhiello e nella fonte, e subito dopo le sue parole del 2026. ⚠️ **Due
-fonti che non si mescolano**: il 96% è suo e verbatim (L'Agenzia di Viaggi, 13 ott 2025); il
-75%/4% è dato di contesto che circola attorno al suo intervento (Travel Quotidiano, 15 ott 2025) e
-**non gli si attribuisce**. Non entra nel taglio «In dieci minuti», che resta a sette slide.
-
-**Gate a fine giornata:** `audit:deck` **0 HARD** su 9 rotte × 3 viewport · `audit:ink` **PULITO**
-su 521 blocchi · `copy-audit` **0 HARD** su 394 stringhe · `audit:fonti` nessun link rotto ·
-`audit:taglio` ALLINEATO · `audit:ritmo` **15 slide su 41** con un elemento visivo.

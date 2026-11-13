@@ -29,7 +29,8 @@ import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import Divisore from '../components/Divisore.astro';
 import fondo from '../assets/generated/cover-innesto.webp';
 import fondoMisura from '../assets/generated/lavoro-07-misura.webp';
-import { TITOLO, CONFINE, OGGI, ACCANTO, EVOLUZIONE, FREQUENZA, DECIDETE, IPOTESI } from '../data/innesto';
+import { TITOLO, CONFINE, OGGI, ACCANTO, EVOLUZIONE, IPOTESI, MOMENTO_SCHEMA } from '../data/innesto';
+import { MOMENTI } from '../data/momenti';
 import '../styles/innesto.css';
 
 const SLUG = 'messa-a-terra';
@@ -44,24 +45,24 @@ const DETTAGLI = href(base, '/approfondimenti');
 const EL = 'https://experienceleague.adobe.com/en/docs';
 const CAPACITA = [
   { p: 'Real-Time CDP', k: 'riconosce', r: { it: 'Riconosce', en: 'Recognises' }, v: [
-    { it: 'Profilo anche anonimo', en: 'Profiles for anonymous visitors' },
+    { it: 'Profilo anche sotto pseudonimo', en: 'Profiles under a pseudonym too' },
     { it: 'Unisce le sessioni quando arriva un identificativo', en: 'Merges sessions when an identifier arrives' },
     { it: 'Segmenti in tempo reale', en: 'Real-time segments' },
   ], g: { it: 'la riconosce quando lascia l’email', en: 'recognises her when she leaves her email' } },
   { p: 'AI Decisioning', k: 'sceglie', r: { it: 'Sceglie', en: 'Chooses' }, v: [
-    { it: 'Un catalogo di offerte', en: 'One offer catalogue' },
-    { it: 'La regola di contatto resta vostra', en: 'The contact rule stays yours' },
-    { it: 'Priorità e regole; l’AI dove c’è storico', en: 'Priority and rules; AI where there is history' },
+    { it: 'Un unico catalogo di offerte', en: 'A single offer catalogue' },
+    { it: 'Applica la politica di contatto della banca', en: 'Applies the bank’s contact policy' },
+    { it: 'Priorità e regole; i modelli AI imparano dalle risposte passate', en: 'Priority and rules; AI models learn from past responses' },
   ], g: { it: 'sceglie il promemoria con appuntamento proposto', en: 'picks the reminder with a proposed appointment' } },
-  { p: 'Journey Optimizer', k: 'agisce', r: { it: 'Agisce', en: 'Acts' }, v: [
-    { it: 'Parte da un evento', en: 'Triggered by an event' },
+  { p: 'Journey Optimizer', k: 'agisce', r: { it: 'Invia', en: 'Sends' }, v: [
+    { it: 'Si attiva su un’azione del cliente', en: 'Triggered by a customer action' },
     { it: 'Email, sito, app, SMS', en: 'Email, site, app, SMS' },
     { it: 'Consenso e tetto per canale', en: 'Consent and per-channel cap' },
-  ], g: { it: 'le ricorda la pratica su email e sito; gli annunci di ripresa partono da Real-Time CDP', en: 'reminds her of the application by email and on the site; retargeting ads start from Real-Time CDP' } },
+  ], g: { it: 'le ricorda la richiesta per email e sul sito; gli annunci di retargeting partono da Real-Time CDP', en: 'reminds her of the application by email and on the site; retargeting ads start from Real-Time CDP' } },
   { p: 'Customer Journey Analytics', k: 'misura', r: { it: 'Misura', en: 'Measures' }, v: [
-    { it: 'Un percorso fra i canali', en: 'One journey across channels' },
-    { it: 'Parte da Analytics', en: 'Starts from Analytics' },
-    { it: 'Attribuzione algoritmica delle firme', en: 'Algorithmic attribution of signatures' },
+    { it: 'Percorso del cliente su tutti i canali', en: 'The customer journey across every channel' },
+    { it: 'Comportamento digitale e fonti offline insieme', en: 'Digital behaviour and offline sources together' },
+    { it: 'Quanto pesa ogni canale nei mutui firmati', en: 'How much each channel weighs in signed mortgages' },
   ], g: { it: 'misura quanto è costato acquisirla', en: 'measures what it cost to acquire her' } },
 ];
 const DOC = [
@@ -88,18 +89,35 @@ const TAPPE = [
 ];
 
 const BANCA = [
-  { k: 'sequenza', q: { it: 'In che ordine si muove il cliente?', en: 'In what order does the customer move?' }, t: { it: 'Un percorso solo, tutti i canali', en: 'One journey, every channel' } },
-  { k: 'sportello', q: { it: 'Quanto del digitale firma in filiale?', en: 'How much digital signs in branch?' }, t: { it: 'Le firme in filiale, attribuite', en: 'Branch signatures, attributed' } },
-  { k: 'rottura', q: { it: 'Dove si ferma la richiesta?', en: 'Where does the application stop?' }, t: { it: 'Abbandoni e chiamate evitabili', en: 'Drop-offs and avoidable calls' } },
-  { k: 'azione', q: { it: 'Che cosa si fa con chi si ferma?', en: 'What happens to those who stop?' }, t: { it: 'Diventa un pubblico per il percorso', en: 'They become an audience for the journey' } },
+  { k: 'sequenza', q: { it: 'In che ordine si muove una persona?', en: 'In what order does a person move?' }, t: { it: 'Sequenza dei contatti su tutti i canali, per ogni cliente e non‑cliente', en: 'Sequence of contacts across every channel, for every customer and non-customer' } },
+  { k: 'sportello', q: { it: 'Quante richieste nate online si firmano in filiale?', en: 'How many online applications are signed in branch?' }, t: { it: 'Firme in filiale attribuite al canale digitale d’origine', en: 'Branch signatures attributed to the originating digital channel' } },
+  { k: 'rottura', q: { it: 'Dove si ferma la richiesta?', en: 'Where does the application stop?' }, t: { it: 'Punti di abbandono e chiamate al servizio clienti che ne derivano', en: 'Drop-off points and the customer-service calls they cause' } },
+  { k: 'azione', q: { it: 'Che cosa si fa con chi si ferma?', en: 'What happens to those who stop?' }, t: { it: 'Diventa un segmento da ricontattare con Journey Optimizer', en: 'They become a segment to re-contact with Journey Optimizer' } },
 ];
 
 /* Altezze schematiche, senza valori: dicono la forma, e la slide lo dichiara. */
 const TOCCHI = [
-  { it: 'Ricerca', en: 'Search' }, { it: 'Social', en: 'Social' }, { it: 'Sito', en: 'Website' },
+  { it: 'Search', en: 'Search' }, { it: 'Social', en: 'Social' }, { it: 'Sito', en: 'Website' },
   { it: 'App', en: 'App' }, { it: 'Email', en: 'Email' }, { it: 'Filiale', en: 'Branch' },
 ];
 const PERCORSO = [34, 44, 92, 62, 30, 72];
+
+/* UNA CHIAVE, UNA STORIA (check col referente, 11 nov 2026). Le due tavole
+   che ha chiesto stanno in una: l'«omni tracking» — un comportamento seguito
+   su proprietà digitali e fisiche, in momenti distinti, con una chiave che
+   ricostruisce la storia — e la «translation» da non‑cliente a cliente, dove
+   oggi la storia si perde. È quella che lui chiama la killer application per il
+   Controllo di Gestione. Il momento 01 non sta qui: la risposta di un
+   assistente non si osserva, e la slide non finge di vederla. Le fonti sono in
+   calce: stitching di CJA (finestra per pacchetto) e Identity Service. */
+const CHIAVE = [
+  { m: '02', dove: { it: 'Sito, dall’annuncio', en: 'Site, from the ad' }, k: { it: 'Pseudonimo del browser', en: 'Browser pseudonym' } },
+  { m: '03', dove: { it: 'Simulazione', en: 'Simulation' }, k: { it: 'Pseudonimo + email, col consenso', en: 'Pseudonym + email, with consent' }, unisce: true },
+  { m: '04', dove: { it: 'Sito, si ferma', en: 'Site, stops' }, k: { it: 'Email', en: 'Email' } },
+  { m: '05', dove: { it: 'Email', en: 'Email' }, k: { it: 'Email', en: 'Email' } },
+  { m: '06', dove: { it: 'Filiale', en: 'Branch' }, k: { it: 'Email e telefono', en: 'Email and phone' } },
+  { m: '07', dove: { it: 'Firma e app', en: 'Signing and app' }, k: { it: 'NDG, all’apertura del rapporto', en: 'Customer ID (NDG), at account opening' }, cliente: true },
+];
 
 /* IL MOTORE DI TARGETING RESTA (panel del 30 ott 2026, P0). Davanti a chi i
    target li costruisce, «nessuno decide» suonava «il vostro lavoro non serve»:
@@ -134,7 +152,7 @@ const RITORNO = [
 
     <Slide id="slide-cover" bg="secondary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="im-div-bg" style={`--foto: url('${fondo.src}'); --fuoco: center 42%`}></div>
-      <Divisore num={ch.num} tIt="Dove ci innestiamo e che cosa si misura" tEn="Where we plug in and what gets measured" />
+      <Divisore num={ch.num} tIt="Dove ci innestiamo" tEn="Where we plug in" />
     </Slide>
 
     {/* L'INNESTO, ad alto livello. Parte dall'architettura di oggi, con il motore di targeting a monte;
@@ -148,12 +166,35 @@ const RITORNO = [
         <T as="h2" class="im-ado-t" it={TITOLO.it} en={TITOLO.en} />
         <T as="p" class="im-inn-confine" it={CONFINE.it} en={CONFINE.en} />
         <div class="im-inn">
+          {/* DUE CORNICI (check col referente, 11 nov 2026). Sopra, il perimetro
+              che la banca ha già: non si sostituisce, si delimita. Sotto, i tre
+              componenti Adobe dentro una piattaforma sola, Experience Platform:
+              lo stesso profilo e le stesse regole per clienti e non‑clienti, che
+              è la differenza da dire senza nominare nessuno. Sono elementi della
+              griglia, non pseudo-elementi: il testo si traduce e l'audit lo vede. */}
+          <div class="im-inn-cornice im-inn-cornice--oggi" aria-hidden="true">
+            <T as="span" class="im-inn-legenda" it="Il perimetro di Intesa Sanpaolo" en="Intesa Sanpaolo’s perimeter" />
+          </div>
+          <div class="im-inn-cornice im-inn-cornice--aep" aria-hidden="true">
+            <span class="im-inn-legenda im-inn-legenda--aep">Adobe Experience Platform</span>
+          </div>
           <ol class="im-inn-oggi">
             {OGGI.map((n, i) => (
               <li class="im-inn-n" data-forte={n.forte ? '' : null}>
                 <T as="span" class="im-inn-t" it={n.t.it} en={n.t.en} />
                 {n.s && <T as="span" class="im-inn-s" it={n.s.it} en={n.s.en} />}
-                <T as="span" class="im-inn-d" it={n.d.it} en={n.d.en} />
+                {n.canali ? (
+                  <span class="im-inn-ch">
+                    {n.canali.map((c) => (
+                      <span class="im-inn-ch-i" data-k={c.k}>
+                        {c.k === 'online'
+                          ? <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="13" height="10" rx="1.5" /><path d="M5.5 18h6M8.5 14v4" /><rect x="17" y="7" width="5" height="11" rx="1" /></svg>
+                          : <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5 12 4l9 5.5" /><path d="M5.5 10v8M10 10v8M14 10v8M18.5 10v8" /><path d="M3 20.5h18" /></svg>}
+                        <T as="span" it={`<strong>${c.t.it}</strong> ${c.d.it}`} en={`<strong>${c.t.en}</strong> ${c.d.en}`} />
+                      </span>
+                    ))}
+                  </span>
+                ) : <T as="span" class="im-inn-d" it={n.d.it} en={n.d.en} />}
                 {i > 0 && <svg class="im-inn-fr" viewBox="0 0 28 14" aria-hidden="true"><path d="M1 7h24M19 1l6 6-6 6" /></svg>}
               </li>
             ))}
@@ -163,38 +204,91 @@ const RITORNO = [
               banca ha già restano sui clienti noti; qui entra il comportamento
               anonimo, che si unisce al profilo quando la persona lascia l'email. */}
           <div class="im-inn-cdp" data-substep>
-            <button type="button" class="im-inn-b im-inn-b--cdp" data-pp-open aria-haspopup="dialog" aria-label="Real-Time CDP: come funziona">
-              <span class="im-inn-t">Real-Time CDP</span>
-              <T as="span" class="im-inn-d" it="Il profilo di clienti e prospect, anche anonimi" en="Profiles of customers and prospects, even anonymous ones" />
-              <span class="im-inn-piu" aria-hidden="true">+</span>
-            </button>
-            <InnestoPop scena="cdp" />
+            <div class="im-inn-bx im-inn-bx--cdp">
+              <button type="button" class="im-inn-b im-inn-b--cdp" data-pp-open aria-haspopup="dialog" aria-label="Real-Time CDP: come funziona">
+                <span class="im-inn-t">Real-Time CDP</span>
+                <T as="span" class="im-inn-d" it="non‑clienti: le visite si uniscono al profilo" en="Non-customers: visits stitched into the profile" />
+                <span class="im-inn-piu" aria-hidden="true">+</span>
+              </button>
+              <button type="button" class="im-inn-m" data-mom="03" aria-controls="im-gm" aria-expanded="false"><span data-lang-it>momento 03</span><span data-lang-en>moment 03</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5" /></svg></button>
+              <InnestoPop scena="cdp" />
+            </div>
           </div>
 
           <div class="im-inn-dec" data-substep>
             <svg class="im-inn-cdp-fr" viewBox="0 0 28 14" aria-hidden="true"><path d="M1 7h24M19 1l6 6-6 6" /></svg>
             <div class="im-inn-fili">
-              <span class="im-inn-f"><T as="span" it="score e audience" en="scores and audiences" /></span>
-              <span class="im-inn-f" data-su><T as="span" it="quale proposta" en="which proposal" /></span>
+              <span class="im-inn-f"><T as="span" it="score e segmenti" en="scores and segments" /></span>
+              {/* «Proposta scelta» verso le Iniziative commerciali (owner, 13 nov 2026,
+                  verificato su Fluffy): Decisioning è indipendente dal canale e può
+                  servire anche lo strumento di campagna di oggi, via API o a lotti. */}
+              <span class="im-inn-f" data-su><T as="span" it="Next Best Experience" en="Next Best Experience" /></span>
             </div>
-            <button type="button" class="im-inn-b" data-pp-open aria-haspopup="dialog">
-              <span class="im-inn-t">Journey Optimizer · AI Decisioning</span>
-              <T as="span" class="im-inn-d" it="I percorsi partono da quello che fa il cliente, e un motore di decisione AI sceglie l’offerta giusta" en="Journeys start from what the customer does, and an AI decisioning engine picks the right offer" />
-              <span class="im-inn-piu" aria-hidden="true">+</span>
-            </button>
-            <InnestoPop scena="decisioning" />
+            <div class="im-inn-bx">
+              <button type="button" class="im-inn-b" data-pp-open aria-haspopup="dialog">
+                <span class="im-inn-t">Journey Optimizer · AI Decisioning</span>
+                <T as="span" class="im-inn-d" it="Il percorso parte da un’azione del cliente; AI Decisioning sceglie l’offerta da mostrare su sito, app ed email, entro consenso e regole di contatto" en="The journey starts from a customer action; AI Decisioning picks the offer to show on site, app and email, within consent and contact rules" />
+                <span class="im-inn-piu" aria-hidden="true">+</span>
+              </button>
+              <button type="button" class="im-inn-m" data-mom="04-06" aria-controls="im-gm" aria-expanded="false"><span data-lang-it>momenti 04–06</span><span data-lang-en>moments 04–06</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5" /></svg></button>
+              <InnestoPop scena="decisioning" />
+            </div>
           </div>
 
           <div class="im-inn-cja" data-substep>
-            <span class="im-inn-f im-inn-f--lungo"><T as="span" it="gli esiti" en="outcomes" /></span>
-            <span class="im-inn-f im-inn-f--ritorno" data-su><T as="span" it="il risultato" en="the result" /></span>
-            <button type="button" class="im-inn-b im-inn-b--largo" data-pp-open aria-haspopup="dialog">
-              <span class="im-inn-t">Customer Journey Analytics</span>
-              <T as="span" class="im-inn-d" it="Completa Adobe Analytics con i dati di filiale, Filiale Digitale e CRM" en="Extends Adobe Analytics with branch, Filiale Digitale and CRM data" />
-              <span class="im-inn-piu" aria-hidden="true">+</span>
-            </button>
-            <InnestoPop scena="cja" />
+            <span class="im-inn-f im-inn-f--lungo"><T as="span" it="dati online e offline" en="online and offline data" /></span>
+            {/* Journey Optimizer → Canali: sui non‑clienti la proposta esce
+                direttamente su sito, app ed email (owner, 13 nov 2026). */}
+            <span class="im-inn-up im-inn-up--su" aria-hidden="true"></span>
+            <span class="im-inn-up im-inn-up--dx"><T as="span" it="Next Best Experience" en="Next Best Experience" /></span>
+            <span class="im-inn-f im-inn-f--ritorno" data-su><T as="span" it="conversioni e audience" en="conversions and audiences" /></span>
+            <div class="im-inn-bx im-inn-b--largo">
+              <button type="button" class="im-inn-b" data-pp-open aria-haspopup="dialog">
+                <span class="im-inn-t">Customer Journey Analytics</span>
+                <T as="span" class="im-inn-d" it="Analisi omnicanale: comportamento digitale e dati di filiale, Filiale Digitale e CRM in un solo percorso" en="Omnichannel analytics: digital behaviour and branch, Filiale Digitale and CRM data in one journey" />
+                <span class="im-inn-piu" aria-hidden="true">+</span>
+              </button>
+              <button type="button" class="im-inn-m" data-mom="07" aria-controls="im-gm" aria-expanded="false"><span data-lang-it>momento 07</span><span data-lang-en>moment 07</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5" /></svg></button>
+              <InnestoPop scena="cja" />
+            </div>
           </div>
+
+          {/* I SERVIZI COMUNI di Experience Platform (owner, 13 nov 2026): i tre
+              componenti stanno sopra le stesse fondamenta, configurate una volta
+              per tutte le applicazioni. Nomi da Experience League, «How Adobe
+              Experience Platform and applications work together». */}
+          <p class="im-inn-svc">
+            <T as="span" class="im-inn-svc-k" it="Servizi comuni" en="Shared services" />
+            <T as="span" it="Sorgenti" en="Sources" />
+            <T as="span" it="Identità" en="Identity" />
+            <T as="span" it="Profilo" en="Profile" />
+            <T as="span" it="Segmentazione" en="Segmentation" />
+            <T as="span" it="Governance e consenso" en="Governance and consent" />
+            <span>Query Service</span>
+          </p>
+
+          {/* LA COLONNA DEL MOMENTO (owner, 13 nov 2026): si apre dalla pillola,
+              a destra, sopra la colonna dei canali. Non è un modale: non blocca
+              il deck e si chiude con la ×, con Esc o ripremendo la pillola. */}
+          <aside class="im-gm" id="im-gm" aria-label="Il momento di Giulia" hidden>
+            <button type="button" class="im-gm-x" data-mom-chiudi aria-label="Chiudi"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" /></svg></button>
+            {Object.entries(MOMENTO_SCHEMA).map(([k, m]) => (
+              <div class="im-gm-p" data-mom-p={k} hidden>
+                <p class="im-gm-q"><span data-lang-it>Giulia · {k === '04-06' ? 'momenti 04–06' : `momento ${k}`}</span><span data-lang-en>Giulia · {k === '04-06' ? 'moments 04–06' : `moment ${k}`}</span></p>
+                <T as="p" class="im-gm-h" it={m.quando.it} en={m.quando.en} />
+                <ol class="im-gm-fila" aria-hidden="true">
+                  {MOMENTI.map((x, i) => (
+                    <li data-on={m.attivi.includes(i) ? '' : null}><T as="span" it={x.short.it} en={x.short.en} /></li>
+                  ))}
+                </ol>
+                <dl class="im-gm-dl">
+                  <div><T as="dt" it="Lei" en="She" /><T as="dd" it={m.lei.it} en={m.lei.en} /></div>
+                  <div><T as="dt" it="La banca" en="The bank" /><T as="dd" it={m.banca.it} en={m.banca.en} /></div>
+                  <div data-cambia><T as="dt" it="Che cosa cambia" en="What changes" /><T as="dd" it={m.cambia.it} en={m.cambia.en} /></div>
+                </dl>
+              </div>
+            ))}
+          </aside>
         </div>
 
         {/* LA POSIZIONE DELLE CAMPAGNE (decisione del proprietario, 11 nov 2026):
@@ -207,7 +301,7 @@ const RITORNO = [
           <T as="strong" class="im-accanto-t" it={ACCANTO.t.it} en={ACCANTO.t.en} />
           <T as="span" class="im-accanto-d" it={ACCANTO.d.it} en={ACCANTO.d.en} />
         </div>
-        <HowItWorks title="Come possono evolvere le campagne" label="Come possono evolvere le campagne" tone="onDark" class="ex-dett">
+        <HowItWorks title="Come possono evolvere le iniziative" label="Come possono evolvere le iniziative" tone="onDark" class="ex-dett">
           {/* Tre tappe in fila con la freccia fra l'una e l'altra: la prima è
               accesa (si parte da lì), le altre due dicono chi le decide. La
               frequenza è una decisione di fase 0, non una tappa: sta sotto. */}
@@ -221,10 +315,6 @@ const RITORNO = [
               </li>
             ))}
           </ol>
-          <div class="im-evo-note">
-            <T as="p" class="im-evo-n" it={FREQUENZA.it} en={FREQUENZA.en} />
-            <T as="p" class="im-evo-n" it={DECIDETE.it} en={DECIDETE.en} />
-          </div>
         </HowItWorks>
         </div>
         <p class="im-fonte-riga">
@@ -266,6 +356,38 @@ const RITORNO = [
     </Slide>
 
 
+    <Slide id="slide-chiave" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Più identificativi, una persona sola: dal sito alla filiale e oltre la firma" en="Many identifiers, one person: from the site to the branch and past the signature" />
+        <T as="p" class="im-ado-l" it="Pseudonimo, email, telefono e NDG si collegano alla stessa persona: quando diventa cliente, la sua storia di prima resta con lei." en="Pseudonym, email, phone and customer ID link to the same person: when she becomes a customer, her earlier history stays with her." />
+
+        <div class="im-chv">
+          <ol class="im-chv-l">
+            {CHIAVE.map((c) => (
+              <li class="im-chv-i" data-cliente={c.cliente ? '' : null}>
+                <span class="im-chv-m">{c.m}</span>
+                <T as="span" class="im-chv-dove" it={c.dove.it} en={c.dove.en} />
+                <T as="span" class="im-chv-k" it={c.k.it} en={c.k.en} />
+                {c.unisce && <T as="span" class="im-chv-nota" it="le visite di prima si uniscono" en="earlier visits join up" />}
+              </li>
+            ))}
+          </ol>
+          <div class="im-chv-barra" data-substep>
+            <T as="span" class="im-chv-prima" it="non‑cliente" en="Non-customer" />
+            <T as="span" class="im-chv-dopo" it="Cliente da oggi: la storia si legge in CJA" en="Customer from today: the history reads in CJA" />
+          </div>
+          {/* Con che strumenti si fa (la sua ultima domanda, 11 nov): una riga,
+              non il dettaglio. Il «come lo traccio» canale per canale si fa al
+              tavolo tecnico. */}
+          <T as="p" class="im-chv-raccolta" it="Come entrano i dati: Edge per sito e app · file per filiale, IVR e ATM · connettori per il CRM" en="How data comes in: Edge for site and app · files for branch, IVR and ATM · connectors for the CRM" />
+          <T as="p" class="im-chv-esito" data-substep it="Per il Controllo di Gestione: si vede quale iniziativa ha portato la firma in filiale, e quanto vale il canale fisico." en="For management control: you can see which initiative led to the branch signature, and what the physical channel is worth." />
+        </div>
+
+      </div>
+    </Slide>
+
+
     {/* I MESSAGGI PER UNA BANCA. Da «CJA Analytics Modernization for FSI», dai business
         case bancari e dai casi cliente su Field Readiness (10 nov 2026). Il dettaglio
         Analytics → CJA è la slide subito dopo. */}
@@ -273,7 +395,7 @@ const RITORNO = [
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quattro domande a cui Customer Journey Analytics risponde" en="Four questions Customer Journey Analytics answers" />
-        <T as="p" class="im-ado-l" it="Si affianca al motore di targeting e al BI che avete, e li lascia dove sono." en="It sits alongside your targeting engine and BI, and leaves them where they are." />
+        <T as="p" class="im-ado-l" it="Si affianca al motore di targeting e agli strumenti di BI attuali." en="It sits alongside the targeting engine and current BI tools." />
         <ul class="im-banca">
           {BANCA.map((b) => (
             <li class="im-banca-i" data-substep data-k={b.k}>
@@ -299,28 +421,28 @@ const RITORNO = [
     <Slide id="slide-attribuzione" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-doppia" style={`--bg: url('${fondoMisura.src}')`}></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quanto del digitale arriva in filiale?" en="How much of digital reaches the branch?" />
-        <T as="p" class="im-ado-l" it="Si vede soltanto se la filiale entra nel dato." en="It only shows if the branch is in the data." />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quanta parte delle firme in filiale passa dal digitale?" en="How much of branch signing passes through digital?" />
+        <T as="p" class="im-ado-l" it="Si vede quanto ogni canale digitale porta in filiale, fino alla firma del mutuo." en="You see how much each digital channel brings into the branch, up to the mortgage signing." />
 
         <div class="im-att">
           <div class="im-att-r" data-substep>
             <div class="im-att-e">
               <T as="span" class="im-att-k" it="Solo canali digitali" en="Digital channels only" />
-              <T as="span" class="im-att-t" it="Ultimo clic" en="Last click" />
-              <T as="span" class="im-att-d" it="Tutta la firma a un canale" en="All the credit to one channel" />
+              <T as="span" class="im-att-t" it="Modello ultimo clic" en="Last-click model" />
+              <T as="span" class="im-att-d" it="Tutta la firma all’ultimo canale digitale toccato" en="All the credit to the last digital channel touched" />
             </div>
             <div class="im-att-barre">
               {TOCCHI.map((_, i) => i === 4
                 ? <span class="im-att-b" style="--h:100%"></span>
                 : i === 5
-                  ? <T as="span" class="im-att-no" it="Non si vede" en="Not visible" />
+                  ? <T as="span" class="im-att-no" it="Filiale non misurata" en="Branch not measured" />
                   : <span></span>)}
             </div>
           </div>
           <div class="im-att-r" data-substep>
             <div class="im-att-e">
               <T as="span" class="im-att-k" data-cja="" it="Con Customer Journey Analytics" en="With Customer Journey Analytics" />
-              <T as="span" class="im-att-t" it="Tutto il percorso" en="The whole journey" />
+              <T as="span" class="im-att-t" it="Modello algoritmico" en="Algorithmic model" />
               <T as="span" class="im-att-d" it="La firma divisa fra i canali, filiale compresa" en="Credit shared across channels, branch included" />
             </div>
             <div class="im-att-barre" aria-hidden="true">
@@ -373,7 +495,7 @@ const RITORNO = [
             ))}
           </ol>
           {/* «E Giulia, ora cliente» torna, ma dice il CONFINE invece di proporle
-              una polizza: sul cliente la next best action è del motore della
+              una polizza: sul cliente la Next Best Experience è del motore della
               banca (panel, 11 nov 2026). Così chiude il giro e lo rispetta. */}
           <div class="im-rt-dopo" data-substep>
             <T as="p" class="im-rt-dk" it="E Giulia, ora cliente" en="And Giulia, now a customer" />
@@ -385,3 +507,39 @@ const RITORNO = [
 
   </DeckContainer>
 </BaseLayout>
+
+<script>
+  /* La colonna del momento di Giulia: una pillola la apre, la stessa la
+     richiude, un'altra la cambia. Si chiude anche con la ×, con Esc e quando
+     si lascia la slide (il deck mette aria-hidden su quella che esce). */
+  const col = document.getElementById('im-gm');
+  if (col) {
+    const pills = () => document.querySelectorAll<HTMLButtonElement>('#slide-innesto .im-inn-m[data-mom]');
+    const chiudi = () => {
+      col.hidden = true;
+      pills().forEach((p) => p.setAttribute('aria-expanded', 'false'));
+    };
+    const apri = (k: string) => {
+      col.querySelectorAll<HTMLElement>('[data-mom-p]').forEach((el) => { el.hidden = el.dataset.momP !== k; });
+      pills().forEach((p) => p.setAttribute('aria-expanded', String(p.dataset.mom === k)));
+      col.hidden = false;
+    };
+    document.addEventListener('click', (e) => {
+      const t = e.target as HTMLElement;
+      const p = t.closest<HTMLButtonElement>('.im-inn-m[data-mom]');
+      if (p) {
+        e.stopPropagation();
+        if (!col.hidden && p.getAttribute('aria-expanded') === 'true') chiudi();
+        else apri(p.dataset.mom!);
+        return;
+      }
+      if (t.closest('[data-mom-chiudi]')) { e.stopPropagation(); chiudi(); }
+    }, true);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !col.hidden && !document.querySelector('dialog.pp[open]')) chiudi();
+    });
+    const slide = document.getElementById('slide-innesto');
+    if (slide) new MutationObserver(() => { if (slide.getAttribute('aria-hidden') === 'true') chiudi(); })
+      .observe(slide, { attributes: true, attributeFilter: ['aria-hidden'] });
+  }
+</script>

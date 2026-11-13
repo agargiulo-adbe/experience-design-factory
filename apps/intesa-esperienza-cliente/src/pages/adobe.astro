@@ -2,9 +2,10 @@
 /**
  * 01 · ADOBE PER INTESA SANPAOLO — il capitolo che viene dal deck.
  *
- * Innesta quattro slide del `.pptx` del 5 novembre: il team (02), chi è
- * Adobe (07) e Adobe CX Enterprise (11). Numeri e Forrester Wave (06, 08)
- * stanno fuori dalle frecce, in `/adobe-in-cifre/` (11 nov 2026).
+ * Innesta cinque slide del `.pptx` del 5 novembre: il team (02), Adobe in
+ * cifre con i Forrester Wave (06, 08), chi è Adobe (07) e Adobe CX
+ * Enterprise (11). L'ordine va dal generale al particolare: chi siamo, la
+ * piattaforma, la stessa piattaforma vista dai bisogni della banca.
  *
  * ⚠️ È L'UNICO CAPITOLO IN CUI IL DESIGN SYSTEM NON È DI INTESA.
  * La regola «un artefatto, un design system» non è violata: qui Adobe
@@ -58,24 +59,29 @@ import rGordiani from '../assets/team/gordiani.png';
 import rEllena from '../assets/team/ellena.png';
 import rGargiulo from '../assets/team/gargiulo.png';
 import rSelmi from '../assets/team/selmi.png';
+import rMecca from '../assets/team/mecca.png';
 import rGrieco from '../assets/team/grieco.png';
 import rDeMatteis from '../assets/team/dematteis.png';
-import rMoretti from '../assets/team/moretti.png';
+/* ⚠️ Luca Mecca (13 nov 2026): il ritratto non è ancora nel repo. Finché
+   manca, il cerchio porta le iniziali: si sostituisce aggiungendo
+   `../assets/team/mecca.png` e passando `f` nella riga del TEAM. */
 
 const SLUG = 'adobe';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 
-/* Il team che è in sala il 19 novembre, nell'ordine della slide 2. */
-const TEAM: { n: string; f: ImageMetadata; r: { it: string; en: string } }[] = [
+/* Il team che è in sala il 19 novembre, nell'ordine della slide 2.
+   Sei persone: il product marketing non partecipa al 19 (deciso il 12 nov 2026);
+   se servirà, entra al tavolo di approfondimento sull'analisi. */
+const TEAM: { n: string; f?: ImageMetadata; r: { it: string; en: string } }[] = [
   { n: 'Alex Gordiani', f: rGordiani, r: { it: 'Head of FSI', en: 'Head of FSI' } },
   { n: 'Francesca Ellena', f: rEllena, r: { it: 'Account Executive FSI', en: 'Account Executive FSI' } },
-  { n: 'Antonio Gargiulo', f: rGargiulo, r: { it: 'Product Sales Specialist FSI', en: 'Product Sales Specialist FSI' } },
+  { n: 'Antonio Gargiulo', f: rGargiulo, r: { it: 'Product Sales Specialist · Data', en: 'Product Sales Specialist · Data' } },
+  { n: 'Luca Mecca', f: rMecca, r: { it: 'Product Sales Specialist · Content', en: 'Product Sales Specialist · Content' } },
   { n: 'Giacomo Selmi', f: rSelmi, r: { it: 'Senior Solutions Consultant', en: 'Senior Solutions Consultant' } },
   { n: 'Matteo Grieco', f: rGrieco, r: { it: 'Solutions Consultant', en: 'Solutions Consultant' } },
-  { n: 'Raffaele De Matteis', f: rDeMatteis, r: { it: 'Manager, Solutions Consulting', en: 'Manager, Solutions Consulting' } },
-  { n: 'Barbara Moretti', f: rMoretti, r: { it: 'Principal Product Marketing Manager', en: 'Principal Product Marketing Manager' } },
+  { n: 'Raffaele De Matteis', f: rDeMatteis, r: { it: 'Solutions Consulting Manager', en: 'Solutions Consulting Manager' } },
 ];
 
 /* LE QUATTRO COSE CHE LA PIATTAFORMA FA, in ordine.
@@ -88,11 +94,18 @@ const VERBI = [
   { t: { it: 'Creare', en: 'Create' }, p: ['Firefly', 'GenStudio', 'Experience Manager'] },
   { t: { it: 'Attivare', en: 'Activate' }, p: ['Journey Optimizer', 'Target'] },
 ];
+/* IL FILO FRA LE DUE SLIDE (owner, 13 nov 2026: «non è chiara la correlazione
+   della prima con la seconda»). Ogni blocco della slide-cx porta le frecce
+   della slide-chi da cui vengono i suoi prodotti, nella stessa forma e nella
+   stessa tonalità: si riconosce la catena di prima applicata ai bisogni della
+   banca. L'indice è la posizione in VERBI (1–4); 0 è la base, Adobe AI Platform.
+   La mappa segue dove la slide-chi mette i prodotti di ciascun blocco. */
+const FUNZIONI: Record<string, number[]> = { trovare: [1], engagement: [2, 4], contenuto: [3], piattaforma: [1], voce: [0] };
+const etichettaFn = (i: number) => (i === 0 ? { it: 'Adobe AI Platform', en: 'Adobe AI Platform' } : VERBI[i - 1].t);
 
-/* I numeri e i quattro Wave stanno in `adobe-in-cifre.astro`, fuori dalle
-   frecce (panel dell'11 nov 2026: sei personas su sei la tagliavano dal
-   percorso). Le quattro Wave restano qui come riga di fonte linkata. */
-import { WAVE } from '../data/wave';
+/* I numeri e i quattro Wave: slide-fsi, di nuovo nel percorso (owner, 13 nov
+   2026; l'11 nov il panel l'aveva spostata fuori dalle frecce). */
+import { WAVE, NUMERI } from '../data/wave';
 
 /* L'ARCHITETTURA — disegnata sullo schema che il team usa già.
    Tre blocchi in alto, una fascia sottile che li attraversa tutti, e
@@ -113,15 +126,18 @@ import { WAVE } from '../data/wave';
    ripresa finale. */
 const NUMERATA: Record<string, { n: string; riga: { it: string; en: string } }> = Object.fromEntries(TRE.map((c) => [c.gruppo, { n: c.n, riga: c.riga }]));
 const CANALI = [
-  { g: 'trovare', t: { it: 'Farsi trovare nell’era dell’AI', en: 'Being found in the age of AI' },
+  { g: 'trovare', t: { it: 'Farsi trovare dagli assistenti AI', en: 'Being found by AI assistants' },
     p: 'Adobe Brand Visibility',
     d: { it: 'Essere citati nelle risposte generate dagli assistenti.', en: 'Being cited in the answers assistants generate.' } },
-  { g: 'engagement', t: { it: 'Ingaggio del cliente e del prospect', en: 'Customer and prospect engagement' },
-    p: 'Adobe Experience Platform',
+  { g: 'engagement', t: { it: 'Ingaggio di clienti e non‑clienti', en: 'Engaging customers and non-customers' },
+    /* Diceva «Adobe Experience Platform»: nella slide prima Experience
+       Platform è il fondamento di tutto, qui diventava un blocco fra tre.
+       Le applicazioni dell'ingaggio sono queste due (13 nov 2026). */
+    p: 'Real-Time CDP · Journey Optimizer',
     d: { it: 'Profilo, decisione e regia del percorso sullo stesso dato.', en: 'Profile, decision and journey orchestration on the same data.' } },
   { g: 'contenuto', t: { it: 'Content Factory', en: 'Content factory' },
     p: 'Adobe GenStudio',
-    d: { it: 'Varianti controllate contro le linee guida di marchio e di canale mentre si producono; le informative restano nell’iter di approvazione legale.', en: 'Variants checked against brand and channel guidelines as they are produced; disclosures stay in the legal approval process.' } },
+    d: { it: 'Da un solo brief, le varianti per ogni canale e ogni città in poco tempo, già conformi alle regole di marchio.', en: 'From one brief, variants for every channel and city in little time, already compliant with brand rules.' } },
 ];
 const FASCE = [
   { g: 'piattaforma', alta: false,
@@ -129,7 +145,7 @@ const FASCE = [
     p: 'Adobe CX Analytics',
     d: { it: 'Una misura sola sotto i tre, dal primo contatto alla firma.', en: 'One measurement beneath all three, from first contact to signing.' } },
   { g: 'voce', alta: true,
-    t: { it: 'AI conversazionale a supporto del vostro lavoro', en: 'Conversational AI supporting your work' },
+    t: { it: 'Un assistente AI per chi prepara le iniziative', en: 'An AI assistant for the people who prepare initiatives' },
     p: 'CX Enterprise Coworker',
     d: { it: 'Si descrive l’obiettivo a parole e il sistema prepara audience, contenuti e percorso.', en: 'You describe the objective in words and the system prepares audience, content and journey.' } },
 ];
@@ -144,7 +160,7 @@ const FASCE = [
     <Slide id="slide-cover" bg="secondary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="im-div-bg" style={`--foto: url('${fondo.src}'); --fuoco: center 46%`}></div>
       <Divisore num={ch.num}
-        tIt="Adobe e l’offerta" tEn="Adobe and the offering" />
+        tIt="Adobe, chi siamo" tEn="Adobe, who we are" />
     </Slide>
 
     <Slide id="slide-team" bg="inverse" align="left">
@@ -152,7 +168,7 @@ const FASCE = [
       {/* «Adobe Italia» stava sotto ogni nome, sette volte la stessa riga:
           ora la dice l'occhiello, una volta. */}
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="p" class="im-ado-occ" it="Chi è in sala · Adobe Italia" en="Who is in the room · Adobe Italy" />
+        <T as="p" class="im-ado-occ" it="Chi partecipa · Adobe Italia" en="Who is taking part · Adobe Italy" />
         <T as="h2" class="im-ado-t" it="Il team Adobe per i servizi finanziari" en="The Adobe team for financial services" />
         <ul class="im-team">
           {TEAM.map((p) => (
@@ -161,7 +177,9 @@ const FASCE = [
                   un'immagine scalata dentro un contenitore con overflow nascosto
                   è uno scroll nascosto per `audit:deck` (check c e k, HARD).
                   Decorativo: il nome accanto dice chi è. */}
-              <span class="im-team-ft" style={`--ritratto: url('${p.f.src}')`} aria-hidden="true"></span>
+              {p.f
+                ? <span class="im-team-ft" style={`--ritratto: url('${p.f.src}')`} aria-hidden="true"></span>
+                : <span class="im-team-ft im-team-ft--vuoto" style="--ritratto: none" data-ini={p.n.split(' ').map((w) => w[0]).join('')} aria-hidden="true"></span>}
               <span class="im-team-n">{p.n}</span>
               <T as="span" class="im-team-r" it={p.r.it} en={p.r.en} />
             </li>
@@ -170,17 +188,54 @@ const FASCE = [
       </div>
     </Slide>
 
+    {/* ⚠️ RIMESSA NEL PERCORSO (owner, 13 nov 2026). L'11 nov era uscita dalle
+        frecce, in una pagina a sé, per il panel; il team la vuole in sala:
+        chi è Adobe, con i numeri e il giudizio di Forrester, prima della
+        piattaforma. La pagina «Adobe in cifre» non esiste più. */}
+    <Slide id="slide-fsi" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--wave" data-reveal>
+        {/* ⚠️ «Adobe nei servizi finanziari» (owner, 13 nov 2026): la slide aveva
+            perso il suo senso e diceva solo «Leader in quattro Wave». Torna
+            l'occhiello, e sotto ogni quadrante che cosa vuol dire per una banca.
+            Non torna «il settore finanziario è la prima industry di Adobe»:
+            nessuna fonte l'ha retto (panel, 30 ott 2026). */}
+        <T as="p" class="im-ado-occ" it="Adobe nei servizi finanziari" en="Adobe in financial services" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Leader nei quattro Forrester Wave del 2026 che contano per una banca" en="A Leader in the four 2026 Forrester Waves that matter to a bank" />
+        <ul class="im-wave im-wave--fsi">
+          {WAVE.map((w) => (
+            <li class="im-wave-i">
+              <img class="im-wave-img" src={w.img.src} alt={`Forrester Wave ${w.cat}: Adobe fra i Leader`} width="680" height="664" loading="eager" />
+              <div class="im-wave-txt">
+                <T as="span" class="im-wave-q" it={w.q.it} en={w.q.en} />
+                <a class="im-wave-c" href={w.url} target="_blank" rel="noopener">{w.cat}</a>
+                <T as="span" class="im-wave-per" it={w.per.it} en={w.per.en} />
+              </div>
+            </li>
+          ))}
+        </ul>
+        <ul class="im-num im-num--striscia" aria-label="Adobe in quattro numeri">
+          {NUMERI.map((n) => (
+            <li class="im-num-i">
+              <span class="im-num-k">{n.k}</span>
+              <T as="span" class="im-num-v" it={n.v.it} en={n.v.en} />
+            </li>
+          ))}
+        </ul>
+        <T as="p" class="im-fonte-riga" it="Fonti: Forrester Research, The Forrester Wave™, 2026 (link sul nome di ogni report) · Adobe Form 10-K esercizio 2025 · risultati Q4 e FY2025 · Adobe Fast Facts" en="Sources: Forrester Research, The Forrester Wave™, 2026 (link on each report name) · Adobe Form 10-K fiscal 2025 · Q4 and FY2025 results · Adobe Fast Facts" />
+      </div>
+    </Slide>
+
     <Slide id="slide-chi" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <T as="h2" class="im-ado-t" it="Dati, contenuti e decisioni nello stesso sistema" en="Data, content and decisions in the same system" />
-        <T as="p" class="im-ado-l" it="Adobe CX Enterprise in quattro verbi, sullo stesso profilo." en="Adobe CX Enterprise in four verbs, on the same profile." />
+        <T as="p" class="im-ado-l" it="Le quattro funzioni di Adobe CX Enterprise." en="The four functions of Adobe CX Enterprise." />
         <div class="im-cx-fig">
           <ol class="im-cx-catena">
             {VERBI.map((v) => (
               <li class="im-cx-el">
                 <T as="span" class="im-cx-verbo" it={v.t.it} en={v.t.en} />
-                <ul class="im-cx-prod">{v.p.map((x) => <li>{x}</li>)}</ul>
               </li>
             ))}
           </ol>
@@ -189,12 +244,6 @@ const FASCE = [
             <span class="im-cx-base-d">Experience Platform · CX Enterprise Coworker · agenti Adobe e di terzi</span>
           </div>
         </div>
-        <p class="im-fonte-riga">
-          <span data-lang-it>Al Summit 2026 Adobe ha presentato CX Enterprise, con Experience Platform come strato di contesto: </span><span data-lang-en>At Summit 2026 Adobe introduced CX Enterprise, with Experience Platform as its context layer: </span>
-          <a href="https://news.adobe.com/news/2026/04/adobe-redefines-custome-experience" target="_blank" rel="noopener"><span data-lang-it>comunicato del Summit</span><span data-lang-en>Summit press release</span></a><span data-lang-it>. Leader in quattro Forrester Wave del 2026: </span><span data-lang-en>. A Leader in four 2026 Forrester Waves: </span>
-          {WAVE.map((w, k) => <>{k > 0 && ' · '}<a href={w.url} target="_blank" rel="noopener">{w.breve}</a></>)}<span> · </span>
-          <a href={href(base, '/adobe-in-cifre')}><span data-lang-it>Adobe in cifre →</span><span data-lang-en>Adobe in figures →</span></a>
-        </p>
       </div>
     </Slide>
 
@@ -207,12 +256,13 @@ const FASCE = [
             invece di restare astratto. */}
         <div class="im-orch">
           <T as="h2" class="im-orch-t" it="Orchestrare l’esperienza del cliente" en="Orchestrating the customer experience" />
-          <T as="p" class="im-orch-c" it="Per servire i clienti di Intesa Sanpaolo uno per uno: in filiale, alla Filiale Digitale, in app, sul sito e in self, più il media pagato." en="To serve Intesa Sanpaolo’s customers one by one: in the branch, at the Filiale Digitale, in the app, on the site and in self-service, plus paid media." />
+          <T as="p" class="im-orch-c" it="<strong>Dati, contenuti e decisione</strong> nello stesso sistema: per servire clienti e non‑clienti di Intesa Sanpaolo uno per uno: in app, sul sito, in Filiale Digitale e in filiale." en="<strong>Data, content and decisioning</strong> in one system: to serve Intesa Sanpaolo’s customers and non-customers one by one: in the app, on the site, in Filiale Digitale and in the branch." />
         </div>
         <div class="im-arch" data-reveal data-reveal-delay="0.12">
           <ul class="im-arch-su">
             {CANALI.map((b) => (
               <li class="im-arch-b" data-gruppo={b.g} data-substep>
+                <span class="im-fn" aria-label="Funzioni">{(FUNZIONI[b.g] ?? []).map((i) => <T as="span" class="im-fn-v" data-v={String(i)} it={etichettaFn(i).it} en={etichettaFn(i).en} />)}</span>
                 <T as="span" class="im-arch-t" it={b.t.it} en={b.t.en} />
                 <T as="span" class="im-arch-d" it={(NUMERATA[b.g]?.riga ?? b.d).it} en={(NUMERATA[b.g]?.riga ?? b.d).en} />
                 <span class="im-arch-pro">{b.p}</span>
@@ -222,6 +272,7 @@ const FASCE = [
           {FASCE.map((f) => (
             <section class="im-arch-b im-arch-f" data-gruppo={f.g} data-alta={f.alta ? '' : undefined} data-substep>
               <div class="im-arch-f-t">
+                <span class="im-fn" aria-label="Funzioni">{(FUNZIONI[f.g] ?? []).map((i) => <T as="span" class="im-fn-v" data-v={String(i)} it={etichettaFn(i).it} en={etichettaFn(i).en} />)}</span>
                 <T as="span" class="im-arch-t" it={f.t.it} en={f.t.en} />
                 <span class="im-arch-pro">{f.p}</span>
               </div>
@@ -229,11 +280,34 @@ const FASCE = [
             </section>
           ))}
         </div>
-        {/* I nomi, una volta sola: lo stesso prodotto compariva con tre
-            nomi e l'offerta con tre (panel, 30 ott 2026). */}
-        <T as="p" class="im-fonte-riga" it="I nomi, una volta. CX Analytics è la famiglia della misura: Customer Journey Analytics e Adobe Analytics, che avete. AI decisioning è la capacità di decisione di Journey Optimizer (in documentazione: Decisioning; nei casi pubblici: Offer Decisioning)." en="The names, once. CX Analytics is the measurement family: Customer Journey Analytics and Adobe Analytics, which you have. AI decisioning is Journey Optimizer’s decisioning capability (in the docs: Decisioning; in public cases: Offer Decisioning)." />
       </div>
     </Slide>
 
   </DeckContainer>
 </BaseLayout>
+
+<script>
+  // Lo zoom sui Wave della slide FSI: la colonna porta quadrante E testo, quindi
+  // un fattore fisso o la taglia sotto la barra o la lascia piccola. Si misura la
+  // colonna prima che cresca e si sceglie il fattore che la fa stare intera fra
+  // la barra e il fondo, spostandola in verticale se serve (13 nov 2026).
+  const fitWave = (e: Event) => {
+    const li = (e.target as Element | null)?.closest?.('.im-wave--fsi .im-wave-i') as HTMLElement | null;
+    if (!li || li.contains((e as PointerEvent).relatedTarget as Node | null)) return;
+    const nav = document.querySelector('.ex-nav')?.getBoundingClientRect().bottom ?? 0;
+    // il fondo utile finisce sopra i comandi del deck (frecce e contatore)
+    const btns = [...document.querySelectorAll('[data-deck] .deck-btn')].map((b) => b.getBoundingClientRect()).filter((b) => b.height > 0);
+    const floor = btns.length ? Math.min(...btns.map((b) => b.top)) : window.innerHeight;
+    const top = nav + 16, bottom = Math.min(window.innerHeight, floor) - 16;
+    const r = li.getBoundingClientRect();
+    const h = li.offsetHeight;
+    const z = Math.max(1, Math.min(1.85, (bottom - top) / h));
+    const half = (z * h) / 2;
+    const c = r.top + r.height / 2;
+    const cc = Math.min(Math.max(c, top + half), bottom - half);
+    li.style.setProperty('--z', z.toFixed(3));
+    li.style.setProperty('--dy', `${Math.round(cc - c)}px`);
+  };
+  document.addEventListener('pointerover', fitWave);
+  document.addEventListener('focusin', fitWave);
+</script>

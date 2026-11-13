@@ -174,7 +174,6 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
   'intesa-esperienza-cliente': [
     { name: 'home',       route: '/experience-design-factory/intesa-esperienza-cliente/' },
     { name: 'adobe',      route: '/experience-design-factory/intesa-esperienza-cliente/adobe/' },
-    { name: 'adobe-in-cifre', route: '/experience-design-factory/intesa-esperienza-cliente/adobe-in-cifre/' },
     { name: 'scenario',   route: '/experience-design-factory/intesa-esperienza-cliente/scenario/' },
     { name: 'persona',    route: '/experience-design-factory/intesa-esperienza-cliente/persona/' },
     { name: 'momenti',    route: '/experience-design-factory/intesa-esperienza-cliente/momenti/' },
@@ -182,7 +181,6 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
     { name: 'approfondimenti',  route: '/experience-design-factory/intesa-esperienza-cliente/approfondimenti/' },
     { name: 'coworker',   route: '/experience-design-factory/intesa-esperienza-cliente/coworker/' },
     { name: 'risultati',  route: '/experience-design-factory/intesa-esperienza-cliente/risultati/' },
-    { name: 'analytics',  route: '/experience-design-factory/intesa-esperienza-cliente/analytics/' },
     { name: 'prossimi-passi', route: '/experience-design-factory/intesa-esperienza-cliente/prossimi-passi/' },
     { name: 'dieci-minuti', route: '/experience-design-factory/intesa-esperienza-cliente/dieci-minuti/' },
   ],

@@ -34,7 +34,6 @@ import FiguraCap from '../components/FiguraCap.astro';
 import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 import { MISURE, ASK, TRIMESTRE, SOGLIA } from '../data/referenze';
 import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
-import { CONFINE } from '../data/innesto';
 import fondo from '../assets/generated/cover-passi.webp';
 /* La clip sta sul Release `media`, ricucita con `pnpm loop:seamless`. */
 const CLIP = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media';
@@ -69,29 +68,29 @@ const currentPath = Astro.url.pathname;
    scrive «da definire». La tappa 1 decide sul digitale ma misura fino
    allo sportello, perché il mutuo si chiude in filiale. */
 const FASI = [
-  { n: '0', t: { it: 'Il disegno', en: 'The design' },
+  { n: '0', t: { it: 'La progettazione', en: 'The design' },
     guidaBreve: { it: 'Targeting e Group Technology, con Adobe', en: 'Targeting and Group Technology, with Adobe' },
-    quandoBreve: { it: 'primo tavolo entro novembre', en: 'first table by November' },
+    quandoBreve: { it: 'primo tavolo entro fine novembre, se la banca dice sì', en: 'first table by end of November, if the bank agrees' },
     guida: { it: 'Guidano Targeting e Group Technology, con il responsabile della Divisione, insieme ad Adobe e all’integratore.', en: 'Led by Targeting and Group Technology, with the Division’s owner. Alongside, Adobe and the integrator you choose.' },
-    quando: { it: 'Primo tavolo entro novembre, disegno chiuso entro gennaio. Date e costo si fissano insieme.', en: 'First table by November, design closed by January. Dates and cost are set together.' },
-    b: { it: 'Si disegnano identificativi, eventi, consenso e gruppo di controllo. Il Targeting scrive la regola per scegliere i prospect. Si decide quanto convivono Analytics e CJA.', en: 'Identifiers, events, consent and control group get designed. Targeting writes the rule for picking prospects. How long Analytics and CJA coexist gets decided.' } },
-  { n: '1', t: { it: 'Il mutuo, sui prospect', en: 'The mortgage, on prospects' },
+    quando: { it: 'I mesi si contano dal sì della banca: primo tavolo, poi la progettazione, che si chiude con le stime di implementazione e di costo.', en: 'Months count from the bank’s yes: first table, then the design, which closes with implementation and cost estimates.' },
+    b: { it: 'Si progettano identificativi, eventi, consenso e gruppo di controllo. Il Targeting scrive la regola per scegliere i non‑clienti. Si decide quanto convivono Analytics e CJA.', en: 'Identifiers, events, consent and control group get designed. Targeting writes the rule for picking non-customers. How long Analytics and CJA coexist gets decided.' } },
+  { n: '1', t: { it: 'Il mutuo, sui non‑clienti', en: 'The mortgage, on non-customers' },
     guidaBreve: { it: 'Targeting, con Canali e CRM', en: 'Targeting, with Channels and CRM' },
     quandoBreve: { it: 'un trimestre dal primo invio', en: 'one quarter from the first send' },
     guida: { it: 'Guida il Targeting, con Canali e CRM, insieme ad Adobe e all’integratore.', en: 'Led by Targeting, with Channels and CRM. Alongside, Adobe and the integrator.' },
-    quando: { it: 'Il primo invio arriva dopo qualche mese, <span class=im-nw>da stimare in fase 0.</span> Poi un trimestre di misura.', en: 'First send a few months later, to estimate in phase 0. Then one quarter of measurement.' },
-    b: { it: 'Si decide sul digitale e si misura fino allo sportello. L’esito dell’appuntamento lo registra la filiale nel CRM. Licenza con durata minima da definire. A fine trimestre si continua o ci si ferma, e i profili dei prospect si cancellano; per gli erogati restano solo gruppo e codice pratica, pseudonimizzati, con il DPO.', en: 'Decisions on digital, measured up to the counter: the branch records the appointment outcome in the CRM. Licence with a minimum term to be defined. At quarter end it continues or stops, and prospect profiles are deleted; for disbursements only group and file code remain, pseudonymised, with the DPO.' } },
+    quando: { it: 'Prima l’implementazione: Web SDK sul sito AEM on-premise e API del CRM di filiale sono il percorso critico, <span class=im-nw>da stimare in fase 0.</span> Poi un trimestre di misura dal primo invio, e gli erogati si leggono il trimestre dopo.', en: 'Implementation first: Web SDK on the on-premise AEM site and the branch CRM APIs are the critical path, to estimate in phase 0. Then a quarter of measurement from the first send; disbursements are read the quarter after.' },
+    b: { it: 'Si decide sul digitale e si misura fino allo sportello. L’esito dell’appuntamento lo registra la filiale nel CRM. Licenza con durata minima da definire. A fine trimestre si continua o ci si ferma, e i profili dei non‑clienti si cancellano; per gli erogati restano solo gruppo e codice pratica, pseudonimizzati, con il DPO.', en: 'Decisions on digital, measured up to the counter: the branch records the appointment outcome in the CRM. Licence with a minimum term to be defined. At quarter end it continues or stops, and non-customer profiles are deleted; for disbursements only group and file code remain, pseudonymised, with the DPO.' } },
   { n: '2', t: { it: 'Dopo il trimestre', en: 'After the quarter' },
     guidaBreve: { it: 'Targeting, con il prodotto', en: 'Targeting, with product' },
-    quandoBreve: { it: 'un caso alla volta, se la soglia si è mossa', en: 'one case at a time, if the threshold moved' },
+    quandoBreve: { it: 'un caso alla volta, se la soglia è raggiunta', en: 'one case at a time, if the threshold is met' },
     guida: { it: 'Guida il Targeting, con il prodotto, insieme ad Adobe e all’integratore.', en: 'Led by Targeting, with product. Alongside, Adobe and the integrator.' },
-    quando: { it: 'Un caso alla volta, solo <span class=im-nw>se la soglia si è mossa.</span>', en: 'One case at a time, if the threshold moved.' },
+    quando: { it: 'Un caso alla volta, solo <span class=im-nw>se la soglia è raggiunta.</span>', en: 'One case at a time, only if the threshold is met.' },
     b: { it: 'Prima il cross-sell dopo la firma, poi gli altri casi, ognuno con la sua misura. Sui clienti la classifica resta del vostro motore.', en: 'First cross-sell after signature, then the other cases, each with its own measure. On customers the ranking stays with your engine.' } },
 ];
 /* Perché il mutuo prima del cross-sell: lo chiedono Rete e Targeting. */
 const CRITERIO = {
-  it: 'Perché il mutuo prima del cross-sell: sui prospect il vostro motore non ha punteggi, e la sua classifica non si tocca. La misura si chiude in un trimestre.',
-  en: 'Why the mortgage before cross-sell: on prospects your engine has no scores, and its ranking stays untouched. The measurement closes within a quarter.',
+  it: 'Perché il mutuo prima del cross-sell: è un perimetro dove la classifica del vostro motore non si tocca, e dal primo invio la misura si chiude in un trimestre.',
+  en: 'Why the mortgage before cross-sell: it is a scope where your engine’s ranking is untouched, and from the first send the measurement closes within a quarter.',
 };
 ---
 <BaseLayout title={ch.title.it}>
@@ -104,7 +103,7 @@ const CRITERIO = {
     <Slide id="slide-cover" bg="secondary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="im-div-bg" style={`--foto: url('${fondo.src}'); --fuoco: 34% 62%`}></div>
       <Divisore num={ch.num}
-        tIt="La proposta e come si parte" tEn="The proposal and how we start" />
+        tIt="I prossimi passi" tEn="Next steps" />
     </Slide>
 
     {/* ── LA PROPOSTA (sintesi dell'11 nov 2026) ─────────────────────
@@ -164,7 +163,7 @@ const CRITERIO = {
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <T as="p" class="im-ado-occ" it="Come si parte" en="How we start" />
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Prima un tavolo di disegno, poi un trimestre sul mutuo" en="First a design table, then one quarter on the mortgage" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Prima la progettazione, poi un trimestre sul mutuo" en="First the design, then one quarter on the mortgage" />
         <ol class="im-rm im-rm--guida" data-reveal data-reveal-delay="0.12">
           {FASI.map((f, i) => (
             <li class="im-rm-i" data-tratto={i === 0 ? 'posato' : 'da-posare'}>
@@ -206,8 +205,10 @@ const CRITERIO = {
                  scrim="im-clip-scrim" opacity={1} />
       <div class="im-firma" data-reveal>
         <CoBrand variant="hero" class="im-cov-lockup edf-cobrand--on-dark" />
-        <T as="p" class="im-firma-l" it="Sui prospect il segnale arriva già al sito. Proponiamo di usarlo prima che lascino l’email, su un percorso solo, e di misurarlo." en="On prospects the signal already reaches the site. We propose to use it before they leave their email, on a single journey, and to measure it." data-reveal data-reveal-delay="0.14" />
-        <T as="p" class="im-firma-confine" it={CONFINE.it} en={CONFINE.en} data-reveal data-reveal-delay="0.2" />
+        {/* Un titolo e un sottotitolo, niente di più (owner, 13 nov 2026): la
+            riga di confine sul motore è già detta nel capitolo 03. */}
+        <T as="h2" class="im-firma-t" it="Raggiungere chi non è ancora cliente, prima dell’email" en="Reaching people who are not yet customers, before the email" data-reveal data-reveal-delay="0.14" />
+        <T as="p" class="im-firma-l" it="Perché chi stasera simula un mutuo arrivi in filiale già riconosciuto, e non come una scheda vuota." en="So that whoever simulates a mortgage tonight reaches the branch already recognised, not as a blank record." data-reveal data-reveal-delay="0.2" />
         <a href={href(base, '/')} class="edf-sig-cta">
           <span data-lang-it>Torna all’inizio</span><span data-lang-en>Back to the start</span>
         </a>
@@ -223,16 +224,17 @@ const CRITERIO = {
      ripresa, estrazione e vincolo per la Rete, due colonne non entravano a
      1280×800 col tipo pieno. Il titolo usa la larghezza, non tre righe. */
   /* Le fasi: il quando sotto la guida, in un inchiostro più quieto. */
-  #slide-fasi .im-rm-q { font-size: clamp(0.95rem, 0.8vw, 1.8rem); line-height: 1.38; color: #cfe3c6; }
+  #slide-fasi .im-rm-q { font-size: clamp(0.95rem, calc(0.8 * var(--vu)), 1.8rem); line-height: 1.38; color: #cfe3c6; }
   #slide-fasi .im-rm-chi { line-height: 1.32; }
-  #slide-fasi .im-rm-b { font-size: clamp(0.95rem, 0.86vw, 1.95rem); }
+  #slide-fasi .im-rm-b { font-size: clamp(0.95rem, calc(0.86 * var(--vu)), 1.95rem); }
   /* Serve: la tappa in cui serve, sotto la funzione. */
   /* Il costo, a tutta larghezza: etichetta a sinistra, misura a destra. */
   #slide-da-voi .im-mis--sette > [data-chiave] { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 0.2rem 1.2rem; align-items: center; }
   #slide-da-voi .im-mis--sette > [data-chiave] .im-mis-l { margin: 0; }
   @media (max-height: 950px) { #slide-da-voi .im-mis--sette { gap: 0.4rem 0.7rem; margin-top: 0.3rem; } #slide-da-voi .im-mis--sette .im-mis-b { padding: 0.5rem 0.8rem; } #slide-da-voi .im-mis--sette .im-mis-l { margin-bottom: 0.25rem; } }
-  /* La chiusura: il confine sul motore, sotto la proposta. */
-  .im-firma-confine { margin: 0.6rem auto 0; max-width: 46rem; font-size: clamp(1rem, 0.9vw, 2rem); line-height: 1.45; color: #e3eedf; text-align: center; }
+  /* La chiusura: un titolo, e sotto la proposta in una riga. */
+  #slide-firma .im-firma-l { margin: 0; max-width: 44rem; font-family: var(--font-body); font-weight: 400; font-size: clamp(1.15rem, calc(1.35 * var(--vu)), 2.7rem); line-height: 1.45; color: #e3eedf; }
+  .im-firma-t { margin: 0; max-width: 46rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, calc(2.9 * var(--vu)), 5.6rem); line-height: 1.12; color: #ffffff; text-align: center; text-wrap: balance; }
   /* Sintesi (11 nov 2026): quattro misure in due colonne, l'ask sopra. */
   #slide-da-voi .im-mis--quattro { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 78rem; }
   #slide-da-voi .im-ask { max-width: 78rem; }
@@ -242,9 +244,9 @@ const CRITERIO = {
   .im-mis--dett { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem 0.8rem; margin-top: 0.6rem; max-width: none; }
   .im-pp-fasi { list-style: none; margin: 0.6rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; }
   .im-pp-fasi li { margin: 0; display: grid; align-content: start; gap: 0.3rem; padding: 0.8rem 1rem; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.22); background: rgba(6, 22, 2, 0.6); }
-  .im-pp-ft { margin: 0; max-width: none; font-weight: 700; font-size: clamp(1.05rem, 1vw, 2.2rem); color: #ffffff; }
+  .im-pp-ft { margin: 0; max-width: none; font-weight: 700; font-size: clamp(1.05rem, calc(1 * var(--vu)), 2.2rem); color: #ffffff; }
   .im-pp-ft > span:first-child { color: #b9e6a3; }
-  .im-pp-fd { margin: 0; max-width: none; font-size: clamp(0.95rem, 0.86vw, 1.95rem); line-height: 1.45; color: #e3eedf; }
+  .im-pp-fd { margin: 0; max-width: none; font-size: clamp(0.95rem, calc(0.86 * var(--vu)), 1.95rem); line-height: 1.45; color: #e3eedf; }
   .im-pp-dett .im-serve { margin-top: 0.8rem; }
   /* Sugli schermi bassi, a dettaglio aperto, il titolo si ritira: il link
      aperto dice già di che cosa si parla, e così il dettaglio sta nell'area

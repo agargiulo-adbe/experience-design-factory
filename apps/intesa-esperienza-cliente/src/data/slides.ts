@@ -6,11 +6,12 @@ export const PAGE_REGISTRY: PageEntry[] = [
   { slug: 'index', label: 'Copertina dell’incontro (00)', slides: [
     { id: 'slide-cover', label: 'Copertina dell’incontro: titolo e agenda a sei voci' },
   ]},
-  { slug: 'adobe', label: 'Adobe e l’offerta (01)', slides: [
+  { slug: 'adobe', label: 'Adobe, chi siamo (01)', slides: [
     { id: 'slide-cover',     label: 'Cover: Adobe per Intesa Sanpaolo' },
-    { id: 'slide-team',      label: 'Il team Adobe in sala' },
-    { id: 'slide-chi',       label: 'Dati, contenuti e decisioni nello stesso sistema: i quattro verbi, le Wave in fonte' },
-    { id: 'slide-cx',        label: 'Adobe CX Enterprise: i blocchi, le tre cose di cui si parla, e i nomi' },
+    { id: 'slide-team',      label: 'Il team Adobe che partecipa' },
+    { id: 'slide-fsi',       label: 'Chi è Adobe: i numeri e i quattro Forrester Wave' },
+    { id: 'slide-chi',       label: 'Dati, contenuti e decisioni nello stesso sistema: le quattro funzioni' },
+    { id: 'slide-cx',        label: 'Per Intesa Sanpaolo: tre bisogni, la stessa piattaforma' },
   ]},
   { slug: 'scenario', label: 'Giulia: un mutuo, sette momenti · Il segnale (02)', slides: [
     { id: 'slide-cover',      label: 'Cover: Dal dato alla decisione' },
@@ -23,33 +24,34 @@ export const PAGE_REGISTRY: PageEntry[] = [
   { slug: 'momenti', label: 'Giulia: un mutuo, sette momenti · I momenti (02)', slides: [
     { id: 'slide-m-01', label: '01 Farsi trovare: l’assistente la cita, o no' },
     { id: 'slide-m-02', label: '02 Content Factory: la variante per la sua città' },
-    { id: 'slide-m-03', label: '03 Engagement: da visita anonima a nome' },
+    { id: 'slide-m-03', label: '03 Engagement: da pseudonimo a nome' },
     { id: 'slide-m-04', label: '04 Engagement: quattro candidate, una parte' },
     { id: 'slide-m-05', label: '05 Engagement: il percorso parte dall’evento' },
     { id: 'slide-m-06', label: '06 Customer Engagement: il percorso attiva la filiale' },
     { id: 'slide-m-07', label: '07 CX Analytics: quanto è costato acquisirla' },
   ]},
-  { slug: 'messa-a-terra', label: 'Dove ci innestiamo e che cosa si misura (03)', slides: [
-    { id: 'slide-cover', label: 'Cover: Dove ci innestiamo e che cosa si misura' },
+  { slug: 'messa-a-terra', label: 'Dove si collega Adobe e che cosa si misura (03)', slides: [
+    { id: 'slide-cover', label: 'Cover: Dove si collega Adobe e che cosa si misura' },
     { id: 'slide-innesto', label: 'L’innesto: Adobe si aggiunge, si parte dai percorsi nuovi, Real-Time CDP, Journey Optimizer · AI Decisioning e CJA' },
     { id: 'slide-capacita', label: 'Che cosa porta ciascun componente: le capability' },
+    { id: 'slide-chiave', label: 'Più identificativi, una persona sola: la storia da non‑cliente a cliente' },
     { id: 'slide-cja-banca', label: 'Quattro risposte che una banca ottiene da CJA' },
     { id: 'slide-attribuzione', label: 'Quanto del digitale arriva in filiale' },
     { id: 'slide-ritorno', label: 'Quello che si misura sul mutuo nel primo trimestre cambia le regole del secondo' },
   ]},
   { slug: 'coworker', label: 'CX Enterprise Coworker (04)', slides: [
     { id: 'slide-cover', label: 'Cover: divisore del capitolo' },
-    { id: 'slide-cosa',  label: 'Che cos’è Coworker: chat, agenti, dove gira' },
+    // slide-cosa depubblicata il 13 nov 2026 (COSA_PUBBLICATA in coworker.astro)
     { id: 'slide-video', label: 'Video demo con i dati del cliente: slot da console' },
   ]},
-  { slug: 'risultati', label: 'Tre banche che lo fanno già (05)', slides: [
+  { slug: 'risultati', label: 'Banche che lo fanno già (05)', slides: [
     { id: 'slide-cover',   label: 'Cover: una banca che lo fa già' },
     { id: 'slide-santander',       label: 'Santander Brasil: reagire entro 15 minuti' },
     { id: 'slide-credit-agricole', label: 'Crédit Agricole Italia: +15% al primo acquisto' },
     { id: 'slide-tsb',             label: 'TSB: il dato in meno di 24 ore' },
-    { id: 'slide-unipol',          label: 'Unipol: le campagne misurate anche sulle vendite offline' },
+    { id: 'slide-unipol',          label: 'Unipol: agenzie e digitale nella stessa analisi' },
   ]},
-  { slug: 'prossimi-passi', label: 'La proposta e come si parte (06)', slides: [
+  { slug: 'prossimi-passi', label: 'I prossimi passi (06)', slides: [
     { id: 'slide-cover',  label: 'Cover: prossimi passi' },
     { id: 'slide-da-voi', label: 'La proposta: un trimestre sul mutuo, quattro misure e l’ask (le altre a richiesta)' },
     { id: 'slide-fasi',   label: 'Come si parte: tre tappe, chi guida e quando (il dettaglio a richiesta)' },
@@ -74,9 +76,6 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-content-factory', label: 'Content Factory, dal brief alla misura' },
     { id: 'slide-passaggio', label: 'Web Analytics: da Adobe Analytics a CJA, che cosa resta, cambia, si aggiunge' },
     { id: 'slide-serve', label: 'Le cinque cose da portare alla fase 0, e chi le porta' },
-  ]},
-  { slug: 'adobe-in-cifre', label: 'Adobe in cifre (fuori percorso, dalla fonte di «Dati, contenuti e decisioni»)', slides: [
-    { id: 'slide-fsi',       label: 'Adobe nei servizi finanziari: i numeri e i quattro Forrester Wave' },
   ]},
 ];
 
