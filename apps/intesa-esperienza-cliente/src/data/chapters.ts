@@ -29,19 +29,19 @@ export const CHAPTERS: Chapter[] = [
   { slug: 'scenario', num: '02', title: { it: 'Giulia: un mutuo, sette momenti', en: 'Giulia: one mortgage, seven moments' } },
   { slug: 'persona', num: '', title: { it: 'Giulia, 34 anni', en: 'Giulia, 34' } },
   { slug: 'momenti', num: '', title: { it: 'I sette momenti', en: 'The seven moments' } },
-  { slug: 'messa-a-terra', num: '03', title: { it: 'Dove si collega Adobe e che cosa si misura', en: 'Where Adobe connects and what gets measured' } },
+  { slug: 'messa-a-terra', num: '03', title: { it: 'Integrazione: dove si collega Adobe e che cosa si misura', en: 'Integration: where Adobe connects and what gets measured' } },
   { slug: 'coworker', num: '04', title: { it: 'CX Enterprise Coworker', en: 'CX Enterprise Coworker' } },
-  { slug: 'risultati', num: '05', title: { it: 'Tre banche e Unipol: lo fanno già', en: 'Three banks and Unipol already doing it' } },
+  { slug: 'risultati', num: '05', title: { it: 'Referenze: quattro casi già in produzione', en: 'References: four cases already live' } },
   { slug: 'prossimi-passi', num: '06', title: { it: 'La proposta e come si parte', en: 'The proposal and how we start' } },
 ];
 
 /** La barra: le sette voci dell'agenda. `pagine` accende la voce. */
 export const VOCI_NAV: { n: string; it: string; en: string; slug: string; ancora?: string; pagine: string[] }[] = [
-  { n: '01', it: 'Adobe e l’offerta', en: 'Adobe and the offering', slug: 'adobe', pagine: ['adobe', 'adobe-in-cifre'] },
-  { n: '02', it: 'Giulia, sette momenti', en: 'Giulia, seven moments', slug: 'scenario', pagine: ['scenario', 'persona', 'momenti'] },
+  { n: '01', it: 'Adobe e l’offerta', en: 'Adobe and the offering', slug: 'adobe', pagine: ['adobe'] },
+  { n: '02', it: 'Giulia', en: 'Giulia', slug: 'scenario', pagine: ['scenario', 'persona', 'momenti'] },
   { n: '03', it: 'Integrazione', en: 'Integration', slug: 'messa-a-terra', pagine: ['messa-a-terra', 'approfondimenti'] },
   { n: '04', it: 'Coworker', en: 'Coworker', slug: 'coworker', pagine: ['coworker'] },
-  { n: '05', it: 'Banche', en: 'Banks', slug: 'risultati', pagine: ['risultati'] },
+  { n: '05', it: 'Referenze', en: 'References', slug: 'risultati', pagine: ['risultati'] },
   { n: '06', it: 'La proposta', en: 'The proposal', slug: 'prossimi-passi', pagine: ['prossimi-passi'] },
 ];
 

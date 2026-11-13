@@ -174,7 +174,6 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
   'intesa-esperienza-cliente': [
     { name: 'home',       route: '/experience-design-factory/intesa-esperienza-cliente/' },
     { name: 'adobe',      route: '/experience-design-factory/intesa-esperienza-cliente/adobe/' },
-    { name: 'adobe-in-cifre', route: '/experience-design-factory/intesa-esperienza-cliente/adobe-in-cifre/' },
     { name: 'scenario',   route: '/experience-design-factory/intesa-esperienza-cliente/scenario/' },
     { name: 'persona',    route: '/experience-design-factory/intesa-esperienza-cliente/persona/' },
     { name: 'momenti',    route: '/experience-design-factory/intesa-esperienza-cliente/momenti/' },

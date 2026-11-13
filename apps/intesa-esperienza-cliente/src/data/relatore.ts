@@ -21,8 +21,9 @@ export const NOTE: Record<string, Record<string, Nota>> = {
   adobe: {
     'slide-cover': { dire: 'Chi siamo, in pochi minuti: il tema dell’incontro viene dopo.' },
     'slide-team': { dire: 'Si presentano le persone, con il ruolo di ciascuno.' },
-    'slide-chi': { dire: 'Quattro verbi, una piattaforma: comprendere, decidere, creare, attivare. In fondo le quattro Forrester Wave e il link ad «Adobe in cifre», fuori dalle frecce.', seChiedono: 'Al Summit 2026 Adobe ha presentato CX Enterprise; le applicazioni che conoscono sono le stesse. Il comunicato non parla di un cambio di nome: non dirlo come fatto.' },
-    'slide-cx': { dire: 'Con la freccia giù un blocco alla volta: tre canali, una sola misura e, sotto, il lavoro chiesto a parole.', seChiedono: 'AI decisioning è la capacità di decisione di Journey Optimizer: in documentazione si chiama Decisioning, nei casi pubblici Offer Decisioning. GenStudio controlla le varianti contro le linee guida di marchio e di canale; le informative restano nell’iter di approvazione legale.' },
+    'slide-fsi': { dire: 'Chi è Adobe in numeri: i numeri sono nostri, il giudizio è di Forrester. Passando il mouse su un quadrante, si ingrandisce.' },
+    'slide-chi': { dire: 'La piattaforma in quattro funzioni: comprendere, decidere, creare, attivare. È la stessa per qualunque banca.', seChiedono: 'Al Summit 2026 Adobe ha presentato CX Enterprise; le applicazioni che conoscono sono le stesse. Il comunicato non parla di un cambio di nome: non dirlo come fatto.' },
+    'slide-cx': { dire: 'Gli stessi prodotti della slide prima, visti dai bisogni della banca. Con la freccia giù un blocco alla volta: tre bisogni, una sola misura e, sotto, il lavoro chiesto a parole.', seChiedono: 'AI decisioning è la capacità di decisione di Journey Optimizer: in documentazione si chiama Decisioning, nei casi pubblici Offer Decisioning. GenStudio controlla le varianti contro le linee guida di marchio e di canale; le informative restano nell’iter di approvazione legale.' },
   },
   scenario: {
     'slide-cover': { dire: 'Si parte dal dato che c’è, e spesso riguarda chi è cliente di un’altra banca.' },
@@ -74,9 +75,6 @@ export const NOTE: Record<string, Record<string, Nota>> = {
     'slide-da-voi': { dire: 'La proposta in una frase, e quattro misure. Si legge la richiesta così com’è scritta. Le altre tre misure e la forma della soglia stanno in «Le altre misure e la soglia».', attenzione: 'Soglia, campione e quota del gruppo non hanno numeri in sala: si fissano in fase 0 con il calcolo dei volumi.' },
     'slide-fasi': { dire: 'Tre tappe: la progettazione, il mutuo sui non clienti, gli altri casi.', seChiedono: 'Chi integra lo decidono loro, con noi o con un integratore.' },
     'slide-firma': { dire: 'Si chiude sulla firma, senza aggiungere altro.' },
-  },
-  'adobe-in-cifre': {
-    'slide-fsi': { dire: 'Fuori dalle frecce: si apre solo se chiedono chi è Adobe in numeri. I numeri sono nostri, il giudizio è di Forrester. Passando il mouse su un quadrante, si ingrandisce.' },
   },
 };
 

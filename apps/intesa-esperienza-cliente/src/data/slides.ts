@@ -8,9 +8,10 @@ export const PAGE_REGISTRY: PageEntry[] = [
   ]},
   { slug: 'adobe', label: 'Adobe e l’offerta (01)', slides: [
     { id: 'slide-cover',     label: 'Cover: Adobe per Intesa Sanpaolo' },
-    { id: 'slide-team',      label: 'Il team Adobe in sala' },
-    { id: 'slide-chi',       label: 'Dati, contenuti e decisioni nello stesso sistema: le quattro funzioni, le Wave in fonte' },
-    { id: 'slide-cx',        label: 'Adobe CX Enterprise: i blocchi, le tre cose di cui si parla, e i nomi' },
+    { id: 'slide-team',      label: 'Il team Adobe che partecipa' },
+    { id: 'slide-fsi',       label: 'Chi è Adobe: i numeri e i quattro Forrester Wave' },
+    { id: 'slide-chi',       label: 'Dati, contenuti e decisioni nello stesso sistema: le quattro funzioni' },
+    { id: 'slide-cx',        label: 'Per Intesa Sanpaolo: tre bisogni, la stessa piattaforma' },
   ]},
   { slug: 'scenario', label: 'Giulia: un mutuo, sette momenti · Il segnale (02)', slides: [
     { id: 'slide-cover',      label: 'Cover: Dal dato alla decisione' },
@@ -43,7 +44,7 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-cosa',  label: 'Che cos’è Coworker: a parole, fino all’approvazione, dove gira' },
     { id: 'slide-video', label: 'Video demo con i dati del cliente: slot da console' },
   ]},
-  { slug: 'risultati', label: 'Tre banche e Unipol: lo fanno già (05)', slides: [
+  { slug: 'risultati', label: 'Referenze: quattro casi già in produzione (05)', slides: [
     { id: 'slide-cover',   label: 'Cover: una banca che lo fa già' },
     { id: 'slide-santander',       label: 'Santander Brasil: reagire entro 15 minuti' },
     { id: 'slide-credit-agricole', label: 'Crédit Agricole Italia: +15% al primo acquisto' },
@@ -75,9 +76,6 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-content-factory', label: 'Content Factory, dal brief alla misura' },
     { id: 'slide-passaggio', label: 'Web Analytics: da Adobe Analytics a CJA, che cosa resta, cambia, si aggiunge' },
     { id: 'slide-serve', label: 'Le cinque cose da portare alla fase 0, e chi le porta' },
-  ]},
-  { slug: 'adobe-in-cifre', label: 'Adobe in cifre (fuori percorso, dalla fonte di «Dati, contenuti e decisioni»)', slides: [
-    { id: 'slide-fsi',       label: 'Adobe nei servizi finanziari: i numeri e i quattro Forrester Wave' },
   ]},
 ];
 

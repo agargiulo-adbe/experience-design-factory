@@ -146,3 +146,49 @@
   #slide-innesto .im-inn-n { min-height: 0; padding: 0.4rem 0.75rem; }
   #slide-innesto .im-inn-b { padding-block: 0.35rem; }
 }
+
+/* ── 13 nov 2026 (call del team con il referente) ─────────────────────────
+   I CANALI, ONLINE E OFFLINE. Un segno per ciascuno: lo schermo per quello
+   che Adobe Analytics già raccoglie, l'edificio per quello che sta fuori dal
+   digitale. È la distinzione che Customer Journey Analytics tiene insieme. */
+.im-inn-ch { display: grid; gap: 0.15rem; }
+.im-inn-ch-i { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; column-gap: 0.45rem; font-size: clamp(0.95rem, 0.88vw, 1.95rem); line-height: 1.2; color: #e3eedf; }
+.im-inn-ch-i svg { width: clamp(1.25rem, 1.3vw, 2.6rem); height: auto; margin-top: 0.05em; fill: none; stroke: #b9e6a3; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.im-inn-ch-i strong { font-weight: 700; color: #ffffff; }
+.im-inn-ch-i[data-k="offline"] svg { stroke: #ffffff; }
+.im-inn-ch-i[data-k="offline"] strong { text-decoration: underline; text-decoration-color: #6cc04a; text-decoration-thickness: 2px; text-underline-offset: 0.18em; }
+
+/* I SERVIZI COMUNI siedono sul bordo inferiore della cornice di Experience
+   Platform, come la legenda su quello superiore: sono la base dei tre
+   componenti, e non tolgono altezza a uno schema che a 1280×800 non ne ha. */
+#slide-innesto p.im-inn-svc { grid-column: 1 / -1; grid-row: 5; align-self: end; justify-self: end; position: relative; z-index: 3; display: flex; flex-wrap: nowrap; align-items: center; gap: 0.4rem; margin: 0; max-width: none; padding: 0.15rem 0.5rem; border-radius: 999px; background: #0b1f06; translate: 0 calc(clamp(0.45rem, 0.6vw, 1.2rem) + 50%); }
+.im-inn-svc > span { padding: 0.05rem 0.55rem; border-radius: 999px; border: 1px solid rgba(185, 230, 163, 0.55); font-size: clamp(0.78rem, 0.7vw, 1.5rem); line-height: 1.3; color: #ffffff; white-space: nowrap; }
+.im-inn-svc > .im-inn-svc-k { padding-inline: 0.2rem 0.1rem; border: 0; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: #b9e6a3; }
+@media (max-width: 900px) { #slide-innesto p.im-inn-svc { translate: none; flex-wrap: wrap; justify-self: start; margin-top: 0.4rem; } }
+
+/* IL FLUSSO DEI DATI. Le linee fra il perimetro della banca e Experience
+   Platform scorrono nel verso del dato quando il passo è aperto: giù dal
+   motore e dai canali, su verso le iniziative e la decisione. Ferme per chi
+   chiede meno movimento. */
+@keyframes im-inn-giu { from { background-position: 0 0; } to { background-position: 0 14px; } }
+@keyframes im-inn-su { from { background-position: 0 14px; } to { background-position: 0 0; } }
+#slide-innesto:not([aria-hidden="true"]) .im-inn-f::before {
+  background: repeating-linear-gradient(to bottom, #9fd68a 0 8px, rgba(159, 214, 138, 0.15) 8px 14px);
+  animation: im-inn-giu 0.9s linear infinite;
+}
+#slide-innesto:not([aria-hidden="true"]) .im-inn-f[data-su]::before { animation-name: im-inn-su; }
+@media (prefers-reduced-motion: reduce) {
+  #slide-innesto .im-inn-f::before { animation: none !important; background: #9fd68a !important; }
+}
+
+/* 1280×800 (13 nov 2026): i canali online e offline allungano la prima riga
+   dello schema. L'altezza si recupera dai due corridoi delle frecce, non dal
+   corpo del testo: le etichette sopra la decisione stanno su una riga. */
+@media (max-height: 820px) {
+  #slide-innesto .im-inn { grid-template-rows: auto 1.6rem auto 1.6rem auto; }
+  /* La linea scende a un terzo del riquadro invece che a metà: l'etichetta
+     accanto ha lo spazio per stare su una riga sola. */
+  #slide-innesto .im-inn-dec .im-inn-f { grid-template-columns: 30% minmax(0, 1fr); }
+  #slide-innesto .im-inn-dec .im-inn-f::before { left: 30%; }
+  #slide-innesto .im-inn-dec .im-inn-f::after { left: calc(30% - 5px); }
+}

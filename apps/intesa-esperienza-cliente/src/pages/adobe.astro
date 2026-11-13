@@ -2,9 +2,10 @@
 /**
  * 01 · ADOBE PER INTESA SANPAOLO — il capitolo che viene dal deck.
  *
- * Innesta quattro slide del `.pptx` del 5 novembre: il team (02), chi è
- * Adobe (07) e Adobe CX Enterprise (11). Numeri e Forrester Wave (06, 08)
- * stanno fuori dalle frecce, in `/adobe-in-cifre/` (11 nov 2026).
+ * Innesta cinque slide del `.pptx` del 5 novembre: il team (02), Adobe in
+ * cifre con i Forrester Wave (06, 08), chi è Adobe (07) e Adobe CX
+ * Enterprise (11). L'ordine va dal generale al particolare: chi siamo, la
+ * piattaforma, la stessa piattaforma vista dai bisogni della banca.
  *
  * ⚠️ È L'UNICO CAPITOLO IN CUI IL DESIGN SYSTEM NON È DI INTESA.
  * La regola «un artefatto, un design system» non è violata: qui Adobe
@@ -60,6 +61,9 @@ import rGargiulo from '../assets/team/gargiulo.png';
 import rSelmi from '../assets/team/selmi.png';
 import rGrieco from '../assets/team/grieco.png';
 import rDeMatteis from '../assets/team/dematteis.png';
+/* ⚠️ Luca Mecca (13 nov 2026): il ritratto non è ancora nel repo. Finché
+   manca, il cerchio porta le iniziali: si sostituisce aggiungendo
+   `../assets/team/mecca.png` e passando `f` nella riga del TEAM. */
 
 const SLUG = 'adobe';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -69,10 +73,11 @@ const currentPath = Astro.url.pathname;
 /* Il team che è in sala il 19 novembre, nell'ordine della slide 2.
    Sei persone: il product marketing non partecipa al 19 (deciso il 12 nov 2026);
    se servirà, entra al tavolo di approfondimento sull'analisi. */
-const TEAM: { n: string; f: ImageMetadata; r: { it: string; en: string } }[] = [
+const TEAM: { n: string; f?: ImageMetadata; r: { it: string; en: string } }[] = [
   { n: 'Alex Gordiani', f: rGordiani, r: { it: 'Head of FSI', en: 'Head of FSI' } },
   { n: 'Francesca Ellena', f: rEllena, r: { it: 'Account Executive FSI', en: 'Account Executive FSI' } },
-  { n: 'Antonio Gargiulo', f: rGargiulo, r: { it: 'Product Sales Specialist FSI', en: 'Product Sales Specialist FSI' } },
+  { n: 'Antonio Gargiulo', f: rGargiulo, r: { it: 'Product Specialist Data', en: 'Product Specialist Data' } },
+  { n: 'Luca Mecca', r: { it: 'Product Specialist Content', en: 'Product Specialist Content' } },
   { n: 'Giacomo Selmi', f: rSelmi, r: { it: 'Senior Solutions Consultant', en: 'Senior Solutions Consultant' } },
   { n: 'Matteo Grieco', f: rGrieco, r: { it: 'Solutions Consultant', en: 'Solutions Consultant' } },
   { n: 'Raffaele De Matteis', f: rDeMatteis, r: { it: 'Manager, Solutions Consulting', en: 'Manager, Solutions Consulting' } },
@@ -89,10 +94,9 @@ const VERBI = [
   { t: { it: 'Attivare', en: 'Activate' }, p: ['Journey Optimizer', 'Target'] },
 ];
 
-/* I numeri e i quattro Wave stanno in `adobe-in-cifre.astro`, fuori dalle
-   frecce (panel dell'11 nov 2026: sei personas su sei la tagliavano dal
-   percorso). Le quattro Wave restano qui come riga di fonte linkata. */
-import { WAVE } from '../data/wave';
+/* I numeri e i quattro Wave: slide-fsi, di nuovo nel percorso (owner, 13 nov
+   2026; l'11 nov il panel l'aveva spostata fuori dalle frecce). */
+import { WAVE, NUMERI } from '../data/wave';
 
 /* L'ARCHITETTURA — disegnata sullo schema che il team usa già.
    Tre blocchi in alto, una fascia sottile che li attraversa tutti, e
@@ -117,7 +121,10 @@ const CANALI = [
     p: 'Adobe Brand Visibility',
     d: { it: 'Essere citati nelle risposte generate dagli assistenti.', en: 'Being cited in the answers assistants generate.' } },
   { g: 'engagement', t: { it: 'Ingaggio di clienti e non clienti', en: 'Engaging customers and non-customers' },
-    p: 'Adobe Experience Platform',
+    /* Diceva «Adobe Experience Platform»: nella slide prima Experience
+       Platform è il fondamento di tutto, qui diventava un blocco fra tre.
+       Le applicazioni dell'ingaggio sono queste due (13 nov 2026). */
+    p: 'Real-Time CDP · Journey Optimizer',
     d: { it: 'Profilo, decisione e regia del percorso sullo stesso dato.', en: 'Profile, decision and journey orchestration on the same data.' } },
   { g: 'contenuto', t: { it: 'Content Factory', en: 'Content factory' },
     p: 'Adobe GenStudio',
@@ -152,7 +159,7 @@ const FASCE = [
       {/* «Adobe Italia» stava sotto ogni nome, sette volte la stessa riga:
           ora la dice l'occhiello, una volta. */}
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="p" class="im-ado-occ" it="Chi è in sala · Adobe Italia" en="Who is in the room · Adobe Italy" />
+        <T as="p" class="im-ado-occ" it="Chi partecipa · Adobe Italia" en="Who is taking part · Adobe Italy" />
         <T as="h2" class="im-ado-t" it="Il team Adobe per i servizi finanziari" en="The Adobe team for financial services" />
         <ul class="im-team">
           {TEAM.map((p) => (
@@ -161,9 +168,40 @@ const FASCE = [
                   un'immagine scalata dentro un contenitore con overflow nascosto
                   è uno scroll nascosto per `audit:deck` (check c e k, HARD).
                   Decorativo: il nome accanto dice chi è. */}
-              <span class="im-team-ft" style={`--ritratto: url('${p.f.src}')`} aria-hidden="true"></span>
+              {p.f
+                ? <span class="im-team-ft" style={`--ritratto: url('${p.f.src}')`} aria-hidden="true"></span>
+                : <span class="im-team-ft im-team-ft--vuoto" style="--ritratto: none" data-ini={p.n.split(' ').map((w) => w[0]).join('')} aria-hidden="true"></span>}
               <span class="im-team-n">{p.n}</span>
               <T as="span" class="im-team-r" it={p.r.it} en={p.r.en} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Slide>
+
+    {/* ⚠️ RIMESSA NEL PERCORSO (owner, 13 nov 2026). L'11 nov era uscita dalle
+        frecce, in una pagina a sé, per il panel; il team la vuole in sala:
+        chi è Adobe, con i numeri e il giudizio di Forrester, prima della
+        piattaforma. La pagina «Adobe in cifre» non esiste più. */}
+    <Slide id="slide-fsi" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--wave" data-reveal>
+        <T as="p" class="im-ado-occ" it="Chi è Adobe" en="Who Adobe is" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Adobe è Leader in quattro Forrester Wave del 2026" en="Adobe is a Leader in four 2026 Forrester Waves" />
+        <ul class="im-num">
+          {NUMERI.map((n) => (
+            <li class="im-num-i">
+              <span class="im-num-k">{n.k}</span>
+              <T as="span" class="im-num-v" it={n.v.it} en={n.v.en} />
+            </li>
+          ))}
+        </ul>
+        <T as="p" class="im-fonte-riga" it="Fonti: Adobe Form 10-K esercizio 2025 · risultati Q4 e FY2025 · Adobe Fast Facts" en="Sources: Adobe Form 10-K fiscal 2025 · Q4 and FY2025 results · Adobe Fast Facts" />
+        <ul class="im-wave">
+          {WAVE.map((w) => (
+            <li class="im-wave-i">
+              <a class="im-wave-c" href={w.url} target="_blank" rel="noopener">{w.cat}</a>
+              <img class="im-wave-img" src={w.img.src} alt={`Forrester Wave ${w.cat}: Adobe fra i Leader`} width="680" height="664" loading="eager" />
             </li>
           ))}
         </ul>
@@ -191,9 +229,7 @@ const FASCE = [
         </div>
         <p class="im-fonte-riga">
           <span data-lang-it>Al Summit 2026 Adobe ha presentato CX Enterprise, con Experience Platform come strato di contesto: </span><span data-lang-en>At Summit 2026 Adobe introduced CX Enterprise, with Experience Platform as its context layer: </span>
-          <a href="https://news.adobe.com/news/2026/04/adobe-redefines-custome-experience" target="_blank" rel="noopener"><span data-lang-it>comunicato del Summit</span><span data-lang-en>Summit press release</span></a><span data-lang-it>. Leader in quattro Forrester Wave del 2026: </span><span data-lang-en>. A Leader in four 2026 Forrester Waves: </span>
-          {WAVE.map((w, k) => <>{k > 0 && ' · '}<a href={w.url} target="_blank" rel="noopener">{w.breve}</a></>)}<span> · </span>
-          <a href={href(base, '/adobe-in-cifre')}><span data-lang-it>Adobe in cifre →</span><span data-lang-en>Adobe in figures →</span></a>
+          <a href="https://news.adobe.com/news/2026/04/adobe-redefines-custome-experience" target="_blank" rel="noopener"><span data-lang-it>comunicato del Summit</span><span data-lang-en>Summit press release</span></a><span data-lang-it>. Nella slide che segue, gli stessi prodotti ordinati sui bisogni della banca.</span><span data-lang-en>. The next slide orders the same products around the bank’s needs.</span>
         </p>
       </div>
     </Slide>
@@ -206,8 +242,8 @@ const FASCE = [
             «orchestrare» — e il claim nomina il cliente e i suoi canali
             invece di restare astratto. */}
         <div class="im-orch">
-          <T as="h2" class="im-orch-t" it="Orchestrare l’esperienza del cliente" en="Orchestrating the customer experience" />
-          <T as="p" class="im-orch-c" it="Gli stessi componenti servono tutti i canali della banca: filiale, Filiale Digitale, app, sito, aree self-service e media a pagamento." en="The same components serve every channel of the bank: branch, Filiale Digitale, app, site, self-service areas and paid media." />
+          <T as="h2" class="im-orch-t" it="Per Intesa Sanpaolo: tre bisogni, la stessa piattaforma" en="For Intesa Sanpaolo: three needs, one platform" />
+          <T as="p" class="im-orch-c" it="Le quattro funzioni della slide precedente, viste dai bisogni della banca: su tutti i canali, online e in filiale." en="The four functions from the previous slide, seen from the bank’s needs: on every channel, online and in branch." />
         </div>
         <div class="im-arch" data-reveal data-reveal-delay="0.12">
           <ul class="im-arch-su">

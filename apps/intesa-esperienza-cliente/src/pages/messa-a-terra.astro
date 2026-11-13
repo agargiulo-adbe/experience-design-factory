@@ -151,7 +151,7 @@ const RITORNO = [
 
     <Slide id="slide-cover" bg="secondary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="im-div-bg" style={`--foto: url('${fondo.src}'); --fuoco: center 42%`}></div>
-      <Divisore num={ch.num} tIt="Dove si collega Adobe e che cosa si misura" tEn="Where Adobe connects and what gets measured" />
+      <Divisore num={ch.num} tIt="Integrazione: dove si collega Adobe e che cosa si misura" tEn="Integration: where Adobe connects and what gets measured" />
     </Slide>
 
     {/* L'INNESTO, ad alto livello. Parte dall'architettura di oggi, con il motore di targeting a monte;
@@ -182,7 +182,18 @@ const RITORNO = [
               <li class="im-inn-n" data-forte={n.forte ? '' : null}>
                 <T as="span" class="im-inn-t" it={n.t.it} en={n.t.en} />
                 {n.s && <T as="span" class="im-inn-s" it={n.s.it} en={n.s.en} />}
-                <T as="span" class="im-inn-d" it={n.d.it} en={n.d.en} />
+                {n.canali ? (
+                  <span class="im-inn-ch">
+                    {n.canali.map((c) => (
+                      <span class="im-inn-ch-i" data-k={c.k}>
+                        {c.k === 'online'
+                          ? <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="13" height="10" rx="1.5" /><path d="M5.5 18h6M8.5 14v4" /><rect x="17" y="7" width="5" height="11" rx="1" /></svg>
+                          : <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5 12 4l9 5.5" /><path d="M5.5 10v8M10 10v8M14 10v8M18.5 10v8" /><path d="M3 20.5h18" /></svg>}
+                        <T as="span" it={`<strong>${c.t.it}</strong> ${c.d.it}`} en={`<strong>${c.t.en}</strong> ${c.d.en}`} />
+                      </span>
+                    ))}
+                  </span>
+                ) : <T as="span" class="im-inn-d" it={n.d.it} en={n.d.en} />}
                 {i > 0 && <svg class="im-inn-fr" viewBox="0 0 28 14" aria-hidden="true"><path d="M1 7h24M19 1l6 6-6 6" /></svg>}
               </li>
             ))}
@@ -193,8 +204,8 @@ const RITORNO = [
               anonimo, che si unisce al profilo quando la persona lascia l'email. */}
           <div class="im-inn-cdp" data-substep>
             <button type="button" class="im-inn-b im-inn-b--cdp" data-pp-open aria-haspopup="dialog" aria-label="Real-Time CDP: come funziona">
-              <span class="im-inn-t">Real-Time CDP <span class="im-inn-m" title="Momento di Giulia">03</span></span>
-              <T as="span" class="im-inn-d" it="Profilo unico, anche prima che si identifichino" en="One profile, even before they identify" />
+              <span class="im-inn-t">Real-Time CDP <span class="im-inn-m" title="Il momento di Giulia in cui lavora"><span data-lang-it>momento 03</span><span data-lang-en>moment 03</span></span></span>
+              <T as="span" class="im-inn-d" it="Non clienti: le visite si uniscono al profilo" en="Non-customers: visits stitched into the profile" />
               <span class="im-inn-piu" aria-hidden="true">+</span>
             </button>
             <InnestoPop scena="cdp" />
@@ -207,7 +218,7 @@ const RITORNO = [
               <span class="im-inn-f" data-su><T as="span" it="proposta scelta" en="selected offer" /></span>
             </div>
             <button type="button" class="im-inn-b" data-pp-open aria-haspopup="dialog">
-              <span class="im-inn-t">Journey Optimizer · AI Decisioning <span class="im-inn-m" title="Momenti di Giulia">04 · 05 · 06</span></span>
+              <span class="im-inn-t">Journey Optimizer · AI Decisioning <span class="im-inn-m" title="I momenti di Giulia in cui lavora"><span data-lang-it>momenti 04–06</span><span data-lang-en>moments 04–06</span></span></span>
               <T as="span" class="im-inn-d" it="Il percorso parte da un’azione del cliente; AI Decisioning sceglie l’offerta da mostrare, entro consenso e regole di contatto" en="The journey starts from a customer action; AI Decisioning picks the offer to show, within consent and contact rules" />
               <span class="im-inn-piu" aria-hidden="true">+</span>
             </button>
@@ -215,15 +226,29 @@ const RITORNO = [
           </div>
 
           <div class="im-inn-cja" data-substep>
-            <span class="im-inn-f im-inn-f--lungo"><T as="span" it="esiti dei contatti" en="contact outcomes" /></span>
+            <span class="im-inn-f im-inn-f--lungo"><T as="span" it="dati online e offline" en="online and offline data" /></span>
             <span class="im-inn-f im-inn-f--ritorno" data-su><T as="span" it="risultati per canale" en="results by channel" /></span>
             <button type="button" class="im-inn-b im-inn-b--largo" data-pp-open aria-haspopup="dialog">
-              <span class="im-inn-t">Customer Journey Analytics <span class="im-inn-m" title="Momento di Giulia">07</span></span>
-              <T as="span" class="im-inn-d" it="Unisce i dati di Adobe Analytics a quelli di filiale, Filiale Digitale e CRM" en="Joins Adobe Analytics data with branch, Filiale Digitale and CRM data" />
+              <span class="im-inn-t">Customer Journey Analytics <span class="im-inn-m" title="Il momento di Giulia in cui lavora"><span data-lang-it>momento 07</span><span data-lang-en>moment 07</span></span></span>
+              <T as="span" class="im-inn-d" it="Legge insieme i dati online di Adobe Analytics e quelli offline di filiale, Filiale Digitale e CRM" en="Reads Adobe Analytics online data together with offline data from branch, Filiale Digitale and CRM" />
               <span class="im-inn-piu" aria-hidden="true">+</span>
             </button>
             <InnestoPop scena="cja" />
           </div>
+
+          {/* I SERVIZI COMUNI di Experience Platform (owner, 13 nov 2026): i tre
+              componenti stanno sopra le stesse fondamenta, configurate una volta
+              per tutte le applicazioni. Nomi da Experience League, «How Adobe
+              Experience Platform and applications work together». */}
+          <p class="im-inn-svc">
+            <T as="span" class="im-inn-svc-k" it="Servizi comuni" en="Shared services" />
+            <T as="span" it="Sorgenti" en="Sources" />
+            <T as="span" it="Identità" en="Identity" />
+            <T as="span" it="Profilo" en="Profile" />
+            <T as="span" it="Segmentazione" en="Segmentation" />
+            <T as="span" it="Governance e consenso" en="Governance and consent" />
+            <span>Query Service</span>
+          </p>
         </div>
 
         {/* LA POSIZIONE DELLE CAMPAGNE (decisione del proprietario, 11 nov 2026):

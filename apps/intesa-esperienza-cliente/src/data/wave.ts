@@ -1,7 +1,6 @@
 /**
- * I QUATTRO FORRESTER WAVE DEL 2026 e i numeri di Adobe — fonte unica per la
- * riga di fonte di «adobe/slide-chi» e per la pagina fuori percorso
- * `/adobe-in-cifre/`, dove stanno i quadranti.
+ * I QUATTRO FORRESTER WAVE DEL 2026 e i numeri di Adobe — fonte unica della
+ * slide «adobe/slide-fsi», nel percorso dal 13 nov 2026.
  *
  * I quadranti sono le immagini originali estratte dal deck ufficiale: un Wave
  * ridisegnato da noi non sarebbe più una fonte.

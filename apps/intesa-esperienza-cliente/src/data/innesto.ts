@@ -38,12 +38,19 @@ export const CONFINE: Testo = {
 };
 
 /** L'architettura di oggi, a grandi blocchi: un'ipotesi, e la slide lo dichiara. */
-export const OGGI: { t: Testo; s?: Testo; d: Testo; forte?: boolean }[] = [
+export const OGGI: { t: Testo; s?: Testo; d: Testo; forte?: boolean; canali?: { k: 'online' | 'offline'; t: Testo; d: Testo }[] }[] = [
   { t: { it: 'Data lake', en: 'Data lake' }, d: { it: 'i dati dei clienti', en: 'customer data' } },
   { t: { it: 'Motore di targeting', en: 'Targeting engine' },
     d: { it: 'target e modelli di propensione', en: 'targets and propensity models' }, forte: true },
   { t: { it: 'Iniziative commerciali', en: 'Commercial initiatives' }, d: { it: 'pianificate e invii massivi', en: 'scheduled and bulk sends' } },
-  { t: { it: 'Canali', en: 'Channels' }, d: { it: 'filiale, Filiale Digitale, app, sito, aree self-service, media a pagamento', en: 'branch, Filiale Digitale, app, site, self-service areas, paid media' } },
+  /* Online e offline separati, con un segno ciascuno (call del 13 nov 2026):
+     è la distinzione che Customer Journey Analytics tiene insieme. La filiale
+     resta DENTRO il perimetro: verso la filiale la banca lavora già. */
+  { t: { it: 'Canali', en: 'Channels' }, d: { it: 'filiale, Filiale Digitale, app, sito, aree self-service, media a pagamento', en: 'branch, Filiale Digitale, app, site, self-service areas, paid media' },
+    canali: [
+      { k: 'online', t: { it: 'Online', en: 'Online' }, d: { it: 'sito, app, annunci', en: 'site, app, ads' } },
+      { k: 'offline', t: { it: 'Offline', en: 'Offline' }, d: { it: 'filiale, Filiale Digitale, self-service', en: 'branch, Filiale Digitale, self-service' } },
+    ] },
 ];
 
 /** La posizione che si proietta: è quella su cui si decide il 19. */
