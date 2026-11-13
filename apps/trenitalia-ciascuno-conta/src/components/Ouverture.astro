@@ -24,8 +24,27 @@
   <p class="cc-ouv-n" data-n>0</p>
   <button type="button" class="cc-ouv-salta" data-salta tabindex="-1">Salta <span aria-hidden="true">→</span></button>
 </div>
-<script is:inline>
+<!-- ⚠️ Due difese contro il guasto del 13 nov 2026 (copertina coperta da un velo scuro con
+     il solo «Salta»): il ClientRouter NON riesegue uno script inline già eseguito nella
+     sessione, quindi tornando alla copertina con un link interno il velo arrivava nel DOM e
+     nessuno lo toglieva. (1) il velo è CHIUSO per default nel CSS e si apre solo con
+     `html.cc-ouv-on`, che mette questo script; (2) `data-astro-rerun`, così lo script gira a
+     ogni navigazione e, a sessione già vista, toglie il velo. -->
+<script is:inline data-astro-rerun>
 (function () {
+  // «Rivedi l'apertura» (copertina): ricarica con `?apertura`, che la fa ripartire da
+  // zero. Ascoltatore UNICO sul documento, agganciato prima di ogni uscita: questo
+  // script sta prima del deck, quindi il pulsante qui non esiste ancora.
+  if (!window.__ccRivedi) {
+    window.__ccRivedi = true;
+    document.addEventListener('click', function (e) {
+      var b = e.target && e.target.closest && e.target.closest('[data-cc-rivedi]');
+      if (!b) return;
+      e.preventDefault(); e.stopPropagation();
+      var u = new URL(location.href); u.searchParams.set('apertura', ''); u.hash = '';
+      location.assign(u.toString());
+    }, true);
+  }
   var root = document.querySelector('[data-cc-ouv]');
   if (!root) return;
   var KEY = 'cc:ouverture', H = document.documentElement;
@@ -34,6 +53,8 @@
   var forza = /[?&]apertura\b/.test(location.search);
   if (reduce || (seen && !forza)) { root.remove(); return; }
   try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
+  // il parametro serve una volta: tolto dall'indirizzo, un ricaricamento non la rilancia
+  if (forza) { try { var u0 = new URL(location.href); u0.searchParams.delete('apertura'); history.replaceState(history.state, '', u0.toString()); } catch (e) {} }
   H.classList.add('cc-ouv-on', 'cc-ouv-titolo');
   var tgt0 = document.querySelector('.cc-cop-t [data-chiasmo]');
 
@@ -189,6 +210,11 @@
   root.addEventListener('click', chiudi);
   addEventListener('keydown', chiudi, true);
   addEventListener('resize', function () { if (!fatto) build(); });
+  // se si cambia pagina a metà, <html> sopravvive allo scambio: le classi vanno tolte qui,
+  // o la pagina dopo resterebbe senza barra e con la copertina nascosta
+  document.addEventListener('astro:before-swap', fine, { once: true });
+  // e se il browser congela le animazioni (scheda in secondo piano), l'apertura si chiude comunque
+  setTimeout(fine, FINE + 3000);
   requestAnimationFrame(frame);
 })();
 </script>

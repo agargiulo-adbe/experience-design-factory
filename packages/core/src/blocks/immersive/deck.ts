@@ -424,6 +424,21 @@ export function initDeck() {
   w.__edfDeck = deck;
 
   /**
+   * Il deck non scorre MAI: le slide si spostano traslando la fila, e il
+   * contenitore ha `overflow: hidden`. Ma `overflow: hidden` ferma solo l'utente,
+   * non il browser: un'ancora (`#slide-x`) o il focus su un elemento fuori schermo
+   * fanno scorrere il contenitore per portarlo in vista, e quello scorrimento si
+   * SOMMA alla traslazione — lo schermo mostra il vuoto una slide più in là.
+   * Visto il 13 nov 2026 cambiando l'ancora a pagina aperta: `scrollLeft` 1280 e
+   * slide bianca. Quindi qualunque scorrimento del contenitore si annulla subito.
+   */
+  const azzeraScorrimento = () => {
+    if (root.scrollLeft || root.scrollTop) { root.scrollLeft = 0; root.scrollTop = 0; }
+  };
+  root.addEventListener('scroll', azzeraScorrimento, { passive: true });
+  azzeraScorrimento();
+
+  /**
    * Un link che arriva da un'altra pagina con `#slide-x` deve APRIRE quella
    * slide, non la prima. Senza questo, un indice che rimanda a un capitolo
    * («questo strato si racconta lì») porta sempre in copertina e tocca a chi
@@ -438,7 +453,9 @@ export function initDeck() {
     const hash = decodeURIComponent(location.hash || '').replace(/^#/, '');
     if (!hash) return;
     const i = Array.from(document.querySelectorAll('[data-slide]')).findIndex((s) => s.id === hash);
+    azzeraScorrimento();
     if (i > 0) deck.goTo(i);
+    requestAnimationFrame(azzeraScorrimento);
   };
   vaiAllAncora();
 
@@ -449,7 +466,7 @@ export function initDeck() {
    * da un link rotto per chi guarda. Il listener si toglie con il deck.
    */
   window.addEventListener('hashchange', vaiAllAncora);
-  const stopHash = () => window.removeEventListener('hashchange', vaiAllAncora);
+  const stopHash = () => { window.removeEventListener('hashchange', vaiAllAncora); root.removeEventListener('scroll', azzeraScorrimento); };
   const destroyOriginale = deck.destroy.bind(deck);
   deck.destroy = () => { stopHash(); destroyOriginale(); };
 }
