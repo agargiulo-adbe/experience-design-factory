@@ -33,10 +33,12 @@ const currentPath = Astro.url.pathname;
    «Marketing e Compliance approvano» saltava il Targeting; «si ottimizza
    da sé» non è una capacità documentata. Ora c'è un passo «Target», la
    frequenza resta regola loro, e approva chi approva oggi. */
-/* Il video della demo, da un link pubblico AEM (https: da GitHub Pages un
-   http verrebbe bloccato come contenuto misto). ⚠️ SEGNAPOSTO: va sostituito
-   con la clip di Coworker prima del 19 novembre. */
-const VIDEO_DEMO = 'https://publish-p129757-e1266090.adobeaemcloud.com/content/dam/ferrero/nutella/campaigns/buongiorno-insieme/The-Sound-of-SnapYT.App.mp4';
+/* Il video della demo, dal player di Dynamic Media (AEM Assets, delivery
+   /play): è una PAGINA HTML col player integrato, non un .mp4, quindi va in
+   un <iframe> e non in un <video> (13 nov 2026). ⚠️ ANCORA SEGNAPOSTO: è uno
+   spot, non la demo di Coworker; va sostituito prima del 19 novembre
+   cambiando l'URN qui, una riga. */
+const VIDEO_DEMO = 'https://delivery-p129757-e1266090.adobeaemcloud.com/adobe/assets/urn:aaid:aem:e640aabb-b5ae-4c71-aa0e-9a743869e9ae/play';
 
 const STORY = [
   { n: '1', t: { it: 'Obiettivo', en: 'Objective' },
@@ -115,11 +117,9 @@ const STORY = [
           {/* ⚠️ Diceva «Dal vivo · con i vostri dati», con sotto una nota di lavoro: nessuno ha chiesto dati della banca, la demo dal vivo è stata esclusa il 28 ottobre e l'attivazione non è confermata (panel, 11 nov 2026). Si mostra su dati di esempio. */}
           <T as="p" class="im-ado-occ" it="Dimostrazione · su dati di esempio" en="Demo · on sample data" />
           <T as="h2" class="im-ado-t im-ado-t--stretto" it="Un’iniziativa sul mutuo preparata in una sessione" en="A mortgage initiative prepared in one session" />
-          {/* ⚠️ SEGNAPOSTO (12 nov 2026): finché la demo di Coworker non è
-              montata, qui gira un video pubblicato su AEM, scelto da chi
-              presenta per provare l'embed da un link pubblico Adobe. Il
-              video definitivo si mette cambiando VIDEO_DEMO, una riga. */}
-          <video class="im-cow-video" src={VIDEO_DEMO} controls playsinline preload="metadata" aria-label="Video della dimostrazione"></video>
+          {/* Il player è quello di Dynamic Media, in iframe (13 nov 2026):
+              controlli, schermo intero e streaming adattivo li porta lui. */}
+          <iframe class="im-cow-video" src={VIDEO_DEMO} title="Video della dimostrazione" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" referrerpolicy="strict-origin-when-cross-origin"></iframe>
           <T as="p" class="im-fonte-riga" it="Sui vostri dati, dopo l’attivazione e con il perimetro concordato in fase 0." en="On your data, after activation and within the scope agreed in phase 0." />
         </div>
         <ol class="im-story">
@@ -138,3 +138,19 @@ const STORY = [
 
   </DeckContainer>
 </BaseLayout>
+
+<script>
+  /* Il player sta in un iframe di un'altra origine: dopo un clic la tastiera
+     resta a lui e le frecce non fanno più avanzare il deck (verificato il
+     13 nov 2026). Il clic intanto è già arrivato al player, quindi il focus
+     si restituisce al deck; a schermo intero no, lì i tasti sono del player. */
+  window.addEventListener('blur', () => {
+    setTimeout(() => {
+      const a = document.activeElement;
+      if (a instanceof HTMLIFrameElement && a.classList.contains('im-cow-video') && !document.fullscreenElement) {
+        a.blur();
+        window.focus();
+      }
+    }, 0);
+  });
+</script>
