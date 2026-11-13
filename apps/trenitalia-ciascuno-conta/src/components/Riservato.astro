@@ -167,7 +167,35 @@ const BASE = import.meta.env.BASE_URL.replace(/\/?$/, '/');
     if (!t) { h.setAttribute('data-riservato', 'off'); closed(); return; }
     h.setAttribute('data-riservato', l ? 'on' : 'loading');
     open(l);
-    if (!l) fetchLayer(t);
+    if (!l) fetchLayer(t); else refresh(t, l);
+  }
+
+  // ⚠️ La copia in sessione si mostra subito, ma si RIVERIFICA sempre col server: senza,
+  // una scheda aperta prima di un aggiornamento dello strato mostrava la versione vecchia
+  // per tutta la sessione, anche ricaricando (successo il 14 nov 2026: nomi e 75 giornate
+  // in una scheda, strato v6 sul server). Una rete assente non tocca la copia; un token
+  // che non apre più niente chiude lo strato.
+  var refreshing = false;
+  function refresh(t, cached) {
+    if (refreshing || !SUPABASE_URL || !SUPABASE_ANON) return;
+    refreshing = true;
+    fetch(SUPABASE_URL + '/rest/v1/rpc/get_shared_doc', {
+      method: 'POST', cache: 'no-store',
+      headers: { apikey: SUPABASE_ANON, Authorization: 'Bearer ' + SUPABASE_ANON, 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ p_token: t }),
+    }).then(function (r) { return r.ok ? r.json() : undefined; })
+      .then(function (data) {
+        refreshing = false;
+        if (data === undefined) return;
+        var l = data && data.deck;
+        if (!l || !l.r) { fail(); return; }
+        var nuovo = JSON.stringify(l);
+        if (nuovo === JSON.stringify(cached)) return;
+        ss(LK, nuovo);
+        fill(l);
+        try { if (window.__edfDeck && window.__edfDeck.syncDark) window.__edfDeck.syncDark(); } catch (e) {}
+      })
+      .catch(function () { refreshing = false; });
   }
 
   function fail() {
