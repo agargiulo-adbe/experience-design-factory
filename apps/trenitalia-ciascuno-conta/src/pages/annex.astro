@@ -4,16 +4,15 @@ import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import Divisore from '../components/Divisore.astro';
-import Guscio from '../components/Guscio.astro';
 import { href } from '@edf/core/utils/url.js';
-import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { CHAPTERS, ANNEX, prevSlug, nextSlug } from '../data/chapters';
 import foto from '../assets/stock/origine.webp';
 
 /**
- * Capitolo riservato — Annex. Per il team interno: la sintesi dei punti da
- * validare, la tabella (punto · chi valida · rischio · quando · priorità) e le
- * domande ai partner, che partono solo dopo il sì del leadership team. Tutto
- * dallo strato interno; qui ci sono solo i gusci.
+ * L'annex — il sommario. Viene dopo la firma: la presentazione finisce lì, e da qui
+ * si scende nel dettaglio di ciascuna parte. Le slide della presentazione ci portano
+ * anche direttamente, con «Il dettaglio →» (componente Dettaglio).
+ * I titoli e le righe sono neutri: il contenuto riservato sta nelle pagine, dallo strato.
  */
 const SLUG = 'annex';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -32,15 +31,25 @@ const currentPath = Astro.url.pathname;
       <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
     </Slide>
 
-    <Guscio id="r-annex-sintesi" scuro />
-
-    <Guscio id="r-annex-1" />
-
-    <Guscio id="r-annex-2" />
-
-    <Guscio id="r-annex-3" />
-
-    <Guscio id="r-annex-domande" scuro />
+    <Slide id="slide-sommario" bg="primary" align="left" data-tono="scuro">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <h2 class="xd-h2">Il dettaglio, in sei parti</h2>
+        </div>
+        <ol class="cc-sommario" data-stagger>
+          {ANNEX.map((c) => (
+            <li>
+              <a href={href(base, '/' + c.slug)} class="cc-sommario-a">
+                <span class="cc-sommario-n">{c.num}</span>
+                <span class="cc-sommario-t">{c.title.it}</span>
+                <span class="cc-sommario-d">{c.punto}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </Slide>
 
   </DeckContainer>
 </BaseLayout>

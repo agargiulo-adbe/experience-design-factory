@@ -53,8 +53,8 @@ export const ATTI = {
   titolo: 'Quattro atti, da dicembre a giugno',
   mesi: ['dic', 'gen', 'feb', 'mar', 'apr', 'mag', 'giu'],
   atti: [
-    { n: '1', v: 'Scegliere', q: 'dicembre', serve: ['consenso'], da: 0, a: 1,
-      esce: 'I casi d’uso, validati con Accenture' },
+    { n: '1', v: 'Scegliere', q: 'entro l’11 dicembre', serve: ['consenso'], da: 0, a: 0.5,
+      esce: 'I casi d’uso, validati entro l’11 dicembre' },
     { n: '2', v: 'Capire e provare', q: 'dic – feb · cancello a fine gennaio', serve: ['risposta', 'prova'], da: 0.5, a: 3,
       esce: 'Dove si perde la vendita, e un test sul venduto' },
     { n: '3', v: 'Decidere', q: 'marzo', serve: ['prova', 'consenso'], da: 3, a: 4,
@@ -97,7 +97,7 @@ export const CIRCUITO = {
 
 /* ── Scegliere, misurare, attivare ─────────────────────────────────────── */
 export const SCEGLIERE = {
-  titolo: 'A dicembre si scelgono due casi d’uso',
+  titolo: 'Entro l’11 dicembre si scelgono due casi d’uso',
   passi: [
     { q: 'Fine novembre', l: 'La lista', d: 'Quattro o cinque idee, discusse con la Direzione Sales' },
     { q: 'Inizio dicembre', l: 'La verifica', d: 'Accenture conferma che cosa si può fare su Target' },

@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import Divisore from '../components/Divisore.astro';
+import Guscio from '../components/Guscio.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import foto from '../assets/stock/decisione.webp';
+
+/**
+ * Annex A5 — I punti da validare. La sintesi per il team, le tre tabelle
+ * (punto · chi valida · rischio · quando · priorità) e le domande ai partner, che
+ * partono solo dopo il sì del leadership team. Tutto dallo strato interno.
+ */
+const SLUG = 'punti';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Stock" data-made-with-for="fotografia">
+      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${foto.src})`}></div>
+      <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
+    </Slide>
+
+    <Guscio id="r-annex-sintesi" scuro />
+
+    <Guscio id="r-annex-1" />
+
+    <Guscio id="r-annex-2" />
+
+    <Guscio id="r-annex-3" />
+
+    <Guscio id="r-annex-domande" scuro />
+
+  </DeckContainer>
+</BaseLayout>

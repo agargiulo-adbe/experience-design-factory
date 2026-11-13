@@ -201,7 +201,7 @@ const BASE = import.meta.env.BASE_URL.replace(/\/?$/, '/');
   // Vale per la copia del bundle e per quella che arriva dallo strato. Si lega
   // UNA parola alla successiva, mai catene lunghe: una catena di spazi
   // unificatori diventa inseparabile e sborda (audit:deck, check c).
-  var SERV = /(^|[\s(«])(a|e|o|i|il|lo|la|le|gli|un|uno|una|di|da|in|con|su|per|tra|fra|al|ai|ad|ed|del|dei|della|dello|delle|dal|dalla|nel|nella|nello|sul|sulla|col|che|se|non|come|ogni|for) (?=\S)/gi;
+  var SERV = /(^|[\s(«])(a|e|o|i|il|lo|la|le|gli|un|uno|una|di|da|in|con|su|per|tra|fra|al|ai|ad|ed|del|dei|della|dello|delle|degli|dal|dai|dalla|dalle|dagli|nel|nei|nella|nello|nelle|negli|sul|sui|sulla|sulle|sugli|alla|alle|allo|agli|col|che|se|non|come|ogni|for) (?=\S)/gi;
   function lega(root) {
     var w = document.createTreeWalker(root || document.body, NodeFilter.SHOW_TEXT, {
       acceptNode: function (n) {
@@ -218,9 +218,29 @@ const BASE = import.meta.env.BASE_URL.replace(/\/?$/, '/');
     // parole unite a fine paragrafo sbordano (check c) e il gate le conta ancora.
   }
 
-  window.__ccRiservato = apply;
+  // ── il dettaglio e il ritorno ────────────────────────────────────────────
+  // «Il dettaglio →» ricorda la slide di partenza; nell'annex «Torna alla
+  // presentazione» ci riporta lì. Un solo ascoltatore, anche se lo script si riesegue.
+  var DA = 'cc:da';
+  if (!window.__ccDaOn) {
+    window.__ccDaOn = true;
+    document.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest && e.target.closest('[data-cc-dettaglio]');
+      if (!a) return;
+      var sl = a.closest('section[id], [data-slide][id]');
+      ss(DA, location.pathname + (sl ? '#' + sl.id : ''));
+    }, true);
+  }
+  function torna() {
+    var t = null; try { t = sessionStorage.getItem(DA); } catch (e) {}
+    if (!t) return;
+    document.querySelectorAll('[data-cc-torna]').forEach(function (a) { a.setAttribute('href', t); });
+  }
+
+  window.__ccRiservato = function () { apply(); torna(); };
   window.__ccLega = lega;
   apply();
+  torna();
   lega();
 })();
 </script>

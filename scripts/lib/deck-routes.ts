@@ -210,15 +210,16 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
   ],
   'trenitalia-ciascuno-conta': [
     { name: 'home',      route: '/experience-design-factory/trenitalia-ciascuno-conta/' },
-    { name: 'origine', route: '/experience-design-factory/trenitalia-ciascuno-conta/origine/' },
-    { name: 'idea', route: '/experience-design-factory/trenitalia-ciascuno-conta/idea/' },
     { name: 'programma', route: '/experience-design-factory/trenitalia-ciascuno-conta/programma/' },
     { name: 'valore', route: '/experience-design-factory/trenitalia-ciascuno-conta/valore/' },
+    { name: 'decisione', route: '/experience-design-factory/trenitalia-ciascuno-conta/decisione/' },
+    { name: 'annex', route: '/experience-design-factory/trenitalia-ciascuno-conta/annex/' },
     { name: 'scegliere', route: '/experience-design-factory/trenitalia-ciascuno-conta/scegliere/' },
     { name: 'giornata', route: '/experience-design-factory/trenitalia-ciascuno-conta/giornata/' },
     { name: 'scalare', route: '/experience-design-factory/trenitalia-ciascuno-conta/scalare/' },
-    { name: 'decisione', route: '/experience-design-factory/trenitalia-ciascuno-conta/decisione/' },
-    { name: 'annex', route: '/experience-design-factory/trenitalia-ciascuno-conta/annex/' },
+    { name: 'numeri', route: '/experience-design-factory/trenitalia-ciascuno-conta/numeri/' },
+    { name: 'punti', route: '/experience-design-factory/trenitalia-ciascuno-conta/punti/' },
+    { name: 'idea', route: '/experience-design-factory/trenitalia-ciascuno-conta/idea/' },
   ],
 };
 

@@ -6,7 +6,7 @@
  */
 import { href } from '@edf/core/utils/url.js';
 import LangToggle from '@edf/core/blocks/i18n/LangToggle.astro';
-import { CHAPTERS } from '../data/chapters';
+import { CHAPTERS, PRESENTAZIONE } from '../data/chapters';
 import { SITE } from '../data/site';
 
 interface Props {
@@ -19,6 +19,9 @@ function isActive(slug: string) {
   const norm = currentPath.replace(/\/+$/, '');
   return norm.endsWith('/' + slug);
 }
+// Nella barra l'annex è UNA voce, accesa su ogni sua pagina.
+const inAnnex = CHAPTERS.some((c) => c.parte === 'annex' && isActive(c.slug));
+const VOCI = [...PRESENTAZIONE.map((c) => ({ c, on: isActive(c.slug) })), { c: CHAPTERS.find((c) => c.slug === 'annex')!, on: inAnnex }];
 ---
 <nav class="ex-nav flex items-center justify-between px-6 py-3" aria-label="Navigazione">
   <a href={href(base, '/')} class="flex items-center gap-2.5 no-underline group flex-shrink-0" aria-label={`Home — ${SITE.name}`}>
@@ -38,14 +41,14 @@ function isActive(slug: string) {
   </a>
 
   <ol class="hidden md:flex flex-nowrap items-center gap-0.5 min-w-0 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" role="list">
-    {CHAPTERS.map((c) => (
+    {VOCI.map(({ c, on }) => (
       <li role="listitem" class="flex-shrink-0">
         <a
           href={href(base, '/' + c.slug)}
-          class:list={['ex-nav-link block whitespace-nowrap px-2.5 py-1.5 text-xs font-medium rounded-sm transition-colors no-underline', isActive(c.slug) && 'ex-nav-link--active']}
-          aria-current={isActive(c.slug) ? 'page' : undefined}
+          class:list={['ex-nav-link block whitespace-nowrap px-2.5 py-1.5 text-xs font-medium rounded-sm transition-colors no-underline', on && 'ex-nav-link--active']}
+          aria-current={on ? 'page' : undefined}
         >
-          <span class="text-[var(--color-ardesia-chiara)] mr-1 tabular-nums" data-cap-num={c.slug}>{c.num}</span>
+          {c.slug !== 'annex' && <span class="text-[var(--color-ardesia-chiara)] mr-1 tabular-nums" data-cap-num={c.slug}>{c.num}</span>}
           <span>{c.short}</span>
         </a>
       </li>
@@ -53,6 +56,13 @@ function isActive(slug: string) {
   </ol>
 
   <div class="flex items-center gap-3 flex-shrink-0">
+    <!-- Nell'annex: il ritorno alla slide da cui si è scesi nel dettaglio (vedi
+         BaseLayout, `cc:da`). Senza memoria, torna all'apertura. -->
+    {inAnnex && (
+      <a href={href(base, '/')} class="cc-torna ex-nav-link whitespace-nowrap px-2.5 py-1.5 text-xs font-semibold rounded-sm no-underline" data-cc-torna>
+        ← Torna alla presentazione
+      </a>
+    )}
     <!-- Il segno del livello interno: c'è solo quando lo strato è caricato. -->
     <span class="cc-tag-interno" aria-label="Documento interno Adobe, riservato">Interno · riservato</span>
     <!-- Il dossier (pagina gated, contenuto in Supabase) non è un capitolo: sta nel

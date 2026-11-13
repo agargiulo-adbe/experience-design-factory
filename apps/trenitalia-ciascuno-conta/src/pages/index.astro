@@ -10,7 +10,7 @@ import Chiasmo from '../components/Chiasmo.astro';
 import { href } from '@edf/core/utils/url.js';
 import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
 import { SITE } from '../data/site';
-import { CHAPTERS } from '../data/chapters';
+import { CHAPTERS, PRESENTAZIONE } from '../data/chapters';
 import { COVER } from '../data/contenuti';
 
 /**
@@ -26,6 +26,7 @@ const type = EXPERIENCE_TYPES[SITE.type];
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 const first = CHAPTERS[0];
+const AGENDA = [...PRESENTAZIONE, CHAPTERS.find((c) => c.slug === 'annex')!];
 const last = CHAPTERS[CHAPTERS.length - 1];
 ---
 <BaseLayout title={SITE.name}>
@@ -48,15 +49,17 @@ const last = CHAPTERS[CHAPTERS.length - 1];
           <h1 class="xd-cop-t cc-cop-t" data-reveal data-reveal-delay="0.1"><Chiasmo /></h1>
           <p class="xd-cop-l" data-reveal data-reveal-delay="0.16">{COVER.sub}</p>
           <p class="xd-cop-tipo" data-reveal data-reveal-delay="0.22" data-r="cover-tipo">{type.coverLine.it}</p>
+          <!-- Senza token il documento non si apre: si vede solo questa copertina. -->
+          <p class="cc-solo-pubblico">Si apre con il link riservato.</p>
         </div>
 
         <nav class="xd-cop-dx" data-reveal data-reveal-delay="0.2" aria-label="I capitoli">
           <p class="xd-cop-occ">I capitoli</p>
           <ol class="xd-cop-indice" data-stagger>
-            {CHAPTERS.map((c) => (
+            {AGENDA.map((c) => (
               <li>
                 <a href={href(base, '/' + c.slug)} class="xd-cop-cap">
-                  <span class="xd-cop-n" data-cap-num={c.slug}>{c.num}</span>
+                  <span class="xd-cop-n" data-cap-num={c.slug}>{c.slug === 'annex' ? '+' : c.num}</span>
                   <span class="xd-cop-tit">{c.title.it}</span>
                 </a>
               </li>
@@ -66,8 +69,13 @@ const last = CHAPTERS[CHAPTERS.length - 1];
       </div>
     </Slide>
 
-    <!-- La tesi in una slide · RISERVATA: il contenuto arriva dallo strato interno -->
-    <Guscio id="r-tesi" />
+    <!-- L'apertura per il leadership team: la tesi, la richiesta con ciò che il sì
+         avvia, perché adesso. RISERVATE: il contenuto arriva dallo strato interno. -->
+    <Guscio id="r-tesi" dettaglio="numeri#r-gnarr-dettaglio" />
+
+    <Guscio id="r-richiesta" scuro dettaglio="punti#r-annex-sintesi" />
+
+    <Guscio id="r-linea" />
 
   </DeckContainer>
 </BaseLayout>

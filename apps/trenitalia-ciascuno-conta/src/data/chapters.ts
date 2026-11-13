@@ -1,25 +1,19 @@
 /**
- * «Ciascuno conta» — i capitoli. Fonte unica per nav, copertina, divisori e, tramite
- * `admin.astro`, il registro delle slide.
+ * «Ciascuno conta» — i capitoli. Fonte unica per nav, copertina, divisori, sommario
+ * dell'annex e, tramite `admin.astro`, il registro delle slide.
  *
- * UN DECK A DUE LIVELLI (decisione del 12 novembre 2026, riprogettazione per il
- * leadership team Adobe Italia):
- * - **livello pubblico**: i capitoli senza `riservato`. È la versione che il cliente
- *   può leggere senza danno, e la base di quella che andrà alla Direzione Sales;
- * - **livello interno**: con il link a token gli stessi indirizzi si completano con i
- *   capitoli `riservato` e con le righe «per noi» sulle slide pubbliche. Quel
- *   contenuto arriva da Supabase (`restricted_docs`, chiave `deck`) e NON è mai nel
- *   bundle: qui c'è solo il titolo neutro del capitolo, perché la nav lo deve poter
- *   scrivere. Il runtime è in `components/Riservato.astro`.
+ * UN DOCUMENTO INTERNO, IN DUE PARTI (13 novembre 2026, per il leadership team Adobe
+ * Italia, 45 minuti):
+ * - **presentazione** (`parte: 'presentazione'`): apertura, Il programma, Quanto vale
+ *   e quanto costa, Rischi e prossime date, firma;
+ * - **annex** (`parte: 'annex'`): dopo la firma, un sommario e sei parti di dettaglio.
+ *   Le slide della presentazione ci portano con «Il dettaglio →» (Dettaglio.astro).
  *
- * Senza token i capitoli riservati spariscono da nav, agenda e frecce, e quelli
- * rimasti si rinumerano da 01. Per aggiungere un capitolo: qui + la pagina in
- * src/pages/<slug>.astro + PAGE_REGISTRY in admin.astro + ROUTE_SETS in
+ * Tutto è dietro il link a token: senza, si vede solo la copertina (Riservato.astro).
+ * Il contenuto riservato arriva da Supabase (`restricted_docs`, chiave `deck`) e NON è
+ * mai nel bundle: qui ci sono solo titoli e righe neutre. Per aggiungere un capitolo:
+ * qui + src/pages/<slug>.astro + PAGE_REGISTRY in admin.astro + ROUTE_SETS in
  * scripts/lib/deck-routes.ts.
- *
- * L'ordine segue il racconto deciso il 12 novembre: da dove nasce, che idea, il
- * programma nel tempo, quanto vale e quanto costa, poi come si procede un atto dopo
- * l'altro (Scegliere · Misurare · Decidere · Scalare), e che cosa chiediamo.
  */
 export interface Chapter {
   slug: string;
@@ -34,31 +28,42 @@ export interface Chapter {
   foto: 'apertura' | 'ricerca' | 'viaggio' | 'contenuto' | 'rete' | 'rotta';
   /** Solo nel livello interno. */
   riservato?: boolean;
+  /** `presentazione`: i capitoli che si proiettano al leadership team (45 minuti).
+   *  `annex`: il dettaglio, dopo la firma, raggiunto dal sommario o dai link
+   *  «Il dettaglio» delle slide. Nella barra l'annex è UNA voce. */
+  parte: 'presentazione' | 'annex';
 }
 
 const t = (s: string) => ({ it: s, en: s });
 
+/* 13 nov 2026 — un documento solo, interno, per il leadership team: tutto è dietro
+ * il link a token (il bundle resta pubblico e senza nulla di riservato; senza token
+ * si vede la copertina e basta). La versione per il cliente si ricaverà da qui. */
 export const CHAPTERS: Chapter[] = [
-  { slug: 'origine', num: '01', title: t('Da dove nasce'), short: 'Da dove nasce',
-    punto: '', foto: 'apertura', riservato: true },
-  { slug: 'idea', num: '02', title: t('L’idea'), short: 'L’idea',
-    punto: 'Parlare a ciascun viaggiatore, e contare che cosa vende.', foto: 'ricerca' },
-  { slug: 'programma', num: '03', title: t('Il programma'), short: 'Il programma',
-    punto: 'Quattro atti, ognuno chiuso da una decisione.', foto: 'viaggio' },
-  { slug: 'valore', num: '04', title: t('Quanto vale, quanto costa'), short: 'Quanto vale',
-    punto: '', foto: 'rete', riservato: true },
-  { slug: 'scegliere', num: '05', title: t('Scegliere, misurare, attivare'), short: 'Scegliere',
-    punto: 'I casi d’uso si scelgono con Accenture e si provano dal vivo su trenitalia.com.', foto: 'ricerca' },
-  { slug: 'giornata', num: '06', title: t('Decidere: la giornata'), short: 'La giornata',
-    punto: 'I risultati davanti a chi li porterà a terra, e le priorità scelte insieme.', foto: 'contenuto' },
-  { slug: 'scalare', num: '07', title: t('Scalare'), short: 'Scalare',
-    punto: 'Dalla prova al lavoro di ogni giorno, con un responsabile per ogni tappa.', foto: 'rotta' },
-  { slug: 'decisione', num: '08', title: t('Che cosa vi chiediamo'), short: 'La richiesta',
-    punto: '', foto: 'rotta', riservato: true },
-  { slug: 'annex', num: '09', title: t('Annex: i punti da validare'), short: 'Annex',
-    punto: '', foto: 'rotta', riservato: true },
+  { slug: 'programma', num: '01', title: t('Il programma'), short: 'Il programma',
+    punto: 'Quattro atti, e una prova che si chiude prima della giornata.', foto: 'viaggio', riservato: true, parte: 'presentazione' },
+  { slug: 'valore', num: '02', title: t('Quanto vale, quanto costa'), short: 'Quanto vale, quanto costa',
+    punto: '', foto: 'rete', riservato: true, parte: 'presentazione' },
+  { slug: 'decisione', num: '03', title: t('Rischi e prossime date'), short: 'Rischi e date',
+    punto: '', foto: 'rotta', riservato: true, parte: 'presentazione' },
+  { slug: 'annex', num: 'A', title: t('Annex'), short: 'Annex',
+    punto: 'Il dettaglio dietro ogni slide.', foto: 'rotta', riservato: true, parte: 'annex' },
+  { slug: 'scegliere', num: 'A1', title: t('Scegliere e misurare'), short: 'Scegliere e misurare',
+    punto: 'I casi d’uso, i criteri, le due corsie e il circuito dei dati.', foto: 'ricerca', riservato: true, parte: 'annex' },
+  { slug: 'giornata', num: 'A2', title: t('La giornata di marzo'), short: 'La giornata',
+    punto: 'La scaletta, le postazioni, chi c’è, il luogo e l’invito.', foto: 'contenuto', riservato: true, parte: 'annex' },
+  { slug: 'scalare', num: 'A3', title: t('Dopo marzo: scalare'), short: 'Scalare',
+    punto: 'Le tre tappe fino alla firma, e chi fa che cosa.', foto: 'rotta', riservato: true, parte: 'annex' },
+  { slug: 'numeri', num: 'A4', title: t('I numeri e i fatti tecnici'), short: 'Numeri e fatti',
+    punto: 'Il valore riga per riga, i prodotti attorno, i fatti tecnici con le fonti.', foto: 'rete', riservato: true, parte: 'annex' },
+  { slug: 'punti', num: 'A5', title: t('I punti da validare'), short: 'Punti da validare',
+    punto: 'Dodici punti, chi li valida, in che ordine, e le domande ai partner.', foto: 'rotta', riservato: true, parte: 'annex' },
+  { slug: 'idea', num: 'A6', title: t('Il racconto per il cliente'), short: 'Il racconto',
+    punto: 'La mattina di chi decide, come la vedrà la Direzione Sales.', foto: 'ricerca', riservato: true, parte: 'annex' },
 ];
 
+export const PRESENTAZIONE = CHAPTERS.filter((c) => c.parte === 'presentazione');
+export const ANNEX = CHAPTERS.filter((c) => c.parte === 'annex' && c.slug !== 'annex');
 export const RISERVATI = CHAPTERS.filter((c) => c.riservato).map((c) => c.slug);
 
 export function chapterIndex(slug: string): number {

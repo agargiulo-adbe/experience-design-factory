@@ -1,0 +1,16 @@
+---
+/**
+ * «Il dettaglio →» — dalla slide della presentazione alla sezione dell'annex che
+ * la regge. Al clic BaseLayout ricorda da dove si è partiti (`cc:da`), e la barra
+ * dell'annex mostra «Torna alla presentazione» verso QUELLA slide.
+ * `to` = 'slug#id-slide'. Discreto: in sala non si clicca, si apre se arriva la domanda.
+ */
+import { href } from '@edf/core/utils/url.js';
+interface Props { to: string; label?: string }
+const { to, label = 'Il dettaglio' } = Astro.props as Props;
+const [slug, ancora] = to.split('#');
+const base = import.meta.env.BASE_URL;
+---
+<a class="cc-dettaglio" href={href(base, '/' + slug) + (ancora ? '#' + ancora : '')} data-cc-dettaglio>
+  {label} <span aria-hidden="true">→</span>
+</a>

@@ -8,14 +8,16 @@ import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import Atti from '../components/Atti.astro';
 import Sequenza from '../components/Sequenza.astro';
-import Circuito from '../components/Circuito.astro';
-import { ATTI, SEQUENZA, CIRCUITO } from '../data/contenuti';
+import Folla from '../components/Folla.astro';
+import Direttrici from '../components/Direttrici.astro';
+import Dettaglio from '../components/Dettaglio.astro';
+import { ATTI, SEQUENZA, FOLLA } from '../data/contenuti';
 import foto from '../assets/stock/programma.webp';
 
 /**
- * Capitolo — Il programma. Tre figure: i quattro atti nel tempo, i due binari
- * della prova (la misura completa alla giornata, i test con i primi dati), il
- * circuito dei dati da Analytics a Target e ritorno.
+ * Capitolo 01 della presentazione — Il programma. Le tre direttrici, i quattro
+ * atti nel tempo, la prova in due stadi con il cancello. Il circuito dei dati
+ * sta nell'annex (Scegliere e misurare).
  */
 const SLUG = 'programma';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -34,6 +36,18 @@ const currentPath = Astro.url.pathname;
       <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
     </Slide>
 
+    <Slide id="slide-folla" bg="primary" align="left" data-tono="scuro">
+      <div slot="backdrop" class="xd-bg-piano cc-folla-scura"><Folla /></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head"><h2 class="xd-h2">{FOLLA.titolo}</h2></div>
+        <div class="cc-corpo">
+          <Direttrici />
+          <p class="cc-dirs-chiusa">{FOLLA.chiusa}</p>
+        </div>
+      </div>
+      <Dettaglio to="idea#slide-mattina" label="Il racconto per il cliente" />
+    </Slide>
+
     <Slide id="slide-atti" bg="primary" align="left">
       <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl xd-sl--fig" data-reveal>
@@ -42,6 +56,7 @@ const currentPath = Astro.url.pathname;
         </div>
         <div class="cc-corpo"><Atti /></div>
       </div>
+      <Dettaglio to="scegliere#slide-scegliere" />
     </Slide>
 
     <Slide id="slide-sequenza" bg="primary" align="left" data-tono="scuro">
@@ -52,16 +67,7 @@ const currentPath = Astro.url.pathname;
         </div>
         <div class="cc-corpo"><Sequenza /><p class="cc-noi" data-r="noi-sequenza"></p></div>
       </div>
-    </Slide>
-
-    <Slide id="slide-circuito" bg="primary" align="left">
-      <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl xd-sl--fig" data-reveal>
-        <div class="xd-sl-head">
-          <h2 class="xd-h2">{CIRCUITO.titolo}</h2>
-        </div>
-        <div class="cc-corpo"><Circuito /><p class="cc-noi" data-r="noi-circuito"></p></div>
-      </div>
+      <Dettaglio to="scegliere#slide-misurare" />
     </Slide>
 
   </DeckContainer>

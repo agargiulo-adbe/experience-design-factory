@@ -690,3 +690,61 @@ html [data-slide] .xd-sl:not(.cc-split) { gap: clamp(1.6rem, 5vh, 4.4rem); justi
   .cc-passo-d { max-width: 40ch; }
 }
 @media (max-width: 900px) { [data-slide]:not([inert]) .cc-passo-linea::before { animation: none; } }
+
+/* ── 13 nov 2026 · presentazione + annex in un documento ───────────────────
+   Senza token si vede solo la copertina, con questa riga. */
+.cc-solo-pubblico { display: none; margin: 0; font-size: var(--cc-voce); color: var(--ink-secondary); }
+html[data-riservato='off'] .cc-solo-pubblico { display: block; }
+html[data-riservato='off'] .xd-cop-dx { display: none; }
+
+/* «Il dettaglio →»: in basso a destra della slide, sopra la fascia dei comandi.
+   Discreto in sala, trovabile da chi legge. */
+/* In alto a destra, all'altezza del titolo: i titoli stanno a sinistra e non
+   superano mezza pagina, quindi lì c'è sempre vuoto. In basso copriva il corpo o
+   il credito «creato con» (provato il 13 nov 2026). */
+.cc-dettaglio { position: absolute; right: var(--slide-safe-inset, 4rem); top: max(84px, 8vh); z-index: 40;
+  display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.55rem 0.95rem; min-height: 44px;
+  font-size: clamp(0.9rem, 0.9vw, 1.4rem); font-weight: 600; letter-spacing: 0.01em; text-decoration: none;
+  color: var(--ink-primary); border: 1px solid var(--line-default); border-radius: 999px;
+  background: transparent;
+  transition: border-color 160ms ease, color 160ms ease, transform 160ms cubic-bezier(0.16, 1, 0.3, 1); }
+.cc-dettaglio:hover, .cc-dettaglio:focus-visible { color: var(--ink-accent); border-color: var(--color-rosso); transform: translateX(2px); }
+.cc-dettaglio:focus-visible { outline: 2px solid var(--color-rosso); outline-offset: 3px; }
+html:not([data-riservato='on']) .cc-dettaglio { display: none; }
+@media (max-width: 760px) { .cc-dettaglio { position: static; margin: 1.2rem 0 0; } }
+
+.cc-torna { color: var(--ink-accent); border: 1px solid var(--color-rosso); }
+
+/* Il sommario dell'annex: sei porte, due righe da tre. */
+.cc-sommario { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.2rem; }
+.cc-sommario li { margin: 0; display: grid; }
+.cc-sommario-a { display: grid; align-content: start; gap: 1rem; padding: clamp(1rem, 2.2vh, 1.8rem) clamp(1rem, 1.4vw, 2rem);
+  border: 1px solid var(--line-default); border-top: 3px solid var(--color-rosso); border-radius: 4px; text-decoration: none; color: inherit;
+  background: rgba(255, 255, 255, 0.04);
+  transition: border-color 160ms ease, transform 200ms cubic-bezier(0.16, 1, 0.3, 1); }
+.cc-sommario-a:hover, .cc-sommario-a:focus-visible { border-color: var(--color-rosso); transform: translateY(-2px); }
+.cc-sommario-a:focus-visible { outline: 2px solid var(--color-rosso); outline-offset: 3px; }
+.cc-sommario-n { font-family: var(--font-display); font-weight: 800; font-size: var(--cc-voce); color: #ffa6b2; }
+.cc-sommario-t { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.35rem, 1.8vw, 3rem); line-height: 1.1; letter-spacing: -0.02em; color: var(--ink-primary); }
+.cc-sommario-d { font-size: var(--cc-voce); line-height: 1.35; color: var(--ink-body); }
+@media (max-width: 900px) { .cc-sommario { grid-template-columns: minmax(0, 1fr); } }
+
+/* La richiesta in apertura: a sinistra che cosa chiediamo, a destra che cosa si
+   avvia il giorno dopo il sì. */
+.cc-richiesta2 { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(1.4rem, 3vw, 4rem); align-items: start; }
+.cc-richiesta2 > div { display: grid; gap: 1rem; align-content: start; }
+.cc-richiesta2 .cc-r-k { color: var(--ink-accent); }
+@media (max-width: 900px) { .cc-richiesta2 { grid-template-columns: minmax(0, 1fr); } }
+
+/* Il valore riga per riga: le ipotesi sono la colonna che conta, e prendono spazio. */
+.cc-annex--g { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.45fr) minmax(0, 1.55fr) 7.5rem 6rem; }
+
+/* Gli schermi bassi (1280×800): le slide nuove del 13 nov stringono il passo
+   verticale invece del tipo. */
+.cc-linea[style*='--cols:4'] { gap: clamp(1rem, 2.2vw, 3.4rem); }
+@media (max-height: 860px) {
+  .cc-richiesta2 .cc-riga, .cc-r-slide .cc-due ~ .cc-righe .cc-riga { padding: 0.45rem 0; }
+  .cc-richiesta2 > div { gap: 0.5rem; }
+  .cc-due-i { gap: 0.3rem; padding-top: 0.6rem; }
+  .cc-annex--g .cc-annex-c { padding: 0.35rem 0; }
+}
