@@ -1,0 +1,194 @@
+---
+/**
+ * L'apertura — il concept prima, la meraviglia dopo (13 nov 2026, owner).
+ *
+ * A tutta pagina, sopra la copertina, circa sei secondi, poi si ritira:
+ * 1. «Ciascuno conta» — UN punto rosso, grande, al centro: una persona.
+ * 2. la camera arretra: quel punto è uno fra un migliaio. La folla.
+ * 3. «Conta ciascuno» — i punti si accendono uno alla volta, ognuno fa salire
+ *    di un gradino la linea in basso, e il contatore scorre: si conta una persona
+ *    alla volta, e ognuna sposta il risultato.
+ * 4. l'onda: dal primo punto la luce attraversa tutta la folla.
+ * 5. il titolo torna «Ciascuno conta» e vola esattamente al suo posto nella
+ *    copertina; la folla sfuma in quella di sfondo, il resto della copertina entra.
+ *
+ * Una volta per sessione (`cc:ouverture`); `?apertura` la rimette. Clic, tasto o
+ * «Salta» la chiudono subito. Con «Riduci movimento» non parte: lo stato base è la
+ * copertina. Il contatore conta PERSONE (1, 2, 3…), non dati: nessun numero che
+ * sembri una misura. Canvas e non SVG: mille punti animati a 60 fps.
+ */
+---
+<div class="cc-ouv" data-cc-ouv aria-hidden="true">
+  <canvas class="cc-ouv-c"></canvas>
+  <p class="cc-ouv-t"><span class="cc-ouv-a">Ciascuno</span> <span class="cc-ouv-b">conta</span></p>
+  <p class="cc-ouv-n" data-n>0</p>
+  <button type="button" class="cc-ouv-salta" data-salta tabindex="-1">Salta <span aria-hidden="true">→</span></button>
+</div>
+<script is:inline>
+(function () {
+  var root = document.querySelector('[data-cc-ouv]');
+  if (!root) return;
+  var KEY = 'cc:ouverture', H = document.documentElement;
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var seen = false; try { seen = sessionStorage.getItem(KEY) === '1'; } catch (e) {}
+  var forza = /[?&]apertura\b/.test(location.search);
+  if (reduce || (seen && !forza)) { root.remove(); return; }
+  try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
+  H.classList.add('cc-ouv-on', 'cc-ouv-titolo');
+  var tgt0 = document.querySelector('.cc-cop-t [data-chiasmo]');
+
+  var cv = root.querySelector('canvas'), cx2 = cv.getContext('2d');
+  var tEl = root.querySelector('.cc-ouv-t'), aEl = root.querySelector('.cc-ouv-a'), bEl = root.querySelector('.cc-ouv-b');
+  var nEl = root.querySelector('[data-n]');
+  if (tgt0) tEl.style.fontWeight = getComputedStyle(tgt0).fontWeight;
+  var RED = '#d91835', ROSA = '#ff8a9b', GREY = '138,148,170', BG = '27,34,48';
+  var W, Hh, dpr, sp, CX, CY, dots = [], lit = [], ONE;
+
+  // un mescolamento vero (integer hash): senza, i punti accesi si mettono in fila o a specchio
+  function mix(a) { a ^= a >>> 16; a = Math.imul(a, 0x7feb352d); a ^= a >>> 15; a = Math.imul(a, 0x846ca68b); a ^= a >>> 16; return a >>> 0; }
+  function build() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = innerWidth; Hh = innerHeight;
+    cv.width = W * dpr; cv.height = Hh * dpr; cv.style.width = W + 'px'; cv.style.height = Hh + 'px';
+    cx2.setTransform(dpr, 0, 0, dpr, 0, 0);
+    sp = Math.max(26, Math.min(W, Hh) / 22);
+    CX = W / 2; CY = Hh * 0.4;
+    dots = [];
+    var nc = Math.ceil(W / sp / 2) + 1, nr = Math.ceil(Hh / sp / 2) + 2;
+    for (var r = -nr; r <= nr; r++) for (var c = -nc; c <= nc; c++) {
+      var h = mix(mix(c + 4096) ^ (r + 8192));
+      var jx = (c || r) ? ((h % 17) - 8) / 17 * sp * 0.45 : 0, jy = (c || r) ? (((h >> 5) % 13) - 6) / 13 * sp * 0.45 : 0;
+      dots.push({ x: CX + c * sp + jx, y: CY + r * sp + jy, h: h, d: 0 });
+    }
+    dots.forEach(function (p) { p.d = Math.hypot(p.x - CX, p.y - CY); });
+    ONE = dots.reduce(function (m, p) { return p.d < m.d ? p : m; });
+    // quattordici persone sparse nella folla, lontane fra loro e dal titolo
+    var cand = dots.filter(function (p) { return p !== ONE && p.x > sp && p.x < W - sp && p.y > Hh * 0.1 && p.y < Hh * 0.6 && p.d > sp * 3; })
+      .sort(function (a, b) { return a.h - b.h; });
+    lit = [];
+    for (var i = 0; i < cand.length && lit.length < 14; i++) {
+      var q = cand[i];
+      if (lit.every(function (o) { return Math.hypot(o.x - q.x, o.y - q.y) > sp * 3.2; })) lit.push(q);
+    }
+    lit.sort(function (a, b) { return a.x - b.x; });
+  }
+  build();
+
+  // ── il titolo: lo scambio di posto delle due parole ──────────────────────
+  function w(t) { var m = document.createElement('span'); m.textContent = t; m.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;'; tEl.appendChild(m); var x = m.getBoundingClientRect().width; tEl.removeChild(m); return x; }
+  function scambia(versoConta) {
+    var s = w('a a') - w('aa');
+    // a sinistra c'è sempre aEl: si sposta a destra di quanto è larga l'altra parola,
+    // l'altra a sinistra di quanto è larga lei; poi le due si riscrivono al loro posto
+    aEl.style.transform = 'translateX(' + (bEl.getBoundingClientRect().width + s) + 'px)';
+    bEl.style.transform = 'translateX(' + -(aEl.getBoundingClientRect().width + s) + 'px)';
+    bEl.classList.toggle('is-rosso', versoConta); aEl.classList.remove('is-rosso');
+    // le due parole passano su un arco, una sopra e una sotto, e non si attraversano
+    tEl.classList.remove('is-arco'); void tEl.offsetWidth; tEl.classList.add('is-arco');
+    setTimeout(function () {
+      aEl.style.transition = bEl.style.transition = 'none';
+      aEl.style.transform = bEl.style.transform = '';
+      aEl.textContent = versoConta ? 'Conta' : 'Ciascuno';
+      bEl.textContent = versoConta ? 'ciascuno' : 'conta';
+      aEl.classList.toggle('is-rosso', versoConta); bEl.classList.remove('is-rosso');
+      void aEl.offsetWidth; aEl.style.transition = bEl.style.transition = '';
+    }, 720);
+  }
+
+  // ── il disegno ───────────────────────────────────────────────────────────
+  var T0 = performance.now(), salto = 0, fatto = false, ev = {};
+  function once(k, t, fn) { if (!ev[k] && t >= 0) { ev[k] = 1; fn(); } }
+  var eo = function (x) { return x >= 1 ? 1 : 1 - Math.pow(2, -10 * x); };
+  var cl = function (x) { return x < 0 ? 0 : x > 1 ? 1 : x; };
+  var LIT0 = 2600, LITSTEP = 135, ONDA0 = 4500, VOLO0 = 5400, FINE = 6500;
+
+  function frame(now) {
+    if (fatto) return;
+    var t = now - T0 + salto;
+    cx2.clearRect(0, 0, W, Hh);
+    // la camera: da dentro il punto alla folla
+    var z = 1 + 15 * (1 - eo(cl((t - 900) / 1500)));
+    var crowd = cl((t - 1000) / 900);
+    var R = Math.hypot(W, Hh) * 1.05 * cl((t - ONDA0) / 1100);
+    var fade = 1 - cl((t - VOLO0) / 900);
+    cx2.save();
+    cx2.translate(CX, CY); cx2.scale(z, z); cx2.translate(-CX, -CY);
+    for (var i = 0; i < dots.length; i++) {
+      var p = dots[i]; if (p === ONE) continue;
+      var a = crowd * cl(1.4 - p.d / (Math.hypot(W, Hh) * 0.6 * Math.max(crowd, 0.01)));
+      if (a <= 0) continue;
+      var r = 2.4, col = 'rgba(' + GREY + ',' + (0.55 * a * fade) + ')';
+      if (R > 0 && t < ONDA0 + 1300) { var band = 1 - Math.abs(p.d - R) / (sp * 3.2); if (band > 0) { band = band * band; r = 2.4 + 4.2 * band; col = 'rgba(255,' + Math.round(235 - 150 * band) + ',' + Math.round(240 - 150 * band) + ',' + ((0.55 + 0.45 * band) * fade) + ')'; } }
+      cx2.fillStyle = col; cx2.beginPath(); cx2.arc(p.x, p.y, r, 0, 6.2832); cx2.fill();
+    }
+    // le persone contate
+    var n = 0;
+    for (var j = 0; j < lit.length; j++) {
+      var tj = t - (LIT0 + j * LITSTEP);
+      if (tj < 0) continue;
+      n++;
+      var q = lit[j], k = eo(cl(tj / 380));
+      cx2.fillStyle = RED; cx2.globalAlpha = fade; cx2.beginPath(); cx2.arc(q.x, q.y, 2.4 + 4.6 * k, 0, 6.2832); cx2.fill();
+      var ring = cl(tj / 1100);
+      if (ring < 1) { cx2.strokeStyle = ROSA; cx2.globalAlpha = (1 - ring) * 0.8 * fade; cx2.lineWidth = 2 / z; cx2.beginPath(); cx2.arc(q.x, q.y, 7 + 26 * eo(ring), 0, 6.2832); cx2.stroke(); }
+      cx2.globalAlpha = 1;
+    }
+    // la prima persona: sempre accesa
+    var pulse = 0.5 + 0.5 * Math.sin(t / 260);
+    cx2.fillStyle = RED; cx2.globalAlpha = fade; cx2.beginPath(); cx2.arc(ONE.x, ONE.y, 3 + 4 * eo(cl(t / 500)), 0, 6.2832); cx2.fill();
+    cx2.strokeStyle = ROSA; cx2.globalAlpha = (0.25 + 0.35 * pulse) * fade * (1 - cl((t - 2400) / 600)); cx2.lineWidth = 1.2 / z * 2;
+    cx2.beginPath(); cx2.arc(ONE.x, ONE.y, 9 + 3 * pulse, 0, 6.2832); cx2.stroke();
+    cx2.globalAlpha = 1;
+    cx2.restore();
+    // la linea che sale, un gradino per persona
+    var X0 = W * 0.2, X1 = W * 0.8, Y0 = Hh * 0.93, Y1 = Hh * 0.84, N = lit.length;
+    var lineA = cl((t - (LIT0 - 200)) / 300) * (1 - cl((t - 5100) / 400));
+    if (lineA > 0) {
+      cx2.strokeStyle = RED; cx2.globalAlpha = lineA; cx2.lineWidth = 3; cx2.lineJoin = 'round'; cx2.beginPath(); cx2.moveTo(X0, Y0);
+      for (var s2 = 0; s2 < n; s2++) { var x = X0 + (s2 + 1) / N * (X1 - X0); cx2.lineTo(x, Y0 - s2 / N * (Y0 - Y1)); cx2.lineTo(x, Y0 - (s2 + 1) / N * (Y0 - Y1)); }
+      cx2.stroke(); cx2.globalAlpha = 1;
+      nEl.textContent = String(n);
+      nEl.style.opacity = String(lineA);
+      nEl.style.transform = 'translate(' + (X0 + Math.max(n, 1) / N * (X1 - X0) + 14) + 'px,' + (Y0 - n / N * (Y0 - Y1) - 22) + 'px)';
+    } else { nEl.style.opacity = '0'; }
+
+    // i tempi del racconto
+    once('t', t - 250, function () { tEl.classList.add('is-on'); });
+    once('s1', t - 2350, function () { scambia(true); });
+    once('s2', t - 4450, function () { scambia(false); });
+    once('volo', t - VOLO0, vola);
+    once('copertina', t - (VOLO0 + 250), function () { H.classList.remove('cc-ouv-on'); });
+    root.style.setProperty('--velo', String(1 - cl((t - VOLO0) / 1000)));
+    if (t >= FINE) return fine();
+    requestAnimationFrame(frame);
+  }
+
+  // il titolo vola al suo posto nella copertina
+  function vola() {
+    var tgt = document.querySelector('.cc-cop-t [data-chiasmo]');
+    if (!tgt) { tEl.style.opacity = '0'; return; }
+    var a = tgt.getBoundingClientRect(), b = tEl.getBoundingClientRect();
+    // stesso testo, «Ciascuno conta», in tutti e due: il rapporto delle larghezze è la scala
+    var k = a.width / b.width;
+    tEl.classList.add('is-volo');
+    tEl.style.transform = 'translate(' + (a.left - b.left) + 'px,' + (a.top - b.top) + 'px) scale(' + k + ')';
+  }
+  function fine() {
+    if (fatto) return; fatto = true;
+    H.classList.remove('cc-ouv-on', 'cc-ouv-titolo');
+    removeEventListener('keydown', chiudi, true);
+    root.remove();
+    if (window.__ccChiasmo) window.__ccChiasmo();
+  }
+  function chiudi(e) {
+    if (e && e.type === 'keydown') { e.preventDefault(); e.stopPropagation(); }
+    var t = performance.now() - T0 + salto;
+    if (t < VOLO0 - 50) { salto += VOLO0 - 50 - t; Object.keys({ t: 1, s1: 1, s2: 1 }).forEach(function (k) { ev[k] = 1; });
+      aEl.textContent = 'Ciascuno'; bEl.textContent = 'conta'; aEl.classList.remove('is-rosso'); bEl.classList.remove('is-rosso'); aEl.style.transform = bEl.style.transform = ''; tEl.classList.add('is-on'); }
+  }
+  root.addEventListener('click', chiudi);
+  addEventListener('keydown', chiudi, true);
+  addEventListener('resize', function () { if (!fatto) build(); });
+  requestAnimationFrame(frame);
+})();
+</script>

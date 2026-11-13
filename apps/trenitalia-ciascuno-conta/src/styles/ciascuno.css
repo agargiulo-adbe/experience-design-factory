@@ -748,3 +748,33 @@ html:not([data-riservato='on']) .cc-dettaglio { display: none; }
   .cc-due-i { gap: 0.3rem; padding-top: 0.6rem; }
   .cc-annex--g .cc-annex-c { padding: 0.35rem 0; }
 }
+
+/* ── L'apertura (Ouverture.astro) ──────────────────────────────────────────
+   Sopra tutto, barra compresa. Il velo (--velo) scende da 1 a 0 nel volo del
+   titolo; intanto la copertina vera entra sotto. */
+.cc-ouv { position: fixed; inset: 0; z-index: 200; pointer-events: auto; cursor: pointer;
+  background: rgba(27, 34, 48, var(--velo, 1)); }
+.cc-ouv-c { position: absolute; inset: 0; }
+.cc-ouv-t { position: absolute; left: 50%; width: max-content; top: 58vh; margin: 0; white-space: nowrap;
+  font-family: var(--font-display); font-weight: 800; font-size: clamp(3rem, 9vw, 11rem); line-height: 1; letter-spacing: -0.035em;
+  color: #ffffff; opacity: 0; transform-origin: 0 0; translate: -50% 0.3em;
+  transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1), translate 900ms cubic-bezier(0.16, 1, 0.3, 1); }
+.cc-ouv-t.is-on { opacity: 1; translate: -50% 0; }
+.cc-ouv-t.is-volo { transition: transform 950ms cubic-bezier(0.7, 0, 0.2, 1); }
+.cc-ouv-a, .cc-ouv-b { display: inline-block; transition: transform 700ms cubic-bezier(0.65, 0, 0.35, 1), color 400ms ease; }
+.cc-ouv-a.is-rosso, .cc-ouv-b.is-rosso { color: var(--color-rosso-chiaro, #ff8a9b); }
+.cc-ouv-t.is-arco .cc-ouv-a { animation: cc-ouv-su 700ms cubic-bezier(0.65, 0, 0.35, 1); }
+.cc-ouv-t.is-arco .cc-ouv-b { animation: cc-ouv-giu 700ms cubic-bezier(0.65, 0, 0.35, 1); }
+@keyframes cc-ouv-su { 50% { translate: 0 -0.62em; } }
+@keyframes cc-ouv-giu { 50% { translate: 0 0.62em; } }
+html.cc-ouv-titolo .cc-cop-t { opacity: 0 !important; }
+.cc-ouv-n { position: absolute; left: 0; top: 0; margin: 0; opacity: 0; font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(1.4rem, 2.2vw, 3.4rem); line-height: 1; color: var(--color-rosso-chiaro, #ff8a9b); font-variant-numeric: tabular-nums; }
+.cc-ouv-salta { position: absolute; right: clamp(16px, 3vw, 4rem); bottom: clamp(16px, 3vh, 3rem); min-height: 44px; padding: 0.55rem 1rem;
+  font: 600 0.9rem/1 var(--font-body, inherit); color: #e3e5e9; background: transparent; border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 999px; cursor: pointer;
+  opacity: calc(var(--velo, 1)); }
+.cc-ouv-salta:hover { border-color: var(--color-rosso); color: #ffffff; }
+/* la copertina sotto: ferma e nascosta finché l'apertura non la consegna */
+html.cc-ouv-on .xd-cop > * { opacity: 0; }
+.xd-cop > * { transition: opacity 800ms cubic-bezier(0.16, 1, 0.3, 1); }
+html.cc-ouv-on .ex-nav { visibility: hidden; }
