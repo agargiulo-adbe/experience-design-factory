@@ -9,7 +9,7 @@ export const PAGE_REGISTRY: PageEntry[] = [
   { slug: 'adobe', label: 'Adobe e l’offerta (01)', slides: [
     { id: 'slide-cover',     label: 'Cover: Adobe per Intesa Sanpaolo' },
     { id: 'slide-team',      label: 'Il team Adobe in sala' },
-    { id: 'slide-chi',       label: 'Dati, contenuti e decisioni nello stesso sistema: i quattro verbi, le Wave in fonte' },
+    { id: 'slide-chi',       label: 'Dati, contenuti e decisioni nello stesso sistema: le quattro funzioni, le Wave in fonte' },
     { id: 'slide-cx',        label: 'Adobe CX Enterprise: i blocchi, le tre cose di cui si parla, e i nomi' },
   ]},
   { slug: 'scenario', label: 'Giulia: un mutuo, sette momenti · Il segnale (02)', slides: [
@@ -23,7 +23,7 @@ export const PAGE_REGISTRY: PageEntry[] = [
   { slug: 'momenti', label: 'Giulia: un mutuo, sette momenti · I momenti (02)', slides: [
     { id: 'slide-m-01', label: '01 Farsi trovare: l’assistente la cita, o no' },
     { id: 'slide-m-02', label: '02 Content Factory: la variante per la sua città' },
-    { id: 'slide-m-03', label: '03 Engagement: da visita anonima a nome' },
+    { id: 'slide-m-03', label: '03 Engagement: da pseudonimo a nome' },
     { id: 'slide-m-04', label: '04 Engagement: quattro candidate, una parte' },
     { id: 'slide-m-05', label: '05 Engagement: il percorso parte dall’evento' },
     { id: 'slide-m-06', label: '06 Customer Engagement: il percorso attiva la filiale' },

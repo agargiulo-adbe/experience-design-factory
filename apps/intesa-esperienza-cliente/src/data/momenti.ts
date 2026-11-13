@@ -193,23 +193,23 @@ export const MOMENTI: Momento[] = [
     funzione: { it: 'La visita diventa un contatto', en: 'The visit becomes a contact' },
     canale: { it: 'Sito', en: 'Website' },
     gruppo: 'engagement',
-    verifica: { it: 'Oggi una visita anonima di due sere prima si ritrova quando lascia l’email, e con quale consenso?', en: 'Today, is an anonymous visit from two evenings earlier recovered when she leaves her email, and under which consent?' },
+    verifica: { it: 'Oggi una visita sotto pseudonimo di due sere prima si ritrova quando lascia l’email, e con quale consenso?', en: 'Today, is a pseudonymous visit from two evenings earlier recovered when she leaves her email, and under which consent?' },
     prodotto: 'Real-Time CDP',
     messa: { it: 'Simulatore vostro; i dati li raccoglie il Web SDK', en: 'Your simulator; the Web SDK collects the data' },
     cliente: {
       chrome: 'sito', scena: 'scena-03-tavolo',
-      titolo: { it: 'Simula 180.000 euro su 25 anni e lascia l’indirizzo per salvare il risultato', en: 'She simulates 180,000 euro over 25 years and leaves her address to save the result' },
+      titolo: { it: 'Simula 180.000 euro su 25 anni e lascia l’email per salvare il risultato', en: 'She simulates 180,000 euro over 25 years and leaves her email to save the result' },
       corpo: {
-        it: '180.000 euro su venticinque anni: 863 al mese. Per salvare la simulazione lascia l’indirizzo e dà il consenso. In quel momento smette di essere una visita anonima e diventa un profilo, con una data.',
-        en: '180,000 euro over twenty-five years: 863 a month. To save the simulation she leaves her address and gives consent. At that moment she stops being an anonymous visit and becomes a profile, with a date.',
+        it: '180.000 euro su venticinque anni: 863 al mese. Per salvare la simulazione lascia l’email e dà il consenso. In quel momento smette di essere uno pseudonimo e diventa un profilo, con una data.',
+        en: '180,000 euro over twenty-five years: 863 a month. To save the simulation she leaves her email and gives consent. At that moment she stops being a pseudonym and becomes a profile, with a date.',
       },
     },
     interno: {
       prodotto: 'profilo', scena: 'lavoro-03-dati',
       titolo: { it: 'Quando lascia l’email, le due sessioni sotto pseudonimo (raccolte col consenso) si uniscono al suo profilo', en: 'When she leaves her email, the two pseudonymous sessions (collected under consent) merge into her profile' },
       corpo: {
-        it: 'Le visite anonime delle sere prima si uniscono al profilo quando arriva un identificativo, l’email. Serve che il consenso alla profilazione ci fosse già: se manca, si riparte dalla simulazione di oggi. Nel CRM non ha una scheda cliente: può avere un lead.',
-        en: 'Her anonymous visits from the previous evenings merge into the profile when an identifier arrives, the email, if profiling consent was already there. If not, it starts from today’s simulation. In the CRM she has no customer record: she can have a lead.',
+        it: 'Le visite sotto pseudonimo delle sere prima si uniscono al profilo quando arriva un identificativo, l’email. Serve che il consenso alla profilazione ci fosse già: se manca, si riparte dalla simulazione di oggi. Nel CRM non ha una scheda cliente: può avere un lead.',
+        en: 'Her pseudonymous visits from the previous evenings merge into the profile when an identifier arrives, the email, if profiling consent was already there. If not, it starts from today’s simulation. In the CRM she has no customer record: she can have a lead.',
       },
     },
   },
@@ -219,7 +219,7 @@ export const MOMENTI: Momento[] = [
     ora: { it: 'La sera dopo', en: 'The next evening' },
     dove: { it: 'Sul sito della banca', en: 'On the bank’s website' },
     short: { it: 'Si interrompe', en: 'Stops halfway' },
-    funzione: { it: 'Una proposta sola, la più utile', en: 'One offer, the most useful' },
+    funzione: { it: 'Una proposta sola, scelta con le regole', en: 'One offer, chosen by the rules' },
     canale: { it: 'Sito', en: 'Website' },
     gruppo: 'engagement',
     verifica: { it: 'Oggi la politica di contatto si valuta quando si sceglie, o si applica all’invio?', en: 'Today, is the contact policy weighed when choosing, or applied at send time?' },
@@ -285,7 +285,7 @@ export const MOMENTI: Momento[] = [
     messa: { it: 'Lead e simulazione nel vostro CRM, via API', en: 'Lead and simulation in your CRM, over API' },
     cliente: {
       chrome: 'filiale', scena: 'scena-06-filiale',
-      titolo: { it: 'In filiale trova un gestore che conosce già il suo percorso', en: 'In the branch she finds an adviser who already knows her journey' },
+      titolo: { it: 'In filiale il gestore ha già aperta la sua simulazione', en: 'In the branch the adviser already has her simulation open' },
       corpo: {
         it: 'Entra per l’appuntamento e trova la sua simulazione già aperta: stesso importo, stessa rata, stessi documenti. Non le viene chiesto di raccontare da capo quello che ha già fatto sul sito tre sere prima.',
         en: 'She arrives for the appointment and finds her simulation already open: same amount, same instalment, same documents. She is not asked to retell what she already did on the site three evenings earlier.',
@@ -329,8 +329,8 @@ export const MOMENTI: Momento[] = [
       prodotto: 'misura', scena: 'lavoro-07-misura',
       titolo: { it: 'Si vede dove si perdono i non clienti, filiale compresa', en: 'You can see where non-customers are lost, branch included' },
       corpo: {
-        it: 'A che serve qui: manca una misura sola dall’assistente alla firma. Senza quella nessuno sa quale dei sette momenti ha prodotto la cliente, né su quale investire il mese dopo. Appuntamento tenuto, pratica e delibera tornano dal CRM di filiale nello stesso dato. Il numero da guardare è quanto costa una richiesta firmata, per canale, una volta portata in piattaforma la spesa, e dove si perdono le altre.',
-        en: 'What it is for: there is no single measurement from the assistant to the signature. Without it nobody knows which of the seven moments produced the customer, or where to invest next month. Appointment held, application and approval come back from the branch CRM into the same data. The number to watch is what a signed application costs, per channel, once spend is in the platform, and where others are lost.',
+        it: 'A che serve qui: manca una misura sola dall’assistente alla firma. Senza quella nessuno sa quale dei sette momenti ha prodotto la cliente, né su quale investire il mese dopo. Appuntamento tenuto, pratica e delibera tornano dal CRM di filiale nello stesso dato. Il numero da guardare è quanto costa una richiesta firmata, per canale, una volta caricata la spesa pubblicitaria, e dove si perdono le altre.',
+        en: 'What it is for: there is no single measurement from the assistant to the signature. Without it nobody knows which of the seven moments produced the customer, or where to invest next month. Appointment held, application and approval come back from the branch CRM into the same data. The number to watch is what a signed application costs, per channel, once ad spend is loaded, and where others are lost.',
       },
     },
   },

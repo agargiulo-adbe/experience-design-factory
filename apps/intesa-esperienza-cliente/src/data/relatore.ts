@@ -26,7 +26,7 @@ export const NOTE: Record<string, Record<string, Nota>> = {
   },
   scenario: {
     'slide-cover': { dire: 'Si parte dal dato che c’è, e spesso riguarda chi è cliente di un’altra banca.' },
-    'slide-segnale': { dire: 'Prima il dato, poi il passaggio (freccia giù): il primo segnale arriva prima dell’email, quando lei è ancora anonima. Prima la banca la raggiunge con assistenti AI, annunci e sito; dopo email e consenso la contatta direttamente, con email, filiale e app. Sono i sette momenti che seguono. Poi si chiede: quanto tempo passa oggi fra quel gesto e una risposta?', attenzione: 'Il dato è di mercato (Nomisma e MutuiSupermarket.it, maggio 2026), non è loro. Il 45% «vuole» simulare la rata: non dire che la simula. E Nomisma non dice quale segnale pesa di più: non dire «il più forte».' },
+    'slide-segnale': { dire: 'Prima il dato, poi il passaggio (freccia giù): il primo segnale arriva prima dell’email, quando di lei c’è solo uno pseudonimo. Prima la banca la raggiunge con assistenti AI, annunci e sito; dopo email e consenso la contatta direttamente, con email, filiale e app. Sono i sette momenti che seguono. Poi si chiede: quanto tempo passa oggi fra quel gesto e una risposta?', attenzione: 'Il dato è di mercato (Nomisma e MutuiSupermarket.it, maggio 2026), non è loro. Il 45% «vuole» simulare la rata: non dire che la simula. E Nomisma non dice quale segnale pesa di più: non dire «il più forte».' },
   },
   persona: {
     'slide-cover': { dire: 'Giulia, 34 anni, non è ancora cliente: tutto il racconto è su di lei.' },
@@ -65,14 +65,14 @@ export const NOTE: Record<string, Record<string, Nota>> = {
   risultati: {
     'slide-cover': { dire: 'Si passa dal racconto a chi lo fa già.' },
     'slide-tsb': { dire: 'La prima banca britannica su Experience Platform: il dato passa da nove giorni a meno di ventiquattro ore.', attenzione: 'Il +39% è su clienti già di TSB.' },
-    'slide-santander': { dire: 'Il primo caso, e il più grande: le campagne per chi abbandona a metà partivano dopo tre giorni, ora entro quindici minuti. Sotto, come ci sono arrivati: un Center of Excellence dal 2025 e una governance dei dati comune ai Paesi del gruppo.', attenzione: 'Nessuno di questi casi è come il vostro: dirlo subito, è scritto sotto. Il +600% è sulle sole campagne di abbandono, non su tutte. Base non pubblicata.' },
-    'slide-unipol': { dire: 'Unipol non è una banca, ma ha il vostro stesso problema: una rete fisica grande, oltre duemila agenzie, e il digitale da leggere insieme. Agenzie, sito, app e polizze stanno nella stessa analisi, e le campagne si misurano anche su quello che si vende in agenzia.', attenzione: 'Le cifre di risultato del Summit (−90%, 2x) sono fuori dalla slide finché il team dell’account Unipol non conferma che si citano. Se lo chiedono: dirlo. Il modello non ha una cifra sulle vendite offline: dire che si misurano, non quanto rendono.', seChiedono: 'Clienti e agenzie: fact sheet Unipol di giugno 2026, dati al 31 dicembre 2025.' },
+    'slide-santander': { dire: 'Il primo caso, e il più grande: le iniziative per chi abbandona a metà partivano dopo tre giorni, ora entro quindici minuti. Sotto, come ci sono arrivati: un Center of Excellence dal 2025 e una governance dei dati comune ai Paesi del gruppo.', attenzione: 'Nessuno di questi casi è come il vostro: dirlo subito, è scritto sotto. Il +600% è sulle sole iniziative di abbandono, non su tutte. Base non pubblicata.' },
+    'slide-unipol': { dire: 'Unipol non è una banca, ma ha il vostro stesso problema: una rete fisica grande, oltre duemila agenzie, e il digitale da leggere insieme. Agenzie, sito, app e polizze stanno nella stessa analisi, e le iniziative commerciali si misurano anche su quello che si vende in agenzia.', attenzione: 'Le cifre di risultato del Summit (−90%, 2x) sono fuori dalla slide finché il team dell’account Unipol non conferma che si citano. Se lo chiedono: dirlo. Il modello non ha una cifra sulle vendite offline: dire che si misurano, non quanto rendono.', seChiedono: 'Clienti e agenzie: fact sheet Unipol di giugno 2026, dati al 31 dicembre 2025.' },
     'slide-credit-agricole': { dire: 'L’italiana, la più vicina a voi: +15% al primo acquisto, soprattutto sulle offerte self-service attivate dal comportamento in tempo reale.', attenzione: 'Base e periodo non pubblicati: è scritto in slide, dirlo. Il +15% non viene da percorsi di filiale.' },
   },
   'prossimi-passi': {
     'slide-cover': { dire: 'Si passa dalla storia alla prova.' },
     'slide-da-voi': { dire: 'La proposta in una frase, e quattro misure. Si legge la richiesta così com’è scritta. Le altre tre misure e la forma della soglia stanno in «Le altre misure e la soglia».', attenzione: 'Soglia, campione e quota del gruppo non hanno numeri in sala: si fissano in fase 0 con il calcolo dei volumi.' },
-    'slide-fasi': { dire: 'Tre tappe: il disegno, il mutuo sui non clienti, gli altri casi.', seChiedono: 'Chi integra lo decidono loro, con noi o con un integratore.' },
+    'slide-fasi': { dire: 'Tre tappe: la progettazione, il mutuo sui non clienti, gli altri casi.', seChiedono: 'Chi integra lo decidono loro, con noi o con un integratore.' },
     'slide-firma': { dire: 'Si chiude sulla firma, senza aggiungere altro.' },
   },
   'adobe-in-cifre': {

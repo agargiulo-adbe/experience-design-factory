@@ -33,7 +33,7 @@ export const PASSAGGIO: { stato: string; t: Testo; v: Voce[] }[] = [
   ] },
   { stato: 'nuovo', t: { it: 'Si aggiunge', en: 'Gets added' }, v: [
     { da: null, a: { it: 'Filiale, Filiale Digitale e CRM', en: 'Branch, Filiale Digitale and CRM' } },
-    { da: null, a: { it: 'Anonimo e noto ricuciti', en: 'Anonymous and known stitched' } },
+    { da: null, a: { it: 'Pseudonimo e noto ricuciti', en: 'Pseudonymous and known stitched' } },
   ] },
 ];
 
@@ -41,7 +41,7 @@ export const DETTAGLI_PASSAGGIO: { segno: string; ancora: Testo; riga: Testo }[]
   { segno: 'archivio', ancora: { it: 'Migrazione', en: 'Migration' },
     riga: { it: 'Progetti, segmenti e metriche si migrano con lo strumento dedicato. Persistenza e attribuzione diventano retroattive.', en: 'Projects, segments and metrics migrate with the dedicated tool. Persistence and attribution become retroactive.' } },
   { segno: 'esito', ancora: { it: 'Esportazioni', en: 'Exports' },
-    riga: { it: 'Data Warehouse passa a Full Table Export; i Data Feeds diventano esportazioni di dataset da Experience Platform.', en: 'Data Warehouse moves to Full Table Export; Data Feeds become dataset exports from Experience Platform.' } },
+    riga: { it: 'L’export Data Warehouse di Analytics passa a Full Table Export; i Data Feeds diventano esportazioni di dataset da Experience Platform.', en: 'Analytics’ Data Warehouse export moves to Full Table Export; Data Feeds become dataset exports from Experience Platform.' } },
   { segno: 'bordo', ancora: { it: 'Activity Map', en: 'Activity Map' },
     riga: { it: 'Activity Map non è supportato, e oggi non è in roadmap.', en: 'Activity Map is not supported, and is not on the roadmap today.' } },
   { segno: 'canali', ancora: { it: 'Convivenza, storico, formazione', en: 'Overlap, history, training' },

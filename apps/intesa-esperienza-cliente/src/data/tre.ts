@@ -28,6 +28,6 @@ export const TRE: Cosa[] = [
   {
     n: '3', gruppo: 'piattaforma', prodotto: 'Adobe CX Analytics',
     t: { it: 'Misurare in un posto solo', en: 'Measuring in one place' },
-    riga: { it: 'Filiale, Filiale Digitale, app e sito: quanti report servono oggi per tenerli insieme?', en: 'Branch, Filiale Digitale, app and site: how many reports does it take today to hold them together?' },
+    riga: { it: 'Filiale, Filiale Digitale, app e sito nello stesso report, fino alla firma.', en: 'Branch, Filiale Digitale, app and site in the same report, up to the signature.' },
   },
 ];

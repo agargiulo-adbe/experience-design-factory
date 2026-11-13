@@ -122,8 +122,8 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Cas
       testo: { it: 'Una pratica di mutuo lasciata a metà in app, ripresa in tempo reale', en: 'A mortgage application left half-done in the app, resumed in real time' },
       icona: 'riprende',
     },
-    ponte: { it: 'Da voi il mutuo si chiude in filiale: per questo l’imbuto conta anche gli appuntamenti.', en: 'At your bank the mortgage closes in branch: that is why the funnel also counts appointments.' },
-    ponteBreve: { it: 'Da voi il mutuo si chiude in filiale: l’imbuto conta anche gli appuntamenti.', en: 'At your bank the mortgage closes in branch: the funnel also counts appointments.' },
+    ponte: { it: 'Da voi il mutuo si chiude in filiale: per questo la misura conta anche gli appuntamenti.', en: 'At your bank the mortgage closes in branch: that is why the measurement also counts appointments.' },
+    ponteBreve: { it: 'Da voi il mutuo si chiude in filiale: la misura conta anche gli appuntamenti.', en: 'At your bank the mortgage closes in branch: the measurement also counts appointments.' },
     fonte: { url: FONTI.tsb, nome: 'business.adobe.com · TSB' },
   },
   santander: {
@@ -131,14 +131,14 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Cas
     occ: { it: 'Un caso internazionale · Gruppo Santander', en: 'An international case · Santander Group' },
     titolo: { pre: { it: 'Santander Brasil:', en: 'Santander Brasil:' }, accento: { it: 'reagire entro 15 minuti', en: 'reacting within 15 minutes' } },
     hero: {
-      occ: { it: 'Le campagne per chi abbandona a metà', en: 'Campaigns for people who drop out halfway' },
+      occ: { it: 'Le iniziative per chi abbandona a metà', en: 'Initiatives for people who drop out halfway' },
       prima: { n: { it: '3 giorni', en: '3 days' } },
       oggi: { k: { it: 'Oggi, entro', en: 'Today, within' }, n: { it: '15 minuti', en: '15 minutes' } },
     },
-    metrica: { n: '+600%', l: { it: 'conversioni su queste campagne', en: 'conversions on these campaigns' } },
+    metrica: { n: '+600%', l: { it: 'conversioni su queste iniziative', en: 'conversions on these initiatives' } },
     riquadri: [
       { n: '100 mln+', l: { it: 'profili cliente in una vista unica', en: 'customer profiles in a single view' } },
-      { n: '2,3x', l: { it: 'conversione delle campagne personalizzate sulle generiche', en: 'conversion of personalized campaigns over generic ones' } },
+      { n: '2,3x', l: { it: 'conversione delle iniziative personalizzate sulle generiche', en: 'conversion of personalized initiatives over generic ones' } },
     ],
     fascia: {
       occ: { it: 'Dal 2025 · Center of Excellence', en: 'Since 2025 · Center of Excellence' },
@@ -157,7 +157,7 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Cas
       oggi: { k: { it: 'Conversioni', en: 'Conversions' }, n: { it: '+15%', en: '+15%' } },
       l: { it: 'al primo acquisto, soprattutto sulle offerte self-service', en: 'on first purchase, particularly on self-service offers' },
     },
-    metrica: { n: '+20%', l: { it: 'efficacia delle campagne di cross-sell', en: 'cross-sell campaign effectiveness' } },
+    metrica: { n: '+20%', l: { it: 'efficacia delle iniziative di cross-sell', en: 'cross-sell initiative effectiveness' } },
     nota: { it: 'Base e periodo non pubblicati.', en: 'Baseline and period not published.' },
     riquadri: [
       { n: '150+', l: { it: 'percorsi su acquisizione, ingaggio e retention', en: 'journeys across acquisition, engagement and retention' } },
@@ -225,7 +225,7 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Cas
    altro elenco. */
 export const MISURE = [
   { davanti: true, l: { it: 'Quante simulazioni vengono riprese', en: 'How many simulations get resumed' },
-    oggi: { it: 'oggi: come lo sapete?', en: 'today: how do you know?' },
+    oggi: { it: 'oggi: da quale fonte?', en: 'today: from which source?' },
     poi: { it: 'si misura, con un gruppo che resta nel processo di oggi', en: 'measured, against a group that stays in today’s process' },
     poiLungo: { it: 'si misura con un gruppo che resta nel processo di oggi, approvato dalla Rete in fase 0', en: 'measured against a group that stays in today’s process, approved by the Network in phase 0' } },
   { davanti: true, l: { it: 'Quante simulazioni lasciano email e consenso', en: 'How many simulations leave an email and consent' },
@@ -233,13 +233,13 @@ export const MISURE = [
     poi: { it: 'tasso di consenso, dal primo giorno', en: 'consent rate, from day one' },
     poiLungo: { it: 'tasso di consenso, dal primo giorno: senza, le altre misure non partono', en: 'consent rate, from day one: without it the other measures cannot start' },
     estesa: true },
-  { l: { it: 'Quanto passa fra il gesto e il contatto', en: 'How long between the action and the contact' },
+  { l: { it: 'Quanto passa fra l’azione e il contatto', en: 'How long between the action and the contact' },
     oggi: { it: 'oggi: in giorni, o in ore?', en: 'today: days, or hours?' },
     poi: { it: 'si contano le ore', en: 'counted in hours' } },
   { l: { it: 'Quante volte si contatta la stessa persona', en: 'How often the same person is contacted' },
     oggi: { it: 'oggi: per cliente, canale per canale?', en: 'today: per customer, channel by channel?' },
-    poi: { it: 'la regola di contatto resta vostra', en: 'the contact rule stays yours' } },
-  { davanti: true, l: { it: 'Il percorso rende, e il target era giusto', en: 'Does the journey pay, and was the target right' },
+    poi: { it: 'contatti per persona, dentro la vostra politica di contatto', en: 'contacts per person, inside your contact policy' } },
+  { davanti: true, l: { it: 'Resa del percorso e scelta del target', en: 'Journey return and target choice' },
     oggi: { it: 'oggi: dalla redemption?', en: 'today: from redemption?' },
     poi: { it: 'fase 1: uplift del percorso sul controllo; il target in fase 2, o già in fase 1 con due regole se i volumi bastano', en: 'phase 1: journey uplift vs control; the target in phase 2, or in phase 1 with two rules if volumes allow' },
     estesa: true },
@@ -249,8 +249,8 @@ export const MISURE = [
     estesa: true },
   { l: { it: 'Quanto costa una richiesta firmata, per canale', en: 'What a signed application costs, per channel' },
     oggi: { it: 'oggi: per canale, o sul percorso?', en: 'today: per channel, or across the path?' },
-    poi: { it: 'con la spesa per canale portata in piattaforma', en: 'with spend per channel brought into the platform' },
-    poiLungo: { it: 'la spesa per campagna entra ogni giorno con l’identificativo di campagna. I costi di rete dal Controllo di Gestione, con un criterio di ripartizione concordato con Canali in fase 0', en: 'campaign spend comes in daily with the campaign ID. Network costs from Management Control, with an allocation rule agreed with Channels in phase 0' },
+    poi: { it: 'con la spesa pubblicitaria per canale caricata ogni giorno', en: 'with ad spend per channel loaded daily' },
+    poiLungo: { it: 'la spesa pubblicitaria entra ogni giorno con il suo identificativo. I costi di rete dal Controllo di Gestione, con un criterio di ripartizione concordato con Canali in fase 0', en: 'ad spend comes in daily with its own ID. Network costs from Management Control, with an allocation rule agreed with Channels in phase 0' },
     chiave: true },
 ];
 
@@ -271,7 +271,7 @@ export const SOGLIA = [
   { k: { it: 'La soglia', en: 'The threshold' },
     v: { it: 'la soglia (punti di ripresa sul controllo) e il campione minimo si calcolano in fase 0 sui vostri volumi', en: 'the threshold (resumption points versus control) and the minimum sample are calculated in phase 0 on your volumes' } },
   { k: { it: 'Che cosa è una ripresa', en: 'What counts as a resumption' },
-    v: { it: 'un gesto della cliente entro 14 giorni, su qualunque canale: simulazione completata, documenti caricati o appuntamento preso; i giorni si fissano in fase 0', en: 'an action by the customer within 14 days, on any channel: simulation completed, documents uploaded or appointment booked; the days are set in phase 0' } },
+    v: { it: 'un’azione della cliente entro 14 giorni, su qualunque canale: simulazione completata, documenti caricati o appuntamento preso; i giorni si fissano in fase 0', en: 'an action by the customer within 14 days, on any channel: simulation completed, documents uploaded or appointment booked; the days are set in phase 0' } },
   { k: { it: 'Il gruppo di controllo', en: 'The control group' },
     v: { it: 'quota del 5-10%, fissata in fase 0 sui volumi. Si estrae per browser sulla proposta del sito e per profilo sui richiami dopo il consenso; lo stesso non cliente su due dispositivi è un limite noto', en: 'a 5-10% share, set in phase 0 on volumes. Drawn per browser for the site offer and per profile for follow-ups after consent; the same non-customer on two devices is a known limit' } },
   { k: { it: 'Che cosa si giudica', en: 'What gets judged' },
@@ -287,7 +287,7 @@ export const SOGLIA = [
    chi riceve il taglio deve sapere che il pilota porta una licenza e come
    esce. Le stesse tappe di prossimi-passi/slide-fasi. */
 export const SEGUITO = {
-  it: 'Fase 0 disegno · fase 1 licenza e trimestre di misura, poi si estende o si ferma.',
+  it: 'Fase 0 progettazione · fase 1 licenza e trimestre di misura, poi si estende o si ferma.',
   en: 'Phase 0 design · phase 1 licence and a quarter of measurement, then it extends or stops.',
 };
 

@@ -58,5 +58,5 @@ export const AGENDA: VoceAgenda[] = [
     la versione che gira al capo. Il secondo livello dice il percorso del caso. */
 export const TITOLO_INCONTRO = {
   t: { it: 'Acquisire chi non è ancora vostro cliente', en: 'Winning people who are not yet your customers' },
-  s: { it: 'dal primo segnale alla firma', en: 'from the first signal to the signature' },
+  s: { it: 'Un caso concreto: il mutuo prima casa', en: 'A concrete case: the first-home mortgage' },
 };

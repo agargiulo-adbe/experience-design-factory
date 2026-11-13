@@ -10,7 +10,7 @@ export const SERVE = [
   { fig: 'canali', t: { it: 'Le integrazioni', en: 'The integrations' },
     chi: { it: 'Group Technology', en: 'Group Technology' },
     quando: { it: 'fase 0', en: 'phase 0' },
-    d: { it: 'La mappa dei collegamenti con motore di targeting, data lake, core banking, CRM di filiale, CDP attuale e registro dei consensi. E che cosa avete in programma su motore, CRM e dato nei prossimi dodici mesi.', en: 'The map of links with targeting engine, data warehouse, core banking, branch CRM, current CDP and consent register. And what you have planned on engine, CRM and data over the next twelve months.' } },
+    d: { it: 'La mappa dei collegamenti con motore di targeting, data lake, core banking, CRM di filiale, CDP attuale e registro dei consensi. E che cosa avete in programma su motore, CRM e dato nei prossimi dodici mesi.', en: 'The map of links with targeting engine, data lake, core banking, branch CRM, current CDP and consent register. And what you have planned on engine, CRM and data over the next twelve months.' } },
   { fig: 'archivio', t: { it: 'I dati', en: 'The data' },
     chi: { it: 'Targeting · Advanced Analytics · Analytics digitale della Divisione', en: 'Targeting · Advanced analytics · Division digital analytics' },
     quando: { it: 'fase 0', en: 'phase 0' },

@@ -46,7 +46,7 @@ export const SCENE: Record<ScenaId, Scena> = {
       'Regole, consenso e politica di contatto escludono quelle non ammesse.',
       'Sui non clienti oggi avete un punteggio o una regola? Se c’è, entra come attributo; se no, valgono la priorità dell’offerta e le regole scritte insieme.',
       'Resta una sola proposta, sul canale ammesso da consenso e regole. L’invio può continuare a passare dagli strumenti attuali.',
-      'Customer Journey Analytics misura l’esito sul gruppo di controllo; priorità e regole si rivedono con voi a fine trimestre.',
+      'Customer Journey Analytics misura l’esito sul gruppo di controllo. A fine trimestre, con quel risultato, si rivedono insieme priorità e regole delle proposte.',
     ],
     nota: 'Schema illustrativo, sistemi attuali da confermare con voi. Sul non cliente la classifica la fa AI Decisioning, con le regole scritte insieme. Sul cliente la classifica resta del motore della banca; AI Decisioning applica canale, consenso e politica di contatto.',
     fonti: [
@@ -61,13 +61,13 @@ export const SCENE: Record<ScenaId, Scena> = {
       'Giulia visita il sito senza identificarsi: il sistema riconosce solo il browser.',
       'Simula la rata ed entra in tempo reale nel segmento «mutuo prima casa».',
       'Quando torna, il sito le propone di riprendere la simulazione.',
-      'Lascia email e consenso. Le visite fatte da anonima si uniscono al suo profilo.',
+      'Lascia email e consenso. Le visite fatte sotto pseudonimo si uniscono al suo profilo.',
       'Da questo momento Journey Optimizer e AI Decisioning usano il suo profilo. Il CRM di filiale resta invariato.',
     ],
-    nota: 'Schema illustrativo. Per personalizzare il sito serve il consenso alla profilazione; per scriverle, il consenso marketing. I profili anonimi si cancellano dopo un periodo che scegliete voi, da 1 a 365 giorni.',
+    nota: 'Schema illustrativo. Per personalizzare il sito serve il consenso alla profilazione; per scriverle, il consenso marketing. I profili pseudonimi si cancellano dopo un periodo che scegliete voi, da 1 a 365 giorni.',
     fonti: [
       { label: 'Segmentazione edge', url: `${EL}/experience-platform/segmentation/methods/edge-segmentation` },
-      { label: 'Profili anonimi', url: `${EL}/experience-platform/profile/pseudonymous-profiles` },
+      { label: 'Profili pseudonimi', url: `${EL}/experience-platform/profile/pseudonymous-profiles` },
     ],
   },
 };
