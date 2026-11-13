@@ -6,7 +6,7 @@ export const PAGE_REGISTRY: PageEntry[] = [
   { slug: 'index', label: 'Copertina dell’incontro (00)', slides: [
     { id: 'slide-cover', label: 'Copertina dell’incontro: titolo e agenda a sei voci' },
   ]},
-  { slug: 'adobe', label: 'Adobe e l’offerta (01)', slides: [
+  { slug: 'adobe', label: 'Adobe, chi siamo (01)', slides: [
     { id: 'slide-cover',     label: 'Cover: Adobe per Intesa Sanpaolo' },
     { id: 'slide-team',      label: 'Il team Adobe che partecipa' },
     { id: 'slide-fsi',       label: 'Chi è Adobe: i numeri e i quattro Forrester Wave' },
@@ -34,7 +34,7 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-cover', label: 'Cover: Dove si collega Adobe e che cosa si misura' },
     { id: 'slide-innesto', label: 'L’innesto: Adobe si aggiunge, si parte dai percorsi nuovi, Real-Time CDP, Journey Optimizer · AI Decisioning e CJA' },
     { id: 'slide-capacita', label: 'Che cosa porta ciascun componente: le capability' },
-    { id: 'slide-chiave', label: 'Una chiave sola tiene insieme la storia, da non cliente a cliente' },
+    { id: 'slide-chiave', label: 'Una chiave sola tiene insieme la storia, da non‑cliente a cliente' },
     { id: 'slide-cja-banca', label: 'Quattro risposte che una banca ottiene da CJA' },
     { id: 'slide-attribuzione', label: 'Quanto del digitale arriva in filiale' },
     { id: 'slide-ritorno', label: 'Quello che si misura sul mutuo nel primo trimestre cambia le regole del secondo' },
@@ -44,14 +44,14 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-cosa',  label: 'Che cos’è Coworker: a parole, fino all’approvazione, dove gira' },
     { id: 'slide-video', label: 'Video demo con i dati del cliente: slot da console' },
   ]},
-  { slug: 'risultati', label: 'Referenze: quattro casi già in produzione (05)', slides: [
+  { slug: 'risultati', label: 'Banche che lo fanno già (05)', slides: [
     { id: 'slide-cover',   label: 'Cover: una banca che lo fa già' },
     { id: 'slide-santander',       label: 'Santander Brasil: reagire entro 15 minuti' },
     { id: 'slide-credit-agricole', label: 'Crédit Agricole Italia: +15% al primo acquisto' },
     { id: 'slide-tsb',             label: 'TSB: il dato in meno di 24 ore' },
     { id: 'slide-unipol',          label: 'Unipol: agenzie e digitale nella stessa analisi' },
   ]},
-  { slug: 'prossimi-passi', label: 'La proposta e come si parte (06)', slides: [
+  { slug: 'prossimi-passi', label: 'I prossimi passi (06)', slides: [
     { id: 'slide-cover',  label: 'Cover: prossimi passi' },
     { id: 'slide-da-voi', label: 'La proposta: un trimestre sul mutuo, quattro misure e l’ask (le altre a richiesta)' },
     { id: 'slide-fasi',   label: 'Come si parte: tre tappe, chi guida e quando (il dettaglio a richiesta)' },

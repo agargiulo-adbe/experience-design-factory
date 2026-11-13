@@ -131,6 +131,6 @@ export const MOMENTO_SCHEMA: Record<'03' | '04-06' | '07', {
     attivi: [6],
     lei: { it: 'Firma e apre il conto: da quel giorno la pratica è nell’app.', en: 'She signs and opens an account: from that day the file is in the app.' },
     banca: { it: 'Legge sulla stessa persona sito, app e filiale, dal primo clic alla firma.', en: 'It reads site, app and branch on the same person, from the first click to the signature.' },
-    cambia: { it: 'Si vede dove si perdono i non clienti, filiale compresa.', en: 'You can see where non-customers are lost, branch included.' },
+    cambia: { it: 'Si vede dove si perdono i non‑clienti, filiale compresa.', en: 'You can see where non-customers are lost, branch included.' },
   },
 };

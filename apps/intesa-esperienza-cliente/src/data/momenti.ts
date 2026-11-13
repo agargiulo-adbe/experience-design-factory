@@ -161,7 +161,7 @@ export const MOMENTI: Momento[] = [
     dove: { it: 'Sui social', en: 'On social media' },
     short: { it: 'Vede l’annuncio', en: 'Sees the ad' },
     funzione: { it: 'Annuncio su misura', en: 'A tailored ad' },
-    tessera: { it: 'Controlli di compliance mentre si produce; un processo che si può agentizzare', en: 'Compliance checks during production; a process that can be agentised' },
+    tessera: { it: 'Ogni annuncio nasce già controllato sulle regole di marchio e di canale', en: 'Every ad is born already checked against brand and channel rules' },
     canale: { it: 'Social', en: 'Social' },
     gruppo: 'contenuto',
     verifica: { it: 'Oggi l’informativa si applica alla produzione, o si verifica in revisione?', en: 'Today, is the disclosure applied at production, or checked at review?' },
@@ -177,9 +177,9 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'genstudio', scena: 'lavoro-02-contenuti',
-      titolo: { it: 'Dodici annunci da un solo brief, con i controlli di compliance dentro la produzione', en: 'Twelve ads from one brief, with compliance checks built into production' },
+      titolo: { it: 'Dodici annunci da un solo brief, già controllati su marchio e canale', en: 'Twelve ads from one brief, already checked against brand and channel' },
       corpo: {
-        it: 'Il tempo se ne va soprattutto nelle approvazioni. Varianti controllate contro le linee guida di marchio e di canale mentre si producono; le informative restano nell’iter di approvazione legale. Su chi non vi conosce ancora, un messaggio generico non lo recupera poi la relazione.',
+        it: 'Il tempo se ne va soprattutto nelle approvazioni. Ogni variante nasce già controllata sulle regole di marchio e di canale; le informative restano nell’iter di approvazione legale. Su chi non vi conosce ancora, un messaggio generico non lo recupera poi la relazione.',
         en: 'Most of the time goes into approvals. Variants are checked against brand and channel guidelines while they are produced; disclosures stay in the legal approval process. With someone who does not know you yet, no relationship later makes up for a generic message.',
       },
     },
@@ -206,7 +206,7 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'profilo', scena: 'lavoro-03-dati',
-      titolo: { it: 'Quando lascia l’email, le due sessioni sotto pseudonimo (raccolte col consenso) si uniscono al suo profilo', en: 'When she leaves her email, the two pseudonymous sessions (collected under consent) merge into her profile' },
+      titolo: { it: 'Quando lascia l’email, le due visite fatte col consenso sotto pseudonimo si uniscono al suo profilo', en: 'When she leaves her email, the two pseudonymous visits made under consent merge into her profile' },
       corpo: {
         it: 'Le visite sotto pseudonimo delle sere prima si uniscono al profilo quando arriva un identificativo, l’email. Serve che il consenso alla profilazione ci fosse già: se manca, si riparte dalla simulazione di oggi. Nel CRM non ha una scheda cliente: può avere un lead.',
         en: 'Her pseudonymous visits from the previous evenings merge into the profile when an identifier arrives, the email, if profiling consent was already there. If not, it starts from today’s simulation. In the CRM she has no customer record: she can have a lead.',
@@ -235,9 +235,9 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'decisione', scena: 'lavoro-04-decisione',
-      titolo: { it: 'Delle quattro proposte possibili, il sito le mostra il promemoria con un appuntamento proposto', en: 'Of the four possible offers, the site shows her the reminder with a proposed appointment' },
+      titolo: { it: 'La banca sceglie il promemoria con appuntamento: subito sul sito, il mattino dopo per email', en: 'The bank picks the reminder with an appointment: on the website now, by email the next morning' },
       corpo: {
-        it: 'Il profilo è sottile: due sessioni, una simulazione, un consenso. Sui non clienti oggi avete un punteggio o una regola? Se c’è, entra come attributo; se no, valgono la priorità dell’offerta e le regole scritte insieme. La regola di contatto resta vostra.',
+        it: 'Il profilo è sottile: due sessioni, una simulazione, un consenso. Sui non‑clienti oggi avete un punteggio o una regola? Se c’è, entra come attributo; se no, valgono la priorità dell’offerta e le regole scritte insieme. La regola di contatto resta vostra.',
         en: 'The profile is thin: two sessions, one simulation, one consent. Do you have a score or a rule on non-customers today? If so, it comes in as an attribute; if not, the offer’s priority and the rules written together apply. The contact rule stays yours.',
       },
     },
@@ -251,7 +251,7 @@ export const MOMENTI: Momento[] = [
     funzione: { it: 'Un richiamo, più canali', en: 'One follow-up, several channels' },
     canale: { it: 'Email', en: 'Email' },
     gruppo: 'engagement',
-    verifica: { it: 'Oggi quanto passa fra il gesto di un non cliente e il primo contatto?', en: 'Today, how long passes between a non-customer’s action and the first contact?' },
+    verifica: { it: 'Oggi quanto passa fra il gesto di un non‑cliente e il primo contatto?', en: 'Today, how long passes between a non-customer’s action and the first contact?' },
     prodotto: 'Journey Optimizer',
     messa: { it: 'Canale nativo di Journey Optimizer', en: 'A native Journey Optimizer channel' },
     cliente: {
@@ -327,10 +327,10 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'misura', scena: 'lavoro-07-misura',
-      titolo: { it: 'Si vede dove si perdono i non clienti, filiale compresa', en: 'You can see where non-customers are lost, branch included' },
+      titolo: { it: 'Si vede dove si perdono i non‑clienti, filiale compresa', en: 'You can see where non-customers are lost, branch included' },
       corpo: {
-        it: 'A che serve qui: manca una misura sola dall’assistente alla firma. Senza quella nessuno sa quale dei sette momenti ha prodotto la cliente, né su quale investire il mese dopo. Appuntamento tenuto, pratica e delibera tornano dal CRM di filiale nello stesso dato. Il numero da guardare è quanto costa una richiesta firmata, per canale, una volta caricata la spesa pubblicitaria, e dove si perdono le altre.',
-        en: 'What it is for: there is no single measurement from the assistant to the signature. Without it nobody knows which of the seven moments produced the customer, or where to invest next month. Appointment held, application and approval come back from the branch CRM into the same data. The number to watch is what a signed application costs, per channel, once ad spend is loaded, and where others are lost.',
+        it: 'A che serve qui: manca una misura sola dall’assistente alla firma. Senza quella nessuno sa quale dei sette momenti ha prodotto la cliente, né su quale investire il mese dopo. Appuntamento tenuto, pratica e delibera tornano dal CRM di filiale nello stesso dato. Il numero da guardare è quanto costa una richiesta firmata, per canale, e dove si perdono le altre.',
+        en: 'What it is for: there is no single measurement from the assistant to the signature. Without it nobody knows which of the seven moments produced the customer, or where to invest next month. Appointment held, application and approval come back from the branch CRM into the same data. The number to watch is what a signed application costs, per channel, and where others are lost.',
       },
     },
   },

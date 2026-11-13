@@ -257,8 +257,8 @@ export const MISURE = [
     estesa: true },
   { l: { it: 'Quanto costa una richiesta firmata, per canale', en: 'What a signed application costs, per channel' },
     oggi: { it: 'oggi: per canale, o sul percorso?', en: 'today: per channel, or across the path?' },
-    poi: { it: 'con la spesa pubblicitaria per canale caricata ogni giorno', en: 'with ad spend per channel loaded daily' },
-    poiLungo: { it: 'la spesa pubblicitaria entra ogni giorno con il suo identificativo. I costi di rete dal Controllo di Gestione, con un criterio di ripartizione concordato con Canali in fase 0', en: 'ad spend comes in daily with its own ID. Network costs from Management Control, with an allocation rule agreed with Channels in phase 0' },
+    poi: { it: 'per canale e sul percorso intero, fino alla firma', en: 'per channel and across the whole path, up to signing' },
+    poiLungo: { it: 'per canale e sul percorso intero, dalla prima visita alla firma in filiale', en: 'per channel and across the whole path, from the first visit to signing in the branch' },
     chiave: true },
 ];
 
@@ -281,7 +281,7 @@ export const SOGLIA = [
   { k: { it: 'Che cosa è una ripresa', en: 'What counts as a resumption' },
     v: { it: 'un’azione della cliente entro 14 giorni, su qualunque canale: simulazione completata, documenti caricati o appuntamento preso; i giorni si fissano in fase 0', en: 'an action by the customer within 14 days, on any channel: simulation completed, documents uploaded or appointment booked; the days are set in phase 0' } },
   { k: { it: 'Il gruppo di controllo', en: 'The control group' },
-    v: { it: 'quota del 5-10%, fissata in fase 0 sui volumi. Si estrae per browser sulla proposta del sito e per profilo sui richiami dopo il consenso; lo stesso non cliente su due dispositivi è un limite noto', en: 'a 5-10% share, set in phase 0 on volumes. Drawn per browser for the site offer and per profile for follow-ups after consent; the same non-customer on two devices is a known limit' } },
+    v: { it: 'quota del 5-10%, fissata in fase 0 sui volumi. Si estrae per browser sulla proposta del sito e per profilo sui richiami dopo il consenso; lo stesso non‑cliente su due dispositivi è un limite noto', en: 'a 5-10% share, set in phase 0 on volumes. Drawn per browser for the site offer and per profile for follow-ups after consent; the same non-customer on two devices is a known limit' } },
   { k: { it: 'Che cosa si giudica', en: 'What gets judged' },
     v: { it: 'la soglia si giudica su riprese e appuntamenti; le firme si leggono', en: 'the threshold is judged on resumptions and appointments; signatures are read' } },
   { k: { it: 'Il vincolo per la Rete', en: 'The constraint for the Network' },

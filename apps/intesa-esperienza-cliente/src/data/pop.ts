@@ -44,11 +44,11 @@ export const SCENE: Record<ScenaId, Scena> = {
       'Arrivano ad AI Decisioning come attributi del profilo. Eleggibilità: attributo precalcolato nel profilo, oppure passata dal vostro sistema nella richiesta di decisione.',
       'Per la stessa persona ci sono quattro proposte candidate.',
       'Regole, consenso e politica di contatto escludono quelle non ammesse.',
-      'Sui non clienti oggi avete un punteggio o una regola? Se c’è, entra come attributo; se no, valgono la priorità dell’offerta e le regole scritte insieme.',
+      'Sui non‑clienti oggi avete un punteggio o una regola? Se c’è, entra come attributo; se no, valgono la priorità dell’offerta e le regole scritte insieme.',
       'Resta una sola proposta, sul canale ammesso da consenso e regole. L’invio può continuare a passare dagli strumenti attuali.',
       'Customer Journey Analytics misura l’esito sul gruppo di controllo. A fine trimestre, con quel risultato, si rivedono insieme priorità e regole delle proposte.',
     ],
-    nota: 'Schema illustrativo, sistemi attuali da confermare con voi. Sul non cliente la classifica la fa AI Decisioning, con le regole scritte insieme. Sul cliente la classifica resta del motore della banca; AI Decisioning applica canale, consenso e politica di contatto.',
+    nota: 'Schema illustrativo, sistemi attuali da confermare con voi. Sul non‑cliente la classifica la fa AI Decisioning, con le regole scritte insieme. Sul cliente la classifica resta del motore della banca; AI Decisioning applica canale, consenso e politica di contatto.',
     fonti: [
       { label: 'Formule di classifica', url: `${EL}/journey-optimizer/using/decisioning/experience-decisioning/experience-decisioning-rankings/ranking-formulas` },
       { label: 'Decisioning', url: `${EL}/journey-optimizer/using/decisioning/experience-decisioning/gs-experience-decisioning` },
@@ -56,7 +56,7 @@ export const SCENE: Record<ScenaId, Scena> = {
   },
   cdp: {
     prodotto: 'Real-Time CDP',
-    cosa: 'Costruisce il profilo di clienti e non clienti. Nel caso di Giulia: prima dal comportamento sul sito, poi dall’email che lascia.',
+    cosa: 'Costruisce il profilo di clienti e non‑clienti. Nel caso di Giulia: prima dal comportamento sul sito, poi dall’email che lascia.',
     passi: [
       'Giulia visita il sito senza identificarsi: il sistema riconosce solo il browser.',
       'Simula la rata ed entra in tempo reale nel segmento «mutuo prima casa».',

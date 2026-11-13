@@ -35,7 +35,7 @@ export const AGENDA: VoceAgenda[] = [
      Ora agenda, barra (`VOCI_NAV`), copertine e titoli di pagina portano gli
      stessi nomi e gli stessi numeri: si cambiano qui e in `chapters.ts`. */
   { n: '01', capitolo: 'adobe',
-    titolo: { it: 'Adobe e l’offerta', en: 'Adobe and the offering' } },
+    titolo: { it: 'Adobe, chi siamo', en: 'Adobe, who we are' } },
   { n: '02', capitolo: 'scenario',
     titolo: { it: 'Giulia: un mutuo, sette momenti', en: 'Giulia: one mortgage, seven moments' } },
   { n: '03', capitolo: 'messa-a-terra',
@@ -44,13 +44,13 @@ export const AGENDA: VoceAgenda[] = [
        l'attribuzione fino alla filiale) vale due slide su cinque: per questo
        sta NEL TITOLO. Fino all'11 nov era una seconda riga, l'unica del
        deck, residuo del capitolo CX Analytics confluito qui il 10 nov. */
-    titolo: { it: 'Integrazione: dove si collega Adobe e che cosa si misura', en: 'Integration: where Adobe connects and what gets measured' } },
+    titolo: { it: 'Dove ci innestiamo', en: 'Where we plug in' } },
   { n: '04', capitolo: 'coworker',
     titolo: { it: 'CX Enterprise Coworker', en: 'CX Enterprise Coworker' } },
   { n: '05', capitolo: 'risultati',
-    titolo: { it: 'Referenze: quattro casi già in produzione', en: 'References: four cases already live' } },
+    titolo: { it: 'Banche che lo fanno già', en: 'Banks already doing it' } },
   { n: '06', capitolo: 'prossimi-passi',
-    titolo: { it: 'La proposta e come si parte', en: 'The proposal and how we start' } },
+    titolo: { it: 'I prossimi passi', en: 'Next steps' } },
 ];
 
 /** Il titolo del documento, in due livelli (decisione dell'owner, 11 nov 2026):
