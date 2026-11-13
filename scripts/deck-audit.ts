@@ -55,9 +55,15 @@ if (!ROUTES.length) throw new Error(`--only ${onlyFlag}: nessuna rotta con quest
    della larghezza. Non è nel giro di default perché raddoppia i tempi: si
    lancia quando si tocca la composizione, e prima di una proiezione su parete. */
 const TV_VIEWPORTS: Array<[number, number]> = [[2560, 1440], [3840, 2160]];
+/* `--ultrawide` aggiunge gli schermi PIÙ LARGHI del 16:9 (13 nov 2026): un
+   monitor 21:9 a schermo intero mostrava la slide d'integrazione tagliata
+   sopra e sotto, perché il tipo in `vw` cresce con la larghezza e l'altezza
+   no. Nessuno dei viewport 16:9 lo poteva vedere. */
+const ULTRAWIDE_VIEWPORTS: Array<[number, number]> = [[2560, 1080], [3440, 1440], [3840, 1620]];
 const VIEWPORTS: Array<[number, number]> = [
   [1920, 1080], [1440, 900], [1280, 800],
   ...(process.argv.includes('--tv') ? TV_VIEWPORTS : []),
+  ...(process.argv.includes('--ultrawide') ? ULTRAWIDE_VIEWPORTS : []),
 ];
 const OUT_BASE = path.resolve(process.cwd(), 'audit');
 
@@ -186,11 +192,16 @@ function measureSlide(opts: { slideId: string; W: number; H: number; inset: numb
   // (e) text-on-text collision (non-nested pairs, real 2D overlap)
   const tb = allTextEls.map((el) => ({ el, r: el.getBoundingClientRect(), txt: (el.textContent || '').trim().slice(0, 30) }));
   const e: Array<{ x: string; y: string }> = [];
+  /* La tolleranza segue il tipo radice (13 nov 2026). Dove un deck ingrandisce
+     tutta la composizione (radice oltre 18px su un muro o su un 21:9), i
+     riquadri in linea che a 1920 si toccano per 1,5px — invisibile — passano
+     i 2px per sola scala: l'audit giudicava l'ingrandimento, non la slide. */
+  const eTol = 2 * Math.max(1, parseFloat(getComputedStyle(document.documentElement).fontSize) / 18);
   for (let i = 0; i < tb.length; i++) for (let j = i + 1; j < tb.length; j++) {
     if (tb[i].el.contains(tb[j].el) || tb[j].el.contains(tb[i].el)) continue;
     const ow = Math.max(0, Math.min(tb[i].r.right, tb[j].r.right) - Math.max(tb[i].r.left, tb[j].r.left));
     const oh = Math.max(0, Math.min(tb[i].r.bottom, tb[j].r.bottom) - Math.max(tb[i].r.top, tb[j].r.top));
-    if (ow > 2 && oh > 2) e.push({ x: tb[i].txt, y: tb[j].txt });
+    if (ow > eTol && oh > eTol) e.push({ x: tb[i].txt, y: tb[j].txt });
   }
 
   // (g) vertical rhythm: stacked text siblings (outside cards) must gap ≥ 16px

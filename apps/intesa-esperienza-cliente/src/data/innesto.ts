@@ -103,3 +103,34 @@ export const TAVOLO: Testo = {
   it: 'Fase 0: Targeting, CRM, Group Technology, Canali.',
   en: 'Phase 0: Targeting, CRM, Group Technology, Channels.',
 };
+
+/* IL MOMENTO DI GIULIA DIETRO OGNI PILLOLA (owner, 13 nov 2026). Cliccando
+   «momento 03», «momenti 04–06» o «momento 07» si apre a destra una colonna
+   che RICHIAMA il momento, non lo ripete: che cosa fa lei, che cosa fa la
+   banca, che cosa cambia. Fatti presi da `momenti.ts` (titoli e corpi già
+   passati dal panel); le etichette brevi della striscia vengono da lì. */
+export const MOMENTO_SCHEMA: Record<'03' | '04-06' | '07', {
+  quando: Testo; attivi: number[]; lei: Testo; banca: Testo; cambia: Testo;
+}> = {
+  '03': {
+    quando: { it: 'La sera stessa', en: 'That same evening' },
+    attivi: [2],
+    lei: { it: 'Simula la rata e lascia l’email per salvarla.', en: 'She simulates the payment and leaves her email to save it.' },
+    banca: { it: 'Le visite delle sere prima, sotto pseudonimo e col consenso, si uniscono al suo profilo.', en: 'The visits from earlier evenings, pseudonymous and under consent, merge into her profile.' },
+    cambia: { it: 'Prima dell’email era un browser; dopo, una persona con una storia.', en: 'Before the email she was a browser; after it, a person with a history.' },
+  },
+  '04-06': {
+    quando: { it: 'I tre giorni dopo', en: 'The next three days' },
+    attivi: [3, 4, 5],
+    lei: { it: 'Si ferma per un documento, riprende il mattino dopo, il mercoledì va in filiale.', en: 'She stops for a document, resumes the next morning, and on Wednesday goes to the branch.' },
+    banca: { it: 'Fra le proposte possibili mostra il promemoria con l’appuntamento, dentro le regole di contatto.', en: 'Among the possible offers it shows the reminder with the appointment, within the contact rules.' },
+    cambia: { it: 'In filiale il gestore ha già aperta la sua simulazione.', en: 'In the branch the adviser already has her simulation open.' },
+  },
+  '07': {
+    quando: { it: 'Tre settimane dopo', en: 'Three weeks later' },
+    attivi: [6],
+    lei: { it: 'Firma e apre il conto: da quel giorno la pratica è nell’app.', en: 'She signs and opens an account: from that day the file is in the app.' },
+    banca: { it: 'Legge sulla stessa persona sito, app e filiale, dal primo clic alla firma.', en: 'It reads site, app and branch on the same person, from the first click to the signature.' },
+    cambia: { it: 'Si vede dove si perdono i non clienti, filiale compresa.', en: 'You can see where non-customers are lost, branch included.' },
+  },
+};
