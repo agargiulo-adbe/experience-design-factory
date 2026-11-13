@@ -110,6 +110,32 @@
 
   // ── il titolo: lo scambio di posto delle due parole ──────────────────────
   function w(t) { var m = document.createElement('span'); m.textContent = t; m.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;'; tEl.appendChild(m); var x = m.getBoundingClientRect().width; tEl.removeChild(m); return x; }
+  // L'iniziale è una lettera doppia, maiuscola e minuscola sovrapposte: il cambio di
+  // forma è una dissolvenza incrociata, e la larghezza della lettera scorre, così
+  // la parola accanto si sposta senza scatti (owner, 14 nov: la C cambiava di colpo).
+  var parole = ['ciascuno', 'conta'];
+  var WU = {}, WL = {};
+  function larghezze(ch) { if (!(ch in WU)) { WU[ch] = w(ch.toUpperCase()); WL[ch] = w(ch); } }
+  function parola(el, word, glifoMaiusc, larghezzaMaiusc) {
+    var ch = word.charAt(0); larghezze(ch);
+    el.innerHTML = '<span class="cc-cap"><span class="cc-cap-u">' + ch.toUpperCase() + '</span><span class="cc-cap-l">' + ch + '</span></span>' + word.slice(1);
+    var c = el.firstChild;
+    c.style.transition = 'none';
+    c.classList.toggle('is-u', glifoMaiusc);
+    c.style.width = (larghezzaMaiusc ? WU[ch] : WL[ch]) + 'px';
+    void c.offsetWidth; c.style.transition = '';
+  }
+  function maiuscola(el, si) {
+    var c = el.firstChild, ch = c.querySelector('.cc-cap-l').textContent;
+    c.classList.toggle('is-u', si); c.style.width = (si ? WU[ch] : WL[ch]) + 'px';
+  }
+  parola(aEl, parole[0], true, true); parola(bEl, parole[1], false, false);
+  // la prima misura può arrivare prima di Poppins: a carattere caricato si rifà
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () {
+    WU = {}; WL = {};
+    if (!ev.s1) { parola(aEl, parole[0], true, true); parola(bEl, parole[1], false, false); }
+  });
+
   function scambia(versoConta) {
     var s = w('a a') - w('aa');
     // a sinistra c'è sempre aEl: si sposta a destra di quanto è larga l'altra parola,
@@ -120,12 +146,15 @@
     // le due parole passano su un arco, una sopra e una sotto, e non si attraversano
     tEl.classList.remove('is-arco'); void tEl.offsetWidth; tEl.classList.add('is-arco');
     setTimeout(function () {
+      parole = [parole[1], parole[0]];
       aEl.style.transition = bEl.style.transition = 'none';
       aEl.style.transform = bEl.style.transform = '';
-      aEl.textContent = versoConta ? 'Conta' : 'Ciascuno';
-      bEl.textContent = versoConta ? 'ciascuno' : 'conta';
+      // a destinazione con la forma che avevano in volo, e la larghezza che serve
+      // perché niente salti; poi le iniziali si scambiano la forma in dissolvenza
+      parola(aEl, parole[0], false, true); parola(bEl, parole[1], true, true);
       aEl.classList.toggle('is-rosso', versoConta); bEl.classList.remove('is-rosso');
       void aEl.offsetWidth; aEl.style.transition = bEl.style.transition = '';
+      requestAnimationFrame(function () { maiuscola(aEl, true); maiuscola(bEl, false); });
     }, 720);
   }
 
@@ -220,7 +249,7 @@
     if (e && e.type === 'keydown') { e.preventDefault(); e.stopPropagation(); }
     var t = performance.now() - T0 + salto;
     if (t < VOLO0 - 50) { salto += VOLO0 - 50 - t; Object.keys({ t: 1, s1: 1, s2: 1 }).forEach(function (k) { ev[k] = 1; });
-      aEl.textContent = 'Ciascuno'; bEl.textContent = 'conta'; aEl.classList.remove('is-rosso'); bEl.classList.remove('is-rosso'); aEl.style.transform = bEl.style.transform = ''; tEl.classList.add('is-on'); }
+      parole = ['ciascuno', 'conta']; parola(aEl, parole[0], true, true); parola(bEl, parole[1], false, false); aEl.classList.remove('is-rosso'); bEl.classList.remove('is-rosso'); aEl.style.transform = bEl.style.transform = ''; tEl.classList.add('is-on'); }
   }
   root.addEventListener('click', chiudi);
   addEventListener('keydown', chiudi, true);
