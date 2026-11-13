@@ -18,7 +18,7 @@ export const TRE: Cosa[] = [
   {
     n: '1', gruppo: 'trovare', prodotto: 'Adobe Brand Visibility',
     t: { it: 'Farsi trovare', en: 'Being found' },
-    riga: { it: 'Chi cerca casa lo chiede anche a un assistente AI. Se l’assistente cita altre tre banche, il confronto si fa su quelle.', en: 'People looking for a home also ask an AI assistant. If it cites three other banks, the comparison happens on those.' },
+    riga: { it: 'Chi cerca un mutuo lo chiede anche agli assistenti AI: si vede dove la banca è citata e che cosa pubblicare per entrare nella risposta.', en: 'People shopping for a mortgage also ask AI assistants: you see where the bank is cited and what to publish to get into the answer.' },
   },
   {
     n: '2', gruppo: 'engagement', prodotto: 'Adobe Experience Platform',

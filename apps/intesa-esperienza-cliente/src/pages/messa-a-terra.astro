@@ -29,7 +29,7 @@ import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import Divisore from '../components/Divisore.astro';
 import fondo from '../assets/generated/cover-innesto.webp';
 import fondoMisura from '../assets/generated/lavoro-07-misura.webp';
-import { TITOLO, CONFINE, OGGI, ACCANTO, EVOLUZIONE, FREQUENZA, DECIDETE, IPOTESI, MOMENTO_SCHEMA } from '../data/innesto';
+import { TITOLO, CONFINE, OGGI, ACCANTO, EVOLUZIONE, IPOTESI, MOMENTO_SCHEMA } from '../data/innesto';
 import { MOMENTI } from '../data/momenti';
 import '../styles/innesto.css';
 
@@ -52,17 +52,17 @@ const CAPACITA = [
   { p: 'AI Decisioning', k: 'sceglie', r: { it: 'Sceglie', en: 'Chooses' }, v: [
     { it: 'Un unico catalogo di offerte', en: 'A single offer catalogue' },
     { it: 'Applica la politica di contatto della banca', en: 'Applies the bank’s contact policy' },
-    { it: 'Priorità e regole; modelli AI dove ci sono dati storici di risposta', en: 'Priority and rules; AI models where response history exists' },
+    { it: 'Priorità e regole; i modelli AI imparano dalle risposte passate', en: 'Priority and rules; AI models learn from past responses' },
   ], g: { it: 'sceglie il promemoria con appuntamento proposto', en: 'picks the reminder with a proposed appointment' } },
   { p: 'Journey Optimizer', k: 'agisce', r: { it: 'Invia', en: 'Sends' }, v: [
     { it: 'Si attiva su un’azione del cliente', en: 'Triggered by a customer action' },
     { it: 'Email, sito, app, SMS', en: 'Email, site, app, SMS' },
     { it: 'Consenso e tetto per canale', en: 'Consent and per-channel cap' },
-  ], g: { it: 'le ricorda la richiesta via email e sul sito; gli annunci di retargeting partono da Real-Time CDP', en: 'reminds her of the application by email and on the site; retargeting ads start from Real-Time CDP' } },
+  ], g: { it: 'le ricorda la richiesta per email e sul sito; gli annunci di retargeting partono da Real-Time CDP', en: 'reminds her of the application by email and on the site; retargeting ads start from Real-Time CDP' } },
   { p: 'Customer Journey Analytics', k: 'misura', r: { it: 'Misura', en: 'Measures' }, v: [
     { it: 'Percorso del cliente su tutti i canali', en: 'The customer journey across every channel' },
-    { it: 'Usa i dati di Adobe Analytics', en: 'Uses Adobe Analytics data' },
-    { it: 'Attribuzione algoritmica delle firme', en: 'Algorithmic attribution of signatures' },
+    { it: 'Comportamento digitale e fonti offline insieme', en: 'Digital behaviour and offline sources together' },
+    { it: 'Quanto pesa ogni canale nei mutui firmati', en: 'How much each channel weighs in signed mortgages' },
   ], g: { it: 'misura quanto è costato acquisirla', en: 'measures what it cost to acquire her' } },
 ];
 const DOC = [
@@ -89,7 +89,7 @@ const TAPPE = [
 ];
 
 const BANCA = [
-  { k: 'sequenza', q: { it: 'In che ordine si muove il cliente?', en: 'In what order does the customer move?' }, t: { it: 'Sequenza dei contatti su tutti i canali, per singolo cliente', en: 'Sequence of contacts across every channel, per customer' } },
+  { k: 'sequenza', q: { it: 'In che ordine si muove una persona?', en: 'In what order does a person move?' }, t: { it: 'Sequenza dei contatti su tutti i canali, per ogni cliente e non‑cliente', en: 'Sequence of contacts across every channel, for every customer and non-customer' } },
   { k: 'sportello', q: { it: 'Quante richieste nate online si firmano in filiale?', en: 'How many online applications are signed in branch?' }, t: { it: 'Firme in filiale attribuite al canale digitale d’origine', en: 'Branch signatures attributed to the originating digital channel' } },
   { k: 'rottura', q: { it: 'Dove si ferma la richiesta?', en: 'Where does the application stop?' }, t: { it: 'Punti di abbandono e chiamate al servizio clienti che ne derivano', en: 'Drop-off points and the customer-service calls they cause' } },
   { k: 'azione', q: { it: 'Che cosa si fa con chi si ferma?', en: 'What happens to those who stop?' }, t: { it: 'Diventa un segmento da ricontattare con Journey Optimizer', en: 'They become a segment to re-contact with Journey Optimizer' } },
@@ -130,17 +130,17 @@ const ENTRA = [
   { t: { it: 'Politica di contatto', en: 'Contact policy' }, d: { it: 'regola vostra', en: 'your rule' } },
 ];
 const RITORNO = [
-  { m: '01', g: 'trovare', k: { it: 'Domande agli assistenti AI in cui la banca non compare', en: 'Questions to AI assistants where the bank does not appear' },
+  { m: '01', g: 'trovare', k: { it: 'Le domande che non vi citavano', en: 'The questions that did not cite you' },
     v: { it: 'Piano dei contenuti', en: 'Content plan' }, p: 'Brand Visibility' },
-  { m: '02', g: 'content', k: { it: 'La variante creativa con la risposta migliore', en: 'Response by creative variant' },
-    v: { it: 'Brief per le prossime iniziative (es. Milano e Bologna)', en: 'Brief for the next initiatives (e.g. Milan and Bologna)' }, p: 'GenStudio' },
+  { m: '02', g: 'content', k: { it: 'La variante che ha funzionato', en: 'The variant that worked' },
+    v: { it: 'Brief per Milano e Bologna', en: 'Brief for Milan and Bologna' }, p: 'GenStudio' },
   /* La riga di AI Decisioning torna (era stata tolta l'11 nov perché parlava di
      «classifica» su un prospect che non ha score): sul prospect la misura
      corregge le REGOLE, non un punteggio. Il numero è quello del momento. */
-  { m: '04', g: 'engagement', k: { it: 'Tasso di risposta per proposta', en: 'Response rate per offer' },
-    v: { it: 'Priorità e regole riviste a fine trimestre', en: 'Priority and rules revised at quarter end' }, p: 'AI Decisioning' },
-  { m: '05', g: 'engagement', k: { it: 'Il passaggio in cui la richiesta si è fermata', en: 'The step where the application stalled' },
-    v: { it: 'Percorso semplificato in quel passaggio', en: 'Journey simplified at that step' }, p: 'Journey Optimizer' },
+  { m: '04', g: 'engagement', k: { it: 'La proposta che ha funzionato', en: 'The offer that worked' },
+    v: { it: 'Regole riviste a fine trimestre', en: 'Rules revised at quarter end' }, p: 'AI Decisioning' },
+  { m: '05', g: 'engagement', k: { it: 'Il punto dove si è fermata', en: 'Where she stalled' },
+    v: { it: 'Un passo in meno nel percorso', en: 'One step fewer in the journey' }, p: 'Journey Optimizer' },
 ];
 ---
 <BaseLayout title={ch.title.it}>
@@ -219,12 +219,16 @@ const RITORNO = [
             <svg class="im-inn-cdp-fr" viewBox="0 0 28 14" aria-hidden="true"><path d="M1 7h24M19 1l6 6-6 6" /></svg>
             <div class="im-inn-fili">
               <span class="im-inn-f"><T as="span" it="score e segmenti" en="scores and segments" /></span>
-              <span class="im-inn-f" data-su><T as="span" it="proposta scelta" en="selected offer" /></span>
+              {/* ⚠️ Qui c'era «proposta scelta», una freccia che saliva verso le
+                  Iniziative commerciali: faceva leggere che AI Decisioning
+                  alimenta lo strumento di campagna di oggi, contro la riga di
+                  confine (owner, 13 nov 2026). La proposta esce sui canali
+                  attraverso Journey Optimizer, e lo dice il riquadro. */}
             </div>
             <div class="im-inn-bx">
               <button type="button" class="im-inn-b" data-pp-open aria-haspopup="dialog">
                 <span class="im-inn-t">Journey Optimizer · AI Decisioning</span>
-                <T as="span" class="im-inn-d" it="Il percorso parte da un’azione del cliente; AI Decisioning sceglie l’offerta da mostrare, entro consenso e regole di contatto" en="The journey starts from a customer action; AI Decisioning picks the offer to show, within consent and contact rules" />
+                <T as="span" class="im-inn-d" it="Il percorso parte da un’azione del cliente; AI Decisioning sceglie l’offerta da mostrare su sito, app ed email, entro consenso e regole di contatto" en="The journey starts from a customer action; AI Decisioning picks the offer to show on site, app and email, within consent and contact rules" />
                 <span class="im-inn-piu" aria-hidden="true">+</span>
               </button>
               <button type="button" class="im-inn-m" data-mom="04-06" aria-controls="im-gm" aria-expanded="false"><span data-lang-it>momenti 04–06</span><span data-lang-en>moments 04–06</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5" /></svg></button>
@@ -238,7 +242,7 @@ const RITORNO = [
             <div class="im-inn-bx im-inn-b--largo">
               <button type="button" class="im-inn-b" data-pp-open aria-haspopup="dialog">
                 <span class="im-inn-t">Customer Journey Analytics</span>
-                <T as="span" class="im-inn-d" it="Legge insieme i dati online di Adobe Analytics e quelli offline di filiale, Filiale Digitale e CRM" en="Reads Adobe Analytics online data together with offline data from branch, Filiale Digitale and CRM" />
+                <T as="span" class="im-inn-d" it="Analisi omnicanale: comportamento digitale e dati di filiale, Filiale Digitale e CRM in un solo percorso" en="Omnichannel analytics: digital behaviour and branch, Filiale Digitale and CRM data in one journey" />
                 <span class="im-inn-piu" aria-hidden="true">+</span>
               </button>
               <button type="button" class="im-inn-m" data-mom="07" aria-controls="im-gm" aria-expanded="false"><span data-lang-it>momento 07</span><span data-lang-en>moment 07</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4.5 2.5 8 6l-3.5 3.5" /></svg></button>
@@ -308,10 +312,6 @@ const RITORNO = [
               </li>
             ))}
           </ol>
-          <div class="im-evo-note">
-            <T as="p" class="im-evo-n" it={FREQUENZA.it} en={FREQUENZA.en} />
-            <T as="p" class="im-evo-n" it={DECIDETE.it} en={DECIDETE.en} />
-          </div>
         </HowItWorks>
         </div>
         <p class="im-fonte-riga">
@@ -356,8 +356,8 @@ const RITORNO = [
     <Slide id="slide-chiave" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Una chiave sola, dal sito alla filiale e oltre la firma" en="One key, from the site to the branch and past the signature" />
-        <T as="p" class="im-ado-l" it="Quando un non‑cliente diventa cliente, quello che ha fatto prima resta attaccato a lui." en="When a non-customer becomes a customer, what they did before stays attached to them." />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Più identificativi, una persona sola: dal sito alla filiale e oltre la firma" en="Many identifiers, one person: from the site to the branch and past the signature" />
+        <T as="p" class="im-ado-l" it="Pseudonimo, email, telefono e NDG si collegano alla stessa persona: quando diventa cliente, la sua storia di prima resta con lei." en="Pseudonym, email, phone and customer ID link to the same person: when she becomes a customer, her earlier history stays with her." />
 
         <div class="im-chv">
           <ol class="im-chv-l">
@@ -381,11 +381,6 @@ const RITORNO = [
           <T as="p" class="im-chv-esito" data-substep it="Per il Controllo di Gestione: si vede quale iniziativa ha portato la firma in filiale, e quanto vale il canale fisico." en="For management control: you can see which initiative led to the branch signature, and what the physical channel is worth." />
         </div>
 
-        <p class="im-fonte-riga">
-          <span data-lang-it>Le visite sotto pseudonimo si attribuiscono alla persona dentro una finestra che dipende dal pacchetto, da 1 a 30 giorni. Unire le sessioni di prima dipende dalla base giuridica, da validare con il DPO. Il consenso resta nel vostro registro. </span><span data-lang-en>Pseudonymous visits are attributed to the person within a window that depends on the package, from 1 to 30 days. Joining earlier sessions depends on the legal basis, to validate with the DPO; consent stays in your register. </span>
-          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/stitching/overview" target="_blank" rel="noopener">Customer Journey Analytics · stitching</a><span> · </span>
-          <a href="https://experienceleague.adobe.com/en/docs/experience-platform/identity/home" target="_blank" rel="noopener">Identity Service</a>
-        </p>
       </div>
     </Slide>
 
@@ -424,7 +419,7 @@ const RITORNO = [
       <div slot="backdrop" class="im-bg-doppia" style={`--bg: url('${fondoMisura.src}')`}></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quanta parte delle firme in filiale passa dal digitale?" en="How much of branch signing passes through digital?" />
-        <T as="p" class="im-ado-l" it="Per misurarlo servono i dati di filiale nello stesso modello di attribuzione." en="Measuring it needs branch data in the same attribution model." />
+        <T as="p" class="im-ado-l" it="Si vede quanto ogni canale digitale porta in filiale, fino alla firma del mutuo." en="You see how much each digital channel brings into the branch, up to the mortgage signing." />
 
         <div class="im-att">
           <div class="im-att-r" data-substep>
@@ -478,13 +473,13 @@ const RITORNO = [
     <Slide id="slide-ritorno" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Come i risultati del pilota migliorano contenuti, offerte e percorsi" en="How the pilot’s results improve content, offers and journeys" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quello che si impara da Giulia rende più facile il prossimo cliente" en="What Giulia teaches makes the next customer easier" />
 
         <div class="im-rt">
           <div class="im-rt-testa" aria-hidden="true">
-            <T as="span" it="Cosa si misura, momento per momento" en="What gets measured, moment by moment" />
+            <T as="span" it="Si impara da Giulia" en="Learned from Giulia" />
             <span></span>
-            <T as="span" it="Cosa si migliora" en="What gets improved" />
+            <T as="span" it="Torna per il prossimo" en="Feeds the next one" />
           </div>
           <ol class="im-rt-l">
             {RITORNO.map((r) => (
@@ -497,11 +492,11 @@ const RITORNO = [
             ))}
           </ol>
           {/* «E Giulia, ora cliente» torna, ma dice il CONFINE invece di proporle
-              una polizza: sul cliente la next best action è del motore della
+              una polizza: sul cliente la Next Best Experience è del motore della
               banca (panel, 11 nov 2026). Così chiude il giro e lo rispetta. */}
           <div class="im-rt-dopo" data-substep>
-            <T as="p" class="im-rt-dk" it="Dopo la firma" en="After signing" />
-            <T as="p" class="im-rt-dv" it="Da cliente decide il vostro motore. Al data lake passano, pseudonimizzati, il gruppo del pilota e il codice pratica; il resto lo decide la fase 0 con il DPO." en="As a customer, your engine decides. The pilot group and the file code pass to the data lake, pseudonymised; the rest is decided in phase 0 with the DPO." />
+            <T as="p" class="im-rt-dk" it="E Giulia, ora cliente" en="And Giulia, now a customer" />
+            <T as="p" class="im-rt-dv" it="Passa al vostro motore con tutta la sua storia: da qui le proposte le sceglie lui." en="She moves to your engine with her whole history: from here on, it chooses the offers." />
           </div>
         </div>
       </div>

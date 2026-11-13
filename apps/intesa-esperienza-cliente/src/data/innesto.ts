@@ -27,14 +27,14 @@ type Testo = { it: string; en: string };
     aggiunge Adobe, e non nomina i sistemi della banca. Fonte unica per il
     percorso intero e per il taglio corto. */
 export const TITOLO: Testo = {
-  it: 'Adobe aggiunge tre componenti ai sistemi attuali',
-  en: 'Adobe adds three components to your current systems',
+  it: 'Tre componenti in più per riconoscere, ingaggiare e misurare chi non è ancora cliente',
+  en: 'Three added components to recognise, engage and measure people who are not yet customers',
 };
 
 /** La riga di confine sul motore. Frase canonica: identica ovunque compaia. */
 export const CONFINE: Testo = {
-  it: 'Sui clienti la next best action resta del vostro motore; il pilota lavora su chi non è ancora cliente.',
-  en: 'For customers the next best action stays with your engine; the pilot works on people who are not customers yet.',
+  it: 'Per i clienti la Next Best Experience resta del vostro motore; Adobe si aggiunge per chi non è ancora cliente.',
+  en: 'For customers the Next Best Experience stays with your engine; Adobe adds what is needed for people who are not customers yet.',
 };
 
 /** L'architettura di oggi, a grandi blocchi: un'ipotesi, e la slide lo dichiara. */
@@ -42,7 +42,7 @@ export const OGGI: { t: Testo; s?: Testo; d: Testo; forte?: boolean; canali?: { 
   { t: { it: 'Data lake', en: 'Data lake' }, d: { it: 'i dati dei clienti', en: 'customer data' } },
   { t: { it: 'Motore di targeting', en: 'Targeting engine' },
     d: { it: 'target e modelli di propensione', en: 'targets and propensity models' }, forte: true },
-  { t: { it: 'Iniziative commerciali', en: 'Commercial initiatives' }, d: { it: 'pianificate e invii massivi', en: 'scheduled and bulk sends' } },
+  { t: { it: 'Iniziative commerciali', en: 'Commercial initiatives' }, d: { it: 'a calendario, con invii massivi', en: 'calendar-based, with bulk sends' } },
   /* Online e offline separati, con un segno ciascuno (call del 13 nov 2026):
      è la distinzione che Customer Journey Analytics tiene insieme. La filiale
      resta DENTRO il perimetro: verso la filiale la banca lavora già. */
@@ -57,7 +57,7 @@ export const OGGI: { t: Testo; s?: Testo; d: Testo; forte?: boolean; canali?: { 
 export const ACCANTO = {
   k: { it: 'Si parte da qui', en: 'Where we start' },
   t: { it: 'Percorsi nuovi su Journey Optimizer', en: 'New journeys on Journey Optimizer' },
-  d: { it: 'le iniziative pianificate restano sullo strumento attuale', en: 'scheduled initiatives stay on the current tool' },
+  d: { it: 'le iniziative a calendario restano sullo strumento di oggi', en: 'calendar-based initiatives stay on today’s tool' },
 };
 
 /** Come possono evolvere le campagne: tre tappe in ordine, nel dettaglio a
@@ -66,11 +66,11 @@ export const ACCANTO = {
     la tappa non porta un numero: porta chi la decide. */
 export const EVOLUZIONE: { segno: string; k: Testo; t: Testo; d: Testo; ora?: boolean }[] = [
   { segno: 'canali', ora: true, k: { it: 'Si parte da qui', en: 'Where we start' }, t: { it: 'Percorsi nuovi', en: 'New journeys' },
-    d: { it: 'I nuovi percorsi automatici nascono su Journey Optimizer; le iniziative pianificate restano sullo strumento attuale.', en: 'New automated journeys are built on Journey Optimizer; scheduled initiatives stay on the current tool.' } },
+    d: { it: 'I nuovi percorsi automatici nascono su Journey Optimizer; le iniziative a calendario restano sullo strumento di oggi.', en: 'New automated journeys are built on Journey Optimizer; calendar-based initiatives stay on today’s tool.' } },
   { segno: 'flusso', k: { it: 'Opzione, a scelta della banca', en: 'Option, the bank’s choice' }, t: { it: 'Migrazione graduale', en: 'Gradual migration' },
-    d: { it: 'Le iniziative pianificate passano su Journey Optimizer una famiglia alla volta.', en: 'Scheduled initiatives move to Journey Optimizer one family at a time.' } },
+    d: { it: 'Le iniziative a calendario passano su Journey Optimizer una famiglia alla volta.', en: 'Calendar-based initiatives move to Journey Optimizer one family at a time.' } },
   { segno: 'archivio', k: { it: 'Opzione, a scelta della banca', en: 'Option, the bank’s choice' }, t: { it: 'Un solo strumento', en: 'One tool' },
-    d: { it: 'Percorsi e iniziative pianificate gestiti in Journey Optimizer.', en: 'Journeys and scheduled initiatives managed in Journey Optimizer.' } },
+    d: { it: 'Percorsi e iniziative a calendario gestiti in Journey Optimizer.', en: 'Journeys and calendar-based initiatives managed in Journey Optimizer.' } },
 ];
 
 /** Una cosa da decidere SUBITO, qualunque tappa si scelga: non è una tappa. */
@@ -115,9 +115,9 @@ export const MOMENTO_SCHEMA: Record<'03' | '04-06' | '07', {
   '03': {
     quando: { it: 'La sera stessa', en: 'That same evening' },
     attivi: [2],
-    lei: { it: 'Simula la rata e lascia l’email per salvarla.', en: 'She simulates the payment and leaves her email to save it.' },
+    lei: { it: 'Simula la rata e, per salvare il risultato, lascia l’email.', en: 'She simulates the payment and, to save the result, leaves her email.' },
     banca: { it: 'Le visite delle sere prima, sotto pseudonimo e col consenso, si uniscono al suo profilo.', en: 'The visits from earlier evenings, pseudonymous and under consent, merge into her profile.' },
-    cambia: { it: 'Prima dell’email era un browser; dopo, una persona con una storia.', en: 'Before the email she was a browser; after it, a person with a history.' },
+    cambia: { it: 'Prima dell’email era un comportamento senza nome; dopo, una persona con una storia.', en: 'Before the email she was behaviour without a name; after it, a person with a history.' },
   },
   '04-06': {
     quando: { it: 'I tre giorni dopo', en: 'The next three days' },

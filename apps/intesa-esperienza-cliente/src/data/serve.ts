@@ -18,7 +18,7 @@ export const SERVE = [
   { fig: 'regia', t: { it: 'La governance', en: 'Governance' },
     chi: { it: 'Targeting · Canali · CRM', en: 'Targeting · Channels · CRM' },
     quando: { it: 'fase 0', en: 'phase 0' },
-    d: { it: 'Sul non‑cliente la classifica la fa AI Decisioning, con le regole scritte insieme. Sul cliente la classifica resta del motore della banca; AI Decisioning applica canale, consenso e politica di contatto. La regola di precedenza la scrivete voi.', en: 'On non-customers AI Decisioning ranks, with rules written together. On customers the ranking stays with your engine, and AI Decisioning applies channel, consent and contact policy. You write the precedence rule.' } },
+    d: { it: 'Sul non‑cliente la classifica la fa AI Decisioning, con le regole che fissate voi. Sul cliente la classifica resta del motore della banca; AI Decisioning applica canale, consenso e politica di contatto. La regola di precedenza la scrivete voi.', en: 'On non-customers AI Decisioning ranks, with the rules you set. On customers the ranking stays with your engine, and AI Decisioning applies channel, consent and contact policy. You write the precedence rule.' } },
   { fig: 'esito', t: { it: 'Il marketing', en: 'Marketing' },
     chi: { it: 'Marketing digitale', en: 'Digital marketing' },
     quando: { it: 'fase 0 e 1', en: 'phases 0 and 1' },

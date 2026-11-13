@@ -21,20 +21,17 @@ const EL = 'https://experienceleague.adobe.com/en/docs';
 export const SCENE: Record<ScenaId, Scena> = {
   cja: {
     prodotto: 'Customer Journey Analytics',
-    cosa: 'Analizza insieme i dati di tutti i canali, partendo da quelli che Adobe Analytics raccoglie già.',
+    cosa: 'Analisi omnicanale: legge insieme il comportamento digitale e le fonti offline, sulla stessa persona.',
     passi: [
-      'Oggi sito e app si leggono in Adobe Analytics. Filiale e Filiale Digitale stanno altrove.',
-      'Customer Journey Analytics importa i dati che Adobe Analytics raccoglie già.',
+      'Oggi il digitale si legge in un posto, filiale e Filiale Digitale in un altro.',
+      'Customer Journey Analytics raccoglie il comportamento su sito e app.',
       'Entrano il CRM di filiale e la Filiale Digitale, una fonte alla volta.',
       'I segmenti e gli score del motore di targeting entrano come attributi del profilo.',
       'Per chi si identifica, simulazione online, contatti e firma in filiale si leggono in un unico percorso.',
       'Le richieste firmate si attribuiscono ai canali, filiale compresa.',
     ],
-    nota: 'Schema illustrativo. Serve un identificativo comune fra le fonti. Finché convivono, Analytics e Customer Journey Analytics si licenziano entrambi. Quanto durano insieme si decide in fase 0.',
-    fonti: [
-      { label: 'Online e offline', url: `${EL}/analytics-platform/using/cja-overview/cja-b2c-overview/cja-faq` },
-      { label: 'Il passaggio da Analytics', url: `${EL}/analytics-platform/using/compare-aa-cja/upgrade-to-cja/cja-upgrade-recommendations` },
-    ],
+    nota: '',
+    fonti: [],
   },
   decisioning: {
     prodotto: 'AI Decisioning',
@@ -44,30 +41,24 @@ export const SCENE: Record<ScenaId, Scena> = {
       'Arrivano ad AI Decisioning come attributi del profilo. Eleggibilità: attributo precalcolato nel profilo, oppure passata dal vostro sistema nella richiesta di decisione.',
       'Per la stessa persona ci sono quattro proposte candidate.',
       'Regole, consenso e politica di contatto escludono quelle non ammesse.',
-      'Sui non‑clienti oggi avete un punteggio o una regola? Se c’è, entra come attributo; se no, valgono la priorità dell’offerta e le regole scritte insieme.',
+      'Se avete già un punteggio sui non‑clienti, entra come attributo; altrimenti valgono la priorità dell’offerta e le regole che fissate voi.',
       'Resta una sola proposta, sul canale ammesso da consenso e regole. L’invio può continuare a passare dagli strumenti attuali.',
       'Customer Journey Analytics misura l’esito sul gruppo di controllo. A fine trimestre, con quel risultato, si rivedono insieme priorità e regole delle proposte.',
     ],
-    nota: 'Schema illustrativo, sistemi attuali da confermare con voi. Sul non‑cliente la classifica la fa AI Decisioning, con le regole scritte insieme. Sul cliente la classifica resta del motore della banca; AI Decisioning applica canale, consenso e politica di contatto.',
-    fonti: [
-      { label: 'Formule di classifica', url: `${EL}/journey-optimizer/using/decisioning/experience-decisioning/experience-decisioning-rankings/ranking-formulas` },
-      { label: 'Decisioning', url: `${EL}/journey-optimizer/using/decisioning/experience-decisioning/gs-experience-decisioning` },
-    ],
+    nota: '',
+    fonti: [],
   },
   cdp: {
     prodotto: 'Real-Time CDP',
     cosa: 'Costruisce il profilo di clienti e non‑clienti. Nel caso di Giulia: prima dal comportamento sul sito, poi dall’email che lascia.',
     passi: [
-      'Giulia visita il sito senza identificarsi: il sistema riconosce solo il browser.',
+      'Giulia visita il sito senza identificarsi: il sistema registra quello che fa, ma non sa ancora chi è.',
       'Simula la rata ed entra in tempo reale nel segmento «mutuo prima casa».',
       'Quando torna, il sito le propone di riprendere la simulazione.',
       'Lascia email e consenso. Le visite fatte sotto pseudonimo si uniscono al suo profilo.',
-      'Da questo momento Journey Optimizer e AI Decisioning usano il suo profilo. Il CRM di filiale resta invariato.',
+      'Ora il profilo ha un nome: oltre a personalizzare il sito, Journey Optimizer può scriverle. Quando prende appuntamento, il lead arriva nel CRM di filiale.',
     ],
-    nota: 'Schema illustrativo. Per personalizzare il sito serve il consenso alla profilazione; per scriverle, il consenso marketing. I profili pseudonimi si cancellano dopo un periodo che scegliete voi, da 1 a 365 giorni.',
-    fonti: [
-      { label: 'Segmentazione edge', url: `${EL}/experience-platform/segmentation/methods/edge-segmentation` },
-      { label: 'Profili pseudonimi', url: `${EL}/experience-platform/profile/pseudonymous-profiles` },
-    ],
+    nota: '',
+    fonti: [],
   },
 };

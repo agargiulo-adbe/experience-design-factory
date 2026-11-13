@@ -94,6 +94,14 @@ const VERBI = [
   { t: { it: 'Creare', en: 'Create' }, p: ['Firefly', 'GenStudio', 'Experience Manager'] },
   { t: { it: 'Attivare', en: 'Activate' }, p: ['Journey Optimizer', 'Target'] },
 ];
+/* IL FILO FRA LE DUE SLIDE (owner, 13 nov 2026: «non è chiara la correlazione
+   della prima con la seconda»). Ogni blocco della slide-cx porta le frecce
+   della slide-chi da cui vengono i suoi prodotti, nella stessa forma e nella
+   stessa tonalità: si riconosce la catena di prima applicata ai bisogni della
+   banca. L'indice è la posizione in VERBI (1–4); 0 è la base, Adobe AI Platform.
+   La mappa segue dove la slide-chi mette i prodotti di ciascun blocco. */
+const FUNZIONI: Record<string, number[]> = { trovare: [1], engagement: [2, 4], contenuto: [3], piattaforma: [1], voce: [0] };
+const etichettaFn = (i: number) => (i === 0 ? { it: 'Adobe AI Platform', en: 'Adobe AI Platform' } : VERBI[i - 1].t);
 
 /* I numeri e i quattro Wave: slide-fsi, di nuovo nel percorso (owner, 13 nov
    2026; l'11 nov il panel l'aveva spostata fuori dalle frecce). */
@@ -129,7 +137,7 @@ const CANALI = [
     d: { it: 'Profilo, decisione e regia del percorso sullo stesso dato.', en: 'Profile, decision and journey orchestration on the same data.' } },
   { g: 'contenuto', t: { it: 'Content Factory', en: 'Content factory' },
     p: 'Adobe GenStudio',
-    d: { it: 'Ogni variante nasce già controllata sulle regole di marchio e di canale; le informative restano nell’iter di approvazione legale.', en: 'Every variant is born already checked against brand and channel rules; disclosures stay in the legal approval process.' } },
+    d: { it: 'Da un solo brief, le varianti per ogni canale e ogni città in poco tempo, già conformi alle regole di marchio.', en: 'From one brief, variants for every channel and city in little time, already compliant with brand rules.' } },
 ];
 const FASCE = [
   { g: 'piattaforma', alta: false,
@@ -222,7 +230,7 @@ const FASCE = [
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <T as="h2" class="im-ado-t" it="Dati, contenuti e decisioni nello stesso sistema" en="Data, content and decisions in the same system" />
-        <T as="p" class="im-ado-l" it="Le quattro funzioni di Adobe CX Enterprise, sullo stesso profilo." en="The four functions of Adobe CX Enterprise, on the same profile." />
+        <T as="p" class="im-ado-l" it="Le quattro funzioni di Adobe CX Enterprise." en="The four functions of Adobe CX Enterprise." />
         <div class="im-cx-fig">
           <ol class="im-cx-catena">
             {VERBI.map((v) => (
@@ -237,10 +245,6 @@ const FASCE = [
             <span class="im-cx-base-d">Experience Platform · CX Enterprise Coworker · agenti Adobe e di terzi</span>
           </div>
         </div>
-        <p class="im-fonte-riga">
-          <span data-lang-it>Al Summit 2026 Adobe ha presentato CX Enterprise, con Experience Platform come strato di contesto: </span><span data-lang-en>At Summit 2026 Adobe introduced CX Enterprise, with Experience Platform as its context layer: </span>
-          <a href="https://news.adobe.com/news/2026/04/adobe-redefines-custome-experience" target="_blank" rel="noopener"><span data-lang-it>comunicato del Summit</span><span data-lang-en>Summit press release</span></a><span data-lang-it>. Nella slide che segue, gli stessi prodotti ordinati sui bisogni della banca.</span><span data-lang-en>. The next slide orders the same products around the bank’s needs.</span>
-        </p>
       </div>
     </Slide>
 
@@ -253,12 +257,13 @@ const FASCE = [
             invece di restare astratto. */}
         <div class="im-orch">
           <T as="h2" class="im-orch-t" it="Orchestrare l’esperienza del cliente" en="Orchestrating the customer experience" />
-          <T as="p" class="im-orch-c" it="Gli stessi componenti servono tutti i canali della banca: filiale, Filiale Digitale, app, sito, aree self-service e media a pagamento." en="The same components serve every channel of the bank: branch, Filiale Digitale, app, site, self-service areas and paid media." />
+          <T as="p" class="im-orch-c" it="Dati, contenuti e decisione nello stesso sistema: per servire clienti e non‑clienti di Intesa Sanpaolo uno per uno: in app, sul sito, in Filiale Digitale e in filiale." en="Data, content and decisioning in one system: to serve Intesa Sanpaolo’s customers and non-customers one by one: in the app, on the site, in Filiale Digitale and in the branch." />
         </div>
         <div class="im-arch" data-reveal data-reveal-delay="0.12">
           <ul class="im-arch-su">
             {CANALI.map((b) => (
               <li class="im-arch-b" data-gruppo={b.g} data-substep>
+                <span class="im-fn" aria-label="Funzioni">{(FUNZIONI[b.g] ?? []).map((i) => <T as="span" class="im-fn-v" data-v={String(i)} it={etichettaFn(i).it} en={etichettaFn(i).en} />)}</span>
                 <T as="span" class="im-arch-t" it={b.t.it} en={b.t.en} />
                 <T as="span" class="im-arch-d" it={(NUMERATA[b.g]?.riga ?? b.d).it} en={(NUMERATA[b.g]?.riga ?? b.d).en} />
                 <span class="im-arch-pro">{b.p}</span>
@@ -268,6 +273,7 @@ const FASCE = [
           {FASCE.map((f) => (
             <section class="im-arch-b im-arch-f" data-gruppo={f.g} data-alta={f.alta ? '' : undefined} data-substep>
               <div class="im-arch-f-t">
+                <span class="im-fn" aria-label="Funzioni">{(FUNZIONI[f.g] ?? []).map((i) => <T as="span" class="im-fn-v" data-v={String(i)} it={etichettaFn(i).it} en={etichettaFn(i).en} />)}</span>
                 <T as="span" class="im-arch-t" it={f.t.it} en={f.t.en} />
                 <span class="im-arch-pro">{f.p}</span>
               </div>
@@ -275,9 +281,6 @@ const FASCE = [
             </section>
           ))}
         </div>
-        {/* I nomi, una volta sola: lo stesso prodotto compariva con tre
-            nomi e l'offerta con tre (panel, 30 ott 2026). */}
-        <T as="p" class="im-fonte-riga" it="I nomi, una volta. CX Analytics è la famiglia della misura: Customer Journey Analytics e Adobe Analytics, che avete. AI decisioning è la capacità di decisione di Journey Optimizer (in documentazione: Decisioning; nei casi pubblici: Offer Decisioning)." en="The names, once. CX Analytics is the measurement family: Customer Journey Analytics and Adobe Analytics, which you have. AI decisioning is Journey Optimizer’s decisioning capability (in the docs: Decisioning; in public cases: Offer Decisioning)." />
       </div>
     </Slide>
 
