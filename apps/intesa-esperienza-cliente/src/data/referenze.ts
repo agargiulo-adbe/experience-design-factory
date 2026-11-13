@@ -165,7 +165,7 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Cas
     ],
     fascia: {
       occ: { it: 'Cinque prodotti Adobe', en: 'Five Adobe products' },
-      testo: { it: 'Journey Optimizer · Real-Time CDP · Customer Journey Analytics · Target · Workfront', en: 'Journey Optimizer · Real-Time CDP · Customer Journey Analytics · Target · Workfront' },
+      testo: { it: 'Journey Optimizer · Real-Time Activation · Customer Journey Analytics · Target · Workfront', en: 'Journey Optimizer · Real-Time Activation · Customer Journey Analytics · Target · Workfront' },
       icona: 'strati',
     },
     fonte: { url: FONTI.creditAgricole, nome: 'business.adobe.com · Crédit Agricole Italia' },

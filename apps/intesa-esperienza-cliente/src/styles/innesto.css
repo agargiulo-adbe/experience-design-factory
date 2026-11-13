@@ -270,7 +270,7 @@
 #slide-innesto .im-inn-cornice { margin-top: calc(-1 * var(--cornice-testa)); }
 #slide-innesto .im-gm { top: calc(-1 * (clamp(0.45rem, calc(0.6 * var(--vu)), 1.2rem) + var(--cornice-testa))); }
 @media (max-height: 820px) { #slide-innesto .im-inn { --cornice-testa: 0.3rem; margin-top: 0; } #slide-innesto .im-inn-n { padding-block: 0.3rem; } #slide-innesto .im-inn-confine { margin-top: 0; } }
-/* 1280: il «+» si riservava 3rem per lato e mandava a capo «Real-Time CDP»;
+/* 1280: il «+» si riservava 3rem per lato e mandava a capo «Real-Time Activation»;
    con la riga in più «al profilo» finiva sotto la pillola del momento. */
 @media (max-width: 1400px) {
   #slide-innesto .im-inn-b { padding-inline: 2.3rem; }
@@ -328,3 +328,397 @@
 @media (prefers-reduced-motion: reduce) { .im-inn-up::before, .im-inn-up::after { animation: none !important; } }
 @media (max-width: 900px) { .im-inn-up { display: none; } }
 
+
+/* ── PERIMETRO E TIPO DI INVIO (13 nov 2026) ─────────────────────────────
+   Dalle fonti: il cliente lavora sui clienti, con invii programmati e su
+   evento (Journey Builder); Adobe entra sui non‑clienti. La pillola piena
+   dice il perimetro, quelle a contorno il tipo di invio. */
+.im-inn-tipi { display: flex; flex-wrap: wrap; gap: 0.2rem 0.25rem; margin-top: 0.15rem; }
+/* Su Journey Optimizer le pillole stanno sotto il nome del prodotto: sul
+   bordo coprivano la freccia «conversioni e audience» a 1280. */
+.im-inn-tipi--b { justify-content: center; margin: 0 0 0.1rem; }
+.im-inn-tipo { display: inline-block; padding: 0 0.55em; border: 1px solid rgba(255, 255, 255, 0.45); border-radius: 999px; font-size: clamp(0.78rem, calc(0.72 * var(--vu)), 1.6rem); line-height: 1.25; color: #ffffff; white-space: nowrap; }
+.im-inn-tipo--k { background: #b9e6a3; border-color: #b9e6a3; color: #0d2b05; font-weight: 700; }
+/* «programmate» sulla freccia NBE → Iniziative: a SINISTRA della freccia,
+   nella metà vuota della cella, così la fila resta su una riga. */
+#slide-innesto .im-inn-f.im-inn-f--tipo > .im-inn-f-k { grid-column: 1; grid-row: 1; justify-self: end; align-self: center; margin-right: 0.55rem; padding: 0 0.55em; font-size: clamp(0.78rem, calc(0.72 * var(--vu)), 1.6rem); line-height: 1.25; white-space: nowrap; }
+#slide-innesto .im-inn-f.im-inn-f--tipo > span:last-child { grid-column: 2; grid-row: 1; align-self: center; }
+.im-evo-nota { margin: 1rem 0 0; padding-left: 0.9rem; border-left: 2px solid #6cc04a; font-size: clamp(1rem, calc(0.94 * var(--vu)), 2.05rem); line-height: 1.4; color: #e3eedf; text-align: left; }
+.im-evo-nota strong { display: block; margin-bottom: 0.2rem; color: #ffffff; }
+/* «score e segmenti» a SINISTRA della sua freccia: fra le due frecce resta
+   lo spazio per la pillola «programmate» (13 nov 2026, a 1280 si toccavano). */
+#slide-innesto .im-inn-f.im-inn-f--sx > span { grid-column: 1; justify-self: end; text-align: right; padding: 0 0.9rem 0 0; white-space: nowrap; }
+@media (max-width: 1399px) {
+  /* Sotto i 1400 la fila delle frecce non ha spazio per tre cose: «score e
+     segmenti» torna a destra della sua freccia (a sinistra toccava la legenda
+     di Experience Platform) e la pillola sulla freccia si toglie. Il
+     «programmate» resta nel sottotitolo e nelle Iniziative commerciali. */
+  #slide-innesto .im-inn-f.im-inn-f--sx > span { grid-column: 2; justify-self: start; text-align: left; padding: 0 0 0 1rem; white-space: normal; }
+  #slide-innesto .im-inn-f.im-inn-f--tipo > .im-inn-f-k { display: none; }
+}
+
+
+/* ── DUE BINARI (owner, 13 nov 2026) ──────────────────────────────────────
+   La slide si proietta in sala e su Teams: il perimetro si legge da fermo,
+   non da un oggetto che si muove. Il COLORE dice per chi: bianco per i
+   clienti, come la cornice della banca; verde per i non‑clienti, come la
+   cornice di Experience Platform. Lo SPESSORE dice che cosa conta: le due
+   Next Best Experience sono linee piene, le frecce dei dati restano
+   tratteggiate, sottili e spente. Il tipo di invio è scritto in parole, col
+   segno accanto. Sui clienti passano le programmate: su evento non si
+   promette (dato in ore, nessuna API al momento dell'invio; note del
+   relatore), quindi il fulmine lì non c'è.
+   Il movimento è uno solo: quando il passo compare, i binari si disegnano
+   dalla sorgente alla destinazione, poi tutto sta fermo. */
+#slide-innesto { --bianco: #ffffff; --verde: #b9e6a3; --dato: rgba(227, 238, 223, 0.72); }
+
+/* Le frecce dei dati: ferme, tratteggiate, spente. */
+#slide-innesto:not([aria-hidden="true"]) .im-inn-f::before,
+#slide-innesto .im-inn-f::before { animation: none; background: repeating-linear-gradient(to bottom, var(--dato) 0 6px, transparent 6px 11px); }
+#slide-innesto .im-inn-f::after { border-top-color: var(--dato); }
+#slide-innesto .im-inn-f[data-su]::after { border-bottom-color: var(--dato); }
+
+/* I due binari. */
+#slide-innesto:not([aria-hidden="true"]) .im-inn-f.im-inn-f--clienti::before,
+#slide-innesto .im-inn-f.im-inn-f--clienti::before { width: 3px; margin-left: -0.5px; background: var(--bianco); }
+#slide-innesto .im-inn-f.im-inn-f--clienti::after { border-bottom-color: var(--bianco); }
+#slide-innesto .im-inn-up--su::before, #slide-innesto .im-inn-up--dx::after { width: 3px; margin-left: -0.5px; background: var(--verde); animation: none !important; }
+#slide-innesto .im-inn-up--dx::before { height: 3px; background: var(--verde); animation: none !important; }
+#slide-innesto .im-inn-up--su::after { border-bottom-color: var(--verde); }
+
+/* Le pillole di perimetro prendono il colore del loro binario. */
+#slide-innesto .im-inn-oggi .im-inn-tipo--k { background: var(--bianco); border-color: var(--bianco); color: #0d2b05; }
+
+/* Le etichette: segno + parola, nello stesso corpo. */
+.im-inn-segno { flex: none; width: 1.2em; height: 1.2em; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+#slide-innesto .im-inn-lab { display: inline-flex; align-items: center; gap: 0.3em; }
+#slide-innesto .im-inn-lab .im-inn-segno { color: #d6f0c9; }
+#slide-innesto .im-inn-lab .im-inn-segno + .im-inn-segno { margin-left: -0.1em; }
+#slide-innesto .im-inn-f--sx > .im-inn-lab, #slide-innesto .im-inn-f--lungo > .im-inn-lab { justify-content: flex-end; }
+#slide-innesto .im-inn-f--lungo > .im-inn-lab { display: flex; }
+#slide-innesto .im-inn-f.im-inn-f--tipo > .im-inn-f-k { display: inline-flex; align-items: center; gap: 0.3em; padding: 0; border: 0; font-size: clamp(0.98rem, calc(0.9 * var(--vu)), 1.95rem); font-weight: 700; color: var(--bianco); }
+#slide-innesto .im-inn-nbe { font-weight: 700; }
+#slide-innesto .im-inn-f--clienti .im-inn-nbe { color: var(--bianco); }
+
+/* Il binario verde: il nome sulla linea, i due tipi subito sotto. */
+#slide-innesto .im-inn-up--dx > .im-inn-nbe-l { bottom: auto; top: calc(78% - 1.2em); display: grid; gap: 0.35em; white-space: nowrap; line-height: 1.12; }
+#slide-innesto .im-inn-up--dx .im-inn-nbe { color: var(--verde); }
+#slide-innesto .im-inn-nbe-tipi { display: grid; gap: 0.1rem; font-weight: 700; color: var(--verde); }
+#slide-innesto .im-inn-nbe-tipi > span { display: inline-flex; white-space: nowrap; align-items: center; gap: 0.3em; }
+
+/* Il segno sulla freccia da Real-Time Activation: il profilo che passa. */
+.im-inn-cdp-segno { position: absolute; right: 100%; bottom: calc(clamp(2.6rem, calc(3.4 * var(--vu)), 6rem) + clamp(2.2rem, calc(3 * var(--vu)), 6rem) / 2 - 0.1rem); width: clamp(2.2rem, calc(3 * var(--vu)), 6rem); display: grid; justify-items: center; font-size: clamp(0.98rem, calc(0.9 * var(--vu)), 1.95rem); color: #d6f0c9; pointer-events: none; }
+@media (max-width: 900px) { .im-inn-cdp-segno { display: none; } }
+
+/* Il disegno, una volta: quando il passo compare. */
+@keyframes im-inn-traccia-y { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes im-inn-traccia-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes im-inn-compare { from { opacity: 0; } to { opacity: 1; } }
+#slide-innesto .im-inn-dec[data-substep-active] .im-inn-f--clienti::before { transform-origin: 50% 100%; animation: im-inn-traccia-y 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both; }
+#slide-innesto .im-inn-dec[data-substep-active] .im-inn-f--clienti::after,
+#slide-innesto .im-inn-dec[data-substep-active] .im-inn-f--clienti > * { animation: im-inn-compare 0.35s ease-out 0.6s both; }
+#slide-innesto .im-inn-cja[data-substep-active] .im-inn-up--dx::before { transform-origin: 0 50%; animation: im-inn-traccia-x 0.3s linear 0.2s both !important; }
+#slide-innesto .im-inn-cja[data-substep-active] .im-inn-up--dx::after { transform-origin: 50% 100%; animation: im-inn-traccia-y 0.2s linear 0.5s both !important; }
+#slide-innesto .im-inn-cja[data-substep-active] .im-inn-up--su::before { transform-origin: 50% 100%; animation: im-inn-traccia-y 0.35s cubic-bezier(0.16, 1, 0.3, 1) 0.7s both !important; }
+#slide-innesto .im-inn-cja[data-substep-active] .im-inn-up--su::after,
+#slide-innesto .im-inn-cja[data-substep-active] .im-inn-nbe-l { animation: im-inn-compare 0.35s ease-out 0.95s both; }
+@media (prefers-reduced-motion: reduce) {
+  #slide-innesto .im-inn-dec[data-substep-active] .im-inn-f--clienti::before,
+  #slide-innesto .im-inn-dec[data-substep-active] .im-inn-f--clienti::after,
+  #slide-innesto .im-inn-dec[data-substep-active] .im-inn-f--clienti > *,
+  #slide-innesto .im-inn-cja[data-substep-active] .im-inn-up::before,
+  #slide-innesto .im-inn-cja[data-substep-active] .im-inn-up::after,
+  #slide-innesto .im-inn-cja[data-substep-active] .im-inn-nbe-l { animation: none !important; }
+}
+
+/* «score e segmenti» a destra della sua linea a ogni larghezza: a sinistra
+   toccava l'etichetta di Experience Platform (1440). */
+#slide-innesto .im-inn-f.im-inn-f--sx > span { grid-column: 2; justify-self: start; text-align: left; padding: 0 0 0 1rem; white-space: nowrap; }
+#slide-innesto .im-inn-f--sx > .im-inn-lab { justify-content: flex-start; }
+/* I due binari si scrivono allo stesso modo: il nome, e sotto il tipo di
+   invio. Sulla freccia bianca il tipo è uno solo. */
+#slide-innesto .im-inn-f--clienti > .im-inn-nbe-l { display: grid; gap: 0.2em; line-height: 1.12; }
+#slide-innesto .im-inn-f--clienti .im-inn-nbe-tipi { color: var(--bianco); }
+/* L'etichetta bianca sta fra le due cornici e a schermo grande ne taglia il
+   bordo: un fondo scuro come quello delle legende, e il bordo le passa dietro. */
+#slide-innesto .im-inn-dec .im-inn-f.im-inn-f--clienti > span { position: relative; z-index: 1; justify-self: start; margin: 0 0 calc(var(--cornice-testa) + clamp(0.45rem, calc(0.6 * var(--vu)), 1.2rem) - 0.1rem) 0.55rem; padding: 0.1rem 0.4rem; border-radius: 6px; background: #0b1f06; }
+/* 1280×800: l'etichetta verde sale di poco, perché i due tipi non tocchino
+   Customer Journey Analytics. */
+@media (max-height: 820px) {
+  #slide-innesto .im-inn-up--dx > .im-inn-nbe-l { top: calc(78% - 1.2em - 0.35rem); gap: 0.22em; }
+  #slide-innesto .im-inn-nbe-tipi { gap: 0.22em; }
+  /* La seconda riga sotto la freccia bianca allunga il corridoio: il margine
+     sotto l'etichetta si accorcia di altrettanto, e il titolo resta
+     nell'area sicura. */
+  #slide-innesto .im-inn-dec .im-inn-f.im-inn-f--clienti > span { margin-bottom: 0.1rem; }
+  #slide-innesto .im-inn-f--clienti > .im-inn-nbe-l { gap: 0.22em; }
+}
+/* Sotto i 1400 px le colonne sono strette: i nomi dei binari tornano al
+   peso normale e stanno nella loro cella; il colore porta il perimetro. */
+@media (max-width: 1399px) {
+  #slide-innesto .im-inn-nbe, #slide-innesto .im-inn-nbe-tipi { font-weight: 400; }
+}
+/* Sotto i 1400 px l'etichetta bianca non incontra bordi: niente fondo, e
+   l'altezza resta quella che tiene il titolo nell'area sicura. */
+@media (max-width: 1399px) {
+  #slide-innesto .im-inn-dec .im-inn-f.im-inn-f--clienti > span { margin-left: 0; padding: 0 0 0 0.6rem; background: none; }
+}
+
+/* «Real-Time Activation» (owner, 13 nov 2026) è più lungo di «Real-Time
+   CDP». Sotto i 1400 px il «+» del riquadro scende sul bordo in basso a
+   destra, come la pillola del momento sul bordo in basso a sinistra: il
+   titolo ha tutta la larghezza e sta su una riga. */
+@media (max-width: 1399px) {
+  #slide-innesto .im-inn-b--cdp { padding-inline: 0.45rem; }
+  #slide-innesto .im-inn-b--cdp .im-inn-piu { top: auto; bottom: -1.15rem; right: 0.6rem; }
+  #slide-innesto .im-inn-b--cdp .im-inn-t { white-space: nowrap; }
+}
+
+/* ── LE CARTE (owner, 13 nov 2026) ────────────────────────────────────────
+   A riposo la slide dice i ruoli e il perimetro; il resto sta sul retro.
+   Fronte e retro occupano la stessa cella: la carta è alta quanto la faccia
+   più alta, e girandola non cambia niente intorno. La faccia nascosta è
+   `visibility: hidden` (a metà giro), così non si legge, non si clicca e i
+   gate non la misurano sopra l'altra. */
+#slide-innesto .im-inn-n.im-carta-li { display: grid; min-height: 0; padding: 0; border: 0; background: none; perspective: 1200px; }
+#slide-innesto .im-carta { display: grid; width: 100%; height: 100%; margin: 0; padding: 0; border: 0; border-radius: 12px; background: none; color: inherit; font: inherit; text-align: inherit; cursor: pointer; }
+#slide-innesto .im-carta:focus-visible { outline: 3px solid #ffffff; outline-offset: 3px; }
+#slide-innesto .im-carta-in { display: grid; height: 100%; transform-style: preserve-3d; transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
+#slide-innesto .im-carta-f, #slide-innesto .im-carta-r { grid-area: 1 / 1; display: grid; align-content: center; gap: 0.25rem; min-width: 0; border-radius: 12px; backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: visibility 0s linear 0.2s, opacity 0.2s ease, border-color 0.2s ease; }
+#slide-innesto .im-carta-r { transform: rotateY(180deg); visibility: hidden; }
+#slide-innesto .im-carta[data-girata] .im-carta-in { transform: rotateY(180deg); }
+#slide-innesto .im-carta[data-girata] .im-carta-r { visibility: visible; }
+#slide-innesto .im-carta[data-girata] .im-carta-f { visibility: hidden; }
+
+/* Le carte del perimetro di oggi: il vetro di prima, sulle due facce. */
+#slide-innesto .im-inn-oggi .im-carta-f, #slide-innesto .im-inn-oggi .im-carta-r { min-height: clamp(5.4rem, calc(6.6 * var(--vu)), 12rem); padding: 0.8rem 1.1rem; background: rgba(255, 255, 255, 0.07); border: 1px solid rgba(255, 255, 255, 0.28); }
+#slide-innesto .im-inn-n[data-forte] .im-carta-f, #slide-innesto .im-inn-n[data-forte] .im-carta-r { border: 2px solid #ffffff; background: rgba(255, 255, 255, 0.13); }
+#slide-innesto .im-inn-oggi .im-carta:hover .im-carta-f { border-color: rgba(255, 255, 255, 0.6); }
+#slide-innesto .im-inn-oggi .im-carta-r { background: rgba(255, 255, 255, 0.13); }
+.im-carta-k { font-size: clamp(0.78rem, calc(0.72 * var(--vu)), 1.55rem); font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: #b9e6a3; }
+@media (max-height: 820px) {
+  #slide-innesto .im-inn-oggi .im-carta-f, #slide-innesto .im-inn-oggi .im-carta-r { min-height: 0; padding: 0.3rem 0.75rem; }
+}
+
+/* Le carte Adobe: il verde pieno di prima, sulle due facce. */
+#slide-innesto .im-carta--aep { cursor: pointer; border-radius: 12px; perspective: 1200px; }
+#slide-innesto .im-carta--aep:focus-visible { outline: 3px solid #ffffff; outline-offset: 3px; }
+#slide-innesto .im-carta--aep .im-carta-f, #slide-innesto .im-carta--aep .im-carta-r { justify-items: center; padding: 0.85rem 1.2rem; background: #1f7400; color: #ffffff; text-align: center; }
+#slide-innesto .im-carta--aep:hover .im-carta-f { background: #258900; }
+#slide-innesto .im-carta--aep .im-carta-r { background: #2a7d0c; }
+#slide-innesto .im-carta--aep .im-inn-d { color: #ffffff; }
+#slide-innesto .im-inn-bx--cdp.im-carta--aep { height: 100%; }
+@media (max-height: 820px) { #slide-innesto .im-carta--aep .im-carta-f, #slide-innesto .im-carta--aep .im-carta-r { padding-block: 0.35rem; } }
+@media (max-width: 1399px) { #slide-innesto .im-carta--aep .im-carta-f, #slide-innesto .im-carta--aep .im-carta-r { padding-inline: 0.6rem; } }
+/* Sul retro: il momento e «Come funziona», in fila, nello stesso segno. */
+#slide-innesto .im-carta-az { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.35rem 0.45rem; margin-top: 0.2rem; }
+#slide-innesto .im-carta-az .im-inn-m { position: static; translate: none; }
+#slide-innesto .im-carta-pp { display: inline-flex; }
+.im-carta-come { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.06rem 0.45rem 0.06rem 0.6rem; border-radius: 999px; border: 1px solid #ffffff; background: #ffffff; white-space: nowrap; font-family: var(--font-body); font-size: clamp(0.75rem, calc(0.66 * var(--vu)), 1.4rem); font-weight: 700; letter-spacing: 0.03em; line-height: 1.35; color: #1f7400; cursor: pointer; }
+.im-carta-come svg { width: 0.75em; height: 0.75em; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.im-carta-come:focus-visible { outline: 3px solid #ffffff; outline-offset: 2px; }
+
+/* Le pillole di perimetro: bianco per i clienti, verde per i non‑clienti. */
+#slide-innesto .im-inn-tipo--nc { background: var(--verde); border-color: var(--verde); color: #0d2b05; font-weight: 700; }
+#slide-innesto .im-inn-tipo--v { background: var(--verde); border-color: var(--verde); color: #0d2b05; font-weight: 700; }
+
+/* Il resto si abbassa, le frecce della carta si accendono. Le etichette
+   delle frecce dei dati compaiono solo con la loro carta. */
+#slide-innesto [data-luce] { transition: opacity 0.3s ease; }
+#slide-innesto .is-spento { opacity: 0.3; }
+#slide-innesto [data-muto] > .im-inn-lab, #slide-innesto i[data-muto] { transition: opacity 0.25s ease, visibility 0s linear 0.25s; }
+#slide-innesto [data-muto]:not(.is-acceso) > .im-inn-lab, #slide-innesto i[data-muto]:not(.is-acceso) { opacity: 0; visibility: hidden; }
+#slide-innesto [data-muto].is-acceso > .im-inn-lab, #slide-innesto i[data-muto].is-acceso { transition-delay: 0s; }
+
+/* I Servizi comuni si aprono dalla legenda di Experience Platform. */
+#slide-innesto .im-inn-cornice--aep { pointer-events: none; }
+#slide-innesto .im-inn-legenda--aep { pointer-events: auto; display: inline-flex; align-items: center; gap: 0.4em; border: 0; font-family: inherit; line-height: inherit; cursor: pointer; }
+#slide-innesto .im-inn-legenda--aep svg { width: 0.85em; height: 0.85em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; transition: rotate 0.2s ease; }
+#slide-innesto .im-inn-legenda--aep[aria-expanded="true"] svg { rotate: 45deg; }
+#slide-innesto .im-inn-legenda--aep:focus-visible { outline: 3px solid #ffffff; outline-offset: 2px; }
+#slide-innesto p.im-inn-svc { transition: opacity 0.25s ease, visibility 0s linear 0s; }
+#slide-innesto p.im-inn-svc[data-chiuso] { opacity: 0; visibility: hidden; transition: opacity 0.2s ease, visibility 0s linear 0.2s; }
+
+/* LA CORRISPONDENZA. La freccia bianca entra sotto «programmate» (la
+   posizione `--rx` la misura lo script); quando arriva, la pillola si
+   riempie di bianco con un solo impulso e «su evento» si spegne. Sulla
+   freccia resta solo il nome, in bianco pieno e senza fondo. */
+#slide-innesto .im-inn-dec .im-inn-f.im-inn-f--clienti { grid-template-columns: var(--rx, 30%) minmax(0, 1fr); }
+#slide-innesto .im-inn-dec .im-inn-f.im-inn-f--clienti::before { left: var(--rx, 30%); }
+#slide-innesto .im-inn-dec .im-inn-f.im-inn-f--clienti::after { left: calc(var(--rx, 30%) - 5px); }
+#slide-innesto .im-inn-dec .im-inn-f.im-inn-f--clienti > .im-inn-nbe { margin: 0; padding-left: 0.65rem; background: none; border-radius: 0; color: #ffffff; font-weight: 700; white-space: normal; text-wrap: balance; }
+@media (max-width: 1399px) { #slide-innesto .im-inn-dec .im-inn-f.im-inn-f--clienti > .im-inn-nbe { font-weight: 700; } }
+@keyframes im-inn-match { 0% { background: transparent; color: #ffffff; box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.75); } 55% { background: #ffffff; color: #0d2b05; box-shadow: 0 0 0 0.55rem rgba(255, 255, 255, 0); } 100% { background: #ffffff; border-color: #ffffff; color: #0d2b05; box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } }
+@keyframes im-inn-spegni { to { opacity: 0.45; } }
+#slide-innesto:has(.im-inn-dec[data-substep-active]) .im-inn-tipo[data-match] { font-weight: 700; animation: im-inn-match 0.6s ease-out 0.8s both; }
+#slide-innesto:has(.im-inn-dec[data-substep-active]) .im-inn-tipo[data-spento] { animation: im-inn-spegni 0.4s ease-out 0.8s both; }
+
+/* Il binario verde: il nome sopra la linea, i due tipi in pillola sotto. */
+#slide-innesto .im-inn-nbe-tipi { display: flex; flex-wrap: wrap; gap: 0.25rem; font-weight: 400; }
+#slide-innesto .im-inn-up--dx .im-inn-nbe-tipi .im-inn-tipo { color: #0d2b05; }
+
+
+@media (prefers-reduced-motion: reduce) {
+  #slide-innesto .im-carta-in { transition: none; }
+  #slide-innesto .im-carta-r, #slide-innesto .im-carta[data-girata] .im-carta-in { transform: none; }
+  #slide-innesto .im-carta-f, #slide-innesto .im-carta-r { backface-visibility: visible; transition: opacity 0.2s ease, visibility 0s; }
+  #slide-innesto .im-carta-r { opacity: 0; }
+  #slide-innesto .im-carta[data-girata] .im-carta-r { opacity: 1; }
+  #slide-innesto .im-carta[data-girata] .im-carta-f { opacity: 0; }
+  #slide-innesto .im-inn-tipo[data-match], #slide-innesto .im-inn-tipo[data-spento] { animation-duration: 0.01s !important; animation-delay: 0s !important; }
+}
+#slide-innesto .im-inn-bx--cdp .im-carta-az { flex-wrap: nowrap; gap: 0.3rem; }
+/* Le carte sono pulsanti: dichiarano il bianco del loro testo (il gate del
+   contrasto legge il colore del pulsante, che altrimenti eredita l'inchiostro
+   scuro della slide). */
+#slide-innesto .im-carta { color: #ffffff; }
+/* Altezza (1440×900): «Iniziative commerciali» va su due righe con le sue
+   pillole. Le carte di oggi respirano un po' meno in verticale, e
+   l'etichetta bianca sta più vicina al bordo di Experience Platform. */
+@media (max-width: 1599px) and (min-height: 821px) {
+  #slide-innesto .im-inn-oggi .im-carta-f, #slide-innesto .im-inn-oggi .im-carta-r { padding-block: 0.55rem; }
+  #slide-innesto .im-inn-dec .im-inn-f.im-inn-f--clienti > .im-inn-nbe { padding-bottom: calc(var(--cornice-testa) + 0.2rem); }
+}
+/* 1280: il momento e «Come funziona» in una riga sul retro di Real-Time
+   Activation. */
+@media (max-width: 1399px) {
+  #slide-innesto .im-inn-bx--cdp .im-carta-f, #slide-innesto .im-inn-bx--cdp .im-carta-r { padding-inline: 0.3rem; }
+  #slide-innesto .im-inn-bx--cdp .im-carta-az { gap: 0.2rem; }
+  #slide-innesto .im-inn-bx--cdp .im-carta-az .im-inn-m, #slide-innesto .im-inn-bx--cdp .im-carta-come { padding-inline: 0.4rem 0.35rem; letter-spacing: 0; }
+}
+
+/* ── 14 nov 2026 · LA VERSIONE CHE TIENE INSIEME LE DUE (owner) ────────────
+   PERSONA E CAMPAGNA. [clienti] e [non‑clienti] dicono chi è la persona:
+   pillola tonda e piena, nel colore del perimetro. [programmate] e [su evento]
+   dicono com'è fatta la campagna: etichetta ad angoli appena smussati, solo
+   contorno, col segno davanti. Nell'animazione l'etichetta si riempie del
+   colore della sua persona. */
+#slide-innesto .im-chi { border-radius: 999px; font-weight: 700; }
+#slide-innesto .im-chi--c { background: var(--bianco); border-color: var(--bianco); color: #0d2b05; }
+#slide-innesto .im-chi--nc { background: var(--verde); border-color: var(--verde); color: #0d2b05; }
+#slide-innesto .im-come { display: inline-flex; align-items: center; gap: 0.25em; border-radius: 4px; border: 1px solid rgba(255, 255, 255, 0.6); background: transparent; color: #ffffff; font-weight: 400; }
+#slide-innesto .im-come .im-inn-segno { width: 1em; height: 1em; color: currentColor; stroke-width: 2; }
+#slide-innesto .im-carta--aep .im-inn-tipi--b { justify-content: center; gap: 0.25rem; }
+/* Il riempimento «una volta» della versione di ieri si toglie: ora lo fa il ciclo. */
+#slide-innesto:has(.im-inn-dec[data-substep-active]) .im-come[data-match] { animation: none; }
+
+/* IL GIRO: la carta si ribalta come una bascula, sull'asse orizzontale. Su
+   una carta larga come Customer Journey Analytics il giro laterale spostava
+   troppo; questo resta nella sua altezza. */
+#slide-innesto .im-carta-r { transform: rotateX(180deg); }
+#slide-innesto .im-carta[data-girata] .im-carta-in { transform: rotateX(180deg); }
+#slide-innesto .im-carta-f, #slide-innesto .im-carta-r { position: relative; }
+/* Il segno che dice «si gira»: piccolo, sempre nello stesso angolo. */
+#slide-innesto .im-carta-f > .im-inn-segno[data-k="giro"] { position: absolute; top: 0.45rem; right: 0.5rem; width: clamp(0.85rem, calc(0.85 * var(--vu)), 1.8rem); height: auto; color: #ffffff; opacity: 0.4; transition: opacity 0.2s ease; }
+#slide-innesto .im-carta:hover .im-carta-f > .im-inn-segno[data-k="giro"] { opacity: 0.95; }
+#slide-innesto .im-carta-segni { display: flex; gap: 0.45rem; color: #b9e6a3; }
+#slide-innesto .im-carta-segni .im-inn-segno { width: clamp(1.3rem, calc(1.35 * var(--vu)), 2.7rem); height: auto; }
+@media (prefers-reduced-motion: reduce) { #slide-innesto .im-carta-r, #slide-innesto .im-carta[data-girata] .im-carta-in { transform: none; } }
+
+/* LE ETICHETTE DEI DATI restano sempre, in tono basso; con la loro carta
+   tornano a piena luce. Così si ricordano, e la gerarchia resta. */
+#slide-innesto [data-muto]:not(.is-acceso) > .im-inn-lab, #slide-innesto i[data-muto]:not(.is-acceso) { opacity: 0.55; visibility: visible; }
+
+/* I COLORI. Il verde chiaro è solo del perimetro dei non‑clienti. Le frecce
+   del processo di oggi e quelle dei dati stanno nel bianco tenue. La freccia
+   da Real-Time Activation porta un dato (il profilo): è tratteggiata. */
+#slide-innesto .im-inn-fr { stroke: var(--dato); }
+.im-inn-cdp-dati { position: absolute; right: 100%; width: clamp(2.2rem, calc(3 * var(--vu)), 6rem); height: 2px; bottom: calc(clamp(2.6rem, calc(3.4 * var(--vu)), 6rem) + clamp(2.2rem, calc(3 * var(--vu)), 6rem) / 4); background: repeating-linear-gradient(to right, var(--dato) 0 6px, transparent 6px 11px); pointer-events: none; }
+.im-inn-cdp-dati::after { content: ''; position: absolute; right: -1px; top: -5px; border: 6px solid transparent; border-right: 0; border-left: 6px solid var(--dato); }
+@media (max-width: 900px) { .im-inn-cdp-dati { display: none; } }
+
+/* I DUE NOMI «Next Best Experience», nella stessa fascia e nello stesso
+   modo: accanto alla loro freccia, a destra, in bianco per i clienti e in
+   verde per i non‑clienti. */
+#slide-innesto .im-inn-up--su > .im-inn-nbe-l { position: absolute; left: calc(var(--x) + 0.65rem); top: 50%; max-width: calc(92% - var(--x) - 1.3rem); translate: 0 calc(-50% - (var(--cornice-testa) + clamp(0.45rem, calc(0.6 * var(--vu)), 1.2rem)) / 2); line-height: 1.12; font-size: clamp(0.98rem, calc(0.9 * var(--vu)), 1.95rem); text-wrap: balance; }
+#slide-innesto .im-inn-up--su .im-inn-nbe { color: var(--verde); font-weight: 700; }
+@media (max-height: 820px) { #slide-innesto .im-inn-up--su > .im-inn-nbe-l { translate: 0 calc(-50% - (var(--cornice-testa) + 0.2rem) / 2); } }
+
+/* LA LEGENDA DELLE FRECCE, sul bordo della cornice della banca, a destra. */
+#slide-innesto .im-inn-legenda--frecce { left: auto; right: 1rem; display: flex; align-items: center; gap: 0.9rem; font-weight: 400; letter-spacing: 0; text-transform: none; }
+.im-lg { display: inline-flex; align-items: center; gap: 0.35em; }
+.im-lg > i { display: inline-block; width: 1.7em; height: 3px; }
+.im-lg--nbe > i { background: linear-gradient(to right, #ffffff 0 50%, #b9e6a3 50% 100%); }
+.im-lg--dati > i { height: 2px; background: repeating-linear-gradient(to right, rgba(227, 238, 223, 0.72) 0 5px, transparent 5px 9px); }
+.im-lg--oggi > i { position: relative; height: 2px; width: 1.4em; background: rgba(227, 238, 223, 0.72); }
+.im-lg--oggi > i::after { content: ''; position: absolute; right: -2px; top: -4px; border: 5px solid transparent; border-right: 0; border-left: 5px solid rgba(227, 238, 223, 0.72); }
+@media (max-width: 900px) { #slide-innesto .im-inn-legenda--frecce { display: none; } }
+
+/* COME ENTRANO I DATI, sul bordo inferiore di Experience Platform, a
+   sinistra: le icone a riposo, i nomi con un clic. */
+#slide-innesto .im-inn-ingresso { position: absolute; left: 1rem; bottom: calc(-1 * clamp(0.45rem, calc(0.6 * var(--vu)), 1.2rem)); translate: 0 50%; z-index: 3; pointer-events: auto; display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.12rem 0.65rem; border-radius: 999px; border: 1px solid rgba(185, 230, 163, 0.55); background: #0b1f06; color: #ffffff; font-family: inherit; font-size: clamp(0.78rem, calc(0.72 * var(--vu)), 1.55rem); line-height: 1.3; white-space: nowrap; cursor: pointer; }
+#slide-innesto .im-inn-ingresso:focus-visible { outline: 3px solid #ffffff; outline-offset: 2px; }
+.im-ing-k { font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: #b9e6a3; }
+.im-ing-i { display: inline-flex; align-items: center; gap: 0.3em; }
+.im-ing-i .im-inn-segno { width: 1.25em; height: 1.25em; color: #ffffff; }
+.im-ing-n { display: none; }
+#slide-innesto .im-inn-ingresso[aria-expanded="true"] .im-ing-n { display: inline; }
+#slide-innesto .im-inn[data-svc-aperto] .im-inn-ingresso { visibility: hidden; }
+@media (max-width: 900px) { #slide-innesto .im-inn-ingresso { display: none; } }
+
+/* IL CICLO DELLE DUE NEXT BEST EXPERIENCE (owner, 14 nov 2026): l'unico
+   movimento continuo della slide, perché è la distinzione da capire. Ogni
+   7 secondi: un impulso bianco sale nelle Iniziative e accende «programmate»;
+   poi Journey Optimizer accende le sue pillole e un impulso verde va ai
+   Canali. Parte quando entrambi i binari sono in pagina, si ferma mentre
+   una carta è girata, e con meno movimento le pillole restano accese ferme. */
+#slide-innesto { --ciclo: 7s; }
+.im-impulso { position: absolute; container-type: size; pointer-events: none; z-index: 2; font-style: normal; }
+.im-impulso > b { position: absolute; left: 0; top: 0; width: 10px; height: 10px; margin: -5px 0 0 -4px; border-radius: 50%; opacity: 0; }
+.im-impulso--su { top: 0; bottom: 0; left: var(--rx, 30%); width: 3px; }
+.im-impulso--su > b { background: #ffffff; box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.75); }
+.im-impulso--elle { top: 0; left: calc(-1 * var(--gap)); width: calc(var(--gap) + var(--x) + 2px); height: calc(78% + 2px); }
+.im-impulso--prosegue { top: 0; bottom: 0; left: var(--x); width: 3px; }
+.im-impulso--elle > b, .im-impulso--prosegue > b { background: #b9e6a3; box-shadow: 0 0 10px 3px rgba(185, 230, 163, 0.8); }
+@keyframes im-ciclo-su { 0% { opacity: 0; translate: 0 100cqh; } 2% { opacity: 1; } 13% { opacity: 1; translate: 0 0; } 15%, 100% { opacity: 0; translate: 0 0; } }
+@keyframes im-ciclo-elle { 0%, 52% { opacity: 0; translate: 0 100cqh; } 53% { opacity: 1; } 58% { translate: 100cqw 100cqh; } 62% { opacity: 1; translate: 100cqw 0; } 62.01%, 100% { opacity: 0; translate: 100cqw 0; } }
+@keyframes im-ciclo-prosegue { 0%, 62% { opacity: 0; translate: 0 100cqh; } 62.01% { opacity: 1; translate: 0 100cqh; } 67% { opacity: 1; translate: 0 0; } 69%, 100% { opacity: 0; translate: 0 0; } }
+@keyframes im-ciclo-bianco { 0%, 12% { background: transparent; color: #ffffff; border-color: rgba(255, 255, 255, 0.6); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); } 16% { background: #ffffff; color: #0d2b05; border-color: #ffffff; box-shadow: 0 0 0 0.45rem rgba(255, 255, 255, 0); } 42% { background: #ffffff; color: #0d2b05; border-color: #ffffff; box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } 48%, 100% { background: transparent; color: #ffffff; border-color: rgba(255, 255, 255, 0.6); } }
+@keyframes im-ciclo-verde { 0%, 48% { background: transparent; color: #ffffff; border-color: rgba(255, 255, 255, 0.6); box-shadow: 0 0 0 0 rgba(185, 230, 163, 0.7); } 52% { background: #b9e6a3; color: #0d2b05; border-color: #b9e6a3; box-shadow: 0 0 0 0.45rem rgba(185, 230, 163, 0); } 88% { background: #b9e6a3; color: #0d2b05; border-color: #b9e6a3; box-shadow: 0 0 0 0 rgba(185, 230, 163, 0); } 94%, 100% { background: transparent; color: #ffffff; border-color: rgba(255, 255, 255, 0.6); } }
+@keyframes im-ciclo-alone-b { 0%, 12% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); } 18% { box-shadow: 0 0 0 0.45rem rgba(255, 255, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } }
+@keyframes im-ciclo-alone-v { 0%, 48% { box-shadow: 0 0 0 0 rgba(185, 230, 163, 0.8); } 54% { box-shadow: 0 0 0 0.45rem rgba(185, 230, 163, 0); } 100% { box-shadow: 0 0 0 0 rgba(185, 230, 163, 0); } }
+@keyframes im-ciclo-canali { 0%, 66% { box-shadow: 0 0 0 0 rgba(185, 230, 163, 0); } 70% { box-shadow: 0 0 0 3px rgba(185, 230, 163, 0.9); } 86%, 100% { box-shadow: 0 0 0 0 rgba(185, 230, 163, 0); } }
+#slide-innesto:not([aria-hidden="true"]):has(.im-inn-cja[data-substep-active]) .im-inn:not([data-carta]) .im-impulso--su > b { animation: im-ciclo-su var(--ciclo) linear infinite; }
+#slide-innesto:not([aria-hidden="true"]):has(.im-inn-cja[data-substep-active]) .im-inn:not([data-carta]) .im-impulso--elle > b { animation: im-ciclo-elle var(--ciclo) linear infinite; }
+#slide-innesto:not([aria-hidden="true"]):has(.im-inn-cja[data-substep-active]) .im-inn:not([data-carta]) .im-impulso--prosegue > b { animation: im-ciclo-prosegue var(--ciclo) linear infinite; }
+#slide-innesto:not([aria-hidden="true"]):has(.im-inn-cja[data-substep-active]) .im-inn:not([data-carta]) .im-come[data-match] { animation: im-ciclo-bianco var(--ciclo) ease-out infinite; }
+#slide-innesto:not([aria-hidden="true"]):has(.im-inn-cja[data-substep-active]) .im-inn:not([data-carta]) .im-chi--c { animation: im-ciclo-alone-b var(--ciclo) ease-out infinite; }
+#slide-innesto:not([aria-hidden="true"]):has(.im-inn-cja[data-substep-active]) .im-inn:not([data-carta]) .im-come--nc { animation: im-ciclo-verde var(--ciclo) ease-out infinite; }
+#slide-innesto:not([aria-hidden="true"]):has(.im-inn-cja[data-substep-active]) .im-inn:not([data-carta]) [data-carta="ajo"] .im-chi--nc { animation: im-ciclo-alone-v var(--ciclo) ease-out infinite; }
+#slide-innesto:not([aria-hidden="true"]):has(.im-inn-cja[data-substep-active]) .im-inn:not([data-carta]) [data-carta="canali"] .im-carta-f { animation: im-ciclo-canali var(--ciclo) ease-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  #slide-innesto .im-impulso > b { animation: none !important; opacity: 0; }
+  #slide-innesto:has(.im-inn-cja[data-substep-active]) .im-come[data-match] { animation: none !important; background: #ffffff; color: #0d2b05; border-color: #ffffff; }
+  #slide-innesto:has(.im-inn-cja[data-substep-active]) .im-come--nc { animation: none !important; background: #b9e6a3; color: #0d2b05; border-color: #b9e6a3; }
+  #slide-innesto .im-chi, #slide-innesto [data-carta="canali"] .im-carta-f { animation: none !important; }
+}
+/* I due nomi vanno a capo nello stesso punto («Next Best / Experience»),
+   a ogni larghezza: stessa forma per le due frecce. */
+#slide-innesto .im-inn-up--su > .im-inn-nbe-l, #slide-innesto .im-inn-dec .im-inn-f.im-inn-f--clienti > .im-inn-nbe { max-width: 8.2em; }
+#slide-innesto .im-inn-dec .im-inn-f.im-inn-f--clienti > .im-inn-nbe { justify-self: start; }
+/* Le tracce verticali degli impulsi contengono il punto (10 px): larghe
+   12 px e centrate sulla linea, così il punto non sborda. */
+#slide-innesto .im-impulso--su { width: 12px; left: calc(var(--rx, 30%) - 4.5px); }
+#slide-innesto .im-impulso--prosegue { width: 12px; left: calc(var(--x) - 4.5px); }
+#slide-innesto .im-impulso--su > b, #slide-innesto .im-impulso--prosegue > b { left: 1px; margin: -5px 0 0 0; }
+
+/* ── 14 nov 2026 · TITOLO SU UNA RIGA, NOMI NBE FRA LE DUE CORNICI ─────────
+   Il titolo nuovo è più corto e sta su una riga: l'altezza liberata va allo
+   spazio fra la cornice della banca e quella di Experience Platform.
+   I due «Next Best Experience» stanno lì in mezzo, alla stessa altezza, e
+   non toccano nessuno dei due bordi: la posizione la misura lo script
+   (`--nbe-y`), che decide anche se stanno su una riga (dove c'è spazio fra
+   le due frecce) o vanno a capo tutti e due, e se serve allunga la fascia. */
+[data-slide] #slide-innesto h2.im-ado-t, #slide-innesto .im-ado-t { max-width: none; }
+#slide-innesto .im-inn-dec .im-inn-f.im-inn-f--clienti > span.im-inn-nbe,
+#slide-innesto .im-inn-up--su > .im-inn-nbe-l { position: absolute; z-index: 1; grid-area: auto; background: none; border-radius: 0; bottom: auto; top: var(--nbe-y, 50%); translate: 0 -50%; margin: 0; padding: 0; max-width: none; white-space: nowrap; line-height: 1.12; font-size: clamp(0.98rem, calc(0.9 * var(--vu)), 1.95rem); font-weight: 700; }
+#slide-innesto .im-inn-dec .im-inn-f.im-inn-f--clienti > span.im-inn-nbe { left: calc(var(--rx, 30%) + 0.45rem); }
+#slide-innesto .im-inn-up--su > .im-inn-nbe-l { left: calc(var(--x) + 0.45rem); }
+#slide-innesto .im-inn[data-nbe-a-capo] .im-inn-dec .im-inn-f.im-inn-f--clienti > span.im-inn-nbe,
+#slide-innesto .im-inn[data-nbe-a-capo] .im-inn-up--su > .im-inn-nbe-l { white-space: normal; max-width: 6.6em; }
+/* L'etichetta bianca non prende una cella della griglia: in assoluto, il suo
+   riferimento resta il filo intero (senza il margine interno), come la verde. */
+#slide-innesto .im-inn-f.im-inn-f--tipo.im-inn-f--clienti > span.im-inn-nbe { grid-column: auto; grid-row: auto; }
+/* 1440×900: le due etichette NBE vanno a capo e la fascia fra le cornici
+   cresce; l'altezza si recupera fra il sottotitolo e lo schema. */
+@media (min-height: 821px) and (max-height: 940px) { #slide-innesto .im-inn { margin-top: 0.3rem; } }

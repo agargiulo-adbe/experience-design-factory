@@ -27,22 +27,28 @@ type Testo = { it: string; en: string };
     aggiunge Adobe, e non nomina i sistemi della banca. Fonte unica per il
     percorso intero e per il taglio corto. */
 export const TITOLO: Testo = {
-  it: 'Tre componenti in più per riconoscere, ingaggiare e misurare chi non è ancora cliente',
-  en: 'Three added components to recognise, engage and measure people who are not yet customers',
+  it: 'Riconoscere, ingaggiare e misurare anche chi non è ancora cliente',
+  en: 'Recognise, engage and measure people who are not yet customers too',
 };
 
 /** La riga di confine sul motore. Frase canonica: identica ovunque compaia. */
 export const CONFINE: Testo = {
-  it: 'Per i clienti la Next Best Experience resta del vostro motore; Adobe si aggiunge per chi non è ancora cliente.',
-  en: 'For customers the Next Best Experience stays with your engine; Adobe adds what is needed for people who are not customers yet.',
+  it: 'Sui non‑clienti sceglie AI Decisioning, con le vostre regole; sui clienti il vostro motore, affiancato sulle programmate.',
+  en: 'For non-customers AI Decisioning chooses, within your rules; for customers your engine, supported on scheduled sends.',
 };
 
 /** L'architettura di oggi, a grandi blocchi: un'ipotesi, e la slide lo dichiara. */
-export const OGGI: { t: Testo; s?: Testo; d: Testo; forte?: boolean; canali?: { k: 'online' | 'offline'; t: Testo; d: Testo }[] }[] = [
+export const OGGI: { t: Testo; s?: Testo; d: Testo; forte?: boolean; tipi?: (Testo & { k?: boolean })[]; canali?: { k: 'online' | 'offline'; t: Testo; d: Testo }[] }[] = [
   { t: { it: 'Data lake', en: 'Data lake' }, d: { it: 'i dati dei clienti', en: 'customer data' } },
   { t: { it: 'Motore di targeting', en: 'Targeting engine' },
     d: { it: 'target e modelli di propensione', en: 'targets and propensity models' }, forte: true },
-  { t: { it: 'Iniziative commerciali', en: 'Commercial initiatives' }, d: { it: 'a calendario, con invii massivi', en: 'calendar-based, with bulk sends' } },
+  /* ⚠️ 13 nov 2026: «a calendario, con invii massivi» era una nostra
+     deduzione e le fonti la smentiscono. Il cliente lavora quasi solo sui
+     clienti («di campagne sui prospect non ne facciamo», check dell'11 nov)
+     e ha già percorsi su comportamento in Journey Builder (incontro del
+     22 ott). Quindi: perimetro clienti, invii programmati E su evento. */
+  { t: { it: 'Iniziative commerciali', en: 'Commercial initiatives' }, d: { it: 'sui clienti, programmate e su evento', en: 'for customers, scheduled and event-based' },
+    tipi: [{ it: 'clienti', en: 'customers', k: true }, { it: 'programmate', en: 'scheduled' }, { it: 'su evento', en: 'event-based' }] },
   /* Online e offline separati, con un segno ciascuno (call del 13 nov 2026):
      è la distinzione che Customer Journey Analytics tiene insieme. La filiale
      resta DENTRO il perimetro: verso la filiale la banca lavora già. */
@@ -57,7 +63,7 @@ export const OGGI: { t: Testo; s?: Testo; d: Testo; forte?: boolean; canali?: { 
 export const ACCANTO = {
   k: { it: 'Si parte da qui', en: 'Where we start' },
   t: { it: 'Percorsi nuovi su Journey Optimizer', en: 'New journeys on Journey Optimizer' },
-  d: { it: 'le iniziative a calendario restano sullo strumento di oggi', en: 'calendar-based initiatives stay on today’s tool' },
+  d: { it: 'le iniziative sui clienti restano sullo strumento di oggi', en: 'initiatives for customers stay on today’s tool' },
 };
 
 /** Come possono evolvere le campagne: tre tappe in ordine, nel dettaglio a
@@ -66,12 +72,24 @@ export const ACCANTO = {
     la tappa non porta un numero: porta chi la decide. */
 export const EVOLUZIONE: { segno: string; k: Testo; t: Testo; d: Testo; ora?: boolean }[] = [
   { segno: 'canali', ora: true, k: { it: 'Si parte da qui', en: 'Where we start' }, t: { it: 'Percorsi nuovi', en: 'New journeys' },
-    d: { it: 'I nuovi percorsi automatici nascono su Journey Optimizer; le iniziative a calendario restano sullo strumento di oggi.', en: 'New automated journeys are built on Journey Optimizer; calendar-based initiatives stay on today’s tool.' } },
+    d: { it: 'I nuovi percorsi automatici nascono su Journey Optimizer; le iniziative sui clienti restano sullo strumento di oggi.', en: 'New automated journeys are built on Journey Optimizer; initiatives for customers stay on today’s tool.' } },
   { segno: 'flusso', k: { it: 'Opzione, a scelta della banca', en: 'Option, the bank’s choice' }, t: { it: 'Migrazione graduale', en: 'Gradual migration' },
-    d: { it: 'Le iniziative a calendario passano su Journey Optimizer una famiglia alla volta.', en: 'Calendar-based initiatives move to Journey Optimizer one family at a time.' } },
+    d: { it: 'Le iniziative sui clienti passano su Journey Optimizer una famiglia alla volta.', en: 'Initiatives for customers move to Journey Optimizer one family at a time.' } },
   { segno: 'archivio', k: { it: 'Opzione, a scelta della banca', en: 'Option, the bank’s choice' }, t: { it: 'Un solo strumento', en: 'One tool' },
-    d: { it: 'Percorsi e iniziative a calendario gestiti in Journey Optimizer.', en: 'Journeys and calendar-based initiatives managed in Journey Optimizer.' } },
+    d: { it: 'Percorsi e iniziative sui clienti gestiti in Journey Optimizer.', en: 'Journeys and initiatives for customers managed in Journey Optimizer.' } },
 ];
+
+/** AI Decisioning sulle iniziative di oggi, sui clienti (13 nov 2026).
+    Verificato su Experience League («Batch decisioning in direct mail»,
+    batch export use case: le decisioni esportate per un CRM o un email
+    service provider) e sul canale Slack del prodotto: un'API da chiamare al
+    momento dell'invio non è il modello documentato, e la risposta non ha
+    uno SLA. Il dato dei clienti rientra in ore (descrizione del partner del
+    cliente, call del 16 ott): su evento si valuta con loro. */
+export const AFFIANCA: { t: Testo; d: Testo } = {
+  t: { it: 'AI Decisioning accanto al vostro strumento di campagna', en: 'AI Decisioning alongside your campaign tool' },
+  d: { it: 'Sulle iniziative programmate sui clienti AI Decisioning esporta le proposte, e il vostro strumento le invia. Su quelle su evento si valuta insieme: oggi il dato dei clienti arriva in ore, non in minuti.', en: 'On scheduled initiatives to customers, AI Decisioning exports the offers and your tool sends them. Event-based ones are assessed together: customer data arrives in hours today, not minutes.' },
+};
 
 /** Una cosa da decidere SUBITO, qualunque tappa si scelga: non è una tappa. */
 export const FREQUENZA: Testo = {
@@ -116,7 +134,7 @@ export const MOMENTO_SCHEMA: Record<'03' | '04-06' | '07', {
     quando: { it: 'La sera stessa', en: 'That same evening' },
     attivi: [2],
     lei: { it: 'Simula la rata e, per salvare il risultato, lascia l’email.', en: 'She simulates the payment and, to save the result, leaves her email.' },
-    banca: { it: 'Le visite delle sere prima, sotto pseudonimo e col consenso, si uniscono al suo profilo.', en: 'The visits from earlier evenings, pseudonymous and under consent, merge into her profile.' },
+    banca: { it: 'Le visite delle sere prima, fatte senza lasciare il nome, si uniscono al suo profilo col consenso.', en: 'The visits from earlier evenings, pseudonymous and under consent, merge into her profile.' },
     cambia: { it: 'Prima dell’email era un comportamento senza nome; dopo, una persona con una storia.', en: 'Before the email she was behaviour without a name; after it, a person with a history.' },
   },
   '04-06': {

@@ -52,7 +52,7 @@ const MAPPA = [
     { n: 'Media pagato', d: { it: 'le piattaforme pubblicitarie', en: 'the advertising platforms' } },
   ] },
   { stato: 'nuovo', t: { it: 'Si aggiunge', en: 'Gets added' }, v: [
-    { n: 'Real-Time CDP', d: { it: 'il profilo, che riceve il consenso dal registro e lo applica', en: 'the profile, which receives consent from the register and applies it' } },
+    { n: 'Real-Time Activation', d: { it: 'il profilo, che riceve il consenso dal registro e lo applica', en: 'the profile, which receives consent from the register and applies it' } },
     { n: 'Journey Optimizer', d: { it: 'percorsi a evento, e la scelta dell’offerta (AI Decisioning)', en: 'event-driven journeys, and offer selection (AI Decisioning)' } },
     { n: 'Customer Journey Analytics', d: { it: 'la misura unica, Analytics compreso', en: 'the one measurement, Analytics included' } },
     { n: 'Brand Visibility', d: { it: 'come comparite nelle risposte generate', en: 'how you show up in generated answers' } },
@@ -158,19 +158,19 @@ const FRECCE = [
      alla porta dello sportello. */
   { da: 'Sito e app', a: 'Experience Platform', d: { it: 'eventi in sessione via Web SDK su AEM on-premise: doppia raccolta o migrazione, si sceglie in fase 0', en: 'in-session events via Web SDK on on-premise AEM: dual collection, or migration with forwarding to Analytics; chosen in phase 0, and the first to design' }, aperta: true },
   { da: 'Adobe Analytics', a: 'Customer Journey Analytics', d: { it: 'gli eventi di sito e app, via connettore', en: 'site and app events, via connector' } },
-  { da: 'Registro dei consensi', a: 'Real-Time CDP', d: { it: 'stato e data del consenso, in continuo', en: 'consent status and date, continuously' } },
+  { da: 'Registro dei consensi', a: 'Real-Time Activation', d: { it: 'stato e data del consenso, in continuo', en: 'consent status and date, continuously' } },
   { da: 'Journey Optimizer', a: 'CRM di filiale', d: { it: 'lead, appuntamento e simulazione, via API del CRM', en: 'lead, appointment and simulation, via the CRM’s API' } },
   { da: 'CRM di filiale', a: 'Profilo e misura', d: { it: 'appuntamento tenuto, pratica, delibera: il ritorno che chiude l’imbuto', en: 'appointment held, application, approval: the return that closes the funnel' } },
   { da: 'Core banking', a: 'Arbitro', d: { it: 'Eleggibilità: attributo precalcolato nel profilo, oppure passata dal vostro sistema nella richiesta di decisione', en: 'Eligibility: precomputed attribute in the profile, or passed by your system in the decision request' }, aperta: true },
-  { da: 'Real-Time CDP', a: 'Piattaforme pubblicitarie', d: { it: 'pubblico e soppressione di chi ha firmato · con il consenso di profilazione · giornaliero · da validare con il DPO', en: 'audience and suppression of those who signed · with profiling consent · daily · to validate with the DPO' }, aperta: true },
+  { da: 'Real-Time Activation', a: 'Piattaforme pubblicitarie', d: { it: 'pubblico e soppressione di chi ha firmato · con il consenso di profilazione · giornaliero · da validare con il DPO', en: 'audience and suppression of those who signed · with profiling consent · daily · to validate with the DPO' }, aperta: true },
   { da: 'Postazione Filiale Digitale', a: 'API di decisione', d: { it: 'la stessa decisione, chiesta dall’operatore', en: 'the same decision, requested by the agent' }, aperta: true },
-  { da: 'Data lake', a: 'Real-Time CDP', d: { it: 'attributi dei clienti, batch notturno', en: 'customer attributes, nightly batch' }, dopo: true },
+  { da: 'Data lake', a: 'Real-Time Activation', d: { it: 'attributi dei clienti, batch notturno', en: 'customer attributes, nightly batch' }, dopo: true },
   { da: 'Motore di targeting', a: 'Arbitro', d: { it: 'score dei clienti, batch notturno', en: 'customer scores, nightly batch' }, dopo: true },
 ];
 /* ⚠️ Panel dell'11 nov 2026: le frecce sono diventate dieci, e la forma è
    rimasta (contenuto · verso · modo; le incerte tratteggiate). L'arbitro NON
    chiama il core in sincrono: quando decide lavora su profilo, dataset e
-   contesto passati nella richiesta. Il media pagato passa da Real-Time CDP,
+   contesto passati nella richiesta. Il media pagato passa da Real-Time Activation,
    non da Journey Optimizer, che un canale social non ce l'ha. */
 
 /* Dove sta ogni dato, e i quattro punti della riga del CRM: il panel li ha
@@ -228,7 +228,7 @@ const CRM = [
 const CASI = [
   { da: { it: 'Simulazione sul sito', en: 'Simulation on the site' }, a: { it: 'Gestore in filiale', en: 'Adviser in the branch' },
     t: { it: 'Chi non vi conosce, riconosciuto in filiale', en: 'Someone who does not know you, recognised in the branch' },
-    serve: { it: 'Un’identità nata da una visita sotto pseudonimo, un percorso verso il CRM di filiale e una misura unica fra digitale e sportello.', en: 'An identity that starts from a pseudonymous visit, a journey that hands lead and simulation to the branch CRM, and one measurement holding digital and counter together.' },
+    serve: { it: 'Un’identità nata da una visita fatta senza lasciare il nome, un percorso verso il CRM di filiale e una misura unica fra digitale e sportello.', en: 'An identity that starts from a pseudonymous visit, a journey that hands lead and simulation to the branch CRM, and one measurement holding digital and counter together.' },
     pezzi: { it: 'A pezzi separati: il sito non sa chi è, la filiale ignora la simulazione, e nessuno dei due sa dell’altro.', en: 'With the pieces apart: the site does not know who it is, the branch is unaware of the simulation, and neither knows about the other.' } },
   { da: { it: 'Quattro proposte', en: 'Four proposals' }, a: { it: 'Una, sul canale giusto', en: 'One, on the right channel' },
     t: { it: 'Una politica di contatto sui canali di invio', en: 'A contact policy across the sending channels' },
@@ -285,7 +285,7 @@ const DOMANDE_CJA = [
 ];
 
 /* ══════════════════════════════════════════════════════════════════════
-   IL PROFILO — Real-Time CDP. Quattro passaggi e UNA scelta di disegno.
+   IL PROFILO — Real-Time Activation. Quattro passaggi e UNA scelta di disegno.
    La scelta è la slide 56 del deck del 5 novembre («duplicare o federare
    il profilo»), e la verifica sta su due fonti: la guida GTM di
    Real-Time CDP su Field Readiness (30 ott 2026) e la documentazione
@@ -479,7 +479,7 @@ const DECIDE = [
       </div>
     </Slide>
 
-    {/* ── Il profilo · Real-Time CDP ───────────────────────────────── */}
+    {/* ── Il profilo · Real-Time Activation ───────────────────────────────── */}
     <Slide id="slide-ingaggio-profilo" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
@@ -519,8 +519,8 @@ const DECIDE = [
         <p class="im-fonte-riga">
           <span data-lang-it>La seconda strada è </span><span data-lang-en>The second route is </span>
           <a href="https://experienceleague.adobe.com/en/docs/federated-audience-composition/using/overview" target="_blank" rel="noopener">Federated Audience Composition</a><span
-            data-lang-it>: un modulo a parte di Real-Time CDP e Journey Optimizer. Lavora solo su un elenco chiuso di database (Redshift, Synapse, Databricks, BigQuery, Fabric, Oracle, Snowflake, Teradata, Vertica). Il mutuo vuole la prima strada: riconoscimento in sessione, decisione a evento. Verificato l’11 nov 2026: </span>
-          <span data-lang-en>: a separate module of Real-Time CDP and Journey Optimizer. It works only on a closed list of databases (Redshift, Synapse, Databricks, BigQuery, Fabric, Oracle, Snowflake, Teradata, Vertica). For the mortgage case the first route is needed (in-session recognition, event-driven decision). Verified 11 Nov 2026: </span>
+            data-lang-it>: un modulo a parte di Real-Time Activation e Journey Optimizer. Lavora solo su un elenco chiuso di database (Redshift, Synapse, Databricks, BigQuery, Fabric, Oracle, Snowflake, Teradata, Vertica). Il mutuo vuole la prima strada: riconoscimento in sessione, decisione a evento. Verificato l’11 nov 2026: </span>
+          <span data-lang-en>: a separate module of Real-Time Activation and Journey Optimizer. It works only on a closed list of databases (Redshift, Synapse, Databricks, BigQuery, Fabric, Oracle, Snowflake, Teradata, Vertica). For the mortgage case the first route is needed (in-session recognition, event-driven decision). Verified 11 Nov 2026: </span>
           <a href="https://experienceleague.adobe.com/en/docs/federated-audience-composition/using/connections/home" target="_blank" rel="noopener"><span data-lang-it>database supportati</span><span data-lang-en>supported databases</span></a>
           <a class="im-torna" href={TORNA}><span data-lang-it>← Torna ai quattro componenti</span><span data-lang-en>← Back to the four components</span></a>
         </p>
@@ -792,7 +792,7 @@ const DECIDE = [
 
         <p class="im-fonte-riga">
           <span data-lang-it>I quattro passi sono uno schema nostro. Il controllo sul marchio è documentato: </span><span data-lang-en>The four steps are our own framing. Brand checking is documented: </span>
-          <a href="https://experienceleague.adobe.com/en/docs/genstudio-for-performance-marketing/user-guide/guidelines/brand-validation" target="_blank" rel="noopener">GenStudio · brand validation</a>
+          <a href="https://experienceleague.adobe.com/en/docs/genstudio-for-performance-marketing/user-guide/guidelines/brand-validation" target="_blank" rel="noopener">GenStudio for Performance Marketing · brand validation</a>
         </p>
       </div>
     </Slide>

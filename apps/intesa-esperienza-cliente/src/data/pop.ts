@@ -49,13 +49,13 @@ export const SCENE: Record<ScenaId, Scena> = {
     fonti: [],
   },
   cdp: {
-    prodotto: 'Real-Time CDP',
+    prodotto: 'Real-Time Activation',
     cosa: 'Costruisce il profilo di clienti e non‑clienti. Nel caso di Giulia: prima dal comportamento sul sito, poi dall’email che lascia.',
     passi: [
       'Giulia visita il sito senza identificarsi: il sistema registra quello che fa, ma non sa ancora chi è.',
       'Simula la rata ed entra in tempo reale nel segmento «mutuo prima casa».',
       'Quando torna, il sito le propone di riprendere la simulazione.',
-      'Lascia email e consenso. Le visite fatte sotto pseudonimo si uniscono al suo profilo.',
+      'Lascia email e consenso. Le visite fatte prima di lasciare il nome si uniscono al suo profilo.',
       'Ora il profilo ha un nome: oltre a personalizzare il sito, Journey Optimizer può scriverle. Quando prende appuntamento, il lead arriva nel CRM di filiale.',
     ],
     nota: '',
