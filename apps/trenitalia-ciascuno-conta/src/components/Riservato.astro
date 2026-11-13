@@ -33,7 +33,11 @@ const SUPABASE_ANON = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 const ORDER = CHAPTERS.map((c) => c.slug);
 const BASE = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 ---
-<script is:inline define:vars={{ SUPABASE_URL, SUPABASE_ANON, ORDER, RISERVATI, BASE }}>
+<!-- ⚠️ `data-astro-rerun`: lo script è identico su ogni pagina, e senza il ClientRouter
+     non lo riesegue: resta la funzione della PRIMA pagina caricata, con il suo elenco dei
+     capitoli riservati. Una prima pagina in cache da prima di un deploy che aggiunge un
+     capitolo riservato lo lascia nella nav pubblica (successo con l'Annex, 13 nov 2026). -->
+<script is:inline data-astro-rerun define:vars={{ SUPABASE_URL, SUPABASE_ANON, ORDER, RISERVATI, BASE }}>
 (function () {
   var TK = 'cc:riservato:t';
   var LK = 'cc:riservato:layer';

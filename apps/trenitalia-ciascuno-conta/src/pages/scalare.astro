@@ -8,7 +8,7 @@ import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import CoBrand from '../components/CoBrand.astro';
 import Folla from '../components/Folla.astro';
-import { COVER, ROTTA, RUOLI, PASSO } from '../data/contenuti';
+import { COVER, ROTTA, RUOLI, PASSO, ATTI } from '../data/contenuti';
 import foto from '../assets/stock/scalare.webp';
 
 /**
@@ -20,6 +20,8 @@ const SLUG = 'scalare';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
+// Il prossimo passo come prima stazione del percorso: l'ora, poi i quattro atti.
+const STAZIONI = [PASSO.ora, ...ATTI.atti.map((a) => ({ q: a.q.split(' · ')[0], v: a.v, d: a.esce }))];
 ---
 <BaseLayout title={ch.title.it}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -61,9 +63,21 @@ const currentPath = Astro.url.pathname;
 
     <Slide id="slide-passo" bg="primary" align="left" data-tono="scuro" data-pubblico>
       <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl cc-folla-sl" data-reveal>
-        <h2 class="xd-h2 cc-h-grande">{PASSO.titolo}</h2>
-        <p class="xd-sub">{PASSO.sub}</p>
+      <div class="xd-sl cc-passo" data-reveal>
+        <div class="xd-sl-head">
+          <h2 class="xd-h2 cc-passo-h">{PASSO.titolo}</h2>
+          <p class="xd-sub">{PASSO.sub}</p>
+        </div>
+        <ol class="cc-passo-linea" style={`--n:${STAZIONI.length}`} data-stagger>
+          {STAZIONI.map((s, i) => (
+            <li data-ora={i === 0 ? '' : undefined}>
+              <span class="cc-passo-nodo" aria-hidden="true"></span>
+              <p class="cc-passo-q">{s.q}</p>
+              <p class="cc-passo-v">{s.v}</p>
+              <p class="cc-passo-d">{s.d}</p>
+            </li>
+          ))}
+        </ol>
       </div>
     </Slide>
 

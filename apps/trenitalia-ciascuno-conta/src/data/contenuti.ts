@@ -58,7 +58,7 @@ export const ATTI = {
     { n: '2', v: 'Capire e provare', q: 'dic – feb · cancello a fine gennaio', serve: ['risposta', 'prova'], da: 0.5, a: 3,
       esce: 'Dove si perde la vendita, e un test sul venduto' },
     { n: '3', v: 'Decidere', q: 'marzo', serve: ['prova', 'consenso'], da: 3, a: 4,
-      esce: 'La giornata: dai risultati al consenso' },
+      esce: 'La giornata: dai\u00a0risultati al consenso' },
     { n: '4', v: 'Scalare', q: 'apr – giu', serve: ['risposta', 'consenso'], da: 4, a: 7,
       esce: 'I primi casi d’uso in produzione' },
   ],
@@ -229,4 +229,6 @@ export const RUOLI = {
 export const PASSO = {
   titolo: 'Il prossimo passo: un’ora per scegliere i casi d’uso',
   sub: 'Con il vostro team e con Accenture, entro fine novembre.',
+  /** La prima stazione della linea: l'ora apre il percorso, gli atti seguono da ATTI. */
+  ora: { q: 'fine novembre', v: 'Un’ora', d: 'Si scelgono i casi d’uso da provare' },
 };
