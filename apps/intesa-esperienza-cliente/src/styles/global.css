@@ -5015,3 +5015,44 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 #slide-chi .im-cx-verbo { height: clamp(7.5rem, calc(11 * var(--vu)), 21rem); font-size: clamp(1.7rem, calc(2.3 * var(--vu)), 4.6rem); }
 #slide-chi .im-cx-base { padding-block: clamp(1rem, calc(1.4 * var(--vu)), 2.6rem); }
 @media (max-height: 820px) { #slide-chi .im-cx-verbo { height: 6.5rem; } }
+
+/* ── «ORCHESTRARE L'ESPERIENZA DEL CLIENTE» SI RACCONTA PRIMA (13 nov 2026) ──
+   Il primo elemento della slide è la promessa, da sola: la testata arriva al
+   centro, grande, e chi presenta la introduce. Con ↓ la testata SALE e si
+   riduce fino al suo posto, e da lì partono i blocchi: la frase diventa
+   l'intestazione della mappa che la mantiene. Una sola trasformazione per la
+   continuità, niente animazioni sparse.
+   Senza JavaScript, con «Riduci movimento», in PDF e negli audit la slide
+   resta quella di sempre: tutto visibile e fermo. */
+#slide-cx .im-orch-c strong { font-weight: 700; color: #b9e6a3; }
+/* Il filo non occupa spazio: è assoluto, e c'è solo quando la testata è sola. */
+#slide-cx .im-orch { position: relative; }
+#slide-cx .im-orch::after {
+  content: ''; position: absolute; left: 50%; bottom: calc(-1 * clamp(0.8rem, calc(1.1 * var(--vu)), 2rem));
+  width: clamp(4rem, calc(6 * var(--vu)), 11rem); height: 3px; margin-left: calc(-0.5 * clamp(4rem, calc(6 * var(--vu)), 11rem));
+  border-radius: 2px; background: #6cc04a; opacity: 0; transition: opacity 300ms ease-out;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.js #slide-cx:not(:has(.im-arch [data-substep-active])) .im-orch::after { opacity: 1; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.js #slide-cx .im-orch {
+    transform-origin: 50% 0;
+    transition: transform 760ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  html.js #slide-cx .im-arch { transition: opacity 420ms ease-out 260ms; }
+  /* Prima del primo ↓: solo la promessa, al centro e più grande. */
+  html.js #slide-cx:not(:has(.im-arch [data-substep-active])) .im-orch {
+    transform: translateY(clamp(3rem, 21vh, 17rem)) scale(1.32);
+  }
+  html.js #slide-cx:not(:has(.im-arch [data-substep-active])) .im-arch { opacity: 0 !important; transition: opacity 200ms ease-out; }
+  /* L'ingresso, ogni volta che la slide diventa attiva: il titolo sale da una
+     maschera, poi il sottotitolo, poi il filo verde si disegna. */
+  html.js #slide-cx:not([aria-hidden="true"]) .im-orch-t { animation: im-orch-t 900ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+  html.js #slide-cx:not([aria-hidden="true"]) .im-orch-c { animation: im-orch-c 700ms cubic-bezier(0.16, 1, 0.3, 1) 260ms both; }
+  html.js #slide-cx:not([aria-hidden="true"]) .im-orch::after { animation: im-orch-filo 700ms cubic-bezier(0.16, 1, 0.3, 1) 520ms both; }
+}
+@keyframes im-orch-t { from { opacity: 0; clip-path: inset(0 0 100% 0); translate: 0 0.35em; } to { opacity: 1; clip-path: inset(0 0 -20% 0); translate: 0 0; } }
+@keyframes im-orch-c { from { opacity: 0; translate: 0 0.6em; filter: blur(4px); } to { opacity: 1; translate: 0 0; filter: blur(0); } }
+@keyframes im-orch-filo { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
