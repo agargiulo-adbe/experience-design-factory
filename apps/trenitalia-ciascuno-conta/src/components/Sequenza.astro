@@ -1,19 +1,50 @@
 ---
 /**
- * La prova in sequenza: quattro frecce che si accendono una dopo l'altra quando
- * la slide entra. Prima la risposta sui dati storici, poi il cancello di fine
- * gennaio (un rombo, non una freccia: lì si decide come si misura), poi il test
- * dal vivo; l'ultima, rossa, è la giornata, che arriva quando la prova è chiusa.
+ * L'MVP in sequenza: quattro frecce che si accendono una dopo l'altra quando la slide
+ * entra. Prima la risposta sui dati storici, poi il cancello di fine gennaio, poi il
+ * test dal vivo; l'ultima, rossa, è la giornata, che arriva quando l'MVP è chiuso.
+ *
+ * Il cancello è una TESSERA CHE SI GIRA (decisione dell'owner, 13 nov): sul fronte che
+ * cosa si decide, sul retro il dettaglio tecnico — con la chiave di passaggio la misura
+ * migliore, senza una più debole, e in tutti e due i casi si va avanti. È un `<button>`:
+ * si gira con il clic, con Invio e con lo spazio, e la freccia del deck non lo tocca.
  */
 import { SEQUENZA } from '../data/contenuti';
 ---
 <ol class="cc-seq" style={`--n:${SEQUENZA.passi.length}`}>
-  {SEQUENZA.passi.map((p, i) => (
-    <li class="cc-seq-i" data-forte={p.forte ? '' : undefined} data-cancello={p.cancello ? '' : undefined} style={`--i:${i}`}>
-      {p.cancello && <svg class="cc-seq-rombo" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 L37 20 L20 37 L3 20 Z" /></svg>}
+  {SEQUENZA.passi.map((p, i) => p.cancello ? (
+    <li class="cc-seq-i" data-cancello style={`--i:${i}`}>
+      <button type="button" class="cc-giro" data-cc-giro aria-pressed="false" aria-label="Il cancello: gira per il dettaglio">
+        <span class="cc-giro-f">
+          <svg class="cc-seq-rombo" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 L37 20 L20 37 L3 20 Z" /></svg>
+          <span class="cc-seq-q">{p.q}</span>
+          <span class="cc-seq-l">{p.l}</span>
+          <span class="cc-seq-d">{p.d}</span>
+          <span class="cc-giro-hint" aria-hidden="true">Gira ↻</span>
+        </span>
+        <span class="cc-giro-r">
+          {SEQUENZA.retro.map((r) => (<span class="cc-giro-v"><b>{r.k}</b> {r.b}</span>))}
+          <span class="cc-giro-c">{SEQUENZA.retroChiusa}</span>
+        </span>
+      </button>
+    </li>
+  ) : (
+    <li class="cc-seq-i" data-forte={p.forte ? '' : undefined} style={`--i:${i}`}>
       <p class="cc-seq-q">{p.q}</p>
       <p class="cc-seq-l">{p.l}</p>
       <p class="cc-seq-d">{p.d}</p>
     </li>
   ))}
 </ol>
+<script is:inline data-astro-rerun>
+(function () {
+  if (window.__ccGiro) return; window.__ccGiro = true;
+  document.addEventListener('click', function (e) {
+    var b = e.target && e.target.closest && e.target.closest('[data-cc-giro]');
+    if (!b) return;
+    e.stopPropagation();
+    var on = b.getAttribute('aria-pressed') !== 'true';
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }, true);
+})();
+</script>

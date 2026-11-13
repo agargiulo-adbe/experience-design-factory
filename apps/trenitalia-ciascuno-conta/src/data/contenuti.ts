@@ -40,7 +40,7 @@ export const FOLLA = {
   ancore: [
     { k: 'prova', t: 'La prova', b: 'Quale proposta fa vendere di più, misurato sul venduto' },
     { k: 'risposta', t: 'La risposta in un minuto', b: 'Perché il venduto cala, guardando tutte le variabili' },
-    { k: 'consenso', t: 'Il consenso', b: 'Chi decide e chi mette in opera arrivano allo stesso sì' },
+    { k: 'consenso', t: 'Il consenso', b: 'Al referente di Trenitalia serve un sì condiviso: lui fissa il perimetro, FS Technology e i partner lo portano a terra' },
   ],
   variabili: ['sito e app', 'biglietterie', 'agenzie e OTA', 'prezzo e offerta', 'concorrenza', 'calendario', 'perturbazioni'],
   chiusa: 'Ogni passo del programma serve ad almeno una delle tre.',
@@ -54,13 +54,13 @@ export const ATTI = {
   mesi: ['dic', 'gen', 'feb', 'mar', 'apr', 'mag', 'giu'],
   atti: [
     { n: '1', v: 'Scegliere', q: 'entro l’11 dicembre', serve: ['consenso'], da: 0, a: 0.5,
-      esce: 'I casi d’uso, validati entro l’11 dicembre' },
-    { n: '2', v: 'Capire e provare', q: 'dic – feb · cancello a fine gennaio', serve: ['risposta', 'prova'], da: 0.5, a: 3,
-      esce: 'Dove si perde la vendita, e un test sul venduto' },
-    { n: '3', v: 'Decidere', q: 'marzo', serve: ['prova', 'consenso'], da: 3, a: 4,
-      esce: 'La giornata: dai\u00a0risultati al consenso' },
-    { n: '4', v: 'Scalare', q: 'apr – giu', serve: ['risposta', 'consenso'], da: 4, a: 7,
-      esce: 'I primi casi d’uso in produzione' },
+      esce: 'Il perimetro dei casi d’uso, con Trenitalia e Accenture' },
+    { n: '2', v: 'Capire e provare', q: 'dic – feb · l’MVP', serve: ['risposta', 'prova'], da: 0.5, a: 3,
+      esce: 'Casi d’uso in produzione, misurati sul venduto' },
+    { n: '3', v: 'Decidere', q: 'marzo · la giornata', serve: ['prova', 'consenso'], da: 3, a: 4,
+      esce: 'Dai risultati dell’MVP a un perimetro condiviso' },
+    { n: '4', v: 'Portare a contratto', q: 'apr – giu', serve: ['consenso'], da: 4, a: 7,
+      esce: 'La proposta dai risultati, la firma a giugno' },
   ],
   segni: [
     { t: 'Anteprima alla Direzione', a: 2.75 },
@@ -72,13 +72,19 @@ export const ATTI = {
  *  «Misurato sul venduto», mai «comprovato»: in quattro settimane si osserva
  *  l'effetto con il suo margine, anche nullo, e per una prova basta. */
 export const SEQUENZA = {
-  titolo: 'La prova si chiude prima della giornata, in due stadi',
+  titolo: 'L’MVP si chiude prima della giornata',
   passi: [
     { q: 'dic – gen', l: 'La risposta', d: 'Sui dati storici, dove\u00a0si perde la vendita fra trenitalia.com e\u00a0LeFrecce' },
-    { q: 'fine gennaio', l: 'Il cancello', d: 'Il passaggio fra i due siti si legge per viaggiatore, o\u00a0in\u00a0aggregato', cancello: true },
-    { q: 'febbraio', l: 'La prova', d: 'Un test su Target su trenitalia.com, con il criterio scritto\u00a0prima' },
-    { q: 'marzo', l: 'La giornata', d: 'Si parte dai risultati per costruire il\u00a0consenso', forte: true },
+    { q: 'fine gennaio', l: 'Il cancello', d: 'Come si legge il venduto fra i due siti', cancello: true },
+    { q: 'febbraio', l: 'Il test', d: 'Target su trenitalia.com, con il criterio scritto\u00a0prima' },
+    { q: 'marzo', l: 'La giornata', d: 'I risultati dell’MVP, poi il perimetro\u00a0condiviso', forte: true },
   ],
+  /** Il retro del cancello: il programma non dipende da un aspetto tecnico. */
+  retro: [
+    { k: 'Con la chiave:', b: 'il venduto per viaggiatore, la misura migliore.' },
+    { k: 'Senza:', b: 'il passaggio verso l’acquisto, in aggregato.' },
+  ],
+  retroChiusa: 'In tutti e due i casi si va avanti.',
 };
 
 /** Il circuito dei dati: da dove arrivano, dove diventano un pubblico, dove si
@@ -209,7 +215,7 @@ export const INVITO = {
 
 /* ── Scalare ───────────────────────────────────────────────────────────── */
 export const ROTTA = {
-  titolo: 'Dopo la giornata, tre tappe',
+  titolo: 'Dopo la firma, tre tappe',
   passi: [
     { l: '3 mesi', d: 'I tre casi d’uso scelti, in produzione e misurati sul venduto' },
     { l: '6 mesi', d: 'La lettura dei percorsi su tutti i canali digitali' },

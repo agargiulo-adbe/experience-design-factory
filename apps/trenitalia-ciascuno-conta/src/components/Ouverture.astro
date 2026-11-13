@@ -134,7 +134,7 @@
   function once(k, t, fn) { if (!ev[k] && t >= 0) { ev[k] = 1; fn(); } }
   var eo = function (x) { return x >= 1 ? 1 : 1 - Math.pow(2, -10 * x); };
   var cl = function (x) { return x < 0 ? 0 : x > 1 ? 1 : x; };
-  var LIT0 = 2600, LITSTEP = 135, ONDA0 = 4500, VOLO0 = 5400, FINE = 6500;
+  var LIT0 = 2600, LITSTEP = 135, ONDA0 = 4500, VOLO0 = 5400, FINE = 7300;
 
   function frame(now) {
     if (fatto) return;
@@ -144,7 +144,8 @@
     var z = 1 + 15 * (1 - eo(cl((t - 900) / 1500)));
     var crowd = cl((t - 1000) / 900);
     var R = Math.hypot(W, Hh) * 1.05 * cl((t - ONDA0) / 1100);
-    var fade = 1 - cl((t - VOLO0) / 900);
+    // la dissolvenza finale la fa il CSS (`.is-ritiro`): qui i punti restano pieni
+    var fade = 1;
     cx2.save();
     cx2.translate(CX, CY); cx2.scale(z, z); cx2.translate(-CX, -CY);
     for (var i = 0; i < dots.length; i++) {
@@ -191,14 +192,15 @@
     once('s1', t - 2350, function () { scambia(true); });
     once('s2', t - 4450, function () { scambia(false); });
     once('volo', t - VOLO0, vola);
-    once('copertina', t - (VOLO0 + 250), function () { H.classList.remove('cc-ouv-on'); });
-    root.style.setProperty('--velo', String(1 - cl((t - VOLO0) / 1000)));
+    // la copertina entra mentre il velo si dissolve, non dopo: è il passaggio morbido
+    once('copertina', t - (VOLO0 + 300), function () { H.classList.remove('cc-ouv-on'); });
     if (t >= FINE) return fine();
     requestAnimationFrame(frame);
   }
 
   // il titolo vola al suo posto nella copertina
   function vola() {
+    root.classList.add('is-ritiro');
     var tgt = document.querySelector('.cc-cop-t [data-chiasmo]');
     if (!tgt) { tEl.style.opacity = '0'; return; }
     var a = tgt.getBoundingClientRect(), b = tEl.getBoundingClientRect();
