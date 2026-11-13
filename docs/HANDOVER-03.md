@@ -5,9 +5,9 @@
 
 ## 11. Change log recente
 
-### 2026-11-13 · «Ciascuno conta»: ricostruzione completata, in attesa di push e seed
+### 2026-11-13 · «Ciascuno conta»: un documento per il leadership team, e l'apertura
 
-Livello pubblico e strato interno rifatti secondo le decisioni del 12 sera: tesi in apertura, tre direttrici, prova in due stadi con il cancello, GNARR del primo anno con le ipotesi, matrice dell'effort, annex in un capitolo 09 riservato. Gate verdi su entrambi i livelli (0 HARD). **Committata, non pushata:** push e seed vanno insieme. Dettaglio in §43 (Parte 23).
+`0051c96` ricostruzione (tesi, direttrici, prova con cancello, GNARR, matrice, annex), pubblicata con lo strato v3. `0131149` (pubblicato): lo script dei due livelli si riesegue a ogni pagina (`data-astro-rerun`), così una pagina in cache non lascia l'Annex nella nav pubblica; il prossimo passo diventa una linea. `4a3502b` **presentazione + annex** in un documento solo, tutto dietro il token, con «Il dettaglio →» e il ritorno. `4796ea3` **l'apertura** a tutta pagina. Gli ultimi due sono **committati, non pushati**, e lo strato v4 non è caricato. Dettaglio in §43.
 
 ### 2026-11-12 (sera) · «Ciascuno conta»: il deck interno riscritto, copertine da Adobe Stock, e una ricostruzione in corso
 
