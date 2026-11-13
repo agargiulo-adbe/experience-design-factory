@@ -40,7 +40,7 @@ export const FOLLA = {
   ancore: [
     { k: 'prova', t: 'La prova', b: 'Quale proposta fa vendere di più, misurato sul venduto' },
     { k: 'risposta', t: 'La risposta in un minuto', b: 'Perché il venduto cala, guardando tutte le variabili' },
-    { k: 'consenso', t: 'Il consenso', b: 'Direzione Sales, FS Technology e Accenture scelgono insieme' },
+    { k: 'consenso', t: 'Il consenso', b: 'Chi decide e chi mette in opera arrivano allo stesso sì' },
   ],
   variabili: ['sito e app', 'biglietterie', 'agenzie e OTA', 'prezzo e offerta', 'concorrenza', 'calendario', 'perturbazioni'],
   chiusa: 'Ogni passo del programma serve ad almeno una delle tre.',
@@ -138,7 +138,7 @@ export const MISURARE = {
 /* ── Decidere: la giornata ─────────────────────────────────────────────── */
 export const GIORNO = {
   titolo: 'La Direzione c’è quando si vede il risultato e quando si decide',
-  sub: 'Roma, marzo, una ventina di persone. Ai dirigenti chiediamo meno di tre ore.',
+  sub: 'Roma, marzo, una ventina di persone. I dirigenti ci sono per meno di tre ore.',
   scala: ['9:30', '11:00', '12:30', '14:00', '15:30', '17:00'],
   inizio: 9.5, fine: 17.5,
   pausa: { da: 13.5, a: 14.5, t: 'Pranzo' },

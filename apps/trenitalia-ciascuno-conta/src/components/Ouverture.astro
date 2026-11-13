@@ -45,6 +45,19 @@
       location.assign(u.toString());
     }, true);
   }
+  // il pulsante sta nella bottoniera del deck, con la forma degli altri comandi; solo sulla
+  // copertina, dove vive questo script. Il deck è più giù nella pagina: al primo caricamento
+  // si aspetta il DOM, nella navigazione interna c'è già.
+  function bottone() {
+    var c = document.querySelector('[data-deck-controls]');
+    if (!c || c.querySelector('[data-cc-rivedi]')) return;
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'deck-btn cc-rivedi'; b.setAttribute('data-cc-rivedi', '');
+    b.setAttribute('aria-label', 'Rivedi l’apertura'); b.title = 'Rivedi l’apertura';
+    b.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 4v4.5h4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    c.appendChild(b);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bottone, { once: true }); else bottone();
   var root = document.querySelector('[data-cc-ouv]');
   if (!root) return;
   var KEY = 'cc:ouverture', H = document.documentElement;

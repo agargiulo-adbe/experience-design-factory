@@ -729,12 +729,23 @@ html:not([data-riservato='on']) .cc-dettaglio { display: none; }
 .cc-sommario-d { font-size: var(--cc-voce); line-height: 1.35; color: var(--ink-body); }
 @media (max-width: 900px) { .cc-sommario { grid-template-columns: minmax(0, 1fr); } }
 
-/* La richiesta in apertura: a sinistra che cosa chiediamo, a destra che cosa si
-   avvia il giorno dopo il sì. */
-.cc-richiesta2 { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(1.4rem, 3vw, 4rem); align-items: start; }
-.cc-richiesta2 > div { display: grid; gap: 1rem; align-content: start; }
-.cc-richiesta2 .cc-r-k { color: var(--ink-accent); }
-@media (max-width: 900px) { .cc-richiesta2 { grid-template-columns: minmax(0, 1fr); } }
+/* Che cosa parte, e quando (r-passi): una linea del tempo VERTICALE, una riga per data.
+   Sette fermate in orizzontale a 1280 lascerebbero 140 px a voce e sei righe di testo;
+   in verticale si legge in ordine e ogni voce sta su una o due righe. Il nodo rosso pieno
+   è una data che decide (oggi, la data ultima), il rombo è il cancello come nella prova. */
+.cc-date { list-style: none; margin: 0; padding: 0 0 0 2.4rem; position: relative; display: grid; gap: clamp(0.6rem, 1.6vh, 1.3rem); }
+.cc-date::before { content: ''; position: absolute; left: 0.54rem; top: 0.7rem; bottom: 0.7rem; width: 2px; background: rgba(255, 255, 255, 0.28); }
+/* colonne in em del corpo: la data più lunga («Entro il 27 novembre») e il «che cosa» più lungo
+   ci stanno per costruzione, a ogni viewport, invece di sovrapporsi */
+.cc-date li { position: relative; margin: 0; font-size: var(--cc-voce); display: grid; grid-template-columns: 11.5em 12.5em minmax(0, 1fr); gap: 0.3rem 1.4rem; align-items: baseline; }
+.cc-date .cc-passo-nodo { position: absolute; left: -2.4rem; top: 0.3em; width: 1.1rem; height: 1.1rem; border-radius: 50%; background: #1f2433; border: 2px solid rgba(255, 255, 255, 0.55); }
+.cc-date li[data-forte] .cc-passo-nodo { background: var(--color-rosso); border-color: var(--color-rosso); }
+.cc-date li[data-cancello] .cc-passo-nodo { border-radius: 2px; transform: rotate(45deg) scale(0.92); border: 2px dashed var(--color-rosso-chiaro); background: #1f2433; }
+.cc-date .cc-passo-q { white-space: nowrap; }
+.cc-date .cc-passo-v { font-size: clamp(1.3rem, 1.6vw, 2.8rem); }
+.cc-date .cc-passo-d { max-width: none; }
+.cc-date li:not([data-forte]) :is(.cc-passo-v, .cc-passo-d) { opacity: 1; }
+@media (max-width: 900px) { .cc-date li { grid-template-columns: minmax(0, 1fr); gap: 0.2rem; } }
 
 /* Il valore riga per riga: le ipotesi sono la colonna che conta, e prendono spazio. */
 .cc-annex--g { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.45fr) minmax(0, 1.55fr) 7.5rem 6rem; }
@@ -780,13 +791,9 @@ html.cc-ouv-on .xd-cop > * { opacity: 0; }
 .xd-cop > * { transition: opacity 800ms cubic-bezier(0.16, 1, 0.3, 1); }
 html.cc-ouv-on .ex-nav { visibility: hidden; }
 
-/* «Rivedi l'apertura»: discreto, sotto la riga del tipo. Senza movimento non serve. */
-.cc-rivedi { justify-self: start; align-self: start; display: inline-flex; align-items: center; gap: 0.55rem; min-height: 44px; margin-top: 0.4rem;
-  padding: 0.5rem 1rem; font: 600 clamp(0.85rem, 0.8vw, 1.25rem)/1 var(--font-display); letter-spacing: 0.01em; cursor: pointer;
-  color: #e3e5e9; background: transparent; border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 999px;
-  transition: border-color 160ms ease, color 160ms ease; }
-.cc-rivedi:hover, .cc-rivedi:focus-visible { color: #ffffff; border-color: var(--color-rosso); }
-.cc-rivedi:focus-visible { outline: 2px solid var(--color-rosso); outline-offset: 3px; }
+/* «Rivedi l'apertura»: un comando della bottoniera come gli altri (forma da `.deck-btn`).
+   Senza movimento non partirebbe niente, quindi non c'è. */
 .cc-rivedi svg { transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1); }
 .cc-rivedi:hover svg { transform: rotate(-200deg); }
-@media (prefers-reduced-motion: reduce) { .cc-rivedi { display: none; } }
+@media (prefers-reduced-motion: reduce) { .cc-rivedi { display: none !important; } }
+@media (max-height: 860px) { .cc-date { gap: 0.45rem; } }
