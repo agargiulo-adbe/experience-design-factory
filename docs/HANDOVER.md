@@ -1,6 +1,6 @@
 # HANDOVER — Experience Design Factory
 
-> Documento di passaggio di consegne. Stato al **2026-11-12**.
+> Documento di passaggio di consegne. Stato al **2026-11-13**.
 > Lingua: italiano per la narrativa, inglese per path/comandi/nomi prodotto.
 > Companion di `CLAUDE.md` (guida agente, sempre valida) e delle memorie in
 > `~/.claude/projects/.../memory/`. Se una cosa qui contraddice il codice, **vince il codice** —
@@ -9,6 +9,8 @@
 > **Nuova sessione CC:** l'indice/ordine di lettura è in `docs/README.md`. Leggere **tutti** i
 > `.md` costa ~40k token su 23 parti (ok). **Non** aprire mai i `.pptx`/`.mp4` in `docs/` (binari giganti,
 > git-ignored, non presenti in un clone pulito) — i fatti utili sono già distillati qui (§5.3).
+>
+> 🏦 **Il 13 novembre la Storia di Intesa passa un giorno di revisione con l'owner** (§42.16, Parte 19 · change log, Parte 3): deck in `--vu` per gli schermi 21:9 e `audit:deck --ultrawide`, nomi dei capitoli di prima, capitolo 01 e schema d'integrazione ridisegnati, verifiche su Fluffy. Tutto su `feat/intesa-check-referente` (`c7f12c4`), **non su `main`**, e il panel non copre lo stato nuovo: P0 in Parte 2.
 >
 > 🚄 **Il 12 novembre nasce «Ciascuno conta»** (`apps/trenitalia-ciascuno-conta`, §43, Parte 23 · change log, Parte 3): la versione interna del percorso dopo la Direzione Sales, pubblicata con strato riservato gated. La sera è riprogettata per il leadership team come **deck a due livelli**: pubblico leggibile dal cliente, strato interno da Supabase con il token del dossier. Resta il panel (P0).
 >

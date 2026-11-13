@@ -5,6 +5,12 @@
 
 ## 11. Change log recente
 
+### 2026-11-13 · Storia di Intesa: un giorno di revisione con l'owner, ultrawide, verifiche su Fluffy
+Branch `feat/intesa-check-referente`, da `06782cb` a `c7f12c4`, **non su `main`**. Dettaglio in §42.16 (Parte 19).
+- **Schermo intero sul 21:9:** l'unità del deck passa da `vw` a `--vu` (16:9 inscritto); slide in un 16:9 al centro e radice del tipo che cresce oltre 1920. `audit:deck --ultrawide` nuovo; tolleranza di `e` proporzionale alla radice.
+- **Copia e struttura:** capitoli coi nomi di prima, copertina «dal primo segnale alla firma», Financial Services ricca, slide-chi senza prodotti, «Orchestrare» che si apre da sola, schema d'integrazione con frecce verso Canali e strumento di campagna, colonna del momento di Giulia, legenda «Prodotto Adobe», «non‑cliente», «Next Best Experience».
+- **Gate:** a capo puliti, taglio allineato, `audit:deck` senza HARD nuovi (soft `a`/`i` e `e` d'artefatto sui 21:9); zip offline rigenerato a ogni commit.
+
 ### 2026-11-12 (sera) · Storia di Intesa: il check col referente, il capitolo 03 rivisto, due giri di panel
 
 Branch `feat/intesa-check-referente` (`7eb8b71` → `5d6980a`), **non su `main`**. Vocabolario della banca su tutto il deck, capitolo 03 «Integrazione» con le cornici e la slide `slide-chiave`, una riga per momento su prodotto/API/front-end, Coworker senza Chat/Projects e con un video segnaposto, team a sei. Panel a due giri: sei condizionati, medie scese rispetto all'11 (chiarezza 3, rischio 3); applicati «Tre banche» → «Tre banche e Unipol», Unipol senza le cifre del Summit, gli score sui non clienti come domanda, il trimestre dal primo invio. Gate a 0 HARD. Dossier `0031` riscritto per il 19 e applicato in produzione; titolo della pagina corretto (`800a6ee`); branch rinominato senza il nome del referente. Dettaglio in **§42.15 (Parte 19)**; escono dal backlog il P0 «panel mancante» e il P1 «decisioni dopo il 9 nov».
