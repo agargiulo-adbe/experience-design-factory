@@ -208,7 +208,7 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'profilo', scena: 'lavoro-03-dati',
-      titolo: { it: 'Lascia l’email: le visite delle sere prima diventano il suo profilo', en: 'She leaves her email: the visits from earlier evenings become her profile' },
+      titolo: { it: 'Lascia l’email: le visite delle sere prima si agganciano al suo profilo', en: 'She leaves her email: the visits from earlier evenings attach to her profile' },
       corpo: {
         it: 'Le visite sotto pseudonimo delle sere prima si uniscono al profilo quando arriva un identificativo, l’email. Serve che il consenso alla profilazione ci fosse già: se manca, si riparte dalla simulazione di oggi. Nel CRM non ha una scheda cliente: può avere un lead.',
         en: 'Her pseudonymous visits from the previous evenings merge into the profile when an identifier arrives, the email, if profiling consent was already there. If not, it starts from today’s simulation. In the CRM she has no customer record: she can have a lead.',

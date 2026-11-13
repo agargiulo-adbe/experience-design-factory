@@ -285,3 +285,29 @@ const FASCE = [
 
   </DeckContainer>
 </BaseLayout>
+
+<script>
+  // Lo zoom sui Wave della slide FSI: la colonna porta quadrante E testo, quindi
+  // un fattore fisso o la taglia sotto la barra o la lascia piccola. Si misura la
+  // colonna prima che cresca e si sceglie il fattore che la fa stare intera fra
+  // la barra e il fondo, spostandola in verticale se serve (13 nov 2026).
+  const fitWave = (e: Event) => {
+    const li = (e.target as Element | null)?.closest?.('.im-wave--fsi .im-wave-i') as HTMLElement | null;
+    if (!li || li.contains((e as PointerEvent).relatedTarget as Node | null)) return;
+    const nav = document.querySelector('.ex-nav')?.getBoundingClientRect().bottom ?? 0;
+    // il fondo utile finisce sopra i comandi del deck (frecce e contatore)
+    const btns = [...document.querySelectorAll('[data-deck] .deck-btn')].map((b) => b.getBoundingClientRect()).filter((b) => b.height > 0);
+    const floor = btns.length ? Math.min(...btns.map((b) => b.top)) : window.innerHeight;
+    const top = nav + 16, bottom = Math.min(window.innerHeight, floor) - 16;
+    const r = li.getBoundingClientRect();
+    const h = li.offsetHeight;
+    const z = Math.max(1, Math.min(1.85, (bottom - top) / h));
+    const half = (z * h) / 2;
+    const c = r.top + r.height / 2;
+    const cc = Math.min(Math.max(c, top + half), bottom - half);
+    li.style.setProperty('--z', z.toFixed(3));
+    li.style.setProperty('--dy', `${Math.round(cc - c)}px`);
+  };
+  document.addEventListener('pointerover', fitWave);
+  document.addEventListener('focusin', fitWave);
+</script>
