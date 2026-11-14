@@ -1,4 +1,4 @@
-# Handover — Parte 2 di 23
+# Handover — Parte 2 di 24
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
@@ -7,7 +7,7 @@
 
 > Ordinato per priorità (P0 blocca/adesso · P1 prossimo · P2 dopo/nice-to-have). Questa è la
 > fonte di verità **persistente** delle cose da fare; `/handover` la mantiene e ne proietta le
-> voci P0/P1 nella task list di sessione (effimera). Aggiornato **2026-11-13**: 20 P0 e 38 P1 qui,
+> voci P0/P1 nella task list di sessione (effimera). Aggiornato **2026-11-14**: 21 P0 e 39 P1 qui,
 > più 30 P1 di fondo nella Parte 10 e 50 P2 con le note nella Parte 22 (scorporata l'11 nov).
 > Le voci chiuse non restano qui: diventano una riga nel change log datato (§11).
 
@@ -17,9 +17,11 @@
 - **[P1] `trenitalia-ciascuno-conta` — validazioni tecniche e commerciali del programma** — §43 · mappatura cross-org e chiave di passaggio fra i due domini del cliente; Velocity sull'org del cliente; matrice dell'effort (75 gg, ripartizione nostra) da validare con le SC; la leva su CJA è un'assunzione da far approvare a Deal Desk e BU; `/origine/` tolto senza rimando (agg. 2026-11-13)
 - **[P0] `trenitalia-ciascuno-conta` — panel review mancante per lo stato corrente (gate 3.4)** — `/panel-review apps/trenitalia-ciascuno-conta` · nessun giro dal 12 nov; da lanciare **dopo la pubblicazione** sul documento riorganizzato, con il token in sessione (`DECK_SESSION`), prima del 16 nov. Senza token oggi si vede solo la copertina (agg. 2026-11-13)
 - **[P0] `intesa-esperienza-cliente` — prima del 19: le risposte che il panel del 12 nov ha lasciato all'AE e al Solutions Consulting** — §42.15 (Parte 19) · mesi dal sì al primo invio e dal sì all'estensione; licenza di fase 1 (prodotti, Decisioning come componente aggiuntivo di Journey Optimizer, uscita a fine trimestre, chi paga la fase 0, data della stima di costo); squadra di fase 0; ruoli dei 14 invitati senza funzione nota; presenza o ibrido. Non si inventano: se mancano il 19, la slide dice quando arrivano (agg. 2026-11-12)
-- **[P0] `intesa-esperienza-cliente` — panel review mancante per lo stato del 13 nov** (in `main` dal merge del 13 nov) (gate `/handover` 3.4) — §42.16 (Parte 19) · dopo il panel del 12 il 13 ha cambiato copertina, capitoli, capitolo 01, schema d'integrazione, momenti, ritorno, chiusura: lanciare `/panel-review apps/intesa-esperienza-cliente` (giro delta), applicare P0/P1, poi merge di `feat/intesa-check-referente` (oggi `c7f12c4`, 20+ commit non su `main`); il link pubblico mostra ancora lo stato dell'11. Clip di Coworker sostituita (`26d0332`): va guardata per intero (nomi a schermo, coerenza con i 6 passi) (agg. 2026-11-13)
+- **[P0] `intesa-esperienza-cliente` — committare e pubblicare il lavoro del 14 nov** — §42.17 (Parte 24) · 11 file modificati e 2 nuovi in `apps/intesa-esperienza-cliente/src`, dopo `29c0407`; stage per percorso, fuori `CLAUDE.md` e `.claude/rules/`; serve il sì dell'owner (agg. 2026-11-14)
+- **[P0] `intesa-esperienza-cliente` — panel review mancante per lo stato del 14 nov** (gate `/handover` 3.4) — §42.16-17 · dopo il 12 sono cambiati copertina, capitoli, capitolo 01, innesto a carte, mappa delle capacità, `slide-chiave`, ritorno, Unipol: `/panel-review apps/intesa-esperienza-cliente` (giro delta) dopo il commit. Clip di Coworker da guardare per intero (agg. 2026-11-14)
 - **[P1] `intesa-esperienza-cliente` — decisioni dell'owner rimaste dal panel del 12 nov** — §42.15 · passaggio Analytics → CJA nel capitolo 03 (P0 per il panel e chiesto dal referente; l'11 l'owner l'aveva rimesso negli approfondimenti); pop-up dell'innesto (~870 parole) negli approfondimenti; cifre Unipol del Summit solo con il via libera scritto dell'account Unipol; soppressione dei già clienti in fase 1 (elenco pseudonimizzato o verifica sul CRM) da disegnare con Group Technology e DPO (agg. 2026-11-12)
 - **[P1] `intesa-esperienza-cliente` — punti aperti del 13 nov** — §42.16 · (a) «proposta scelta» verso lo strumento di campagna convive con «la Next Best Experience resta del vostro motore» e con «Si parte da qui»: la frase che li tiene va detta o scritta; (b) «aggiornati in tempo reale» sul re-targeting è streaming con minuti di ritardo; (c) Windows non provato per lo zip offline; (d) senza rete il video di Coworker non parte (agg. 2026-11-13)
+- **[P1] `intesa-esperienza-cliente` — slide di attribuzione come pannello di CJA con l'interruttore del modello** — §42.17 · proposta all'owner, non decisa; in una sessione nuova (agg. 2026-11-14)
 - **[P1] Gate — `audit:ink` misura solo a 1920, e sugli schermi bassi i deck cambiano disposizione** — §42.14 · sulla Storia di Intesa, a 1440×900 e 1280×800, il testo dei momenti cadeva su una foto chiara: illeggibile, con `audit:ink` pulito. Il gate dovrebbe girare anche a 1440 e 1280, come `audit:deck` (agg. 2026-11-11)
 - **[P1] Intesa — correggere il registro d'account sull'installato CRM/campagne** — `docs/Intesa Sanpaolo/ACCOUNT.md` (riservato) · tre punti sul perimetro dell'installato per società del gruppo, più il prospect da segnare **non confermato**. Il dettaglio sta solo nel registro · ancora aperta (agg. 2026-11-11)
 - **[P1] Intesa — benchmark di acquisizione bancaria dal connettore «Adobe Goldmine»** — §42.12 · da interrogare prima di mettere un ordine di grandezza in slide; se non c'è, la slide resta sul dato Nomisma · ancora aperta (agg. 2026-11-11)

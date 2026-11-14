@@ -1,9 +1,12 @@
-# Handover — Parte 3 di 23
+# Handover — Parte 3 di 24
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
 
 ## 11. Change log recente
+
+### 2026-11-14 · Storia di Intesa: l'innesto a carte, la mappa delle capacità, il grafo delle identità
+`29c0407` (**pubblicato** su `main`): schema dell'innesto a carte che si girano, pillole chi/come, ciclo delle due Next Best Experience, legenda delle frecce, «Come entrano i dati». Poi, **non committati**: «Real-Time CDP» → «Real-Time Activation» (scelta dell'owner, nome non ufficiale), sottotitolo «Quello che avete resta», mappa Riconosce·Sceglie·Invia·Misura sulle slide di approfondimento, `slide-chiave` come grafo delle identità con lo stitching (verificato su Fluffy), ritorno riscritto, Unipol rifatta dal deck del Summit senza le cifre, referenze senza il nome in alto, team a colonne uguali. Gate verdi. Dettaglio in §42.17 (Parte 24).
 
 ### 2026-11-13 · «Ciascuno conta»: un documento per il leadership team, e l'apertura
 
