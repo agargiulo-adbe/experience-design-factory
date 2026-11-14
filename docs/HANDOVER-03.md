@@ -5,6 +5,9 @@
 
 ## 11. Change log recente
 
+### 2026-11-14 (mattina) · Storia di Intesa: l'attribuzione come pannello di CJA, e le cifre Unipol verificate
+`8221d4d`: pannello di Customer Journey Analytics con il selettore Ultimo clic | Algoritmico (digitale 20% → 66%, cifre di esempio), quote in `data/attribuzione.ts` condivise col mock del momento 07. Le cifre Unipol del Summit restano fuori: non dette in sessione, solo nella bozza del deck. Dettaglio in §42.17 (Parte 24).
+
 ### 2026-11-14 · Storia di Intesa: l'innesto a carte, la mappa delle capacità, il grafo delle identità
 `29c0407` (**pubblicato** su `main`): schema dell'innesto a carte che si girano, pillole chi/come, ciclo delle due Next Best Experience, legenda delle frecce, «Come entrano i dati». Poi: «Real-Time CDP» → «Real-Time Activation» (scelta dell'owner, nome non ufficiale), sottotitolo «Quello che avete resta», mappa Riconosce·Sceglie·Invia·Misura sulle slide di approfondimento, `slide-chiave` come grafo delle identità con lo stitching (verificato su Fluffy), ritorno riscritto, Unipol rifatta dal deck del Summit senza le cifre, referenze senza il nome in alto, team a colonne uguali. Committati e pubblicati in `36e2755`, con un errore di tipo corretto (`CAPACITA` `as const`) che avrebbe reso rossa la CI. Poi `28034fb`: la CI era **rossa dal merge del 13** per `content-audit` (la frase sulla precedenza ripetuta due volte negli approfondimenti); ora resta in `slide-serve` e la carta dell'arbitro rimanda. CI e deploy verdi. Gate verdi. Dettaglio in §42.17 (Parte 24).
 

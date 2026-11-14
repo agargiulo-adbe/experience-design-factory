@@ -52,4 +52,10 @@ Scritta in una parte nuova perché la Parte 19, dove stanno §42.13–42.16, è 
 
 **Panel non rilanciato:** lo stato del 14 cambia struttura e copia del capitolo 03. È il P0 nella Parte 2.
 
-**Proposta aperta:** ridisegnare la slide di attribuzione come pannello di attribuzione di CJA, con l'interruttore del modello. Proposta all'owner, non ancora decisa, da fare in una sessione nuova.
+**La slide di attribuzione come pannello di CJA** (`8221d4d`, 14 nov). È un pannello di Customer Journey Analytics «Attribuzione · Mutuo prima casa», con il selettore **Ultimo clic | Algoritmico**. Primo ↓: la firma va quasi tutta alla filiale, il digitale pesa il 20%. Secondo ↓: stesso dato, il digitale pesa il 66%. Il selettore si gira anche a mano. La misura è quella delle altre slide del capitolo, come chiesto dall'owner: titolo, fila delle capacità, una riga, una figura, due passi. Via «Filiale non misurata»: dentro CJA la filiale c'è in tutti e due i modelli. Le quote stanno in `data/attribuzione.ts` e le legge anche il mock del momento 07. Cifre di esempio, dichiarate.
+
+**Le cifre Unipol del Summit (–90%, 2×, –20%): verificate il 14 nov, restano fuori.**
+- Stanno nella slide 20 del deck in `docs/Unipol`, che è la **prima bozza** del referente del cliente (24 mar 2026), non il deck proiettato. Quello è stato riversato nel template del Summit e non l'abbiamo.
+- Nella trascrizione della sessione (CP16, Community Pavilion, 21 apr 2026) **nessuno le dice**: sul palco i risultati sono solo qualitativi.
+- Nessuna registrazione pubblica e nessuna customer story pubblica. La customer story è appena partita con il marketing Adobe, e le cifre passerebbero da lì.
+- Da chiedere all'AE: il deck proiettato, oppure il via libera scritto del cliente.
