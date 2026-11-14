@@ -1,0 +1,32 @@
+---
+/**
+ * LA FILA DELLE QUATTRO CAPACITÀ (owner, 14 nov 2026). «Che cosa fa ciascun
+ * componente» è la mappa del capitolo; ogni slide che la approfondisce dice,
+ * in alto a destra, di quale capacità parla: la sua è accesa, le altre spente.
+ * Come una mappa del metrò, dice anche dove si è rispetto alle altre tre.
+ * Un clic riporta alla slide dei componenti. Non è un occhiello sopra il
+ * titolo: sta accanto, e porta la figura delle colonne.
+ */
+import FiguraCapacita from './FiguraCapacita.astro';
+import Segno from './Segno.astro';
+type K = 'riconosce' | 'sceglie' | 'agisce' | 'misura';
+interface Props { accese: K[]; ritorno?: boolean; largo?: boolean }
+const { accese, ritorno = false, largo = false } = Astro.props;
+const VOCI: { k: K; it: string; en: string }[] = [
+  { k: 'riconosce', it: 'Riconosce', en: 'Recognises' },
+  { k: 'sceglie', it: 'Sceglie', en: 'Chooses' },
+  { k: 'agisce', it: 'Invia', en: 'Sends' },
+  { k: 'misura', it: 'Misura', en: 'Measures' },
+];
+const accesiIt = VOCI.filter((v) => accese.includes(v.k)).map((v) => v.it.toLowerCase()).join(', ');
+---
+<a href="#slide-capacita" class:list={['im-capmap', largo && 'im-capmap--largo']} data-capmap data-ritorno={ritorno ? '' : null} aria-label={`Capacità: ${accesiIt}. Torna a «Che cosa fa ciascun componente»`}>
+  {VOCI.map((v) => (
+    <span class="im-capmap-i" data-on={accese.includes(v.k) ? '' : null} data-k={v.k}>
+      <FiguraCapacita k={v.k} class="im-capmap-fig" />
+      <span><span data-lang-it>{v.it}</span><span data-lang-en>{v.en}</span></span>
+    </span>
+  ))}
+  {/* Sulla slide del ritorno la misura torna nelle scelte: il giro dopo «Misura». */}
+  {ritorno && <span class="im-capmap-giro" aria-hidden="true"><Segno k="giro" /></span>}
+</a>

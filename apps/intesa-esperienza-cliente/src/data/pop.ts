@@ -43,7 +43,7 @@ export const SCENE: Record<ScenaId, Scena> = {
       'Regole, consenso e politica di contatto escludono quelle non ammesse.',
       'Se avete già un punteggio sui non‑clienti, entra come attributo; altrimenti valgono la priorità dell’offerta e le regole che fissate voi.',
       'Resta una sola proposta, sul canale ammesso da consenso e regole. L’invio può continuare a passare dagli strumenti attuali.',
-      'Customer Journey Analytics misura l’esito sul gruppo di controllo. A fine trimestre, con quel risultato, si rivedono insieme priorità e regole delle proposte.',
+      'Customer Journey Analytics misura l’esito sul gruppo di controllo. Con quel risultato si rivedono insieme priorità e regole delle proposte.',
     ],
     nota: '',
     fonti: [],

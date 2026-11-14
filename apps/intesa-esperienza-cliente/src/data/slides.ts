@@ -37,7 +37,7 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-chiave', label: 'Più identificativi, una persona sola: la storia da non‑cliente a cliente' },
     { id: 'slide-cja-banca', label: 'Quattro risposte che una banca ottiene da CJA' },
     { id: 'slide-attribuzione', label: 'Quanto del digitale arriva in filiale' },
-    { id: 'slide-ritorno', label: 'Quello che si misura sul mutuo nel primo trimestre cambia le regole del secondo' },
+    { id: 'slide-ritorno', label: 'Quello che si impara da Giulia migliora la relazione con il prossimo cliente' },
   ]},
   { slug: 'coworker', label: 'CX Enterprise Coworker (04)', slides: [
     { id: 'slide-cover', label: 'Cover: divisore del capitolo' },

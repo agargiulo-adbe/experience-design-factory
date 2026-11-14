@@ -33,26 +33,32 @@ export const TITOLO: Testo = {
 
 /** La riga di confine sul motore. Frase canonica: identica ovunque compaia. */
 export const CONFINE: Testo = {
-  it: 'Sui non‑clienti sceglie AI Decisioning, con le vostre regole; sui clienti il vostro motore, affiancato sulle programmate.',
-  en: 'For non-customers AI Decisioning chooses, within your rules; for customers your engine, supported on scheduled sends.',
+  it: 'Quello che avete resta: Adobe aggiunge i non‑clienti e porta la Next Best Experience alle vostre iniziative programmate.',
+  en: 'What you have stays: Adobe adds non-customers and brings the Next Best Experience to your scheduled initiatives.',
 };
 
 /** L'architettura di oggi, a grandi blocchi: un'ipotesi, e la slide lo dichiara. */
-export const OGGI: { t: Testo; s?: Testo; d: Testo; forte?: boolean; tipi?: (Testo & { k?: boolean })[]; canali?: { k: 'online' | 'offline'; t: Testo; d: Testo }[] }[] = [
-  { t: { it: 'Data lake', en: 'Data lake' }, d: { it: 'i dati dei clienti', en: 'customer data' } },
+export const OGGI: { t: Testo; s?: Testo; d: Testo; lega?: Testo; forte?: boolean; tipi?: (Testo & { k?: boolean })[]; canali?: { k: 'online' | 'offline'; t: Testo; d: Testo }[] }[] = [
+  { t: { it: 'Data lake', en: 'Data lake' }, d: { it: 'i dati dei clienti', en: 'customer data' },
+    /* Il retro della carta dice il legame con lo strato Adobe, non ripete il titolo (owner, 14 nov 2026). */
+    lega: { it: 'Resta dov’è: è la fonte dei dati dei clienti', en: 'It stays where it is: the source of customer data' } },
   { t: { it: 'Motore di targeting', en: 'Targeting engine' },
-    d: { it: 'target e modelli di propensione', en: 'targets and propensity models' }, forte: true },
+    d: { it: 'target e modelli di propensione', en: 'targets and propensity models' }, forte: true,
+    lega: { it: 'Passa score e segmenti a Journey Optimizer', en: 'Passes scores and segments to Journey Optimizer' } },
   /* ⚠️ 13 nov 2026: «a calendario, con invii massivi» era una nostra
      deduzione e le fonti la smentiscono. Il cliente lavora quasi solo sui
      clienti («di campagne sui prospect non ne facciamo», check dell'11 nov)
      e ha già percorsi su comportamento in Journey Builder (incontro del
      22 ott). Quindi: perimetro clienti, invii programmati E su evento. */
   { t: { it: 'Iniziative commerciali', en: 'Commercial initiatives' }, d: { it: 'sui clienti, programmate e su evento', en: 'for customers, scheduled and event-based' },
-    tipi: [{ it: 'clienti', en: 'customers', k: true }, { it: 'programmate', en: 'scheduled' }, { it: 'su evento', en: 'event-based' }] },
+    tipi: [{ it: 'clienti', en: 'customers', k: true }, { it: 'programmate', en: 'scheduled' }, { it: 'su evento', en: 'event-based' }],
+    lega: { it: 'Ricevono la Next Best Experience per le programmate', en: 'Receive the Next Best Experience for scheduled sends' } },
   /* Online e offline separati, con un segno ciascuno (call del 13 nov 2026):
      è la distinzione che Customer Journey Analytics tiene insieme. La filiale
      resta DENTRO il perimetro: verso la filiale la banca lavora già. */
-  { t: { it: 'Canali', en: 'Channels' }, d: { it: 'filiale, Filiale Digitale, app, sito, aree self-service, media a pagamento', en: 'branch, Filiale Digitale, app, site, self-service areas, paid media' },
+  { t: { it: 'Canali', en: 'Channels' },
+    lega: { it: 'Per i non‑clienti, Journey Optimizer arriva su sito, app ed email', en: 'For non-customers, Journey Optimizer reaches the site, app and email' },
+    d: { it: 'filiale, Filiale Digitale, app, sito, aree self-service, media a pagamento', en: 'branch, Filiale Digitale, app, site, self-service areas, paid media' },
     canali: [
       { k: 'online', t: { it: 'Online', en: 'Online' }, d: { it: 'sito, app, annunci', en: 'site, app, ads' } },
       { k: 'offline', t: { it: 'Offline', en: 'Offline' }, d: { it: 'filiale, Filiale Digitale, self-service', en: 'branch, Filiale Digitale, self-service' } },

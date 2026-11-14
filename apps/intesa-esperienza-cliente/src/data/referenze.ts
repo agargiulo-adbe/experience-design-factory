@@ -185,30 +185,36 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Cas
   unipol: {
     slug: 'unipol', nome: 'Unipol',
     occ: { it: 'Un caso italiano · Gruppo Unipol, assicurazioni', en: 'An Italian case · Unipol Group, insurance' },
-    titolo: { pre: { it: 'Unipol:', en: 'Unipol:' }, accento: { it: 'agenzie e digitale nella stessa analisi', en: 'agencies and digital in one analysis' } },
+    titolo: { pre: { it: 'Unipol:', en: 'Unipol:' }, accento: { it: 'le campagne misurate fino in agenzia', en: 'campaigns measured all the way to the agency' } },
     /* ⚠️ STESSO MODELLO DELLE ALTRE TRE (owner, 13 nov 2026): hero, riga,
        due riquadri. Le cifre di risultato del Summit (−90%, 2x) restano fuori
        finché il team dell'account Unipol non conferma che si citano (panel
        del 12 nov). Le «cinque fonti» sono la descrizione del modello nelle
        slide della sessione, non un risultato: sito, app, strumento di vendita
        delle agenzie, CRM, polizze emesse. */
+    /* 14 nov 2026 (owner: «non dice nulla di utile»). Riscritta dalla sessione
+       del Summit, con le parole di Unipol: «From data silos to insight
+       collaboration», «Impact of marketing campaign on offline conversion»,
+       la round table («From shared data to shared decisions… refine insights
+       live during discussions»), ECID per gli anonimi e Person ID per gli
+       autenticati. Le cifre di risultato restano fuori, come deciso il 12 nov. */
     hero: {
       occ: { it: 'Il modello su Customer Journey Analytics', en: 'The model on Customer Journey Analytics' },
-      oggi: { k: { it: 'Fonti', en: 'Sources' }, n: { it: '5', en: '5' } },
-      l: { it: 'sito, app, strumento di vendita delle agenzie, CRM e polizze emesse, in un modello solo', en: 'website, app, agents’ selling tool, CRM and issued policies, in one model' },
+      oggi: { k: { it: 'Fonti in un modello', en: 'Sources in one model' }, n: { it: '5 → 1', en: '5 → 1' } },
+      l: { it: 'sito, app, strumento di vendita delle agenzie, CRM e polizze emesse, uniti per ECID e ID cliente', en: 'website, app, agents’ selling tool, CRM and issued policies, joined by ECID and customer ID' },
     },
     metrica: { n: '17,6 mln', l: { it: 'clienti del gruppo, al 31 dicembre 2025', en: 'group customers, at 31 December 2025' } },
     riquadri: [
-      { n: '2.035', l: { it: 'agenzie in Italia, lette insieme al digitale', en: 'agencies in Italy, read together with digital' } },
-      { n: '4.910', l: { it: 'subagenzie in Italia', en: 'sub-agencies in Italy' } },
+      { n: '2.035', l: { it: 'agenzie in Italia, nella stessa analisi del digitale', en: 'agencies in Italy, in the same analysis as digital' } },
+      { n: '1 tavolo', l: { it: 'marketing, vendite e IT analizzano insieme, con il report aperto', en: 'marketing, sales and IT analyse together, with the report open' } },
     ],
     fascia: {
       occ: { it: 'Adobe Summit 2026 · la sessione di Unipol', en: 'Adobe Summit 2026 · Unipol’s session' },
-      testo: { it: 'L’effetto delle iniziative si misura anche sulle polizze emesse in agenzia', en: 'The effect of initiatives is measured on policies issued in agencies too' },
+      testo: { it: 'Dai dati condivisi alle decisioni condivise: gli insight si verificano e si correggono durante la riunione', en: 'From shared data to shared decisions: insights are checked and refined during the meeting' },
       icona: 'rete',
     },
     fonte: { url: FONTI.unipol, nome: 'unipol.com · fact sheet, giugno 2026' },
-    fonteCoda: { it: ' · clienti, agenzie e subagenzie <span class=im-nw>al 31 dicembre 2025.</span> Il modello e le fonti: Unipol ad Adobe Summit 2026', en: ' · customers, agencies and sub-agencies <span class=im-nw>at 31 December 2025.</span> The model and its sources: Unipol at Adobe Summit 2026' },
+    fonteCoda: { it: ' · clienti e agenzie <span class=im-nw>al 31 dicembre 2025.</span> Il modello e le fonti: Unipol ad Adobe Summit 2026', en: ' · customers and agencies <span class=im-nw>at 31 December 2025.</span> The model and its sources: Unipol at Adobe Summit 2026' },
   },
 };
 

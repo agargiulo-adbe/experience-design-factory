@@ -26,6 +26,8 @@ import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
 import Figura from '../components/Figura.astro';
 import InnestoPop from '../components/InnestoPop.astro';
 import Segno from '../components/Segno.astro';
+import FiguraCapacita from '../components/FiguraCapacita.astro';
+import MappaCapacita from '../components/MappaCapacita.astro';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import Divisore from '../components/Divisore.astro';
 import fondo from '../assets/generated/cover-innesto.webp';
@@ -67,7 +69,7 @@ const CAPACITA = [
     { it: 'Comportamento digitale e fonti offline insieme', en: 'Digital behaviour and offline sources together' },
     { it: 'Quanto contribuisce ogni canale ai mutui firmati', en: 'How much each channel contributes to signed mortgages' },
   ], g: { it: 'misura quanto è costato acquisirla', en: 'measures what it cost to acquire her' } },
-];
+] as const;
 const DOC = [
   { l: 'Real-Time Activation · segmentazione edge', u: `${EL}/experience-platform/segmentation/methods/edge-segmentation` },
   { l: 'Journey Optimizer', u: `${EL}/journey-optimizer/using/ajo-home` },
@@ -114,12 +116,12 @@ const PERCORSO = [34, 44, 92, 62, 30, 72];
    assistente non si osserva, e la slide non finge di vederla. Le fonti sono in
    calce: stitching di CJA (finestra per pacchetto) e Identity Service. */
 const CHIAVE = [
-  { m: '02', dove: { it: 'Sito, dall’annuncio', en: 'Site, from the ad' }, k: { it: 'Pseudonimo del browser', en: 'Browser pseudonym' } },
-  { m: '03', dove: { it: 'Simulazione', en: 'Simulation' }, k: { it: 'Pseudonimo + email, col consenso', en: 'Pseudonym + email, with consent' }, unisce: true },
-  { m: '04', dove: { it: 'Sito, si ferma', en: 'Site, stops' }, k: { it: 'Email', en: 'Email' } },
-  { m: '05', dove: { it: 'Email', en: 'Email' }, k: { it: 'Email', en: 'Email' } },
-  { m: '06', dove: { it: 'Filiale', en: 'Branch' }, k: { it: 'Email e telefono', en: 'Email and phone' } },
-  { m: '07', dove: { it: 'Firma e app', en: 'Signing and app' }, k: { it: 'NDG, all’apertura del rapporto', en: 'Customer ID (NDG), at account opening' }, cliente: true },
+  { m: '02', id: 'ecid', passo: 1, dove: { it: 'Sito, dall’annuncio', en: 'Site, from the ad' }, k: { it: 'Pseudonimo del browser', en: 'Browser pseudonym' } },
+  { m: '03', id: 'email', passo: 2, dove: { it: 'Simulazione', en: 'Simulation' }, k: { it: 'Pseudonimo + email, col consenso', en: 'Pseudonym + email, with consent' }, unisce: true },
+  { m: '04', id: 'email', passo: 3, dove: { it: 'Sito, si ferma', en: 'Site, stops' }, k: { it: 'Email', en: 'Email' } },
+  { m: '05', id: 'email', passo: 3, dove: { it: 'Email', en: 'Email' }, k: { it: 'Email', en: 'Email' } },
+  { m: '06', id: 'tel', passo: 4, dove: { it: 'Filiale', en: 'Branch' }, k: { it: 'Email e telefono', en: 'Email and phone' } },
+  { m: '07', id: 'ndg', passo: 5, dove: { it: 'Firma e app', en: 'Signing and app' }, k: { it: 'NDG, all’apertura del rapporto', en: 'Customer ID (NDG), at account opening' }, cliente: true },
 ];
 
 /* IL MOTORE DI TARGETING RESTA (panel del 30 ott 2026, P0). Davanti a chi i
@@ -133,17 +135,17 @@ const ENTRA = [
   { t: { it: 'Politica di contatto', en: 'Contact policy' }, d: { it: 'regola vostra', en: 'your rule' } },
 ];
 const RITORNO = [
-  { m: '01', g: 'trovare', k: { it: 'Le domande che non vi citavano', en: 'The questions that did not cite you' },
-    v: { it: 'Piano dei contenuti', en: 'Content plan' }, p: 'Brand Visibility' },
-  { m: '02', g: 'content', k: { it: 'La variante che ha funzionato', en: 'The variant that worked' },
-    v: { it: 'Brief per Milano e Bologna', en: 'Brief for Milan and Bologna' }, p: 'GenStudio for Performance Marketing' },
+  { m: '01', g: 'trovare', k: { it: 'Domande agli assistenti AI in cui la banca non compare', en: 'Questions to AI assistants where the bank does not appear' },
+    v: { it: 'Piano dei contenuti', en: 'Content plan' }, p: 'Brand Visibility', c: { it: 'Comprendere', en: 'Understand' } },
+  { m: '02', g: 'content', k: { it: 'La variante creativa con la risposta migliore', en: 'The creative variant with the best response' },
+    v: { it: 'Brief per Milano e Bologna', en: 'Brief for Milan and Bologna' }, p: 'GenStudio for Performance Marketing', c: { it: 'Creare', en: 'Create' } },
   /* La riga di AI Decisioning torna (era stata tolta l'11 nov perché parlava di
      «classifica» su un prospect che non ha score): sul prospect la misura
      corregge le REGOLE, non un punteggio. Il numero è quello del momento. */
-  { m: '04', g: 'engagement', k: { it: 'La proposta che ha funzionato', en: 'The offer that worked' },
-    v: { it: 'Regole riviste a fine trimestre', en: 'Rules revised at quarter end' }, p: 'AI Decisioning' },
-  { m: '05', g: 'engagement', k: { it: 'Il punto dove si è fermata', en: 'Where she stalled' },
-    v: { it: 'Un passo in meno nel percorso', en: 'One step fewer in the journey' }, p: 'Journey Optimizer' },
+  { m: '04', g: 'engagement', k: { it: 'Tasso di risposta per proposta', en: 'Response rate by offer' },
+    v: { it: 'Priorità e regole aggiornate sui risultati', en: 'Priorities and rules updated on results' }, p: 'AI Decisioning', c: { it: 'Sceglie', en: 'Chooses' } },
+  { m: '05', g: 'engagement', k: { it: 'Il passaggio in cui la richiesta si è fermata', en: 'The step where the application stalled' },
+    v: { it: 'Un passo in meno nel percorso', en: 'One step fewer in the journey' }, p: 'Journey Optimizer', c: { it: 'Invia', en: 'Sends' } },
 ];
 ---
 <BaseLayout title={ch.title.it}>
@@ -197,7 +199,7 @@ const RITORNO = [
               <span class="im-ing-i"><Segno k="online" /><span class="im-ing-n">Web e Mobile SDK</span></span>
               <span class="im-ing-i"><Segno k="connettore" /><span class="im-ing-n"><span data-lang-it>Connettori Sources</span><span data-lang-en>Sources connectors</span></span></span>
               <span class="im-ing-i"><Segno k="stream" /><span class="im-ing-n"><span data-lang-it>API in streaming</span><span data-lang-en>Streaming API</span></span></span>
-              <span class="im-ing-i"><Segno k="lotti" /><span class="im-ing-n"><span data-lang-it>File a lotti</span><span data-lang-en>Batch files</span></span></span>
+              <span class="im-ing-i"><Segno k="lotti" /><span class="im-ing-n"><span data-lang-it>Caricamento batch</span><span data-lang-en>Batch ingestion</span></span></span>
             </button>
           </div>
           {/* LE CARTE (owner, 13 nov 2026). La slide si proietta in sala e su Teams:
@@ -215,7 +217,16 @@ const RITORNO = [
                     <span class="im-carta-f">
                       <Segno k="giro" />
                       <T as="span" class="im-inn-t" it={n.t.it} en={n.t.en} />
-                      {n.canali && <span class="im-carta-segni" aria-hidden="true">{n.canali.map((c) => <Segno k={c.k} />)}</span>}
+                      {/* Online e offline sul fronte (owner, 14 nov 2026): una terza forma, né
+                          pillola (persona) né etichetta (campagna): righe con il segno e la
+                          parola, senza contorno. */}
+                      {n.canali && (
+                        <span class="im-carta-canali">
+                          {n.canali.map((c) => (
+                            <span class="im-carta-canale"><Segno k={c.k} /><T as="span" it={`<strong>${c.t.it}</strong> ${c.d.it}`} en={`<strong>${c.t.en}</strong> ${c.d.en}`} /></span>
+                          ))}
+                        </span>
+                      )}
                       {n.tipi && (
                         <span class="im-inn-tipi" role="list" aria-label={n.d.it}>
                           {n.tipi.map((x) => x.k
@@ -226,7 +237,7 @@ const RITORNO = [
                     </span>
                     <span class="im-carta-r">
                       <T as="span" class="im-carta-k" it={n.t.it} en={n.t.en} />
-                      {n.canali ? (
+                      {n.lega ? <T as="span" class="im-inn-d" it={n.lega.it} en={n.lega.en} /> : n.canali ? (
                         <span class="im-inn-ch">
                           {n.canali.map((c) => (
                             <span class="im-inn-ch-i" data-k={c.k}>
@@ -393,16 +404,11 @@ const RITORNO = [
     <Slide id="slide-capacita" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Che cosa fa ciascun componente nel percorso di Giulia" en="What each component does on Giulia’s journey" />
+        <div class="im-capmap-testa"><T as="h2" class="im-ado-t im-ado-t--stretto" it="Che cosa fa ciascun componente nel percorso di Giulia" en="What each component does on Giulia’s journey" /><MappaCapacita accese={['riconosce', 'sceglie', 'agisce', 'misura']} largo /></div>
         <ol class="im-capg">
           {CAPACITA.map((c, i) => (
             <li class="im-capg-col" data-substep data-k={c.k}>
-              <svg class="im-capg-fig" viewBox="0 0 120 64" aria-hidden="true">
-                {c.k === 'riconosce' && <><circle cx="30" cy="22" r="9" class="tr" /><path d="M14 52c2-11 9-16 16-16s14 5 16 16" class="tr" /><path d="M52 32h16M62 26l6 6-6 6" class="fr" /><circle cx="90" cy="22" r="9" class="ac" /><path d="M74 52c2-11 9-16 16-16s14 5 16 16" class="ac" /></>}
-                {c.k === 'sceglie' && <><rect x="8" y="6" width="34" height="9" rx="2" class="pi" /><rect x="8" y="20" width="34" height="9" rx="2" class="pi" /><rect x="8" y="34" width="34" height="9" rx="2" class="pi" /><rect x="8" y="48" width="34" height="9" rx="2" class="pi" /><path d="M46 10 C62 10 62 31 76 31M46 24 C62 24 62 31 76 31M46 38 C62 38 62 31 76 31M46 52 C62 52 62 31 76 31" class="tr" /><rect x="80" y="23" width="32" height="16" rx="3" class="acf" /></>}
-                {c.k === 'agisce' && <><circle cx="14" cy="32" r="7" class="acf" /><path d="M21 32h22M43 32 C58 32 58 10 74 10M43 32h31M43 32 C58 32 58 54 74 54" class="tr" /><rect x="78" y="3" width="30" height="14" rx="3" class="pi" /><rect x="78" y="25" width="30" height="14" rx="3" class="pi" /><rect x="78" y="47" width="30" height="14" rx="3" class="pi" /></>}
-                {c.k === 'misura' && <><path d="M8 58h104" class="tr" /><rect x="14" y="10" width="16" height="48" rx="2" class="pi" /><rect x="38" y="24" width="16" height="34" rx="2" class="pi" /><rect x="62" y="36" width="16" height="22" rx="2" class="pi" /><rect x="86" y="44" width="16" height="14" rx="2" class="acf" /></>}
-              </svg>
+              <FiguraCapacita k={c.k} class="im-capg-fig" />
               <T as="p" class="im-capg-r" it={c.r.it} en={c.r.en} />
               <p class="im-capg-p">{c.p}</p>
               <ul>{c.v.map((v) => <T as="li" it={v.it} en={v.en} />)}</ul>
@@ -422,30 +428,59 @@ const RITORNO = [
     <Slide id="slide-chiave" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Più identificativi, una persona sola: dal sito alla filiale e oltre la firma" en="Many identifiers, one person: from the site to the branch and past the signature" />
+        <div class="im-capmap-testa"><T as="h2" class="im-ado-t im-ado-t--stretto" it="Più identificativi, una persona sola: dal sito alla filiale e oltre la firma" en="Many identifiers, one person: from the site to the branch and past the signature" /><MappaCapacita accese={['riconosce']} /></div>
         <T as="p" class="im-ado-l" it="Pseudonimo, email, telefono e NDG si collegano alla stessa persona: quando diventa cliente, la sua storia di prima resta con lei." en="Pseudonym, email, phone and customer ID link to the same person: when she becomes a customer, her earlier history stays with her." />
 
-        <div class="im-chv">
-          <ol class="im-chv-l">
+        {/* L'IDENTITY GRAPH E LA RICUCITURA (owner, 14 nov 2026). A sinistra il
+            grafo che si forma, a destra la storia di Giulia. Al passo 1 l'ECID
+            è solo e la persona è un «?»; al passo 2 arriva l'email: il «?»
+            diventa Giulia, il collegamento con l'ECID si disegna e la visita
+            02 si colora all'indietro. È lo stitching di Customer Journey
+            Analytics (replay) visto accadere; il grafo è Identity Service di
+            Experience Platform. Fonti: Experience League, «Stitching overview»
+            e «Identity Graph Linking Rules». Le etichette sono HTML, l'SVG porta
+            solo i tratti. */}
+        <i class="im-idg-passo" data-substep data-p="1" aria-hidden="true"></i>
+        <i class="im-idg-passo" data-substep data-p="2" aria-hidden="true"></i>
+        <i class="im-idg-passo" data-substep data-p="3" aria-hidden="true"></i>
+        <i class="im-idg-passo" data-substep data-p="4" aria-hidden="true"></i>
+        <i class="im-idg-passo" data-substep data-p="5" aria-hidden="true"></i>
+        <div class="im-idg">
+          <div class="im-idg-g" role="img" aria-label="Il grafo delle identità: ECID, email, telefono e NDG collegati a Giulia">
+            <svg class="im-idg-fili" viewBox="0 0 100 76" preserveAspectRatio="none" aria-hidden="true">
+              <line x1="50" y1="38" x2="17" y2="15" pathLength="1" data-dal="2" data-k="ecid" />
+              <line x1="50" y1="38" x2="83" y2="15" pathLength="1" data-dal="2" data-k="email" />
+              <line x1="50" y1="38" x2="83" y2="61" pathLength="1" data-dal="4" data-k="tel" />
+              <line x1="50" y1="38" x2="17" y2="61" pathLength="1" data-dal="5" data-k="ndg" />
+            </svg>
+            <div class="im-idg-n im-idg-n--chi" style="--x:50%;--y:50%">
+              <span class="im-idg-chi-q">?</span>
+              <span class="im-idg-chi-g">Giulia</span>
+            </div>
+            <div class="im-idg-n" data-dal="1" data-k="ecid" style="--x:17%;--y:20%"><b>ECID</b><T as="small" it="il browser" en="the browser" /></div>
+            <div class="im-idg-n" data-dal="2" data-k="email" style="--x:83%;--y:20%"><b>Email</b><T as="small" it="col consenso" en="with consent" /></div>
+            <div class="im-idg-n" data-dal="4" data-k="tel" style="--x:83%;--y:80%"><T as="b" it="Telefono" en="Phone" /><T as="small" it="in filiale" en="in the branch" /></div>
+            <div class="im-idg-n" data-dal="5" data-k="ndg" style="--x:17%;--y:80%"><b>NDG</b><T as="small" it="unico nel grafo" en="unique in the graph" /></div>
+          </div>
+          <ol class="im-idg-tl">
             {CHIAVE.map((c) => (
-              <li class="im-chv-i" data-cliente={c.cliente ? '' : null}>
-                <span class="im-chv-m">{c.m}</span>
-                <T as="span" class="im-chv-dove" it={c.dove.it} en={c.dove.en} />
-                <T as="span" class="im-chv-k" it={c.k.it} en={c.k.en} />
-                {c.unisce && <T as="span" class="im-chv-nota" it="le visite di prima si uniscono" en="earlier visits join up" />}
+              <li class="im-idg-e" data-dal={String(c.passo)} data-k={c.id} data-ricuci={c.m === '02' ? '' : null} data-cliente={c.cliente ? '' : null}>
+                <span class="im-idg-m">{c.m}</span>
+                <span class="im-idg-dove"><T as="span" it={c.dove.it} en={c.dove.en} /><T as="small" it={c.k.it} en={c.k.en} /></span>
+                <span class="im-idg-a">
+                  {c.m === '02'
+                    ? <><T as="span" class="im-idg-anon" it="sconosciuta" en="unknown" /><T as="span" class="im-idg-giulia" it="Giulia · ricucita all’indietro" en="Giulia · stitched back" /></>
+                    : <span class="im-idg-giulia">Giulia</span>}
+                </span>
               </li>
             ))}
           </ol>
-          <div class="im-chv-barra" data-substep>
-            <T as="span" class="im-chv-prima" it="non‑cliente" en="Non-customer" />
-            <T as="span" class="im-chv-dopo" it="Cliente da oggi: la storia si legge in CJA" en="Customer from today: the history reads in CJA" />
-          </div>
-          {/* Con che strumenti si fa (la sua ultima domanda, 11 nov): una riga,
-              non il dettaglio. Il «come lo traccio» canale per canale si fa al
-              tavolo tecnico. */}
-          {/* «Come entrano i dati» stava qui con ipotesi sui sistemi della banca (IVR, ATM, filiale): ora l'offerta di integrazione è nello schema dell'innesto, senza ipotesi (owner, 13 nov 2026). */}
-          <T as="p" class="im-chv-esito" data-substep it="Per il Controllo di Gestione: si vede quale iniziativa ha portato la firma in filiale, e quanto vale il canale fisico." en="For management control: you can see which initiative led to the branch signature, and what the physical channel is worth." />
         </div>
+        <div class="im-chv-barra im-idg-barra" data-dal="5">
+          <T as="span" class="im-chv-prima" it="non‑cliente" en="Non-customer" />
+          <T as="span" class="im-chv-dopo" it="Cliente da oggi: la storia si legge in CJA" en="Customer from today: the history reads in CJA" />
+        </div>
+        <T as="p" class="im-idg-nota" data-dal="5" it="Un PC condiviso in famiglia non fonde due persone: l’NDG è unico nel grafo, e ogni visita autenticata resta a chi l’ha fatta." en="A family PC does not merge two people: the customer ID is unique in the graph, and every authenticated visit stays with whoever made it." />
 
       </div>
     </Slide>
@@ -457,7 +492,7 @@ const RITORNO = [
     <Slide id="slide-cja-banca" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quattro domande a cui Customer Journey Analytics risponde" en="Four questions Customer Journey Analytics answers" />
+        <div class="im-capmap-testa"><T as="h2" class="im-ado-t im-ado-t--stretto" it="Quattro domande a cui Customer Journey Analytics risponde" en="Four questions Customer Journey Analytics answers" /><MappaCapacita accese={['misura']} /></div>
         <T as="p" class="im-ado-l" it="Si affianca al motore di targeting e agli strumenti di BI attuali." en="It sits alongside the targeting engine and current BI tools." />
         <ul class="im-banca">
           {BANCA.map((b) => (
@@ -484,8 +519,8 @@ const RITORNO = [
     <Slide id="slide-attribuzione" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-doppia" style={`--bg: url('${fondoMisura.src}')`}></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quanta parte delle firme in filiale passa dal digitale?" en="How much of branch signing passes through digital?" />
-        <T as="p" class="im-ado-l" it="Si vede quanto ogni canale digitale porta in filiale, fino alla firma del mutuo." en="You see how much each digital channel brings into the branch, up to the mortgage signing." />
+        <div class="im-capmap-testa"><T as="h2" class="im-ado-t im-ado-t--stretto" it="Quanta parte delle firme in filiale passa dal digitale?" en="How much of branch signing passes through digital?" /><MappaCapacita accese={['misura']} /></div>
+        <T as="p" class="im-ado-l" it="Per il Controllo di Gestione: quanto ogni canale digitale porta in filiale, fino alla firma, e quanto vale il canale fisico." en="For management control: how much each digital channel brings into the branch, up to the signature, and what the physical channel is worth." />
 
         <div class="im-att">
           <div class="im-att-r" data-substep>
@@ -539,7 +574,7 @@ const RITORNO = [
     <Slide id="slide-ritorno" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quello che si impara da Giulia rende più facile il prossimo cliente" en="What Giulia teaches makes the next customer easier" />
+        <div class="im-capmap-testa"><T as="h2" class="im-ado-t im-ado-t--stretto" it="Quello che si impara da Giulia migliora la relazione con il prossimo cliente" en="What we learn from Giulia improves the relationship with the next customer" />{/* Niente fila delle capacità: questa slide chiude il capitolo e le tocca tutte; la mappatura la fanno le etichette delle righe (owner, 14 nov 2026). */}</div>
 
         <div class="im-rt">
           <div class="im-rt-testa" aria-hidden="true">
@@ -553,7 +588,7 @@ const RITORNO = [
                 <span class="im-rt-m">{r.m}</span>
                 <T as="span" class="im-rt-k" it={r.k.it} en={r.k.en} />
                 <svg class="im-rt-fr" viewBox="0 0 60 14" aria-hidden="true"><path d="M1 7h56M51 1l6 6-6 6" /></svg>
-                <span class="im-rt-v"><T as="strong" it={r.v.it} en={r.v.en} /><small>{r.p}</small></span>
+                <span class="im-rt-v"><T as="strong" it={r.v.it} en={r.v.en} /><small><T as="span" class="im-rt-cap" it={r.c.it} en={r.c.en} /> {r.p}</small></span>
               </li>
             ))}
           </ol>
@@ -562,7 +597,7 @@ const RITORNO = [
               banca (panel, 11 nov 2026). Così chiude il giro e lo rispetta. */}
           <div class="im-rt-dopo" data-substep>
             <T as="p" class="im-rt-dk" it="E Giulia, ora cliente" en="And Giulia, now a customer" />
-            <T as="p" class="im-rt-dv" it="Passa al vostro motore con tutta la sua storia: da qui le proposte le sceglie lui." en="She moves to your engine with her whole history: from here on, it chooses the offers." />
+            <T as="p" class="im-rt-dv" it="Non riparte da zero: il vostro motore la conosce già, dalla prima visita alla firma, e sceglie le prossime proposte su quella storia." en="She does not start from scratch: your engine already knows her, from the first visit to the signature, and chooses the next offers on that history." />
           </div>
         </div>
       </div>
@@ -570,6 +605,18 @@ const RITORNO = [
 
   </DeckContainer>
 </BaseLayout>
+
+<script>
+  /* La fila delle capacità riporta alla slide dei componenti: il deck ci va
+     con goTo, e il link resta l'àncora se lo script non c'è. */
+  document.addEventListener('click', (e) => {
+    const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('[data-capmap]');
+    if (!a) return;
+    const deck = (window as any).__edfDeck;
+    const i = deck?.slides?.findIndex?.((s: HTMLElement) => s.id === 'slide-capacita') ?? -1;
+    if (i >= 0) { e.preventDefault(); e.stopPropagation(); deck.goTo(i); }
+  }, true);
+</script>
 
 <script>
   /* LE CARTE DELL'INNESTO (owner, 13 nov 2026). Un clic gira una carta e
