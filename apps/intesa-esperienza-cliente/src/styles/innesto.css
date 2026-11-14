@@ -924,9 +924,6 @@
 .im-cjp-nota { display: grid; gap: 0.2rem; padding: 0.7rem 0.95rem; border-left: 3px solid #6cc04a; border-radius: 4px; background: rgba(255, 255, 255, 0.07); opacity: 0; translate: -0.8rem 0; transition: opacity 0.4s ease, translate 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
 .im-cjp-nota strong { font-size: clamp(1.05rem, calc(1.02 * var(--vu)), 2.2rem); color: #ffffff; }
 .im-cjp-nota span { font-size: clamp(0.98rem, calc(0.9 * var(--vu)), 1.95rem); line-height: 1.4; color: #e3eedf; text-wrap: pretty; }
-.im-cjp-fonti { display: grid; gap: 0.15rem; padding: 0.2rem 0.95rem; }
-.im-cjp-fonti small { font-size: clamp(0.86rem, calc(0.78 * var(--vu)), 1.7rem); font-weight: 700; color: #b9e6a3; }
-.im-cjp-fonti span { font-size: clamp(0.94rem, calc(0.86 * var(--vu)), 1.85rem); line-height: 1.4; color: #e3eedf; }
 #slide-attribuzione:has(.im-cjp-passo[data-p="1"][data-substep-active]) .im-cjp-nota[data-dal="1"],
 #slide-attribuzione:has(.im-cjp-passo[data-p="2"][data-substep-active]) .im-cjp-nota[data-dal="2"] { opacity: 1; translate: none; }
 @media (prefers-reduced-motion: reduce) {
@@ -948,3 +945,51 @@
 .im-idg-st small { font-size: clamp(0.8rem, calc(0.74 * var(--vu)), 1.6rem); font-weight: 400; color: #e3eedf; white-space: nowrap; }
 .im-idg-nota { max-width: 62rem; padding: clamp(0.6rem, calc(0.8 * var(--vu)), 1.6rem) clamp(0.9rem, calc(1.1 * var(--vu)), 2.2rem); border-left: 3px solid var(--idg-email); border-radius: 4px; background: rgba(255, 255, 255, 0.08); font-size: clamp(1.02rem, calc(1.02 * var(--vu)), 2.2rem); line-height: 1.4; font-weight: 600; color: #ffffff; text-wrap: pretty; }
 @media (max-height: 920px) { .im-idg-nota { margin-top: 0.3rem; padding-block: 0.4rem; } .im-idg-barra { margin-top: 0.4rem; } .im-idg-st { gap: 0; } }
+
+/* LE ETICHETTE SULLE LINEE DELLE CORNICI, per la sala ibrida (owner,
+   14 nov 2026: big screen e Teams). «Come entrano i dati», «Servizi comuni»
+   e le due legende avevano 0,72 × --vu con un minimo di 0,78rem: il minimo
+   vinceva a ogni schermo, e a 1920 erano 14px, il testo più piccolo della
+   slide. Ora crescono con --vu (≈20px a 1920); sotto il 1440 restano al
+   minimo di prima, dove la slide non ha altezza da dare. */
+/* Solo dove la slide ha altezza (stessa soglia del margine dell'innesto):
+   a 1440×900 un pixel in più portava il titolo fuori dall'area sicura. */
+@media (min-height: 941px) {
+#slide-innesto .im-inn-legenda,
+#slide-innesto .im-inn-ingresso,
+#slide-innesto .im-inn-svc > span { font-size: clamp(0.78rem, calc(1.05 * var(--vu)), 2.2rem); }
+#slide-innesto .im-inn-ingresso { padding: 0.18em 0.8em; gap: 0.6em; border-width: clamp(1px, calc(0.08 * var(--vu)), 2px); }
+#slide-innesto .im-inn-svc > span { padding: 0.08em 0.65em; }
+#slide-innesto p.im-inn-svc { gap: 0.45em; padding: 0.2em 0.55em; font-size: clamp(0.78rem, calc(1.05 * var(--vu)), 2.2rem); }
+#slide-innesto .im-ing-i .im-inn-segno { width: 1.35em; height: 1.35em; }
+}
+
+/* La nota della riga Filiale: perché la filiale è nel pannello. Sta sotto la
+   sua riga, col bianco della sua barra, e si accende con le barre: si legge
+   quando la barra della filiale si riempie, non prima (owner, 14 nov 2026). */
+.im-cjp-fil { grid-column: 1 / -1; margin-top: 0.35rem; padding: 0.15rem 0 0.15rem 0.7rem; border-left: 3px solid #ffffff; font-size: clamp(0.92rem, calc(0.86 * var(--vu)), 1.85rem); line-height: 1.35; color: #e3eedf; opacity: 0; transition: opacity 0.5s ease 0.5s; }
+.im-cjp-fil strong { color: #ffffff; font-weight: 700; }
+.im-cjp[data-pieno] .im-cjp-fil { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { #slide-attribuzione .im-cjp-fil { transition: none; } }
+/* 1280×800: il selettore resta accanto al titolo del pannello. Su una riga a
+   sé costava ~45px e portava il titolo della slide fuori dall'area sicura;
+   va a capo il sottotitolo, che costa una riga sola. */
+@media (max-height: 820px) { .im-cjp-testa { flex-wrap: nowrap; } .im-cjp-tit { flex: 1 1 auto; } .im-cjp-mod { flex: none; } .im-cjp-fil { margin-top: 0.2rem; } }
+
+/* Le pillole delle carte (chi riceve, com'è fatta la campagna) per la sala
+   ibrida: stesso difetto delle etichette delle cornici, 0,72 × --vu con un
+   minimo che vinceva sempre (14px anche a 1920). Ora crescono con --vu oltre
+   il 1440; dove tre pillole non stanno su una riga, la persona resta sopra e
+   le campagne vanno sotto, che è anche la loro gerarchia. 14 nov 2026. */
+@media (min-height: 941px) {
+#slide-innesto .im-carta .im-inn-tipo { font-size: clamp(0.78rem, calc(0.92 * var(--vu)), 2rem); }
+#slide-innesto .im-carta .im-inn-tipi { gap: 0.3em 0.3em; }
+}
+@media (min-width: 1530px) and (min-height: 941px) {
+  #slide-innesto .im-carta .im-inn-tipi:has(.im-chi):has(.im-come)::after { content: ''; flex-basis: 100%; order: 1; }
+  #slide-innesto .im-carta .im-inn-tipi .im-chi { order: 0; }
+  #slide-innesto .im-carta .im-inn-tipi .im-come { order: 2; }
+}
+/* Il sottotitolo del pannello va a capo fra un pezzo e l'altro, mai dentro
+   («dati / di esempio» a 1280). */
+.im-cjp-seg { display: inline-block; }

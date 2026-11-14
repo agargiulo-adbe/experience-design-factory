@@ -534,7 +534,7 @@ const RITORNO = [
             <div class="im-cjp-testa">
               <div class="im-cjp-tit">
                 <T as="strong" it="Attribuzione · Mutuo prima casa" en="Attribution · First-home mortgage" />
-                <T as="small" it="Customer Journey Analytics · ultimi 90 giorni · dati di esempio" en="Customer Journey Analytics · last 90 days · sample data" />
+                <small>{[["Customer Journey Analytics", "Customer Journey Analytics"], ["ultimi 90 giorni", "last 90 days"], ["dati di esempio", "sample data"]].map(([it, en], k) => <>{k > 0 && ' · '}<T as="span" class="im-cjp-seg" it={it} en={en} /></>)}</small>
               </div>
               <div class="im-cjp-mod" role="group" aria-label="Modello di attribuzione" data-deck-nochrome>
                 <button type="button" data-mod="ultimo" aria-pressed="true"><span data-lang-it>Ultimo clic</span><span data-lang-en>Last click</span></button>
@@ -552,6 +552,11 @@ const RITORNO = [
                   <T as="span" class="im-cjp-n" it={c.l.it} en={c.l.en} />
                   <span class="im-cjp-b"><i></i></span>
                   <span class="im-cjp-v"><b data-mod="ultimo">{c.ultimo}%</b><b data-mod="algo">{c.algo}%</b></span>
+                  {/* Perché la filiale è nel pannello: i suoi dati entrano in CJA.
+                      Stava a parte nella colonna destra, visibile da subito e
+                      senza un momento in cui leggerla (owner, 14 nov 2026): ora
+                      è la nota della sua riga, e si accende con le barre. */}
+                  {c.filiale && <span class="im-cjp-fil"><T as="strong" it="Dalla filiale entrano" en="From the branch come" /> <T as="span" it="appuntamenti, richieste firmate, tempo alla delibera" en="appointments, signed applications, time to approval" /></span>}
                 </li>
               ))}
             </ol>
@@ -569,10 +574,6 @@ const RITORNO = [
             <div class="im-cjp-nota" data-dal="2">
               <T as="strong" it="Algoritmico, sugli stessi dati" en="Algorithmic, on the same data" />
               <T as="span" it="La firma si divide lungo il percorso. Il modello si cambia nel report, senza ricaricare i dati." en="The signature is shared along the journey. The model changes in the report, without reloading data." />
-            </div>
-            <div class="im-cjp-fonti">
-              <T as="small" it="Dalla filiale entrano" en="From the branch come" />
-              <T as="span" it="appuntamenti, richieste firmate, tempo alla delibera" en="appointments, signed applications, time to approval" />
             </div>
           </div>
         </div>
