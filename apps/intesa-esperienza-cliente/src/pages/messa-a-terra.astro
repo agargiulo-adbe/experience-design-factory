@@ -27,6 +27,7 @@ import Figura from '../components/Figura.astro';
 import InnestoPop from '../components/InnestoPop.astro';
 import Segno from '../components/Segno.astro';
 import FiguraCapacita from '../components/FiguraCapacita.astro';
+import { ATTRIBUZIONE, DIGITALE } from '../data/attribuzione';
 import MappaCapacita from '../components/MappaCapacita.astro';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import Divisore from '../components/Divisore.astro';
@@ -101,11 +102,6 @@ const BANCA = [
 ];
 
 /* Altezze schematiche, senza valori: dicono la forma, e la slide lo dichiara. */
-const TOCCHI = [
-  { it: 'Search', en: 'Search' }, { it: 'Social', en: 'Social' }, { it: 'Sito', en: 'Website' },
-  { it: 'App', en: 'App' }, { it: 'Email', en: 'Email' }, { it: 'Filiale', en: 'Branch' },
-];
-const PERCORSO = [34, 44, 92, 62, 30, 72];
 
 /* UNA CHIAVE, UNA STORIA (check col referente, 11 nov 2026). Le due tavole
    che ha chiesto stanno in una: l'«omni tracking» — un comportamento seguito
@@ -516,47 +512,70 @@ const RITORNO = [
     </Slide>
 
 
+    {/* IL PANNELLO DI ATTRIBUZIONE (owner, 14 nov 2026). Prima la slide DICEVA
+        «il modello si cambia nel report»; ora lo fa vedere: un pannello di
+        Customer Journey Analytics con il selettore del modello. Stessa misura
+        delle altre slide del capitolo: titolo, fila delle capacità, una riga,
+        UNA figura, due passi. Il dato è lo stesso nei due modelli (filiale
+        compresa), cambia solo come si divide il credito: per questo la riga
+        «Filiale non misurata» di prima non c'è più, sarebbe stata falsa dentro
+        CJA. Quote da `data/attribuzione.ts`, le stesse del mock del momento 07.
+        Il selettore si gira anche a mano, se in sala chiedono. */}
     <Slide id="slide-attribuzione" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-doppia" style={`--bg: url('${fondoMisura.src}')`}></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <div class="im-capmap-testa"><T as="h2" class="im-ado-t im-ado-t--stretto" it="Quanta parte delle firme in filiale passa dal digitale?" en="How much of branch signing passes through digital?" /><MappaCapacita accese={['misura']} /></div>
         <T as="p" class="im-ado-l" it="Per il Controllo di Gestione: quanto ogni canale digitale porta in filiale, fino alla firma, e quanto vale il canale fisico." en="For management control: how much each digital channel brings into the branch, up to the signature, and what the physical channel is worth." />
 
-        <div class="im-att">
-          <div class="im-att-r" data-substep>
-            <div class="im-att-e">
-              <T as="span" class="im-att-k" it="Solo canali digitali" en="Digital channels only" />
-              <T as="span" class="im-att-t" it="Modello ultimo clic" en="Last-click model" />
-              <T as="span" class="im-att-d" it="Tutta la firma all’ultimo canale digitale toccato" en="All the credit to the last digital channel touched" />
+        <i class="im-cjp-passo" data-substep data-p="1" aria-hidden="true"></i>
+        <i class="im-cjp-passo" data-substep data-p="2" aria-hidden="true"></i>
+        <div class="im-cjp-sc">
+          <figure class="im-cjp" data-cjp data-modello="ultimo">
+            <div class="im-cjp-testa">
+              <div class="im-cjp-tit">
+                <T as="strong" it="Attribuzione · Mutuo prima casa" en="Attribution · First-home mortgage" />
+                <T as="small" it="Customer Journey Analytics · ultimi 90 giorni · dati di esempio" en="Customer Journey Analytics · last 90 days · sample data" />
+              </div>
+              <div class="im-cjp-mod" role="group" aria-label="Modello di attribuzione" data-deck-nochrome>
+                <button type="button" data-mod="ultimo" aria-pressed="true"><span data-lang-it>Ultimo clic</span><span data-lang-en>Last click</span></button>
+                <button type="button" data-mod="algo" aria-pressed="false"><span data-lang-it>Algoritmico</span><span data-lang-en>Algorithmic</span></button>
+              </div>
             </div>
-            <div class="im-att-barre">
-              {TOCCHI.map((_, i) => i === 4
-                ? <span class="im-att-b" style="--h:100%"></span>
-                : i === 5
-                  ? <T as="span" class="im-att-no" it="Filiale non misurata" en="Branch not measured" />
-                  : <span></span>)}
+            <div class="im-cjp-int" aria-hidden="true">
+              <T as="span" it="Canale" en="Channel" />
+              <T as="span" it="Richieste firmate attribuite" en="Signed applications attributed" />
+              <span>%</span>
             </div>
-          </div>
-          <div class="im-att-r" data-substep>
-            <div class="im-att-e">
-              <T as="span" class="im-att-k" data-cja="" it="Con Customer Journey Analytics" en="With Customer Journey Analytics" />
-              <T as="span" class="im-att-t" it="Modello algoritmico" en="Algorithmic model" />
-              <T as="span" class="im-att-d" it="La firma divisa fra i canali, filiale compresa" en="Credit shared across channels, branch included" />
+            <ol class="im-cjp-l">
+              {ATTRIBUZIONE.map((c) => (
+                <li class="im-cjp-r" data-filiale={c.filiale ? '' : null} style={`--u:${c.ultimo}%;--a:${c.algo}%`}>
+                  <T as="span" class="im-cjp-n" it={c.l.it} en={c.l.en} />
+                  <span class="im-cjp-b"><i></i></span>
+                  <span class="im-cjp-v"><b data-mod="ultimo">{c.ultimo}%</b><b data-mod="algo">{c.algo}%</b></span>
+                </li>
+              ))}
+            </ol>
+            <div class="im-cjp-tot">
+              <T as="span" it="Canali digitali sul totale" en="Digital channels, share of total" />
+              <span class="im-cjp-v"><b data-mod="ultimo">{DIGITALE.ultimo}%</b><b data-mod="algo">{DIGITALE.algo}%</b></span>
             </div>
-            <div class="im-att-barre" aria-hidden="true">
-              {PERCORSO.map((h, i) => <span class="im-att-b" style={`--h:${h}%`} data-filiale={i === 5 ? '' : null}></span>)}
-            </div>
-          </div>
-          <div class="im-att-asse">
-            <ol>{TOCCHI.map((t) => <T as="li" it={t.it} en={t.en} />)}</ol>
-          </div>
-          <T as="p" class="im-att-leg" it="Altezza della barra: quota delle firme attribuita al canale." en="Bar height: share of signatures attributed to the channel." />
-        </div>
+          </figure>
 
-        <ul class="im-att-plus" data-substep>
-          <li><T as="strong" it="Il modello si cambia nel report" en="The model changes in the report" /><T as="span" it="ultimo clic o algoritmico, senza ricaricare i dati" en="last click or algorithmic, without reloading data" /></li>
-          <li><T as="strong" it="Dalla filiale entrano" en="From the branch come" /><T as="span" it="appuntamenti, richieste firmate, tempo alla delibera" en="appointments, signed applications, time to approval" /></li>
-        </ul>
+          <div class="im-cjp-note">
+            <div class="im-cjp-nota" data-dal="1">
+              <T as="strong" it="Ultimo clic" en="Last click" />
+              <T as="span" it="La firma va all’ultimo passo, e per un mutuo è quasi sempre la filiale. Il digitale sembra pesare poco." en="The signature goes to the last step, and for a mortgage that is almost always the branch. Digital seems to count for little." />
+            </div>
+            <div class="im-cjp-nota" data-dal="2">
+              <T as="strong" it="Algoritmico, sugli stessi dati" en="Algorithmic, on the same data" />
+              <T as="span" it="La firma si divide lungo il percorso. Il modello si cambia nel report, senza ricaricare i dati." en="The signature is shared along the journey. The model changes in the report, without reloading data." />
+            </div>
+            <div class="im-cjp-fonti">
+              <T as="small" it="Dalla filiale entrano" en="From the branch come" />
+              <T as="span" it="appuntamenti, richieste firmate, tempo alla delibera" en="appointments, signed applications, time to approval" />
+            </div>
+          </div>
+        </div>
 
         <p class="im-fonte-riga">
           <span data-lang-it>Esempio illustrativo. L’attribuzione non misura quello che succede fuori dai canali osservati. Modelli: </span><span data-lang-en>Illustrative example. Attribution does not measure what happens outside the observed channels. Models: </span>
@@ -772,5 +791,41 @@ const RITORNO = [
     const slide = document.getElementById('slide-innesto');
     if (slide) new MutationObserver(() => { if (slide.getAttribute('aria-hidden') === 'true') chiudi(); })
       .observe(slide, { attributes: true, attributeFilter: ['aria-hidden'] });
+  }
+</script>
+
+<script>
+  /* Il selettore del modello sul pannello di attribuzione. I due passi della
+     slide lo muovono da soli: il primo mostra l'ultimo clic, il secondo
+     l'algoritmico. Al clic si gira a mano, in qualunque momento; quando la
+     slide cambia passo, torna a seguire il passo. Il bottone perde il fuoco
+     dopo il clic, così le frecce restano al deck. */
+  const slide = document.getElementById('slide-attribuzione');
+  const pan = slide?.querySelector<HTMLElement>('[data-cjp]');
+  if (slide && pan) {
+    const bottoni = pan.querySelectorAll<HTMLButtonElement>('.im-cjp-mod button');
+    const metti = (m: string) => {
+      pan.dataset.modello = m;
+      bottoni.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mod === m)));
+    };
+    const passo = () => slide.querySelectorAll('.im-cjp-passo[data-substep-active]').length;
+    const segui = () => {
+      const p = passo();
+      pan.toggleAttribute('data-pieno', p > 0 || pan.hasAttribute('data-mano'));
+      if (!pan.hasAttribute('data-mano')) metti(p >= 2 ? 'algo' : 'ultimo');
+    };
+    bottoni.forEach((b) => b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      pan.setAttribute('data-mano', '');
+      pan.setAttribute('data-pieno', '');
+      metti(b.dataset.mod ?? 'ultimo');
+      b.blur();
+    }));
+    const passi = slide.querySelectorAll('.im-cjp-passo');
+    const mo = new MutationObserver(() => { pan.removeAttribute('data-mano'); segui(); });
+    passi.forEach((p) => mo.observe(p, { attributes: true, attributeFilter: ['data-substep-active'] }));
+    new MutationObserver(() => { if (slide.getAttribute('aria-hidden') === 'true') { pan.removeAttribute('data-mano'); segui(); } })
+      .observe(slide, { attributes: true, attributeFilter: ['aria-hidden'] });
+    segui();
   }
 </script>
