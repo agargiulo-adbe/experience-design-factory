@@ -7,7 +7,7 @@
 
 Scritta in una parte nuova perché la Parte 19, dove stanno §42.13–42.16, è a meno di 1 KB dal tetto.
 
-**Stato del codice.** `29c0407` (14 nov, 00:39) è **su `main` e pubblicato**: lo schema dell'innesto a carte, fino al cambio di sottotitolo. Tutto quello che segue è **nel working tree, non committato**: 11 file modificati e 2 nuovi in `apps/intesa-esperienza-cliente/src` (`FiguraCapacita.astro`, `MappaCapacita.astro`). Si stagiano per percorso. `CLAUDE.md` (modificato) e `.claude/rules/` (non tracciato) **restano fuori**: non sono di questo workstream.
+**Stato del codice.** `29c0407` (14 nov, 00:39) porta l'innesto a carte fino al cambio di sottotitolo; `36e2755` (14 nov) porta tutto il resto, compresi i due componenti nuovi `FiguraCapacita.astro` e `MappaCapacita.astro`. Entrambi su `main` e pubblicati. `astro check` dava un errore di tipo su `<FiguraCapacita k={c.k}>`: `CAPACITA` è ora `as const`.
 
 **Lo schema dell'innesto (`slide-innesto`, `pages/messa-a-terra.astro`, `styles/innesto.css`).**
 - **Carte che si girano** in verticale, «a bascula» (`rotateX`). Davanti: icona «giro», titolo, pillole. Dietro: che cosa fa quel blocco e come si lega ad Adobe (campo `lega` in `OGGI`, `data/innesto.ts`). Sulle carte Adobe il retro porta anche il momento di Giulia e «Come funziona» (il pop-up).
