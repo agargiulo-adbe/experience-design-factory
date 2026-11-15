@@ -5,6 +5,9 @@
 
 ## 11. Change log recente
 
+### 2026-11-15 · Storia di Intesa: rifinitura per la sala ibrida · e un dossier su InSalute Servizi
+`497bdc2`, `6a2fab0`, `a5676b1`: i sette cerchi del giro di Giulia crescono con lo schermo; «Giulia *Stitching*» al posto di «ricucita all'indietro»; la nota del PC condiviso in riquadro; «quanto pesa il canale fisico»; etichette e pillole dell'innesto più grandi solo sopra i 940 px d'altezza; la nota della filiale sotto la sua riga. Dettaglio in §42.17 (Parte 24). `74fe5b5`, da un'altra sessione: guscio `dossier-insalute.astro` in `intesa-dopo-la-firma` per l'incontro del 24 nov, contenuto in `restricted_docs` (slug `intesa-insalute`, migrazione `0037`, seed git-ignorato).
+
 ### 2026-11-14 (mattina) · Storia di Intesa: l'attribuzione come pannello di CJA, e le cifre Unipol verificate
 `8221d4d`: pannello di Customer Journey Analytics con il selettore Ultimo clic | Algoritmico (digitale 20% → 66%, cifre di esempio), quote in `data/attribuzione.ts` condivise col mock del momento 07. Le cifre Unipol del Summit restano fuori: non dette in sessione, solo nella bozza del deck. Dettaglio in §42.17 (Parte 24).
 

@@ -25,15 +25,15 @@ Scritta in una parte nuova perché la Parte 19, dove stanno §42.13–42.16, è 
 
 **`slide-chiave` è ora un grafo delle identità con lo stitching.** È una scelta dell'owner: «Solo identity graph», non un modello di attribuzione.
 - Cinque sotto-passi: ECID, email, telefono, NDG intorno a «?» che diventa «Giulia». Accanto, la linea del tempo degli eventi.
-- Al passo dell'email l'evento 02 si **ricuce all'indietro**: «sconosciuta» diventa «Giulia · ricucita all'indietro».
-- La barra dice «Cliente da oggi: la storia si legge in CJA». La nota dice: «Un PC condiviso in famiglia non fonde due persone: l'NDG è unico nel grafo, e ogni visita autenticata resta a chi l'ha fatta.»
+- Al passo dell'email l'evento 02 si **ricuce all'indietro**: «sconosciuta» diventa «Giulia *Stitching*» con sotto «la visita di prima passa al suo profilo» (dal 15 nov; prima era «Giulia · ricucita all'indietro», bocciato dall'owner).
+- La barra dice «Cliente da oggi: la storia si legge in CJA». La nota dice: «Un PC condiviso in famiglia non fonde due persone: l'NDG è unico nel grafo, e ogni visita autenticata resta associata a chi l'ha fatta.» Dal 15 nov è un riquadro (filo bianco a sinistra, corpo ~1 vu, peso 600): prima era quasi invisibile.
 - Verificato su Fluffy:
   - Lo stitching di CJA può essere per campo o per grafo, e il replay riattribuisce gli eventi anonimi precedenti.
   - Il lookback va da 1 giorno (replay giornaliero) a 7, 14 o 30 giorni (settimanale), secondo il pacchetto; il backfill è di 13 o 25 mesi.
   - Le Linking Rules del grafo: con un namespace unico, un dispositivo condiviso non fa collassare il grafo. Gli eventi anonimi vanno all'ultimo utente autenticato, quelli autenticati restano alla loro persona.
 
 **Le altre slide.**
-- **Attribuzione:** lead «Per il Controllo di Gestione: quanto ogni canale digitale porta in filiale, fino alla firma, e quanto vale il canale fisico.»
+- **Attribuzione:** lead «Per il Controllo di Gestione: quanto ogni canale digitale porta in filiale, fino alla firma e quanto pesa il canale fisico.» (parole dell'owner, 15 nov; prima «…, e quanto vale…»).
 - **Ritorno:** titolo «Quello che si impara da Giulia migliora la relazione con il prossimo cliente», e «E Giulia» riscritto («Non riparte da zero…»). Via «Regole riviste a fine trimestre», perché nessuno sapeva dire perché proprio il trimestre.
 - **Capacità:** «Email, sito, app, SMS, WhatsApp». WhatsApp è un canale nativo di AJO, GA da luglio 2025 (Fluffy).
 - **Team (`adobe.astro`, `global.css`):** sette colonne uguali sopra i 901 px. Le foto sono equidistanti (245 px a 1920). I due ruoli PSS vanno a capo uguali («Product Sales Specialist» / «Data»·«Content»). A 1280 nomi e ruoli restano su due righe, come prima.
@@ -59,3 +59,11 @@ Scritta in una parte nuova perché la Parte 19, dove stanno §42.13–42.16, è 
 - Nella trascrizione della sessione (CP16, Community Pavilion, 21 apr 2026) **nessuno le dice**: sul palco i risultati sono solo qualitativi.
 - Nessuna registrazione pubblica e nessuna customer story pubblica. La customer story è appena partita con il marketing Adobe, e le cifre passerebbero da lì.
 - Da chiedere all'AE: il deck proiettato, oppure il via libera scritto del cliente.
+
+**La rifinitura del 15 nov, per la sala ibrida** (`497bdc2`, `6a2fab0`, `a5676b1`, tutti su `main`, CI e deploy verdi). La stanza del 19 è un grande schermo in sala più chi è collegato da Teams: quello che a 1440 si legge, a distanza no.
+- **Il giro di Giulia** (`CircoloJourney.astro`, `global.css`): i sette cerchi e i loro numeri crescono con `--vu` (`.im-cer--ampio`), invece di fermarsi al minimo del `clamp`. Un tentativo con ETI 42 mandava a capo «AI Decisioning» ed è stato tolto. I nomi di prodotto dopo il primo sono `inline-block`, così «AI Decisioning» non si spezza; il primo resta testo semplice, perché due blocchi impilati facevano scattare il check `g` sull'ultrawide.
+- **L'innesto** (`innesto.css`): le quattro etichette delle cornici («Come entrano i dati», «Servizi comuni», le due legende) passano da 14 a ~20 px a 1920, le pillole delle carte da 14 a ~18. Sopra i 1530 px la pillola della persona sta sulla prima riga e le due campagne sulla seconda. ⚠️ **Tutto dentro `@media (min-height: 941px)`**: a 1440×900 anche un pixel in più portava il titolo fuori dall'area sicura (79 px). Sotto quell'altezza non cambia niente.
+- **L'attribuzione:** «Dalla filiale entrano appuntamenti, richieste firmate, tempo alla delibera» non sta più in una colonna a parte, dove non si capiva quando leggerla: è sotto la riga Filiale del pannello e compare con le barre. A 1280 il selettore resta accanto al titolo del pannello (era il titolo a 73 px), e «dati di esempio» non va a capo a metà.
+- **`slide-chiave`:** a `max-height: 920px` nota e barra si compattano, perché il riquadro nuovo portava il titolo a 77 px a 1280 e 1440.
+
+**Gate al 15 nov:** `audit:deck` senza HARD su Giulia, innesto, attribuzione, chiave e «In dieci minuti», anche `--ultrawide`; `astro check`, a capo, taglio e `content-audit` puliti. **Panel non rilanciato:** sono modifiche di forma e di copia corta sopra lo stato del 14, che il panel già non copriva; il P0 resta uno.

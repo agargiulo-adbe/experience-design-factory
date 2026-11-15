@@ -10,7 +10,7 @@
 > `.md` costa ~41k token su 24 parti (ok). **Non** aprire mai i `.pptx`/`.mp4` in `docs/` (binari giganti,
 > git-ignored, non presenti in un clone pulito) — i fatti utili sono già distillati qui (§5.3).
 >
-> 🏦 **Il 13-14 novembre la Storia di Intesa porta l'innesto a carte, la mappa delle capacità e il grafo delle identità** (§42.17, Parte 24 · change log, Parte 3). Tutto su `main` e pubblicato (`29c0407`, `36e2755`); il panel non copre lo stato nuovo: P0 in Parte 2.
+> 🏦 **Dal 13 al 15 novembre la Storia di Intesa porta l'innesto a carte, la mappa delle capacità, il grafo delle identità, l'attribuzione come pannello di CJA e la rifinitura per la sala ibrida** (§42.17, Parte 24 · change log, Parte 3). Tutto su `main` e pubblicato (ultimo `a5676b1`); il panel non copre lo stato nuovo: P0 in Parte 2, da chiudere prima del 19.
 >
 > 🏦 **Il 13 novembre la Storia di Intesa passa un giorno di revisione con l'owner** (§42.16, Parte 19): deck in `--vu` per i 21:9, capitolo 01 e schema d'integrazione ridisegnati, verifiche su Fluffy. In `main` dal merge del 13.
 >
@@ -395,4 +395,4 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 - [Parte 21 — §39 **il lavoro operativo d'account**](./HANDOVER-21.md) — scorporata dalla Parte 16 il **4 nov**, che con §37.13 aveva superato il contratto di dimensione: registri, Radar, i comandi `/account-open` e `/account-close`, le cinque fonti dell'apertura, il giro gratuito di ogni mattina, **§39.8 il grafo dei contatti** e **§39.9 l'apertura e il giro di ritorno**.
 - [Parte 22 — §10.c backlog: **i 50 P2 e le note non azionabili**](./HANDOVER-22.md) — scorporata dalla Parte 10 l'**11 nov**, che era a 0,4 KB dal tetto e non aveva un terzo anello nella catena del backlog. Qui non si decide niente: è la coda di ciò che non decide nessuna settimana. 20,9 KB di margine.
 - [Parte 23 — §11 change log datato (coda più vecchia)](./HANDOVER-23.md) — creata l'**11 nov** perché la Parte 20 era oltre il tetto e la catena 3 → 4 → 14 → 17 → 20 non aveva un altro anello: qui finiscono le voci più vecchie del change log. In coda, dal **12 nov**, **§43 «Ciascuno conta»** (Trenitalia, versione interna).
-- [Parte 24 — §42.17 **Storia di Intesa**, il 13-14 novembre](./HANDOVER-24.md) — nata il **14 nov** perché la Parte 19 è a meno di 1 KB dal tetto: l'innesto a carte, «Real-Time Activation» (scelta dell'owner, non nome ufficiale), la mappa delle capacità, `slide-chiave` come grafo delle identità, Unipol rifatta. Pubblicato in `36e2755`.
+- [Parte 24 — §42.17 **Storia di Intesa**, il 13-14 novembre](./HANDOVER-24.md) — nata il **14 nov** perché la Parte 19 è a meno di 1 KB dal tetto: l'innesto a carte, «Real-Time Activation» (scelta dell'owner, non nome ufficiale), la mappa delle capacità, `slide-chiave` come grafo delle identità, Unipol rifatta, l'attribuzione come pannello di CJA (14 nov), la rifinitura per la sala ibrida (15 nov). Pubblicato fino a `a5676b1`.
