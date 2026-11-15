@@ -1,7 +1,7 @@
 /**
  * render-3d — rende una scena 3D di `scripts/3d/render.py` nei colori di un'experience.
  *
- *   pnpm render:3d --app <cartella-app> --scena fondo|innesto [--secondi 8] [--fps 24]
+ *   pnpm render:3d --app <cartella-app> --scena fondo|innesto|rta|decisioning|cja [--secondi 8] [--fps 24]
  *                  [--anteprima] [--out <cartella>]
  *
  * Che cosa fa, in ordine:
@@ -37,7 +37,7 @@ const app = arg('app');
 const scena = arg('scena', 'fondo')!;
 const anteprima = arg('anteprima') === 'true';
 if (!app) {
-  console.error('uso: pnpm render:3d --app <cartella-app> --scena fondo|innesto [--anteprima]');
+  console.error('uso: pnpm render:3d --app <cartella-app> --scena fondo|innesto|rta|decisioning|cja [--anteprima]');
   process.exit(2);
 }
 if (!existsSync(BLENDER)) {
@@ -140,6 +140,7 @@ writeFileSync(join(out, 'provenance.json'), JSON.stringify({
   creatoIl: new Date().toISOString(),
 }, null, 2));
 if (info.capitoli) writeFileSync(join(out, 'capitoli.json'), JSON.stringify(info.capitoli, null, 2));
+if (info.etichette) writeFileSync(join(out, 'etichette.json'), JSON.stringify(info.etichette, null, 2));
 if (!arg('tieni-fotogrammi')) rmSync(frames, { recursive: true, force: true });
 
 console.log(`  ${mp4} (${kb(mp4)} KB) · webm ${kb(webm)} KB · poster ${kb(poster)} KB`);

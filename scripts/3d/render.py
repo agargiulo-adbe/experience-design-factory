@@ -343,7 +343,18 @@ def _curve(o):
 SCENE = {"fondo": scena_fondo, "innesto": scena_innesto}
 
 pulisci()
-info = SCENE[ARGS["scena"]]()
+sys.path.insert(0, __import__("os").path.dirname(__file__))
+import spiegazioni  # noqa: E402  (le scene a passi che spiegano un meccanismo)
+
+if ARGS["scena"] in spiegazioni.SCENE:
+    S = spiegazioni.SCENE[ARGS["scena"]](ARGS)
+    motore(bpy.context.scene)
+    uscita(bpy.context.scene, S.n)
+    info = {"fotogrammi": S.n, "loop": False,
+            "capitoli": [{"fase": i, "da": a, "a": b} for i, (a, b) in enumerate(S.passi, start=1)],
+            "etichette": S.chiudi()}
+else:
+    info = SCENE[ARGS["scena"]]()
 with open(ARGS["cartella"].rstrip("/") + "/scena.json", "w") as fh:
     json.dump(info, fh, indent=2)
 bpy.ops.render.render(animation=True)

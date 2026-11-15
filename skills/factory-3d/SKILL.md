@@ -58,6 +58,32 @@ pnpm render:3d --app <cartella-app> --scena fondo|innesto [--anteprima] [--secon
    `docs/Factory/3d/<app>/<scena>/` in `src/assets/generated/` (o sul Release `media` se
    pesa) con la riga di `provenance.json`.
 
+## Le scene che spiegano un meccanismo
+
+`scripts/3d/spiegazioni.py` (scene `rta`, `decisioning`, `cja`) porta il telaio `Scena`:
+passi a tempo, materiali animabili per oggetto, gettoni che viaggiano, `filo()` per i
+segnali di relazione, e **ancore**: alla fine di ogni passo Blender calcola dove cade ogni
+oggetto sullo schermo e scrive `etichette.json`, così l'HTML posa le etichette da solo.
+
+La grammatica viene dal report `docs/Factory/reports/Spiegare concetti complessi in video.md`
+(canali come 3Blue1Brown, Kurzgesagt, Veritasium, Branch Education, più la ricerca di
+Mayer, Tversky, Boucheix & Lowe, Heer & Robertson). Le regole che contano:
+
+- **Si anima il cambiamento, non la struttura.** L'animazione batte il diagramma solo di
+  poco in media (g = 0,23) e molto quando il contenuto È il cambiamento (g = 0,65).
+  L'architettura resta un disegno fermo; si animano unire, filtrare, risalire.
+- **Prima il concreto**: Giulia e un gesto, non «la piattaforma».
+- **Un passo, un verbo, uno stato finale fermo** su cui chi presenta parla.
+- **Un colore, un significato**, uguale in tutte le scene: grigio = anonimo, escluso, della
+  banca · bianco = un dato · verde = ciò che Adobe aggiunge, identificato, scelto.
+- **Segnale di relazione, non accensione**: un filo che si tende, un cancello che le proposte
+  attraversano, il merito che risale il percorso. Un oggetto che si illumina da solo si perde
+  nel movimento della scena.
+- **Quello che si esclude resta visibile**, attenuato, con il motivo nell'etichetta.
+- **Camera quasi ferma**: una sola stretta per scena, mai un'orbita (WCAG 2.3.3).
+- **Chiaro non vuol dire capito** (Muller): in sala, dopo il clic, si chiede «dove va adesso
+  il dato?» prima di farlo vedere.
+
 ## Una scena a fasi dentro il deck
 
 `render:3d` scrive `capitoli.json` (fase → fotogramma da/a). Ogni sotto-passo del deck
