@@ -1,6 +1,6 @@
 # HANDOVER — Experience Design Factory
 
-> Documento di passaggio di consegne. Stato al **2026-11-14**.
+> Documento di passaggio di consegne. Stato al **2026-11-15**.
 > Lingua: italiano per la narrativa, inglese per path/comandi/nomi prodotto.
 > Companion di `CLAUDE.md` (guida agente, sempre valida) e delle memorie in
 > `~/.claude/projects/.../memory/`. Se una cosa qui contraddice il codice, **vince il codice** —
@@ -13,6 +13,8 @@
 > 🏦 **Dal 13 al 15 novembre la Storia di Intesa porta l'innesto a carte, la mappa delle capacità, il grafo delle identità, l'attribuzione come pannello di CJA e la rifinitura per la sala ibrida** (§42.17, Parte 24 · change log, Parte 3). Tutto su `main` e pubblicato (ultimo `a5676b1`); il panel non copre lo stato nuovo: P0 in Parte 2, da chiudere prima del 19.
 >
 > 🏦 **Il 13 novembre la Storia di Intesa passa un giorno di revisione con l'owner** (§42.16, Parte 19): deck in `--vu` per i 21:9, capitolo 01 e schema d'integrazione ridisegnati, verifiche su Fluffy. In `main` dal merge del 13.
+>
+> 🚄 **Il 13 novembre «Ciascuno conta» diventa il documento per il leadership team del 16** (§43, Parte 23): presenta il programma senza chiedere e senza nomi, POC → MVP, cancello a tessera, rischi a semaforo; tutto pubblicato con lo strato v6 (`a1ab0bf`). Resta il panel (P0).
 >
 > 🚄 **Il 12 novembre nasce «Ciascuno conta»** (`apps/trenitalia-ciascuno-conta`, §43, Parte 23 · change log, Parte 3): la versione interna del percorso dopo la Direzione Sales, pubblicata con strato riservato gated. La sera è riprogettata per il leadership team come **deck a due livelli**: pubblico leggibile dal cliente, strato interno da Supabase con il token del dossier. Resta il panel (P0).
 >
@@ -373,7 +375,7 @@ Handover splittato per dimensione (contratto `/handover`: ≤1500 righe, ≤48 K
 **Leggi le parti in ordine.** Se devi decidere cosa fare, la Parte 2 basta: è il backlog P0/P1.
 
 - [Parte 1 — §1–7: stato generale, architettura, comandi, tipo per esperienza, UniCredit content model, Admin Console · §9 **Deploy & segreti**](./HANDOVER-01.md) — come è fatta la Factory e come si lavora. §9 è scesa qui dalla Parte 2 il **6 nov**, per far posto al backlog.
-- [Parte 2 — §10 backlog **P0 e P1**](./HANDOVER-02.md) — **leggila per prima**: cosa resta da fare adesso. **20 P0 e 38 P1** al 14 nov. In testa «Ciascuno conta» (Trenitalia, ricostruzione del deck interno in corso), poi la Storia di Intesa: check col referente fatto l'11, panel a due giri il 12, branch su `main` dal 13 nov, e prima del 19 le risposte dell'AE, la clip vera di Coworker; dal 14 nov il panel sullo stato nuovo. Poi Trenitalia Prospettiva e BPER. 1,4 KB di margine.
+- [Parte 2 — §10 backlog **P0 e P1**](./HANDOVER-02.md) — **leggila per prima**: cosa resta da fare adesso. **19 P0 e 39 P1** al 15 nov. In testa «Ciascuno conta» (Trenitalia, pubblicato; manca il panel prima del 16), poi la Storia di Intesa: check col referente fatto l'11, panel a due giri il 12, branch su `main` dal 13 nov, e prima del 19 le risposte dell'AE, la clip vera di Coworker; dal 14 nov il panel sullo stato nuovo. Poi Trenitalia Prospettiva e BPER. 1,4 KB di margine.
 - [Parte 3 — §11 change log datato (recente)](./HANDOVER-03.md) — dal **14 nov 2026** (la Storia di Intesa: innesto a carte, capacità, grafo delle identità), dal **13 nov 2026** (la Storia di Intesa in `main`; «Ciascuno conta» per la leadership), dal **12 nov 2026** (la Storia di Intesa sul branch, col panel; nasce «Ciascuno conta», la sera riscritto per la leadership), dall'**11 nov 2026** (la Storia di Intesa: una scala tipografica sola, la rotta delle campagne) e dal **10 nov** (Intesa: CX Analytics nell'innesto; Prospettiva Sales: dry run, agenzie, misure, registrati e mappa), poi il **9 nov** (la Prospettiva Sales cambia registro su tutto il deck, la slide `slide-citta`, il profilo Outlook di `posta.py`), poi il **7 nov** (il motore `.pptx` che prende i trattamenti; il panel della Prospettiva Sales e l'ask che cambia; i quattro giri sulla Storia di Intesa), poi il **6 nov** (i tre livelli, i quattro giri di `/umanizza`, la fisarmonica e lo zoom nel motore, la referenza Unipol), poi il **5 nov** (`/umanizza` a quattro giri, e il ±10% che vale dal Giro 1), poi il **4 nov** (tutto il deck della Prospettiva Sales passa al registro XD, e il giro di revisione sulla voce). Ribilanciata l'**11 nov** (la voce Unipol del 29 ott nella Parte 4) e il **13 nov** (il **3 nov**, lo strato XD della Prospettiva Sales, nella Parte 4).
 - [Parte 4 — §11 change log datato (seguito)](./HANDOVER-04.md) — dal **3 nov 2026** (Prospettiva Sales: lo strato XD, sceso qui il 13 nov), poi il **29 ott** (Unipol «Cinque domande», scesa qui l'11 nov) all'indietro, fino al **9 ott**. Ribilanciata l'**11 nov**: ha accolto una voce dalla Parte 3 e ne ha ceduta una alla 14.
 - [Parte 5 — §12 puntatori · §13 **Factory Showcase** · §14 Ferrari /scoping](./HANDOVER-05.md) — la vetrina in iperdettaglio, fino a §13.12 (la verifica generale del 3 ott).
