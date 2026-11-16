@@ -100,10 +100,10 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     gsap.set(banner, { autoAlpha: 0 });
     classe(o1, 'mc-seconda', 'p6+=.3');
     T.to(o1, { autoAlpha: .5, duration: .5 }, 'p6+=.3');
-    const a = dove(o0), s = dove(spazio);
-    T.to(o0, { x: s.x - a.x, y: s.y - a.y, scale: s.w / a.w, zIndex: 9, duration: 1, ease: MUOVE }, 'p6+=.5')
-     .to(o0, { autoAlpha: 0, duration: .35 }, '>-.05')
-     .to(banner, { autoAlpha: 1, duration: .45 }, '<');
+    classe(o0, 'mc-vince', 'p6+=.5');
+    gsap.set(q('v-prop'), { autoAlpha: 0 });
+    viaggia(q('v-prop'), o0, spazio, 'p6+=.7');
+    T.to(banner, { autoAlpha: 1, duration: .45 }, '>-.1');
     appare(invio, '>');
     passo('p7');
     appare(cja, 'p7');
@@ -128,7 +128,10 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     gsap.set([nome, banner, q('email'), q('e-mail'), q('v-sito'), q('v-ajo'), q('v-crm')], { autoAlpha: 0 });
     vola(q('p-visita'), sito.querySelector<HTMLElement>('.mc-pag h5')!, 'p1+=.7');
     passo('p2');
-    vola(q('p-sim'), sito.querySelector<HTMLElement>('.mc-rata')!, 'p2');
+    const rata = sito.querySelector<HTMLElement>('.mc-rata')!;
+    gsap.set(rata, { autoAlpha: 0 });
+    T.to(rata, { autoAlpha: 1, duration: .4 }, 'p2');
+    vola(q('p-sim'), rata, 'p2+=.3');
     vola(q('seg'), q('p-sim'), 'p2+=1.1', .8);
     T.fromTo(q('seg'), { boxShadow: '0 0 0 0 rgba(37,137,0,0)' }, { boxShadow: '0 0 0 8px rgba(37,137,0,.35)', duration: .3, yoyo: true, repeat: 1, immediateRender: false }, '>');
     passo('p3');
@@ -158,7 +161,7 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     gsap.set([motore, cja], { autoAlpha: 0 });
     passo('p2');
     appare(cja, 'p2');
-    gsap.set([percorso, barre], { autoAlpha: 0 });
+    gsap.set([percorso, barre, q('cav')], { autoAlpha: 0 });
     vola(q('p-sito'), q('f-sito'), 'p2+=.5');
     vola(q('p-app'), q('f-app'), 'p2+=.8');
     passo('p3');
@@ -168,12 +171,14 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     appare(motore, 'p4');
     vola(q('p-seg'), q('c-seg'), 'p4+=.4');
     passo('p5');
-    T.to([zd, zf, motore], { autoAlpha: .35, duration: .5 }, 'p5');
+    T.to([zd, zf, motore], { autoAlpha: 0, duration: .5 }, 'p5');
     appare(percorso, 'p5+=.2', { duration: .4 });
-    appare(qq('t1', 't2', 't3', 't4'), 'p5+=.4', { stagger: .35 });
+    appare(q('chiave'), 'p5+=.3', { duration: .4 });
+    appare(qq('t0', 't1', 't2', 't3', 't4'), 'p5+=.5', { stagger: .3 });
     passo('p6');
     appare(barre, 'p6', { duration: .4 });
-    T.fromTo(qq('b1', 'b2', 'b3'), { scaleX: 0 }, { scaleX: 1, duration: 1, stagger: .2, immediateRender: true }, 'p6+=.3');
+    appare(q('cav'), 'p6+=1.4');
+    T.fromTo(qq('b0', 'b1', 'b2', 'b3'), { scaleX: 0 }, { scaleX: 1, duration: 1, stagger: .2, immediateRender: true }, 'p6+=.3');
     passo('fine');
     etichette = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'fine'];
   }

@@ -28,7 +28,8 @@ import casa from '../assets/generated/var-4.webp';
 import logo from '../assets/brand/intesa-sanpaolo.svg?raw';
 interface Props { scena: ScenaId; }
 const { scena } = Astro.props as Props;
-const Sito = 'intesasanpaolo.com/mutui';
+// L'indirizzo vero della pagina mutui (intesasanpaolo.com/mutui risponde 404: panel 16 nov).
+const Sito = 'intesasanpaolo.com/…/mutui.html';
 ---
 <div class="mc" data-mc={scena} aria-hidden="true">
   <div class="mc-palco">
@@ -41,23 +42,24 @@ const Sito = 'intesasanpaolo.com/mutui';
       <div class="mc-sis" data-k="core" style="left:40px;top:290px;width:360px">
         <span class="mc-oggi">Oggi, in banca</span><h4>Core banking</h4>
         <div class="mc-chips"><span class="mc-pill" data-k="c-eleg">Eleggibilità creditizia</span></div>
+        <p class="mc-dubbio">da quale sistema arriva: da confermare con voi</p>
       </div>
       <section class="mc-adobe" data-k="profilo" style="left:445px;top:30px;width:380px">
         <header><i></i>Profilo<em>Real-Time Activation</em></header>
         <div class="mc-chi"><Image src={giulia} width={144} height={144} alt="" /><div><strong>Giulia</strong><small>Non ancora cliente</small></div></div>
         <p class="mc-riga">Segmento<b>mutuo prima casa</b></p>
-        <div class="mc-cassetto"><span class="mc-cas-t">Attributi</span>
-          <span class="mc-pill mc-dato" data-k="a-prop">Score di propensione</span>
-          <span class="mc-pill mc-dato" data-k="a-eleg">Eleggibile al mutuo</span>
+        <div class="mc-cassetto"><span class="mc-cas-t">Attributi · se disponibili sul non cliente</span>
+          <span class="mc-pill mc-dato mc-forse" data-k="a-prop">Score di propensione</span><small class="mc-via">dal motore · cadenza da confermare</small>
+          <span class="mc-pill mc-dato mc-forse" data-k="a-eleg">Eleggibilità</span><small class="mc-via">nel profilo o nella richiesta di decisione</small>
         </div>
       </section>
       <section class="mc-adobe mc-arb" data-k="arbitro" style="left:860px;top:20px;width:420px;height:680px">
         <header><i></i><span>AI Decisioning</span><em>proposte candidate</em></header>
         <div class="mc-vassoio" data-k="vassoio"><span class="mc-cas-t">Escluse dalle regole</span></div>
         <div class="mc-regola" data-k="regola"><span>regole · consenso · politica di contatto</span></div>
-        <div class="mc-off" data-k="o0" style="top:72px"><Image src={mutuo} width={192} alt="" /><div><b>Promemoria con appuntamento proposto</b><small class="si">sul sito</small></div><span class="mc-rango">1</span></div>
+        <div class="mc-off" data-k="o0" style="top:72px"><Image src={mutuo} width={192} alt="" /><div><b>Promemoria con appuntamento proposto</b><small class="si">sul sito</small><small class="mc-scelta">scelta · va sul sito</small></div><span class="mc-rango">1</span></div>
         <div class="mc-off" data-k="o2" style="top:162px"><span class="mc-off-tel">telefonata</span><div><b>Contatto dalla Filiale Digitale</b><small class="si">al telefono</small><small class="no">non ammesso: manca il consenso al contatto telefonico</small></div></div>
-        <div class="mc-off" data-k="o1" style="top:252px"><Image src={mutuo} width={192} alt="" /><div><b>Promemoria senza appuntamento</b><small class="si">sul sito</small><small class="no">seconda per priorità</small></div><span class="mc-rango">2</span></div>
+        <div class="mc-off" data-k="o1" style="top:252px"><Image src={mutuo} width={192} alt="" /><div><b>Promemoria senza appuntamento</b><small class="si">sul sito</small><small class="no">ammessa, seconda per priorità</small></div><span class="mc-rango">2</span></div>
         <div class="mc-off" data-k="o3" style="top:342px"><Image src={casa} width={192} alt="" /><div><b>Polizza casa</b><small class="si">sul sito</small><small class="no">esclusa: solo dopo la firma</small></div></div>
       </section>
       <section class="mc-sito" data-k="sito" style="left:1300px;top:30px;width:270px">
@@ -67,10 +69,11 @@ const Sito = 'intesasanpaolo.com/mutui';
           <div class="mc-spazio" data-k="spazio"><div class="mc-banner" data-k="banner"><Image src={mutuo} width={540} alt="" /><b>Riprendi la tua simulazione</b><span>Prenota un appuntamento</span></div></div>
         </div>
       </section>
-      <p class="mc-nota" data-k="invio" style="left:1300px;top:560px;width:270px">L’invio può passare <b>dagli strumenti attuali</b>.</p>
+      <p class="mc-nota" data-k="invio" style="left:1300px;top:500px;width:270px">Come arriva sul sito: <b>Web SDK o una chiamata dal vostro front-end</b>, oppure dalle vostre iniziative commerciali. Si sceglie in fase 0.</p>
+      <span class="mc-pill mc-dato" data-k="v-prop">proposta scelta</span>
       <section class="mc-adobe mc-striscia" data-k="cja" style="left:40px;top:600px;width:785px">
         <header><i></i><span>Customer Journey Analytics</span></header>
-        <p>Esito sul <b>gruppo di controllo</b></p>
+        <p>Chi ha visto la proposta contro il <b>gruppo di controllo</b></p>
       </section>
       <span class="mc-pill mc-esito" data-k="esito">esito</span>
     </>)}
@@ -81,7 +84,7 @@ const Sito = 'intesasanpaolo.com/mutui';
         <div class="mc-marchio" set:html={logo} />
         <div class="mc-pag"><small>Simulazione mutuo · esempio illustrativo</small><h5>Prima casa · 25 anni</h5><p class="mc-rata">863 <span>€ al mese</span></p>
           <div class="mc-spazio mc-spazio--basso" data-k="spazio"><div class="mc-banner mc-banner--testo" data-k="banner"><b>Riprendi la simulazione</b><span>Continua</span></div></div>
-          <p class="mc-campo" data-k="email"><span>Salva la simulazione</span><b>giulia.marchetti@…</b></p>
+          <p class="mc-campo" data-k="email"><span>Salva la simulazione</span><b>email lasciata, con il consenso</b></p>
         </div>
       </section>
       <span class="mc-pill mc-dato mc-dato--id" data-k="e-mail">email e consenso</span>
@@ -93,15 +96,16 @@ const Sito = 'intesasanpaolo.com/mutui';
           <span class="mc-pill mc-dato" data-k="p-visita">visita · pagina mutui</span>
           <span class="mc-pill mc-dato" data-k="p-sim">simulazione · 180.000 €</span>
         </div>
-        <div class="mc-cassetto"><span class="mc-cas-t">Segmento</span><span class="mc-pill mc-seg" data-k="seg">mutuo prima casa</span></div>
+        <div class="mc-cassetto"><span class="mc-cas-t">Segmento</span><span class="mc-pill mc-seg" data-k="seg">mutuo prima casa</span><small class="mc-via">valutato sull’edge, alla visita</small></div>
       </section>
       <section class="mc-adobe" data-k="ajo" style="left:985px;top:30px;width:275px">
         <header><i></i><span>Journey Optimizer</span></header>
-        <div class="mc-mail"><span class="mc-mail-da"><b>Intesa Sanpaolo</b> a Giulia · 08:02</span><b>La tua simulazione</b><span>Riprendila e scegli un appuntamento</span></div>
+        <div class="mc-mail"><span class="mc-mail-da"><b>Intesa Sanpaolo</b> a Giulia</span><b>La tua simulazione</b><span>Riprendila e scegli un appuntamento</span></div>
       </section>
       <div class="mc-sis" data-k="crm" style="left:1290px;top:30px;width:275px">
         <span class="mc-oggi">Oggi, in banca</span><h4>CRM di filiale</h4>
-        <p class="mc-lead" data-k="lead"><b>Lead · Giulia</b><span>appuntamento e simulazione</span></p>
+        <p class="mc-lead" data-k="lead"><b>Appuntamento · Giulia</b><span>con la simulazione</span></p>
+        <p class="mc-dubbio">integrazione da definire in fase 0</p>
       </div>
       <span class="mc-pill mc-dato" data-k="v-sito">personalizza il sito</span>
       <span class="mc-pill mc-dato" data-k="v-ajo">profilo con nome</span>
@@ -126,8 +130,8 @@ const Sito = 'intesasanpaolo.com/mutui';
         <div class="mc-chips"><span class="mc-pill" data-k="c-seg">Segmenti e score</span></div>
       </div>
       <section class="mc-adobe mc-cja" data-k="cja" style="left:430px;top:30px;width:740px;height:660px">
-        <header><i></i><span>Customer Journey Analytics</span><em>stessa persona, tutte le fonti</em></header>
-        <div class="mc-cassetto mc-cassetto--largo"><span class="mc-cas-t">Fonti collegate</span>
+        <header><i></i><span>Customer Journey Analytics</span><em>stessa persona, le fonti collegate</em></header>
+        <div class="mc-cassetto mc-cassetto--largo"><span class="mc-cas-t">Fonti collegate · dataset per ID persona</span>
           <span class="mc-pill mc-dato" data-k="p-sito">Sito</span>
           <span class="mc-pill mc-dato" data-k="p-app">App</span>
           <span class="mc-pill mc-dato" data-k="p-crm">CRM di filiale</span>
@@ -135,7 +139,9 @@ const Sito = 'intesasanpaolo.com/mutui';
           <span class="mc-pill mc-dato" data-k="p-seg">Segmenti e score</span>
         </div>
         <div class="mc-percorso" data-k="percorso"><span class="mc-cas-t">Il percorso di Giulia</span>
+          <span class="mc-pill mc-dato mc-chiave" data-k="chiave">chiave comune: ID cliente per i clienti, email per i non clienti · da confermare</span>
           <ol>
+            <li data-k="t0"><small>Social</small><b>Clic su una campagna</b></li>
             <li data-k="t1"><small>Sito</small><b>Simula il mutuo</b></li>
             <li data-k="t2"><small>Email</small><b>Riprende la richiesta</b></li>
             <li data-k="t3"><small>Filiale</small><b>Appuntamento tenuto</b></li>
@@ -143,12 +149,14 @@ const Sito = 'intesasanpaolo.com/mutui';
           </ol>
         </div>
         <div class="mc-barre" data-k="barre"><span class="mc-cas-t">Attribuzione delle firme per canale · algoritmica</span>
+          <p><span>Media a pagamento</span><i data-k="b0" style="--v:45%"></i></p>
           <p><span>Sito</span><i data-k="b1" style="--v:78%"></i></p>
           <p><span>Email</span><i data-k="b2" style="--v:34%"></i></p>
           <p class="mc-on"><span>Filiale</span><i data-k="b3" style="--v:60%"></i></p>
           <small>Lunghezze illustrative, non dati.</small>
         </div>
       </section>
+      <p class="mc-nota" data-k="cav" style="left:1215px;top:60px;width:350px">L’attribuzione si calcola sulle firme di chi si è identificato online: <b>quante siano si misura in fase 0</b>. Dice quale canale ha contribuito, non se la campagna ha funzionato: per quello serve il gruppo di controllo.</p>
     </>)}
 
   </div>
@@ -189,9 +197,18 @@ const Sito = 'intesasanpaolo.com/mutui';
   .mc .mc-chi--nome { position: absolute; left: 0; right: 0; top: 58px; background: #fff; }
   .mc .mc-riga { display: flex; justify-content: space-between; gap: 12px; padding: 13px 20px; border-bottom: 1px solid #e3e5e9; font-size: 21px; color: #3a3d44; }
   .mc .mc-riga b { color: #1b1d21; font-weight: 600; }
-  .mc .mc-cassetto, .mc .mc-sessione, .mc .mc-percorso, .mc .mc-barre { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 10px; padding: 16px 20px 20px; }
+  .mc .mc-cassetto, .mc .mc-sessione, .mc .mc-percorso, .mc .mc-barre { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 10px; padding: 14px 20px 16px; }
+  .mc .mc-barre { gap: 6px; }
   .mc .mc-cas-t { flex-basis: 100%; font-size: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #5a6069; }
   .mc .mc-sessione { margin: 14px 20px 0; padding: 12px 14px 14px; border: 2px dashed #b4b9c2; border-radius: 12px; }
+  .mc .mc-forse { border-style: dashed; background: #fff; }
+  .mc .mc-via { flex-basis: 100%; margin: -4px 0 4px 6px; font-size: 16px; font-style: italic; color: #5a6069; }
+  .mc .mc-dubbio { margin-top: 10px; font-size: 16px; font-style: italic; color: #dff1d4; }
+  .mc .mc-lead + .mc-dubbio { margin-top: 8px; }
+  .mc .mc-off .mc-scelta { display: none; color: #1f7400; font-weight: 700; }
+  .mc .mc-off.mc-vince { border: 2px solid #258900; box-shadow: 0 0 0 3px rgba(37, 137, 0, .25); }
+  .mc .mc-off.mc-vince .si { display: none; } .mc .mc-off.mc-vince .mc-scelta { display: block; }
+  .mc .mc-chiave { flex-basis: auto; height: 36px; font-size: 16px; background: #fff; border-style: dashed; margin-bottom: 4px; }
   .mc .mc-seg { background: #1f7400; color: #fff; border-color: #1f7400; }
 
   /* AI Decisioning */
@@ -257,14 +274,14 @@ const Sito = 'intesasanpaolo.com/mutui';
   .mc .mc-fonte--sis span { color: #dff1d4; }
   .mc .mc-report { position: absolute; left: 22px; bottom: 18px; font-size: 18px; font-style: italic; color: #dff1d4; }
   .mc .mc-cassetto--largo { border-bottom: 1px solid #e3e5e9; }
-  .mc .mc-percorso ol { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
-  .mc .mc-percorso li { padding: 10px 12px; border-radius: 10px; background: #f4f5f7; border: 1px solid #e3e5e9; }
+  .mc .mc-percorso ol { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; width: 100%; }
+  .mc .mc-percorso li { padding: 8px 10px; border-radius: 10px; background: #f4f5f7; border: 1px solid #e3e5e9; }
   .mc .mc-percorso li small { font-size: 15px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #5a6069; }
-  .mc .mc-percorso li b { display: block; font-size: 19px; line-height: 1.2; }
+  .mc .mc-percorso li b { display: block; font-size: 17px; line-height: 1.2; }
   .mc .mc-percorso li.mc-firma { background: #f1f7ee; border-color: #258900; }
   .mc .mc-barre { border-top: 1px solid #e3e5e9; }
-  .mc .mc-barre p { flex-basis: 100%; display: grid; grid-template-columns: 140px 1fr; align-items: center; gap: 14px; font-size: 20px; font-weight: 600; }
-  .mc .mc-barre i { display: block; height: 20px; width: var(--v); border-radius: 4px; background: #b4b9c2; transform-origin: left; }
+  .mc .mc-barre p { flex-basis: 100%; display: grid; grid-template-columns: 210px 1fr; align-items: center; gap: 14px; font-size: 19px; font-weight: 600; line-height: 1.2; }
+  .mc .mc-barre i { display: block; height: 16px; width: var(--v); border-radius: 4px; background: #b4b9c2; transform-origin: left; }
   .mc .mc-barre .mc-on i { background: #1f7400; }
   .mc .mc-barre small { flex-basis: 100%; font-size: 16px; color: #5a6069; }
 </style>

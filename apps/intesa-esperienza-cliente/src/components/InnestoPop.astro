@@ -24,7 +24,8 @@ const base3d = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.cli
         <p class="pp-k">Componente Adobe</p>
         <h3 class="pp-h">{s.prodotto}</h3>
       </div>
-      <p class="pp-cosa">{s.cosa}</p>
+      <p class:list={['pp-cosa', s.v2d?.cosa && 'pp-ha-v2d']}>{s.cosa}</p>
+      {s.v2d?.cosa && <p class="pp-cosa pp-v2d">{s.v2d.cosa}</p>}
       <button type="button" class="pp-x" data-pp-chiudi aria-label="Chiudi">×</button>
     </header>
 
@@ -120,7 +121,13 @@ const base3d = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.cli
 
     <footer class="pp-piede">
       <div class="pp-didas" aria-live="polite">
-        {s.passi.map((p, i) => (<p class="pp-d" data-passo-t={i + 1}><span class="pp-d-n">{i + 1}</span>{p}</p>))}
+        {s.passi.map((p, i) => {
+          const alt = s.v2d?.passi?.[i];
+          return (<>
+            <p class:list={['pp-d', alt && 'pp-ha-v2d']} data-passo-t={i + 1}><span class="pp-d-n">{i + 1}</span>{p}</p>
+            {alt && <p class="pp-d pp-v2d" data-passo-t={i + 1}><span class="pp-d-n">{i + 1}</span>{alt}</p>}
+          </>);
+        })}
       </div>
       <div class="pp-nav">
         <div class="pp-punti" aria-hidden="true">{s.passi.map((_, i) => <span data-punto={i + 1}></span>)}</div>
@@ -148,6 +155,11 @@ const base3d = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.cli
      contenitore). Le etichette sono HTML sopra il video, alle coordinate che
      Blender ha calcolato a fine passo: l'etichetta NUOVA del passo ha il bordo,
      le altre si attenuano. */
+  /* I testi della variante 2D (pop.ts → v2d): nel deck principale non esistono. */
+  dialog.pp .pp-v2d { display: none; }
+  :global(html[data-pop3d='on']) dialog.pp .pp-v2d { display: flex; }
+  :global(html[data-pop3d='on']) dialog.pp p.pp-cosa.pp-v2d { display: block; }
+  :global(html[data-pop3d='on']) dialog.pp .pp-ha-v2d { display: none; }
   .pp-3d { display: none; }
   :global(html[data-pop3d='video']) dialog.pp:not([data-pp3d-ko]) .pp-scena { container-type: size; padding: clamp(0.6rem, 1.4vh, 1.2rem); background: #0d2901; }
   :global(html[data-pop3d='video']) dialog.pp:not([data-pp3d-ko]) .pp-scena > :not(.pp-3d) { display: none; }
