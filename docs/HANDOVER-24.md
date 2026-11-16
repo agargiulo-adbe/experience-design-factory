@@ -87,3 +87,41 @@ Scritta in una parte nuova perché la Parte 19, dove stanno §42.13–42.16, è 
 - ⚠️ Il pacchetto d'evidenza ha catturato in `content/` le didascalie **del main** (lo script leggeva il primo `.pp-d.pp-on`); gli screenshot erano giusti. Da correggere nello script prima di un altro giro.
 
 **GenStudio in 2D**, fuori dal deck: `docs/Factory/3d/factory-showcase/genstudio-2d.html` (git-ignorato), sette passi sul flusso di Experience League, con Activate che consegna al canale **spento**.
+
+## 42.19 Storia di Intesa · il 16 novembre, le due call interne: il «Come funziona» in overlay, la modalità presentatore e la versione breve
+
+Tre commit su `main`, tutti pubblicati: `236ec7e` (call delle 12:20), `0ef369b` (le carte si girano anche nelle finestre basse) e `d3fa399` (call delle 16:00 e la rifinitura della sera). Le decisioni sono dell'owner, punto per punto, sulle trascrizioni lette riga per riga.
+
+**Ipotesi di lavoro dichiarate in slide.** Il **codice pratica** nasce alla simulazione, quando Giulia lascia l'email, e si riconcilia con l'**NDG** che il core banking emette alla firma. È un'**assunzione** e la slide lo dice («Ipotesi di lavoro» nel grafo delle identità di `slide-chiave`). Il **look-alike** passa da Real-Time Activation, con un'icona propria (`Segno k="simili"`). La carta di CJA porta «clienti» e «non‑clienti». L'attribuzione diventa una capacità più larga della firma: «Quanto vale ogni canale, anche in filiale».
+
+**Il flusso fra i punti di contatto (`slide-flusso`, `data/flusso.ts`).** È un Sankey canale di contatto → canale di interazione → esito, proposto dal referente analytics e ridisegnato nel linguaggio del deck. ⚠️ Le larghezze sono di esempio e la slide lo dice.
+
+**Il «Come funziona» unico, in overlay.** La storia `scena="e2e"` (11 passi, `Meccanismo.astro` + `scripts/meccanismi.ts`, palco 1600×720) si apre dal bottone «▶ Come funziona · dall'annuncio alla firma» sul bordo della cornice di Experience Platform. Non ha più una slide propria, non ha didascalia in basso, e all'ultimo passo porta a «Quattro domande» (`#slide-cja-banca`). Dettagli:
+- la colonna «Canali · quello che vede Giulia» è in blu notte, per staccarsi dal verde della banca;
+- le colonne stanno dentro i margini del palco (colonna destra 1214→1576);
+- le pillole in volo (`viaggia`) si leggono in tre tempi: 0,6 s ferme alla partenza, 1,3 s di volo, 1,4 s posate all'arrivo. Il `'>'` di chi chiama resta l'arrivo, così la destinazione reagisce mentre la pillola è ancora lì.
+
+**Modalità presentatore (`components/ModoRelatore.astro`).** Il tasto G apre «Vai a…»: filtro, riserve nel percorso (sessionStorage `edf:riserve:<slug>`) e un Piano B sulla versione breve. Le slide `data-riserva` escono dal conteggio del motore finché non si accendono.
+
+**Versione breve.** Si chiama «In breve» (`dieci-minuti.astro`, le griglie `slide-prima` e `slide-dopo`) e ha un bottone fisso a destra nella barra (`Navigation.astro`, solo da `lg` in su). Il titolo del giro viene da una fonte sola (`TITOLO_GIRO`), così `audit:taglio` resta ALLINEATO.
+
+**Video e Coworker.** Il player di Dynamic Media sta nella pagina con `isLetterBoxed: true`, perché l'iframe `/play` ritagliava il video a schermo intero. Ci sono sette segnalibri, da «Coworker e le sue personalizzazioni» a «In Journey Optimizer». Il titolo del capitolo, dopo l'analisi del video (che va da un'analisi a un'azione), è «Dall'analisi all'azione, in una conversazione sola».
+
+**Marchio Adobe.** Una classe sola, `.adb-tile`: tessera rossa `#EB1000` con la «A» bianca. Sta nella barra di ogni mockup dei sette momenti, nel riquadro «Prodotto Adobe», nelle schede brevi e nelle testate delle tre colonne del «Come funziona».
+
+**Altro:**
+- i flussi di Journey Optimizer dei momenti 05-06 si costruiscono passo per passo (`--i`, `--j` in `MockAdobe.astro`);
+- la chat del momento 01 parte da sé quando entra la riga;
+- il momento 07 diventa «Tre settimane dopo · Apre l'app della banca»;
+- «Referenze» prende il posto del capitolo dei risultati;
+- nei Prossimi passi entra «Che cosa approfondiamo, e in che ordine?», mentre «da voi» e «fasi» passano a riserva.
+
+**Margini, la sonda che serve.** `audit:deck` non vede il testo che tocca il bordo della sua scatola. È servita una sonda di sessione: testo a meno di 3 px dal bordo, scatole che escono dalla madre, su tutte le slide con i passi aperti e passo per passo nel «Come funziona». Ha trovato la colonna canali fuori di 12 px, «profilo» sul bordo, le visite di Giulia 19 px oltre il fondo e il rango «1» sopra «appuntamento». ⚠️ **Trappola:** la slide attiva **non** porta `aria-hidden="false"`; senza, la sonda dà zero rilievi su una pagina che non ha guardato.
+
+**Gate a fine giro:**
+- typecheck: 0 errori;
+- `audit:wrap`: PULITO;
+- `audit:taglio`: ALLINEATO;
+- `audit:deck`: invariato rispetto al pre-esistente (messa-a-terra 21, momenti 25, coworker 6; famiglie `a` e `i`).
+
+⚠️ **Panel non rifatto su questo stato** (P0 nella Parte 2).

@@ -5,6 +5,9 @@
 
 ## 11. Change log recente
 
+### 2026-11-16 sera · Storia di Intesa: le due call interne
+`236ec7e`, `0ef369b`, `d3fa399`: codice pratica e NDG come ipotesi dichiarata; look-alike via RTA; Sankey; «Come funziona» unico in overlay dal bottone sulla mappa; modalità presentatore (G); «In breve»; marchio Adobe nei mockup; pillole in volo leggibili; margini. §42.19 (Parte 24).
+
 ### 2026-11-16 · Storia di Intesa: i «Come funziona» animati, in 3D e poi in 2D, dietro `?pop3d=1`
 `b9b2d29`…`288bfa4`: `pnpm render:3d` e la skill `factory-3d` (scene Blender nei colori dell'app); le clip dei tre pop-in su `?pop3d=video`; poi i meccanismi in 2D con i componenti del deck su `?pop3d=1`, due giri di panel (credibilità 2,7 → 3,8) e le correzioni nella sola variante (`v2d` in `pop.ts`). Deck principale invariato. Dettaglio in §42.18 (Parte 24).
 
