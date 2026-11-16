@@ -30,7 +30,10 @@ export const SCENE: Record<ScenaId, Scena> = {
      diventano un flusso solo, da Real-Time Activation a CJA, su Giulia (sopra) e sul
      sistema (sotto), con i sistemi della banca in scena come attori. Ogni carta apre al
      suo capitolo. Le frasi vengono dalle `v2d` delle tre scene (panel del 16 nov): niente
-     affermazioni nuove; l'NDG nasce al 06, all'apertura della pratica (owner, 16 nov). */
+     affermazioni nuove. Dalla call interna del 16 nov: il codice pratica nasce alla
+     simulazione e si riconcilia con l'NDG che il core emette alla firma (ipotesi di lavoro
+     dichiarata); il look-alike passa da Real-Time Activation; il dato di CJA va anche alle
+     iniziative commerciali sui clienti. */
   e2e: {
     occhiello: 'Come funziona',
     prodotto: 'Dall’annuncio alla firma',
@@ -38,19 +41,20 @@ export const SCENE: Record<ScenaId, Scena> = {
     capitoli: [
       { t: 'Riconosce · Real-Time Activation', da: 1, a: 3 },
       { t: 'Sceglie e invia · Journey Optimizer', da: 4, a: 6 },
-      { t: 'Misura · Customer Journey Analytics', da: 7, a: 10 },
+      { t: 'Misura · Customer Journey Analytics', da: 7, a: 11 },
     ],
     passi: [
       'Giulia arriva dall’annuncio e accetta i cookie di profilazione. Il sistema registra quello che fa, ma non sa ancora chi è.',
       'Simula la rata ed entra in tempo reale nel segmento «mutuo prima casa».',
-      'Lascia l’email e il consenso marketing. Le visite fatte prima di lasciare il nome si uniscono al suo profilo.',
+      'Lascia l’email e il consenso marketing, e nasce il codice pratica. Le visite fatte prima di lasciare il nome si uniscono al suo profilo.',
       'Si ferma perché le manca un documento. Journey Optimizer lo sa subito; gli score del vostro motore, se esistono sul non cliente, arrivano come attributi.',
       'AI Decisioning mette in fila quattro proposte. Regole e consenso ne escludono due, e vince il promemoria con appuntamento.',
       'La proposta compare sul sito e poi arriva per email, e Giulia riprende la pratica. Le vostre iniziative programmate continuano come oggi.',
-      'In filiale apre la pratica: la banca la censisce e nasce l’NDG. Il grafo lo lega all’email e alle visite di prima.',
-      'Firma ed è cliente. Customer Journey Analytics legge sito, app, CRM di filiale e Filiale Digitale sull’NDG, in un percorso solo.',
+      'In filiale apre la pratica: è la stessa della simulazione, e il grafo la lega all’email, al telefono e alle visite di prima.',
+      'Firma: il core emette l’NDG e lo lega al codice pratica (ipotesi di lavoro). Customer Journey Analytics legge sito, app, CRM e Filiale Digitale in un percorso solo.',
       'Le firme si attribuiscono ai canali, filiale compresa. Se la campagna ha funzionato lo dice il gruppo di controllo, che si fissa in fase 0.',
-      'Conversioni e audience tornano alla decisione, e le regole si rivedono su quel risultato. Da cliente, sulle proposte decide il vostro motore.',
+      'Conversioni e audience tornano alla decisione. Da chi ha firmato nasce un’audience look‑alike, che passa da Real-Time Activation: serve al prossimo non cliente.',
+      'Lo stesso dato arriva alle vostre iniziative commerciali: audience per up-sell e cross-sell sui clienti. Da cliente, sulle proposte decide il vostro motore.',
     ],
     nota: '',
     fonti: [],
@@ -63,7 +67,7 @@ export const SCENE: Record<ScenaId, Scena> = {
       'Customer Journey Analytics raccoglie il comportamento su sito e app.',
       'Entrano il CRM di filiale e la Filiale Digitale, una fonte alla volta.',
       'I segmenti e gli score del motore di targeting entrano come attributi del profilo.',
-      'Dall’apertura della pratica l’NDG lega simulazione online, contatti e firma in un unico percorso.',
+      'Il codice pratica, poi l’NDG alla firma, legano simulazione online, contatti e firma in un unico percorso.',
       'Le richieste firmate si attribuiscono ai canali, filiale compresa.',
     ],
     nota: '',

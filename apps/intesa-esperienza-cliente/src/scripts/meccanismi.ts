@@ -217,18 +217,18 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
       T.fromTo(el, { boxShadow: `0 0 0 0 rgba(${rgb},0)` }, { boxShadow: `0 0 0 8px rgba(${rgb},.35)`, duration: .32, yoyo: true, repeat: 1, ease: 'sine.inOut', immediateRender: false }, at);
 
     const [anon, foto, st0, st1, st2] = qq('g-anon', 'g-foto', 'st0', 'st1', 'st2');
-    const [ecid, email, ndg, seg, sess, sessT0, sessT1, visita, sim] =
-      qq('id-ecid', 'id-email', 'id-ndg', 'seg', 'sess', 'sess-t0', 'sess-t1', 'p-visita', 'p-sim');
+    const [ecid, email, pratica, ndg, seg, segSim, sess, sessT0, sessT1, visita, sim] =
+      qq('id-ecid', 'id-email', 'id-pratica', 'id-ndg', 'seg', 'seg-sim', 'sess', 'sess-t0', 'sess-t1', 'p-visita', 'p-sim');
     const [ev, score, regola, o0, o1, o2, o3] = qq('ev', 'a-score', 'regola', 'o0', 'o1', 'o2', 'o3');
     const [rata, spazio, banner] = qq('rata', 'spazio', 'banner');
     const fonti = qq('f-sito', 'f-app', 'f-crm', 'f-fd');
     const [percorso, barre, ctrl] = qq('percorso', 'barre', 'ctrl');
     const punti = ['02', '03', '04', '05', '06', '07'].map((n) => q(`c${n}`));
-    const [motorePoi, inizPoi, crmPoi] = qq('motore-poi', 'iniz-poi', 'crm-poi');
-    const [vEmail, vProp, vApp, vRit] = qq('v-email', 'v-prop', 'v-app', 'v-ritorno');
+    const [motorePoi, inizPoi, inizPoi2, crmPoi] = qq('motore-poi', 'iniz-poi', 'iniz-poi2', 'crm-poi');
+    const [vEmail, vProp, vApp, vRit, vSim, vIniz] = qq('v-email', 'v-prop', 'v-app', 'v-ritorno', 'v-simili', 'v-iniz');
     const ranghi = [o0, o1].map((o) => o.querySelector<HTMLElement>('.mc-rango')!);
 
-    gsap.set([foto, st1, st2, sessT1, banner, mail, percorso, barre, ctrl, motorePoi, inizPoi, crmPoi, vEmail, vProp, vApp, vRit, regola], { autoAlpha: 0 });
+    gsap.set([foto, st1, st2, sessT1, banner, mail, percorso, barre, ctrl, motorePoi, inizPoi, inizPoi2, crmPoi, vEmail, vProp, vApp, vRit, vSim, vIniz, regola, segSim], { autoAlpha: 0 });
     gsap.set([o0, o1, o2, o3], { autoAlpha: 0 });
     gsap.set(ranghi, { autoAlpha: 0, scale: .4 });
 
@@ -238,7 +238,7 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     tappa(0, 'p1');
     vola(ecid, sito, 'p1+=.4', .9);
     vola(visita, sito.querySelector<HTMLElement>('.mc-pag h5')!, 'p1+=.9');
-    gsap.set([email, ndg, seg, sim], { autoAlpha: 0 });
+    gsap.set([email, pratica, ndg, seg, sim], { autoAlpha: 0 });
 
     passo('p2');
     tappa(1, 'p2');
@@ -254,6 +254,9 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
      .to(st0, { autoAlpha: 0, duration: .3 }, '<')
      .to(st1, { autoAlpha: 1, duration: .4 }, '<.15');
     appare(email, '<', { duration: .5 });
+    // Il codice pratica nasce qui, con l'email (ipotesi di lavoro dichiarata, 16 nov 2026).
+    appare(pratica, '<.25', { duration: .5 });
+    pulsa(pratica, '>');
     T.to(sessT0, { autoAlpha: 0, duration: .3 }, '<')
      .to(sessT1, { autoAlpha: 1, duration: .4 }, '<.1')
      .to(sess, { borderColor: '#258900', borderStyle: 'solid', backgroundColor: '#f1f7ee', duration: .6 }, '<');
@@ -301,14 +304,17 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     viaggia(vApp, mail, crm, 'p7+=.2');
     accende(crm, '>-.1');
     appare(crmPoi, '<');
-    vola(ndg, crm, '>+.2', 1.1);
-    pulsa(ndg, '>');
+    // In filiale la pratica è la stessa della simulazione: l'NDG non nasce qui.
+    pulsa(pratica, '>+.2');
 
     passo('p8');
     fuoco([cja, sito, canaliT, crm, fd], 'p8');
     spegne(crm, 'p8');
     tappa(5, 'p8');
     T.to(st1, { autoAlpha: 0, duration: .3 }, 'p8').to(st2, { autoAlpha: 1, duration: .4 }, '<.1');
+    // Alla firma il core emette l'NDG, che si lega al codice pratica.
+    vola(ndg, tappe[5], 'p8+=.2', 1);
+    pulsa(ndg, '>');
     gsap.set(fonti, { autoAlpha: 0 });
     vola(fonti[0], sito, 'p8+=.3');
     vola(fonti[1], tappe[5], 'p8+=.55');
@@ -324,21 +330,32 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     appare(ctrl, 'p9+=1.5');
 
     passo('p10');
-    fuoco([cja, ajo, motore], 'p10');
+    fuoco([cja, ajo, rta], 'p10');
     viaggia(vRit, cja, ajo, 'p10+=.2');
     T.fromTo(ranghi[0], { scale: 1 }, { scale: 1.35, duration: .25, yoyo: true, repeat: 1, ease: 'sine.inOut', immediateRender: false }, '>-.1');
-    accende(motore, '>+.2');
+    // Il look-alike passa da Real-Time Activation (call interna, 16 nov 2026).
+    viaggia(vSim, cja, rta, '>+.25');
+    appare(segSim, '>-.15', { duration: .45 });
+    pulsa(segSim, '>');
+
+    passo('p11');
+    fuoco([cja, iniz, motore], 'p11');
+    viaggia(vIniz, cja, iniz, 'p11+=.2');
+    accende(iniz, '>-.1');
+    T.to(inizPoi, { autoAlpha: 0, duration: .25 }, '<');
+    appare(inizPoi2, '<.15', { duration: .45 });
+    accende(motore, '<');
     appare(motorePoi, '<');
     passo('fine');
-    etichette = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9', 'p10', 'fine'];
-    const QUI = [0, 1, 1, 2, 2, 3, 4, 5, 5, 5];
+    etichette = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9', 'p10', 'p11', 'fine'];
+    const QUI = [0, 1, 1, 2, 2, 3, 4, 5, 5, 5, 5];
     const classi = (el: HTMLElement, c: string) => { el.className = `${base.get(el) ?? el.className} ${c}`.trim(); };
     [...tappe, motore, iniz, crm, o0, o1, o2, o3].forEach((el) => { if (!base.has(el)) base.set(el, el.className); });
     allinea = (p) => {
       const i = QUI[p - 1] ?? 0;
       tappe.forEach((li, j) => classi(li, j < i ? 'mc-fatto' : j === i ? 'mc-qui' : ''));
-      classi(motore, p === 4 || p === 10 ? 'mc-attivo' : '');
-      classi(iniz, p === 6 ? 'mc-attivo' : '');
+      classi(motore, p === 4 || p === 11 ? 'mc-attivo' : '');
+      classi(iniz, p === 6 || p === 11 ? 'mc-attivo' : '');
       classi(crm, p === 7 ? 'mc-attivo' : '');
       classi(o2, p >= 5 ? 'mc-fuori' : ''); classi(o3, p >= 5 ? 'mc-fuori' : '');
       classi(o0, p >= 6 ? 'mc-vince' : ''); classi(o1, p >= 6 ? 'mc-seconda' : '');

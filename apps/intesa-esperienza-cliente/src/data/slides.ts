@@ -36,7 +36,8 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-capacita', label: 'Che cosa fa ciascun componente nel percorso di Giulia: le capability' },
     { id: 'slide-chiave', label: 'Più identificativi, una persona sola: la storia da non‑cliente a cliente' },
     { id: 'slide-cja-banca', label: 'Quattro risposte che una banca ottiene da CJA' },
-    { id: 'slide-attribuzione', label: 'Quanto del digitale arriva in filiale' },
+    { id: 'slide-flusso', label: 'Dalla email allo sportello: il flusso fra i punti di contatto (Sankey)' },
+    { id: 'slide-attribuzione', label: 'Quanto vale ogni canale, anche quando la vendita si chiude in filiale' },
     { id: 'slide-ritorno', label: 'Quello che si impara da Giulia migliora la relazione con il prossimo cliente' },
   ]},
   { slug: 'coworker', label: 'CX Enterprise Coworker (04)', slides: [

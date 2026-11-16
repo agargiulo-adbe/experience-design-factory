@@ -28,6 +28,7 @@ import InnestoPop from '../components/InnestoPop.astro';
 import Segno from '../components/Segno.astro';
 import FiguraCapacita from '../components/FiguraCapacita.astro';
 import { ATTRIBUZIONE, DIGITALE } from '../data/attribuzione';
+import { CONTATTO, INTERAZIONE, ESITO, NL, NM, NR, FLUSSI, GEO } from '../data/flusso';
 import MappaCapacita from '../components/MappaCapacita.astro';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import Divisore from '../components/Divisore.astro';
@@ -96,7 +97,7 @@ const TAPPE = [
 
 const BANCA = [
   { k: 'sequenza', q: { it: 'In che ordine si muove una persona?', en: 'In what order does a person move?' }, t: { it: 'Sequenza dei contatti su tutti i canali, per ogni cliente e non‑cliente', en: 'Sequence of contacts across every channel, for every customer and non-customer' } },
-  { k: 'sportello', q: { it: 'Quante richieste nate online si firmano in filiale?', en: 'How many online applications are signed in branch?' }, t: { it: 'Firme in filiale attribuite al canale digitale d’origine', en: 'Branch signatures attributed to the originating digital channel' } },
+  { k: 'sportello', q: { it: 'Quante vendite nate online si chiudono in filiale?', en: 'How many sales that start online close in the branch?' }, t: { it: 'Conversioni in filiale attribuite al canale digitale d’origine', en: 'Branch conversions attributed to the originating digital channel' } },
   { k: 'rottura', q: { it: 'Dove si ferma la richiesta?', en: 'Where does the application stop?' }, t: { it: 'Punti di abbandono e chiamate al servizio clienti che ne derivano', en: 'Drop-off points and the customer-service calls they cause' } },
   { k: 'azione', q: { it: 'Che cosa si fa con chi si ferma?', en: 'What happens to those who stop?' }, t: { it: 'Diventa un segmento da ricontattare con Journey Optimizer', en: 'They become a segment to re-contact with Journey Optimizer' } },
 ];
@@ -111,18 +112,21 @@ const BANCA = [
    Controllo di Gestione. Il momento 01 non sta qui: la risposta di un
    assistente non si osserva, e la slide non finge di vederla. Le fonti sono in
    calce: stitching di CJA (finestra per pacchetto) e Identity Service.
-   L'NDG NASCE AL 06 (owner, 16 nov 2026): la banca censisce Giulia quando apre
-   la pratica in filiale (identificazione, adeguata verifica, Centrale Rischi),
-   non alla firma. Così il grafo lega l'NDG alle visite delle settimane prima e
-   lo stitching di CJA le riporta sull'NDG dentro la finestra del pacchetto
-   (7/14/30 giorni, Select/Prime/Ultimate). Da confermare con i Mutui in fase 0. */
+   IL CODICE PRATICA E L'NDG (call interna e owner, 16 nov 2026). L'NDG lo
+   emette il core banking quando la persona diventa cliente (alla firma), non
+   all'apertura della pratica: lo ha fatto notare chi conosce i sistemi della
+   banca. Il deck lavora su un'IPOTESI DICHIARATA in slide: il codice pratica
+   si stacca alla simulazione, quando Giulia lascia l'email, ed è
+   riconciliabile con l'NDG. Così sito, pratica e NDG si ricuciono sulla stessa
+   persona. Da confermare con i Mutui in fase 0; la finestra di replay dello
+   stitching (7/14/30 giorni) resta il limite da dire se chiedono. */
 const CHIAVE = [
   { m: '02', id: 'ecid', passo: 1, dove: { it: 'Sito, dall’annuncio', en: 'Site, from the ad' }, k: { it: 'Pseudonimo del browser', en: 'Browser pseudonym' } },
-  { m: '03', id: 'email', passo: 2, dove: { it: 'Simulazione', en: 'Simulation' }, k: { it: 'Pseudonimo + email, col consenso', en: 'Pseudonym + email, with consent' }, unisce: true },
+  { m: '03', id: 'pratica', passo: 2, dove: { it: 'Simulazione', en: 'Simulation' }, k: { it: 'Email col consenso e codice pratica', en: 'Email with consent and application code' }, unisce: true },
   { m: '04', id: 'email', passo: 3, dove: { it: 'Sito, si ferma', en: 'Site, stops' }, k: { it: 'Email', en: 'Email' } },
   { m: '05', id: 'email', passo: 3, dove: { it: 'Email', en: 'Email' }, k: { it: 'Email', en: 'Email' } },
-  { m: '06', id: 'ndg', passo: 4, dove: { it: 'Filiale, apre la pratica', en: 'Branch, opens the application' }, k: { it: 'Email, telefono e NDG', en: 'Email, phone and customer ID (NDG)' } },
-  { m: '07', id: 'ndg', passo: 5, dove: { it: 'Firma e app', en: 'Signing and app' }, k: { it: 'NDG, già suo: diventa cliente', en: 'Customer ID, already hers: she becomes a customer' }, cliente: true },
+  { m: '06', id: 'tel', passo: 4, dove: { it: 'Filiale, apre la pratica', en: 'Branch, opens the application' }, k: { it: 'Codice pratica, email e telefono', en: 'Application code, email and phone' } },
+  { m: '07', id: 'ndg', passo: 5, dove: { it: 'Firma e app', en: 'Signing and app' }, k: { it: 'Il core emette l’NDG: diventa cliente', en: 'Core banking issues her customer ID: she becomes a customer' }, cliente: true },
 ];
 
 /* IL MOTORE DI TARGETING RESTA (panel del 30 ott 2026, P0). Davanti a chi i
@@ -312,12 +316,20 @@ const RITORNO = [
                 con sé i due tipi d'invio, perché nei Canali non ci sono pillole. */}
             <span class="im-inn-up im-inn-up--su" data-luce="ajo canali"><i class="im-impulso im-impulso--prosegue" aria-hidden="true"><b></b></i><span class="im-inn-nbe-l"><T as="span" class="im-inn-nbe" it="Next Best Experience" en="Next Best Experience" /></span></span>
             <span class="im-inn-up im-inn-up--dx" aria-hidden="true" data-luce="ajo canali"><i class="im-impulso im-impulso--elle" aria-hidden="true"><b></b></i></span>
+            {/* IL LOOK-ALIKE PASSA DA REAL-TIME ACTIVATION (call interna, 16 nov 2026):
+                le audience simili a chi ha convertito si costruiscono in Experience
+                Platform con Real-Time CDP; con il solo Journey Optimizer la funzione
+                non c'è. Freccia di dato, da Customer Journey Analytics in su. */}
+            <span class="im-inn-f im-inn-f--simili" data-su data-luce="cja cdp" data-muto><span class="im-inn-lab"><Segno k="simili" /><T as="span" it="audience look‑alike" en="look-alike audiences" /></span></span>
             <span class="im-inn-f im-inn-f--ritorno" data-su data-luce="cja ajo" data-muto><span class="im-inn-lab"><Segno k="conversione" /><Segno k="audience" /><T as="span" it="conversioni e audience" en="conversions and audiences" /></span></span>
             <div class="im-inn-bx im-inn-b--largo im-carta im-carta--aep" data-carta="cja" data-luce="cja" role="button" tabindex="0" aria-pressed="false" aria-label="Customer Journey Analytics">
               <div class="im-carta-in">
                 <div class="im-carta-f">
                   <Segno k="giro" />
                   <span class="im-inn-t">Customer Journey Analytics</span>
+                  {/* Clienti e non‑clienti (call interna, 16 nov 2026): dei tre
+                      componenti è l'unico che li legge insieme. */}
+                  <span class="im-inn-tipi im-inn-tipi--b" role="list"><T as="span" role="listitem" class="im-inn-tipo im-chi im-chi--c" it="clienti" en="customers" /><T as="span" role="listitem" class="im-inn-tipo im-chi im-chi--nc" it="non‑clienti" en="non-customers" /></span>
                 </div>
                 <div class="im-carta-r">
                   <T as="span" class="im-inn-d" it="Analisi omnicanale: comportamento digitale e dati di filiale, Filiale Digitale e CRM in un solo percorso" en="Omnichannel analytics: digital behaviour and branch, Filiale Digitale and CRM data in one journey" />
@@ -434,7 +446,7 @@ const RITORNO = [
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <div class="im-capmap-testa"><T as="h2" class="im-ado-t im-ado-t--stretto" it="Più identificativi, una persona sola: dal sito alla filiale e oltre la firma" en="Many identifiers, one person: from the site to the branch and past the signature" /><MappaCapacita accese={['riconosce']} /></div>
-        <T as="p" class="im-ado-l" it="Pseudonimo, email, telefono e NDG si collegano alla stessa persona: l’NDG nasce quando apre la pratica, e alla firma la sua storia è già lì." en="Pseudonym, email, phone and customer ID link to the same person: the ID is created when she opens the application, so at signing her history is already there." />
+        <T as="p" class="im-ado-l" it="Pseudonimo, email, codice pratica, telefono e NDG si collegano alla stessa persona: dalla simulazione alla firma, una storia sola." en="Pseudonym, email, application code, phone and customer ID link to the same person: from the simulation to the signature, one history." />
 
         {/* L'IDENTITY GRAPH E LA RICUCITURA (owner, 14 nov 2026). A sinistra il
             grafo che si forma, a destra la storia di Giulia. Al passo 1 l'ECID
@@ -451,12 +463,13 @@ const RITORNO = [
         <i class="im-idg-passo" data-substep data-p="4" aria-hidden="true"></i>
         <i class="im-idg-passo" data-substep data-p="5" aria-hidden="true"></i>
         <div class="im-idg">
-          <div class="im-idg-g" role="img" aria-label="Il grafo delle identità: ECID, email, telefono e NDG collegati a Giulia">
+          <div class="im-idg-g" role="img" aria-label="Il grafo delle identità: ECID, email, codice pratica, telefono e NDG collegati a Giulia">
             <svg class="im-idg-fili" viewBox="0 0 100 76" preserveAspectRatio="none" aria-hidden="true">
               <line x1="50" y1="38" x2="17" y2="15" pathLength="1" data-dal="2" data-k="ecid" />
               <line x1="50" y1="38" x2="83" y2="15" pathLength="1" data-dal="2" data-k="email" />
+              <line x1="50" y1="38" x2="50" y2="6" pathLength="1" data-dal="2" data-k="pratica" />
               <line x1="50" y1="38" x2="83" y2="61" pathLength="1" data-dal="4" data-k="tel" />
-              <line x1="50" y1="38" x2="17" y2="61" pathLength="1" data-dal="4" data-k="ndg" />
+              <line x1="50" y1="38" x2="17" y2="61" pathLength="1" data-dal="5" data-k="ndg" />
             </svg>
             <div class="im-idg-n im-idg-n--chi" style="--x:50%;--y:50%">
               <span class="im-idg-chi-q">?</span>
@@ -465,7 +478,8 @@ const RITORNO = [
             <div class="im-idg-n" data-dal="1" data-k="ecid" style="--x:17%;--y:20%"><b>ECID</b><T as="small" it="il browser" en="the browser" /></div>
             <div class="im-idg-n" data-dal="2" data-k="email" style="--x:83%;--y:20%"><b>Email</b><T as="small" it="col consenso" en="with consent" /></div>
             <div class="im-idg-n" data-dal="4" data-k="tel" style="--x:83%;--y:80%"><T as="b" it="Telefono" en="Phone" /><T as="small" it="in filiale" en="in the branch" /></div>
-            <div class="im-idg-n" data-dal="4" data-k="ndg" style="--x:17%;--y:80%"><b>NDG</b><T as="small" it="alla pratica, unico" en="at the application, unique" /></div>
+            <div class="im-idg-n" data-dal="2" data-k="pratica" style="--x:50%;--y:8%"><T as="b" it="Codice pratica" en="Application code" /><T as="small" it="alla simulazione" en="at the simulation" /></div>
+            <div class="im-idg-n" data-dal="5" data-k="ndg" style="--x:17%;--y:80%"><b>NDG</b><T as="small" it="alla firma, dal core" en="at signing, from core banking" /></div>
           </div>
           <ol class="im-idg-tl">
             {CHIAVE.map((c) => (
@@ -485,7 +499,7 @@ const RITORNO = [
           <T as="span" class="im-chv-prima" it="non‑cliente" en="Non-customer" />
           <T as="span" class="im-chv-dopo" it="Cliente da oggi: in CJA la storia è già sul suo NDG" en="Customer from today: in CJA her history is already on her ID" />
         </div>
-        <T as="p" class="im-idg-nota" data-dal="5" it="Un PC condiviso in famiglia non fonde due persone: l’NDG è unico nel grafo, e ogni visita autenticata resta associata a chi l’ha fatta." en="A family PC does not merge two people: the customer ID is unique in the graph, and every authenticated visit stays linked to whoever made it." />
+        <T as="p" class="im-idg-nota" data-dal="5" it="<span class=im-idg-ip>Ipotesi di lavoro</span> il codice pratica nasce alla simulazione e si riconcilia con l’NDG che il core emette alla firma." en="<span class=im-idg-ip>Working assumption</span> the application code is created at the simulation and reconciles with the customer ID that core banking issues at signing." />
 
       </div>
     </Slide>
@@ -521,6 +535,50 @@ const RITORNO = [
     </Slide>
 
 
+    {/* IL FLUSSO FRA I PUNTI DI CONTATTO (call interna, 16 nov 2026): il Sankey
+        che il referente analytics ha chiesto l'11 novembre e che un collega ha
+        proposto dalla visualizzazione Flow di CJA. Sta prima dell'attribuzione:
+        qui si vede DA DOVE passa chi compra, la slide dopo dice QUANTO vale ogni
+        canale. Clienti e non‑clienti insieme: è la capability, non Giulia.
+        Primo passo, i nastri; secondo, il percorso email → filiale → nuovo
+        cliente. Valori in `data/flusso.ts`, larghezze di esempio. */}
+    <Slide id="slide-flusso" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <div class="im-capmap-testa"><T as="h2" class="im-ado-t im-ado-t--stretto" it="Dalla email allo sportello: da dove passa chi compra" en="From email to the branch counter: the path to a purchase" /><MappaCapacita accese={['misura']} /></div>
+        <T as="p" class="im-ado-l" it="Clienti e non‑clienti, canali digitali e fisici nella stessa vista: da quale contatto parte una vendita, e dove si chiude." en="Customers and non-customers, digital and physical channels in one view: which contact starts a sale, and where it closes." />
+        <i class="im-flu-passo" data-substep data-p="1" aria-hidden="true"></i>
+        <i class="im-flu-passo" data-substep data-p="2" aria-hidden="true"></i>
+        <figure class="im-flu" data-flu>
+          <div class="im-flu-int" aria-hidden="true">
+            <T as="span" style={`--x:${(GEO.X[0] + GEO.NW) / 10}%`} class="im-flu-int-l" it="Canale di contatto" en="Contact channel" />
+            <T as="span" style={`--x:${GEO.X[1] / 10}%`} it="Dove interagisce" en="Where they interact" />
+            <T as="span" style={`--x:${GEO.X[2] / 10}%`} it="Esito" en="Outcome" />
+          </div>
+          <div class="im-flu-g" data-datalake role="img" aria-label="Flusso di esempio: dai canali di contatto (email, annunci, ricerca, notifiche, diretto) a sito, app, Filiale Digitale e filiale, fino a nuovi clienti e clienti con un nuovo prodotto">
+            <svg class="im-flu-svg" viewBox={`0 0 ${GEO.W} ${GEO.H}`} preserveAspectRatio="none" aria-hidden="true">
+              {FLUSSI.map((f) => <path d={f.d} data-da={f.da} data-a={f.a} data-tratto={f.tratto} data-on={f.on ? '' : null} />)}
+            </svg>
+            <svg class="im-flu-nodi" viewBox={`0 0 ${GEO.W} ${GEO.H}`} preserveAspectRatio="none" aria-hidden="true">
+              {NL.map((n, i) => <rect class="im-flu-n" x={n.x} y={n.y} width={GEO.NW} height={n.h} data-n={CONTATTO[i].k} />)}
+              {NM.map((n, i) => <rect class="im-flu-n" x={n.x} y={n.y} width={GEO.NW} height={n.h} data-n={INTERAZIONE[i].k} />)}
+              {NR.map((n, i) => <rect class="im-flu-n" x={n.x} y={n.y} width={GEO.NW} height={n.h} data-n={ESITO[i].k} />)}
+            </svg>
+            {NL.map((n, i) => <T as="span" class="im-flu-l im-flu-l--sx" data-n={CONTATTO[i].k} style={`--x:${(n.x - 10) / 10}%;--y:${(n.y + n.h / 2) / 4}%`} it={CONTATTO[i].it} en={CONTATTO[i].en} />)}
+            {NM.map((n, i) => <T as="span" class="im-flu-l im-flu-l--su" data-n={INTERAZIONE[i].k} style={`--x:${n.x / 10}%;--y:${n.y / 4}%`} it={INTERAZIONE[i].it} en={INTERAZIONE[i].en} />)}
+            {NR.map((n, i) => <T as="span" class="im-flu-l im-flu-l--dx" data-n={ESITO[i].k} style={`--x:${(n.x + GEO.NW + 10) / 10}%;--y:${(n.y + n.h / 2) / 4}%`} it={ESITO[i].it} en={ESITO[i].en} />)}
+          </div>
+        </figure>
+        <p class="im-flu-nota" data-dal="2"><T as="strong" it="Percorso evidenziato" en="Highlighted path" /> <T as="span" it="email, poi filiale, poi nuovo cliente: la vendita si chiude allo sportello, e nel flusso si vede che è partita dall’email." en="email, then branch, then new customer: the sale closes at the counter, and the flow shows it started with the email." /></p>
+        <p class="im-fonte-riga">
+          <span data-lang-it>Esempio illustrativo: larghezze di esempio, non dati. In Customer Journey Analytics: </span><span data-lang-en>Illustrative example: sample widths, not data. In Customer Journey Analytics: </span>
+          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-workspace/visualizations/flow/flow" target="_blank" rel="noopener"><span data-lang-it>visualizzazione Flow</span><span data-lang-en>Flow visualization</span></a><span> · </span>
+          <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-workspace/visualizations/flow/multi-dimensional-flow" target="_blank" rel="noopener"><span data-lang-it>flussi fra più dimensioni</span><span data-lang-en>inter-dimensional flows</span></a>
+        </p>
+      </div>
+    </Slide>
+
+
     {/* IL PANNELLO DI ATTRIBUZIONE (owner, 14 nov 2026). Prima la slide DICEVA
         «il modello si cambia nel report»; ora lo fa vedere: un pannello di
         Customer Journey Analytics con il selettore del modello. Stessa misura
@@ -533,8 +591,8 @@ const RITORNO = [
     <Slide id="slide-attribuzione" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-doppia" style={`--bg: url('${fondoMisura.src}')`}></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <div class="im-capmap-testa"><T as="h2" class="im-ado-t im-ado-t--stretto" it="Quanta parte delle firme in filiale passa dal digitale?" en="How much of branch signing passes through digital?" /><MappaCapacita accese={['misura']} /></div>
-        <T as="p" class="im-ado-l" it="Per il Controllo di Gestione: quanto ogni canale digitale porta in filiale, fino alla firma e quanto pesa il canale fisico." en="For management control: how much each digital channel brings into the branch, up to the signature, and how much weight the physical channel carries." />
+        <div class="im-capmap-testa"><T as="h2" class="im-ado-t im-ado-t--stretto" it="Quanto vale ogni canale, anche in filiale" en="What each channel is worth, branch included" /><MappaCapacita accese={['misura']} /></div>
+        <T as="p" class="im-ado-l" it="Per il Controllo di Gestione: ogni conversione, di clienti e non‑clienti, divisa fra canali digitali e fisici. Esempio: il mutuo." en="For management control: every conversion, from customers and non-customers, shared across digital and physical channels. Example: the mortgage." />
 
         <i class="im-cjp-passo" data-substep data-p="1" aria-hidden="true"></i>
         <i class="im-cjp-passo" data-substep data-p="2" aria-hidden="true"></i>
@@ -837,5 +895,21 @@ const RITORNO = [
     new MutationObserver(() => { if (slide.getAttribute('aria-hidden') === 'true') { pan.removeAttribute('data-mano'); segui(); } })
       .observe(slide, { attributes: true, attributeFilter: ['aria-hidden'] });
     segui();
+  }
+</script>
+
+<script>
+  /* Il Sankey: con il mouse su un'etichetta restano accesi solo i suoi nastri. */
+  const flu = document.querySelector<HTMLElement>('#slide-flusso [data-flu]');
+  if (flu) {
+    const nastri = [...flu.querySelectorAll<SVGPathElement>('.im-flu-svg path')];
+    flu.querySelectorAll<HTMLElement>('.im-flu-l[data-n]').forEach((l) => {
+      l.addEventListener('mouseenter', () => {
+        const k = l.dataset.n!;
+        nastri.forEach((p) => p.toggleAttribute('data-hit', p.dataset.da === k || p.dataset.a === k));
+        flu.setAttribute('data-fuoco', k);
+      });
+      l.addEventListener('mouseleave', () => { flu.removeAttribute('data-fuoco'); nastri.forEach((p) => p.removeAttribute('data-hit')); });
+    });
   }
 </script>
