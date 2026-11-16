@@ -36,7 +36,10 @@ export const SCENE: Record<ScenaId, Scena> = {
     nota: '',
     fonti: [],
     // Panel 16 nov: CJA non «raccoglie», legge dataset (cja-faq, cja-upgrade-recommendations).
-    v2d: { passi: [null, 'Customer Journey Analytics legge i dati di sito e app che raccogliete già: non li raccoglie da sé.'] },
+    v2d: {
+      cosa: 'Mette nello stesso percorso quello che una persona fa sul sito e in app, in filiale e al telefono.',
+      passi: [null, 'Customer Journey Analytics legge i dati di sito e app che raccogliete già: non li raccoglie da sé.'],
+    },
   },
   decisioning: {
     prodotto: 'AI Decisioning',
@@ -59,11 +62,11 @@ export const SCENE: Record<ScenaId, Scena> = {
       passi: [
         'Il motore di targeting continua a calcolare target e propensione sui clienti. Da quale sistema arrivi l’eleggibilità è da confermare con voi.',
         'Sul non cliente, solo se esistono: arrivano ad AI Decisioning come attributi del profilo. L’eleggibilità può stare nel profilo o arrivare dal vostro sistema nella richiesta di decisione.',
-        'Per Giulia ci sono quattro proposte possibili.',
+        'Per Giulia ci sono quattro proposte possibili. Se risulta già cliente, decide il vostro motore; chi decide su chi non ha fatto login si fissa in fase 0.',
         null,
         null,
-        'Dopo le regole ne restano due: vince la prima per priorità, sul canale ammesso dal consenso. Gli invii possono continuare a passare dagli strumenti attuali.',
-        'Customer Journey Analytics confronta chi ha visto la proposta con un gruppo di controllo: appuntamenti prenotati e tenuti, poi richieste firmate. Chi estrae il controllo e come resta fuori dalle altre iniziative si fissa in fase 0.',
+        'Dopo le regole ne restano due: vince la prima per priorità, sul canale ammesso dal consenso.',
+        'Customer Journey Analytics confronta chi ha visto la proposta con un gruppo di controllo: appuntamenti, poi firme. Chi lo estrae, quanto è grande e quanto dura, e il tetto di contatti, si fissano in fase 0.',
       ],
     },
   },
@@ -82,9 +85,10 @@ export const SCENE: Record<ScenaId, Scena> = {
     v2d: {
       cosa: 'Capacità di Adobe Real-Time CDP. Costruisce il profilo di chi non è ancora cliente: prima dal comportamento sul sito, poi dall’email che lascia.',
       passi: [
-        null, null,
-        'Quando torna, il sito le propone di riprendere la simulazione. Per personalizzarlo serve il suo consenso alla profilazione.',
+        'Giulia visita il sito senza identificarsi e accetta i cookie di profilazione: il sistema registra quello che fa, ma non sa ancora chi è.',
         null,
+        'Se torna entro un giorno, il sito le propone di riprendere la simulazione.',
+        'Lascia l’email e il consenso marketing. Le visite fatte prima di lasciare il nome si uniscono al suo profilo.',
         'Con l’email e il consenso marketing, Journey Optimizer può scriverle. Se prenota, l’appuntamento arriva al CRM di filiale: con quale integrazione si decide con voi.',
       ],
     },

@@ -107,6 +107,7 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     appare(invio, '>');
     passo('p7');
     appare(cja, 'p7');
+    T.to(invio, { autoAlpha: 0, duration: .3 }, 'p7');
     const e = dove(esito), si = dove(sito), cj = dove(cja), ar = dove(arbitro);
     gsap.set(esito, { left: 0, top: 0 });
     T.fromTo(esito, { autoAlpha: 0, x: si.x + si.w / 2 - e.w / 2, y: si.y + si.h - 30 }, { autoAlpha: 1, duration: .2, immediateRender: true }, 'p7+=.4')
