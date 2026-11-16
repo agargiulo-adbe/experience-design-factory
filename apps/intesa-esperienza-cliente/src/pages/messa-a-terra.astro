@@ -913,3 +913,51 @@ const RITORNO = [
     });
   }
 </script>
+
+<script>
+  /* LA MAPPA ENTRA NELLO SCHERMO (16 nov 2026). Con una finestra bassa (un
+     portatile col browser non a tutto schermo, sotto i ~700px) la slide
+     dell'innesto era più alta dello schermo: Customer Journey Analytics finiva
+     sotto i comandi del deck e fuori dall'area cliccabile, e la sua carta non si
+     girava, quindi «Come funziona» non si raggiungeva. Qui la si scala quanto
+     basta per stare nel contenitore, sopra i comandi. Con `scale` e non con
+     `zoom`: i clic seguono quello che si vede, e i pop-in, che si aprono nel top
+     layer, restano a grandezza piena. Alle misure del gate non scatta. */
+  const slideF = document.getElementById('slide-innesto');
+  const capF = slideF?.querySelector<HTMLElement>('.im-ado-cap');
+  if (slideF && capF) {
+    const adatta = () => {
+      /* La proprietà `scale`, non `transform`: l'animazione d'ingresso usa
+         `transform` in linea, e le due non si devono pestare. */
+      capF.style.scale = ''; capF.style.transformOrigin = ''; capF.style.marginBottom = '';
+      if (innerWidth <= 900) return;
+      /* Sotto gli 800px di altezza il motore fa SCORRERE il contenitore interno
+         della slide: la mappa deve stare lì dentro, e sopra i comandi. Alle misure
+         di proiezione il contenitore non scorre e la slide resta com'è, come la
+         vedono il gate e la sala. */
+      const box = capF.parentElement!;
+      const ov = getComputedStyle(box).overflowY;
+      if (ov !== 'auto' && ov !== 'scroll') return;
+      box.scrollTop = 0;
+      if (box.scrollHeight - box.clientHeight <= 4) return;
+      const bb = box.getBoundingClientRect();
+      const ctrl = document.querySelector<HTMLElement>('[data-deck-controls]')?.getBoundingClientRect().top ?? innerHeight;
+      const su = bb.top, giu = Math.min(bb.bottom, ctrl - 8);
+      const r = capF.getBoundingClientRect();
+      const z = Math.min(1, (giu - su) / r.height);
+      /* Scala dall'alto e restituisce l'altezza risparmiata: così il contenitore
+         non scorre più e l'indicatore «scorri» del motore si spegne da sé. */
+      capF.style.transformOrigin = '50% 0';
+      capF.style.scale = z.toFixed(3);
+      capF.style.marginBottom = `${(-r.height * (1 - z)).toFixed(1)}px`;
+      box.removeAttribute('data-scrollable'); box.removeAttribute('data-scroll-end');
+    };
+    let t = 0;
+    const presto = () => { cancelAnimationFrame(t); t = requestAnimationFrame(adatta); };
+    addEventListener('resize', presto);
+    document.fonts?.ready.then(presto);
+    new MutationObserver(presto).observe(slideF, { attributes: true, attributeFilter: ['aria-hidden'] });
+    new MutationObserver(presto).observe(document.documentElement, { attributes: true, attributeFilter: ['lang', 'data-lang'] });
+    presto();
+  }
+</script>
