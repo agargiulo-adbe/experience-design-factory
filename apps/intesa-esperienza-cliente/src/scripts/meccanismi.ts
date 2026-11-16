@@ -1,0 +1,196 @@
+/**
+ * I MOVIMENTI DEI MECCANISMI 2D (components/Meccanismo.astro), dietro `?pop3d=1`.
+ *
+ * Una timeline per scena, con un'etichetta per passo: ogni «Avanti» del pop-in suona
+ * SOLO il suo tratto e si ferma sullo stato finale (segmentazione); «Indietro» e la
+ * riduzione del movimento saltano allo stato, senza animare.
+ *
+ * Il gesto ricorrente è il VOLO: una pillola con un nome parte dall'oggetto che la
+ * produce e si posa nel posto che la aspetta. Il posto d'arrivo è nel layout vero (flex),
+ * la partenza si misura: niente coordinate scritte a mano che divergono dal CSS.
+ * Si misura a pop-in aperto, una volta, con il palco già scalato.
+ */
+type G = typeof import('gsap').gsap;
+type TL = ReturnType<G['timeline']>;
+export interface Meccanismo { vai(p: number, avanti: boolean): void; adatta(): void }
+
+const W = 1600, H = 720;
+const ENTRA = 'expo.out', MUOVE = 'power2.inOut';
+
+export async function prepara(root: HTMLElement): Promise<Meccanismo> {
+  const { gsap } = await import('gsap');
+  const palco = root.querySelector<HTMLElement>('.mc-palco')!;
+  const scena = root.dataset.mc!;
+  const q = (k: string) => root.querySelector<HTMLElement>(`[data-k="${k}"]`)!;
+  const qq = (...k: string[]) => k.map(q);
+
+  const adatta = () => {
+    const k = Math.min(root.clientWidth / W, root.clientHeight / H);
+    palco.style.setProperty('--mc-k', String(k || .6));
+  };
+  adatta();
+
+  /** Dove sta un elemento, in unità di palco (1600×720), senza le sue trasformazioni gsap. */
+  const dove = (el: HTMLElement) => {
+    const r = el.getBoundingClientRect(), p = palco.getBoundingClientRect(), k = p.width / W;
+    const x = Number(gsap.getProperty(el, 'x')) || 0, y = Number(gsap.getProperty(el, 'y')) || 0;
+    return { x: (r.left - p.left) / k - x, y: (r.top - p.top) / k - y, w: r.width / k, h: r.height / k };
+  };
+
+  const T: TL = gsap.timeline({ paused: true, defaults: { duration: .8, ease: ENTRA } });
+
+  /** Un posto d'arrivo (già nel layout) che arriva volando dalla sua fonte. */
+  const vola = (posto: HTMLElement, fonte: HTMLElement, at: string | number, durata = 1) => {
+    const a = dove(posto), b = dove(fonte);
+    const dx = b.x + b.w / 2 - (a.x + a.w / 2), dy = b.y + b.h / 2 - (a.y + a.h / 2);
+    T.fromTo(posto, { autoAlpha: 0, x: dx, y: dy, scale: .92 },
+      { autoAlpha: 1, x: 0, y: 0, scale: 1, duration: durata, ease: MUOVE, immediateRender: true }, at);
+  };
+  /** Una pillola libera che viaggia da un oggetto a un altro, e lì si posa o sparisce. */
+  const viaggia = (pill: HTMLElement, da: HTMLElement, a: HTMLElement, at: string | number, resta = false) => {
+    const p = dove(pill), s = dove(da), d = dove(a);
+    const x0 = s.x + s.w / 2 - p.w / 2, y0 = s.y + s.h / 2 - p.h / 2;
+    const x1 = d.x + d.w / 2 - p.w / 2, y1 = d.y + d.h / 2 - p.h / 2;
+    gsap.set(pill, { left: 0, top: 0 });
+    T.fromTo(pill, { autoAlpha: 0, x: x0, y: y0 }, { autoAlpha: 1, x: x0, y: y0, duration: .2, immediateRender: true }, at)
+     .to(pill, { x: x1, y: y1, duration: 1, ease: MUOVE }, '>');
+    if (!resta) T.to(pill, { autoAlpha: 0, duration: .25 }, '>-.05');
+  };
+  const appare = (el: HTMLElement | HTMLElement[], at: string | number, extra: gsap.TweenVars = {}) =>
+    T.fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: .6, immediateRender: true, ...extra }, at);
+  const classe = (el: HTMLElement, c: string, at: string | number) =>
+    T.set(el, { className: `${el.className} ${c}` }, at);
+
+  let etichette: string[] = [];
+  /** Un passo comincia quando è finito TUTTO il precedente, non l'ultima tween aggiunta. */
+  const passo = (nome: string) => T.addLabel(nome, nome === 'p1' ? 0 : T.duration() + .1);
+
+  if (scena === 'decisioning') {
+    const [motore, core, profilo, arbitro, sito, invio, cja, esito] = qq('motore', 'core', 'profilo', 'arbitro', 'sito', 'invio', 'cja', 'esito');
+    const [o0, o1, o2, o3] = qq('o0', 'o1', 'o2', 'o3');
+    passo('p1');
+    appare([motore, core], 'p1', { stagger: .15 });
+    T.fromTo(q('c-prop'), { backgroundColor: 'rgba(255,255,255,0)' }, { backgroundColor: 'rgba(255,255,255,.25)', duration: .4, yoyo: true, repeat: 3, ease: 'sine.inOut', immediateRender: true }, 'p1+=.6');
+    passo('p2');
+    appare(profilo, 'p2');
+    vola(q('a-prop'), q('c-prop'), 'p2+=.5');
+    vola(q('a-eleg'), q('c-eleg'), 'p2+=.9');
+    passo('p3');
+    appare(arbitro, 'p3');
+    appare([o0, o2, o1, o3], 'p3+=.3', { stagger: .14 });
+    gsap.set(root.querySelectorAll('.mc-rango'), { autoAlpha: 0, scale: .4 });
+    passo('p4');
+    const regola = q('regola'), vassoio = q('vassoio');
+    appare(vassoio, 'p4', { duration: .4 });
+    T.fromTo(regola, { autoAlpha: 0, y: 0 }, { autoAlpha: 1, duration: .2, immediateRender: true }, 'p4')
+     .to(regola, { y: 360, duration: 1.8, ease: 'none' }, 'p4+=.2');
+    classe(o2, 'mc-fuori', 'p4+=.75');
+    T.to(o2, { y: 476 - 162, duration: .8, ease: MUOVE }, 'p4+=.85');
+    classe(o3, 'mc-fuori', 'p4+=1.75');
+    T.to(o3, { y: 584 - 342, duration: .8, ease: MUOVE }, 'p4+=1.85')
+     .to(o1, { y: 162 - 252, duration: .6, ease: MUOVE }, 'p4+=2.2')
+     .to(regola, { autoAlpha: 0, duration: .25 }, 'p4+=2.05');
+    passo('p5');
+    T.fromTo(q('a-prop'), { boxShadow: '0 0 0 0 rgba(250,150,0,0)' }, { boxShadow: '0 0 0 7px rgba(250,150,0,.5)', duration: .35, yoyo: true, repeat: 1, ease: 'sine.inOut', immediateRender: true }, 'p5')
+     .to(o0.querySelector('.mc-rango'), { autoAlpha: 1, scale: 1, duration: .5, ease: 'back.out(2)' }, 'p5+=.6')
+     .to(o1.querySelector('.mc-rango'), { autoAlpha: 1, scale: 1, duration: .5, ease: 'back.out(2)' }, 'p5+=.8');
+    passo('p6');
+    appare(sito, 'p6');
+    const spazio = q('spazio'), banner = q('banner');
+    gsap.set(banner, { autoAlpha: 0 });
+    classe(o1, 'mc-seconda', 'p6+=.3');
+    T.to(o1, { autoAlpha: .5, duration: .5 }, 'p6+=.3');
+    const a = dove(o0), s = dove(spazio);
+    T.to(o0, { x: s.x - a.x, y: s.y - a.y, scale: s.w / a.w, zIndex: 9, duration: 1, ease: MUOVE }, 'p6+=.5')
+     .to(o0, { autoAlpha: 0, duration: .35 }, '>-.05')
+     .to(banner, { autoAlpha: 1, duration: .45 }, '<');
+    appare(invio, '>');
+    passo('p7');
+    appare(cja, 'p7');
+    const e = dove(esito), si = dove(sito), cj = dove(cja), ar = dove(arbitro);
+    gsap.set(esito, { left: 0, top: 0 });
+    T.fromTo(esito, { autoAlpha: 0, x: si.x + si.w / 2 - e.w / 2, y: si.y + si.h - 30 }, { autoAlpha: 1, duration: .2, immediateRender: true }, 'p7+=.4')
+     .to(esito, { keyframes: [
+        { x: cj.x + cj.w - e.w - 30, y: cj.y + cj.h / 2 - e.h / 2, duration: .9, ease: MUOVE },
+        { x: ar.x + ar.w / 2 - e.w / 2, y: ar.y + 120, duration: .9, ease: MUOVE },
+      ] }, '>')
+     .to(esito, { autoAlpha: 0, duration: .3 }, '>')
+     .fromTo(o1.querySelector('.mc-rango'), { scale: 1 }, { scale: 1.35, duration: .25, yoyo: true, repeat: 1, ease: 'sine.inOut', immediateRender: false }, '>-.1');
+    passo('fine');
+    etichette = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'fine'];
+  }
+
+  if (scena === 'cdp') {
+    const [sito, profilo, anon, nome, sessione, ajo, crm, lead, banner] = qq('sito', 'profilo', 'anon', 'nome', 'sessione', 'ajo', 'crm', 'lead', 'banner');
+    passo('p1');
+    appare(sito, 'p1');
+    appare(profilo, 'p1+=.2');
+    gsap.set([nome, banner, q('email'), q('e-mail'), q('v-sito'), q('v-ajo'), q('v-crm')], { autoAlpha: 0 });
+    vola(q('p-visita'), sito.querySelector<HTMLElement>('.mc-pag h5')!, 'p1+=.7');
+    passo('p2');
+    vola(q('p-sim'), sito.querySelector<HTMLElement>('.mc-rata')!, 'p2');
+    vola(q('seg'), q('p-sim'), 'p2+=1.1', .8);
+    T.fromTo(q('seg'), { boxShadow: '0 0 0 0 rgba(37,137,0,0)' }, { boxShadow: '0 0 0 8px rgba(37,137,0,.35)', duration: .3, yoyo: true, repeat: 1, immediateRender: false }, '>');
+    passo('p3');
+    viaggia(q('v-sito'), q('seg'), q('spazio'), 'p3');
+    T.to(banner, { autoAlpha: 1, duration: .5 }, '>-.15');
+    passo('p4');
+    T.to(q('email'), { autoAlpha: 1, duration: .5 }, 'p4');
+    viaggia(q('e-mail'), q('email'), anon, 'p4+=.5');
+    T.to(nome, { autoAlpha: 1, duration: .6 }, '>-.1')
+     .to(sessione, { borderColor: '#258900', borderStyle: 'solid', backgroundColor: '#f1f7ee', duration: .6 }, '>-.2');
+    T.set(sessione.querySelector('.mc-cas-t'), { textContent: 'Visite di Giulia, anche quelle di prima' }, '<');
+    passo('p5');
+    appare(ajo, 'p5');
+    viaggia(q('v-ajo'), profilo, ajo, 'p5+=.3');
+    appare(crm, 'p5+=1.2');
+    gsap.set(lead, { autoAlpha: 0 });
+    viaggia(q('v-crm'), ajo, crm, 'p5+=1.6');
+    T.to(lead, { autoAlpha: 1, duration: .5 }, '>-.1');
+    passo('fine');
+    etichette = ['p1', 'p2', 'p3', 'p4', 'p5', 'fine'];
+  }
+
+  if (scena === 'cja') {
+    const [zd, zf, motore, cja, percorso, barre] = qq('z-dig', 'z-fis', 'motore', 'cja', 'percorso', 'barre');
+    passo('p1');
+    appare([zd, zf], 'p1', { stagger: .2 });
+    gsap.set([motore, cja], { autoAlpha: 0 });
+    passo('p2');
+    appare(cja, 'p2');
+    gsap.set([percorso, barre], { autoAlpha: 0 });
+    vola(q('p-sito'), q('f-sito'), 'p2+=.5');
+    vola(q('p-app'), q('f-app'), 'p2+=.8');
+    passo('p3');
+    vola(q('p-crm'), q('f-crm'), 'p3');
+    vola(q('p-fd'), q('f-fd'), 'p3+=.5');
+    passo('p4');
+    appare(motore, 'p4');
+    vola(q('p-seg'), q('c-seg'), 'p4+=.4');
+    passo('p5');
+    T.to([zd, zf, motore], { autoAlpha: .35, duration: .5 }, 'p5');
+    appare(percorso, 'p5+=.2', { duration: .4 });
+    appare(qq('t1', 't2', 't3', 't4'), 'p5+=.4', { stagger: .35 });
+    passo('p6');
+    appare(barre, 'p6', { duration: .4 });
+    T.fromTo(qq('b1', 'b2', 'b3'), { scaleX: 0 }, { scaleX: 1, duration: 1, stagger: .2, immediateRender: true }, 'p6+=.3');
+    passo('fine');
+    etichette = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'fine'];
+  }
+
+  let ultimo = 0;
+  let corsa: ReturnType<TL['tweenFromTo']> | null = null;
+  return {
+    adatta,
+    vai(p, avanti) {
+      const da = etichette[p - 1], a = etichette[p];
+      if (!da || !a) return;
+      const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // Il tratto in corsa si ferma PRIMA: altrimenti continua a spingere la timeline.
+      corsa?.kill(); corsa = null;
+      if (avanti && !ridotto && p === ultimo + 1) { T.seek(da, false); corsa = T.tweenFromTo(da, a); }
+      else { T.pause(); T.seek(a, false); }
+      ultimo = p;
+    },
+  };
+}

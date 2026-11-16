@@ -1,0 +1,270 @@
+---
+/**
+ * IL MECCANISMO IN 2D — la variante dei tre «Come funziona», dietro `?pop3d=1`.
+ *
+ * Perché 2D e non 3D (verifica del 16 nov 2026, prototipo affiancato alla clip Blender):
+ * il testo sta DENTRO gli oggetti (si traduce, si corregge, resta nitido su una parete);
+ * niente prospettiva, quindi niente oggetti coperti né etichette sospese; e gli oggetti
+ * sono QUELLI DEL DECK — la finestra del sito del momento 03, la scheda Adobe con il
+ * quadratino arancio — così chi guarda li riconosce invece di impararli.
+ *
+ * La grammatica, uguale nelle tre scene:
+ *   contorno bianco      un sistema di oggi della banca («Oggi, in banca»)
+ *   barra scura + ■      un componente Adobe (l'arancio #fa9600 è Adobe: owner, 13 nov)
+ *   chrome di MockCliente ciò che vede Giulia (sito, email)
+ *   pillola con un nome  il dato che si muove: si sa sempre CHE COSA si muove
+ *   barrato + motivo     ciò che si esclude resta in scena, con le parole canoniche
+ *
+ * Il palco è disegnato a 1600×720 e scala intero (scripts/meccanismi.ts): gli a capo
+ * sono identici su portatile e parete. I movimenti stanno in quel modulo, che si carica
+ * solo a interruttore acceso. Lo stato di partenza in HTML è lo stato FINALE, leggibile:
+ * se lo script non parte, la scena si legge lo stesso.
+ */
+import { Image } from 'astro:assets';
+import type { ScenaId } from '../data/pop';
+import giulia from '../assets/generated/persona-giulia.webp';
+import mutuo from '../assets/generated/creativo-mutuo.webp';
+import casa from '../assets/generated/var-4.webp';
+import logo from '../assets/brand/intesa-sanpaolo.svg?raw';
+interface Props { scena: ScenaId; }
+const { scena } = Astro.props as Props;
+const Sito = 'intesasanpaolo.com/mutui';
+---
+<div class="mc" data-mc={scena} aria-hidden="true">
+  <div class="mc-palco">
+
+    {scena === 'decisioning' && (<>
+      <div class="mc-sis" data-k="motore" style="left:40px;top:40px;width:360px">
+        <span class="mc-oggi">Oggi, in banca</span><h4>Motore di targeting</h4>
+        <div class="mc-chips"><span class="mc-pill">Target</span><span class="mc-pill" data-k="c-prop">Propensione</span></div>
+      </div>
+      <div class="mc-sis" data-k="core" style="left:40px;top:290px;width:360px">
+        <span class="mc-oggi">Oggi, in banca</span><h4>Core banking</h4>
+        <div class="mc-chips"><span class="mc-pill" data-k="c-eleg">Eleggibilità creditizia</span></div>
+      </div>
+      <section class="mc-adobe" data-k="profilo" style="left:445px;top:30px;width:380px">
+        <header><i></i>Profilo<em>Real-Time Activation</em></header>
+        <div class="mc-chi"><Image src={giulia} width={144} height={144} alt="" /><div><strong>Giulia</strong><small>Non ancora cliente</small></div></div>
+        <p class="mc-riga">Segmento<b>mutuo prima casa</b></p>
+        <div class="mc-cassetto"><span class="mc-cas-t">Attributi</span>
+          <span class="mc-pill mc-dato" data-k="a-prop">Score di propensione</span>
+          <span class="mc-pill mc-dato" data-k="a-eleg">Eleggibile al mutuo</span>
+        </div>
+      </section>
+      <section class="mc-adobe mc-arb" data-k="arbitro" style="left:860px;top:20px;width:420px;height:680px">
+        <header><i></i><span>AI Decisioning</span><em>proposte candidate</em></header>
+        <div class="mc-vassoio" data-k="vassoio"><span class="mc-cas-t">Escluse dalle regole</span></div>
+        <div class="mc-regola" data-k="regola"><span>regole · consenso · politica di contatto</span></div>
+        <div class="mc-off" data-k="o0" style="top:72px"><Image src={mutuo} width={192} alt="" /><div><b>Promemoria con appuntamento proposto</b><small class="si">sul sito</small></div><span class="mc-rango">1</span></div>
+        <div class="mc-off" data-k="o2" style="top:162px"><span class="mc-off-tel">telefonata</span><div><b>Contatto dalla Filiale Digitale</b><small class="si">al telefono</small><small class="no">non ammesso: manca il consenso al contatto telefonico</small></div></div>
+        <div class="mc-off" data-k="o1" style="top:252px"><Image src={mutuo} width={192} alt="" /><div><b>Promemoria senza appuntamento</b><small class="si">sul sito</small><small class="no">seconda per priorità</small></div><span class="mc-rango">2</span></div>
+        <div class="mc-off" data-k="o3" style="top:342px"><Image src={casa} width={192} alt="" /><div><b>Polizza casa</b><small class="si">sul sito</small><small class="no">esclusa: solo dopo la firma</small></div></div>
+      </section>
+      <section class="mc-sito" data-k="sito" style="left:1300px;top:30px;width:270px">
+        <div class="mc-barra"><i></i><i></i><i></i><span>{Sito}</span></div>
+        <div class="mc-marchio" set:html={logo} />
+        <div class="mc-pag"><small>Simulazione mutuo · esempio illustrativo</small><h5>Prima casa · 25 anni</h5><p class="mc-rata">863 <span>€ al mese</span></p>
+          <div class="mc-spazio" data-k="spazio"><div class="mc-banner" data-k="banner"><Image src={mutuo} width={540} alt="" /><b>Riprendi la tua simulazione</b><span>Prenota un appuntamento</span></div></div>
+        </div>
+      </section>
+      <p class="mc-nota" data-k="invio" style="left:1300px;top:560px;width:270px">L’invio può passare <b>dagli strumenti attuali</b>.</p>
+      <section class="mc-adobe mc-striscia" data-k="cja" style="left:40px;top:600px;width:785px">
+        <header><i></i><span>Customer Journey Analytics</span></header>
+        <p>Esito sul <b>gruppo di controllo</b></p>
+      </section>
+      <span class="mc-pill mc-esito" data-k="esito">esito</span>
+    </>)}
+
+    {scena === 'cdp' && (<>
+      <section class="mc-sito" data-k="sito" style="left:40px;top:30px;width:360px">
+        <div class="mc-barra"><i></i><i></i><i></i><span>{Sito}</span></div>
+        <div class="mc-marchio" set:html={logo} />
+        <div class="mc-pag"><small>Simulazione mutuo · esempio illustrativo</small><h5>Prima casa · 25 anni</h5><p class="mc-rata">863 <span>€ al mese</span></p>
+          <div class="mc-spazio mc-spazio--basso" data-k="spazio"><div class="mc-banner mc-banner--testo" data-k="banner"><b>Riprendi la simulazione</b><span>Continua</span></div></div>
+          <p class="mc-campo" data-k="email"><span>Salva la simulazione</span><b>giulia.marchetti@…</b></p>
+        </div>
+      </section>
+      <span class="mc-pill mc-dato mc-dato--id" data-k="e-mail">email e consenso</span>
+      <section class="mc-adobe" data-k="profilo" style="left:470px;top:30px;width:440px">
+        <header><i></i>Profilo<em>Real-Time Activation</em></header>
+        <div class="mc-chi mc-chi--anon" data-k="anon"><span class="mc-anon">?</span><div><strong>Senza nome</strong><small>si sa che cosa fa, non chi è</small></div></div>
+        <div class="mc-chi mc-chi--nome" data-k="nome"><Image src={giulia} width={144} height={144} alt="" /><div><strong>Giulia</strong><small>Non ancora cliente · email lasciata</small></div></div>
+        <div class="mc-sessione" data-k="sessione"><span class="mc-cas-t">Visite senza nome</span>
+          <span class="mc-pill mc-dato" data-k="p-visita">visita · pagina mutui</span>
+          <span class="mc-pill mc-dato" data-k="p-sim">simulazione · 180.000 €</span>
+        </div>
+        <div class="mc-cassetto"><span class="mc-cas-t">Segmento</span><span class="mc-pill mc-seg" data-k="seg">mutuo prima casa</span></div>
+      </section>
+      <section class="mc-adobe" data-k="ajo" style="left:985px;top:30px;width:275px">
+        <header><i></i><span>Journey Optimizer</span></header>
+        <div class="mc-mail"><span class="mc-mail-da"><b>Intesa Sanpaolo</b> a Giulia · 08:02</span><b>La tua simulazione</b><span>Riprendila e scegli un appuntamento</span></div>
+      </section>
+      <div class="mc-sis" data-k="crm" style="left:1290px;top:30px;width:275px">
+        <span class="mc-oggi">Oggi, in banca</span><h4>CRM di filiale</h4>
+        <p class="mc-lead" data-k="lead"><b>Lead · Giulia</b><span>appuntamento e simulazione</span></p>
+      </div>
+      <span class="mc-pill mc-dato" data-k="v-sito">personalizza il sito</span>
+      <span class="mc-pill mc-dato" data-k="v-ajo">profilo con nome</span>
+      <span class="mc-pill mc-dato" data-k="v-crm">appuntamento</span>
+    </>)}
+
+    {scena === 'cja' && (<>
+      <div class="mc-zona" data-k="z-dig" style="left:40px;top:30px;width:340px;height:420px">
+        <span class="mc-oggi">Oggi · digitale</span>
+        <div class="mc-fonte" data-k="f-sito"><b>Sito</b><span>visite e simulazioni</span></div>
+        <div class="mc-fonte" data-k="f-app"><b>App</b><span>accessi e operazioni</span></div>
+        <p class="mc-report">un report suo</p>
+      </div>
+      <div class="mc-zona" data-k="z-fis" style="left:1220px;top:30px;width:340px;height:420px">
+        <span class="mc-oggi">Oggi · filiale e telefono</span>
+        <div class="mc-fonte mc-fonte--sis" data-k="f-crm"><b>CRM di filiale</b><span>appuntamenti e pratiche</span></div>
+        <div class="mc-fonte mc-fonte--sis" data-k="f-fd"><b>Filiale Digitale</b><span>chiamate</span></div>
+        <p class="mc-report">un report suo</p>
+      </div>
+      <div class="mc-sis" data-k="motore" style="left:1220px;top:480px;width:340px">
+        <span class="mc-oggi">Oggi, in banca</span><h4>Motore di targeting</h4>
+        <div class="mc-chips"><span class="mc-pill" data-k="c-seg">Segmenti e score</span></div>
+      </div>
+      <section class="mc-adobe mc-cja" data-k="cja" style="left:430px;top:30px;width:740px;height:660px">
+        <header><i></i><span>Customer Journey Analytics</span><em>stessa persona, tutte le fonti</em></header>
+        <div class="mc-cassetto mc-cassetto--largo"><span class="mc-cas-t">Fonti collegate</span>
+          <span class="mc-pill mc-dato" data-k="p-sito">Sito</span>
+          <span class="mc-pill mc-dato" data-k="p-app">App</span>
+          <span class="mc-pill mc-dato" data-k="p-crm">CRM di filiale</span>
+          <span class="mc-pill mc-dato" data-k="p-fd">Filiale Digitale</span>
+          <span class="mc-pill mc-dato" data-k="p-seg">Segmenti e score</span>
+        </div>
+        <div class="mc-percorso" data-k="percorso"><span class="mc-cas-t">Il percorso di Giulia</span>
+          <ol>
+            <li data-k="t1"><small>Sito</small><b>Simula il mutuo</b></li>
+            <li data-k="t2"><small>Email</small><b>Riprende la richiesta</b></li>
+            <li data-k="t3"><small>Filiale</small><b>Appuntamento tenuto</b></li>
+            <li data-k="t4" class="mc-firma"><small>Esito</small><b>Richiesta firmata</b></li>
+          </ol>
+        </div>
+        <div class="mc-barre" data-k="barre"><span class="mc-cas-t">Attribuzione delle firme per canale · algoritmica</span>
+          <p><span>Sito</span><i data-k="b1" style="--v:78%"></i></p>
+          <p><span>Email</span><i data-k="b2" style="--v:34%"></i></p>
+          <p class="mc-on"><span>Filiale</span><i data-k="b3" style="--v:60%"></i></p>
+          <small>Lunghezze illustrative, non dati.</small>
+        </div>
+      </section>
+    </>)}
+
+  </div>
+</div>
+
+<style is:global>
+  /* ── Il palco ───────────────────────────────────────────────────────── */
+  html[data-pop3d='on'] dialog.pp .pp-scena { position: relative; padding: 0;
+    background: radial-gradient(120% 95% at 16% 0%, #2f9a0a 0%, #258900 26%, #1f7400 50%, #143a05 80%, #0d2901 100%); }
+  html[data-pop3d='on'] dialog.pp .pp-scena > :not(.mc) { display: none !important; }
+  .mc { display: none; }
+  html[data-pop3d='on'] dialog.pp .mc { display: block; position: absolute; inset: 0; overflow: hidden; }
+  .mc-palco { position: absolute; left: 50%; top: 50%; width: 1600px; height: 720px; transform-origin: 0 0;
+              transform: scale(var(--mc-k, .6)) translate(-50%, -50%); font-family: var(--font-body); color: #1b1d21; }
+  .mc-palco > * { position: absolute; }
+
+  /* I sistemi di oggi: contorno, nessun riempimento */
+  .mc .mc-sis, .mc .mc-zona { padding: 20px 22px; border: 2px solid rgba(255, 255, 255, .6); border-radius: 14px; color: #fff; }
+  .mc .mc-oggi { display: block; font-size: 17px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #dff1d4; }
+  .mc .mc-sis h4 { margin: 6px 0 16px; font-size: 32px; line-height: 1.12; font-weight: 700; color: #fff; }
+  .mc .mc-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .mc .mc-pill { display: inline-flex; align-items: center; height: 44px; padding: 0 16px; border-radius: 22px; font-size: 21px; font-weight: 600; white-space: nowrap; border: 1.5px solid rgba(255, 255, 255, .75); color: #fff; }
+  .mc .mc-dato { background: #f1f7ee; color: #1f7400; border-color: #9fce86; box-shadow: 0 6px 16px -8px rgba(4, 18, 0, .55); }
+  .mc .mc-dato--id { background: #fff; color: #0d2901; border-color: #1f7400; }
+  .mc-palco > .mc-pill { z-index: 8; }
+
+  /* Le schede Adobe: barra scura col quadratino arancio, corpo bianco */
+  .mc .mc-adobe { border-radius: 14px; background: #fff; box-shadow: 0 18px 40px -18px rgba(4, 18, 0, .6), 0 2px 6px rgba(4, 18, 0, .2); }
+  .mc .mc-adobe > header { display: flex; align-items: center; gap: 12px; height: 58px; padding: 0 20px; border-radius: 14px 14px 0 0; background: #1b1d21; color: #fff; font-size: 22px; font-weight: 700; white-space: nowrap; }
+  .mc .mc-adobe > header i { width: 12px; height: 12px; flex: none; border-radius: 3px; background: #fa9600; }
+  .mc .mc-adobe > header span { color: #ffc46b; }
+  .mc .mc-adobe > header em { margin-left: auto; font-style: normal; font-weight: 600; font-size: 17px; color: #c8ccd3; }
+  .mc .mc-chi { display: flex; align-items: center; gap: 14px; padding: 16px 20px; border-bottom: 1px solid #e3e5e9; }
+  .mc .mc-chi img, .mc .mc-anon { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; flex: none; }
+  .mc .mc-anon { display: grid; place-items: center; background: #e3e5e9; color: #5a6069; font-size: 34px; font-weight: 800; }
+  .mc .mc-chi strong { display: block; font-size: 28px; line-height: 1.15; }
+  .mc .mc-chi small { font-size: 17px; font-weight: 600; color: #5a6069; }
+  .mc .mc-chi--nome { position: absolute; left: 0; right: 0; top: 58px; background: #fff; }
+  .mc .mc-riga { display: flex; justify-content: space-between; gap: 12px; padding: 13px 20px; border-bottom: 1px solid #e3e5e9; font-size: 21px; color: #3a3d44; }
+  .mc .mc-riga b { color: #1b1d21; font-weight: 600; }
+  .mc .mc-cassetto, .mc .mc-sessione, .mc .mc-percorso, .mc .mc-barre { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 10px; padding: 16px 20px 20px; }
+  .mc .mc-cas-t { flex-basis: 100%; font-size: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #5a6069; }
+  .mc .mc-sessione { margin: 14px 20px 0; padding: 12px 14px 14px; border: 2px dashed #b4b9c2; border-radius: 12px; }
+  .mc .mc-seg { background: #1f7400; color: #fff; border-color: #1f7400; }
+
+  /* AI Decisioning */
+  .mc .mc-arb { background: #f4f5f7; }
+  .mc .mc-off { position: absolute; left: 20px; width: 380px; height: 80px; display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 14px; padding: 6px 14px 6px 6px;
+            background: #fff; border: 1px solid #e3e5e9; border-radius: 10px; box-shadow: 0 4px 12px -6px rgba(0, 0, 0, .25); z-index: 2; transform-origin: 0 0; }
+  .mc .mc-off img, .mc .mc-off-tel { width: 96px; height: 68px; border-radius: 6px; object-fit: cover; }
+  .mc .mc-off-tel { display: grid; place-items: center; background: #f1f7ee; color: #1f7400; font-size: 15px; font-weight: 700; }
+  .mc .mc-off b { display: block; font-size: 20px; line-height: 1.2; }
+  .mc .mc-off small { margin-top: 3px; font-size: 17px; color: #5a6069; }
+  .mc .mc-off .no { display: none; color: #8a4b00; font-weight: 700; }
+  .mc .mc-off.mc-fuori { grid-template-columns: 1fr; padding-left: 16px; height: auto; min-height: 80px; }
+  .mc .mc-off.mc-fuori img, .mc .mc-off.mc-fuori .mc-off-tel, .mc .mc-off.mc-fuori .si { display: none; }
+  .mc .mc-off.mc-fuori .no { display: block; }
+  .mc .mc-off.mc-seconda .si { display: none; } .mc-off.mc-seconda .no { display: block; color: #5a6069; }
+  .mc .mc-off.mc-fuori b { color: #5a6069; text-decoration: line-through; text-decoration-thickness: 2px; }
+  .mc .mc-rango { position: absolute; right: -14px; top: -14px; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: #1f7400; color: #fff; font-size: 18px; font-weight: 800; }
+  .mc .mc-vassoio { position: absolute; left: 12px; top: 436px; width: 396px; height: 234px; padding: 10px 14px; border: 1.5px dashed #cfd3d9; border-radius: 12px; }
+  .mc .mc-regola { position: absolute; left: 6px; width: 408px; top: 66px; height: 4px; border-radius: 2px; background: #fa9600; box-shadow: 0 0 0 6px rgba(250, 150, 0, .2); z-index: 4; }
+  .mc .mc-regola span { position: absolute; right: 0; top: -40px; padding: 5px 12px; border-radius: 6px; background: #0d2901; color: #ffc46b; font-size: 17px; font-weight: 700; white-space: nowrap; }
+
+  /* Il sito della banca: la stessa finestra del momento 03 */
+  .mc .mc-sito { border-radius: 10px; background: #fff; overflow: hidden; box-shadow: 0 18px 40px -18px rgba(4, 18, 0, .6); }
+  .mc .mc-barra { display: flex; align-items: center; gap: 7px; padding: 8px 10px; background: #f4f5f7; }
+  .mc .mc-barra i { width: 8px; height: 8px; border-radius: 50%; background: #cfd3d9; }
+  .mc .mc-barra span { flex: 1; padding: 4px 10px; border-radius: 12px; background: #fff; font-size: 13px; color: #3a3d44; white-space: nowrap; overflow: hidden; }
+  .mc .mc-marchio { display: flex; align-items: center; height: 42px; padding: 0 12px; background: #1f7400; color: #fff; }
+  .mc .mc-marchio svg { height: 13px; width: auto; }
+  .mc .mc-pag { padding: 14px 14px 16px; }
+  .mc .mc-pag small { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #5a6069; }
+  .mc .mc-pag h5 { margin: 4px 0 4px; font-size: 21px; line-height: 1.2; }
+  .mc .mc-rata { font-size: 38px; font-weight: 800; color: #1f7400; line-height: 1.05; }
+  .mc .mc-rata span { font-size: 15px; font-weight: 600; color: #5a6069; }
+  .mc .mc-spazio { position: relative; margin-top: 14px; height: 200px; border: 1.5px dashed #cfd3d9; border-radius: 8px; }
+  .mc .mc-spazio--basso { height: 92px; }
+  .mc .mc-banner { position: absolute; inset: -1.5px; border-radius: 8px; overflow: hidden; background: #fff; border: 2px solid #258900; }
+  .mc .mc-banner img { display: block; width: 100%; height: 86px; object-fit: cover; }
+  .mc .mc-banner b { display: block; margin: 10px 12px 8px; font-size: 19px; line-height: 1.2; }
+  .mc .mc-banner span { display: inline-block; margin: 0 12px; padding: 7px 12px; border-radius: 6px; background: #1f7400; color: #fff; font-size: 15px; font-weight: 700; white-space: nowrap; }
+  .mc .mc-banner--testo { display: flex; align-items: center; justify-content: space-between; padding: 0 4px; }
+  .mc .mc-banner--testo b { margin: 0 10px; }
+  .mc .mc-campo { margin-top: 12px; display: grid; gap: 2px; padding: 12px; border: 1.5px solid #9fce86; border-radius: 8px; background: #f1f7ee; font-size: 16px; }
+  .mc .mc-campo span { font-weight: 700; color: #1f7400; } .mc-campo b { font-weight: 600; color: #3a3d44; }
+  .mc .mc-nota { color: #fff; font-size: 20px; line-height: 1.35; }
+  .mc .mc-nota b { color: #ffc46b; }
+  .mc .mc-striscia { display: grid; grid-template-columns: auto 1fr; height: 76px; }
+  .mc .mc-striscia > header { height: 76px; border-radius: 14px 0 0 14px; }
+  .mc .mc-striscia p { align-self: center; padding: 0 22px; font-size: 21px; color: #3a3d44; }
+  .mc .mc-esito { background: #fff4e0; color: #8a4b00; border-color: #fa9600; }
+
+  /* Real-Time Activation */
+  .mc .mc-mail { display: grid; gap: 6px; padding: 16px 18px 20px; font-size: 18px; color: #3a3d44; }
+  .mc .mc-mail-da { font-size: 15px; color: #5a6069; } .mc-mail-da b { color: #1b1d21; }
+  .mc .mc-mail > b { font-size: 22px; color: #1b1d21; }
+  .mc .mc-lead { margin-top: 4px; padding: 14px; border-radius: 10px; background: #fff; color: #1b1d21; }
+  .mc .mc-lead b { display: block; font-size: 21px; } .mc-lead span { font-size: 17px; color: #5a6069; }
+
+  /* Customer Journey Analytics */
+  .mc .mc-zona .mc-oggi { margin-bottom: 14px; }
+  .mc .mc-fonte { margin-bottom: 12px; padding: 14px 16px; border-radius: 10px; background: #fff; color: #1b1d21; }
+  .mc .mc-fonte b { display: block; font-size: 23px; } .mc-fonte span { font-size: 17px; color: #5a6069; }
+  .mc .mc-fonte--sis { background: none; border: 1.5px solid rgba(255, 255, 255, .7); color: #fff; }
+  .mc .mc-fonte--sis span { color: #dff1d4; }
+  .mc .mc-report { position: absolute; left: 22px; bottom: 18px; font-size: 18px; font-style: italic; color: #dff1d4; }
+  .mc .mc-cassetto--largo { border-bottom: 1px solid #e3e5e9; }
+  .mc .mc-percorso ol { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
+  .mc .mc-percorso li { padding: 10px 12px; border-radius: 10px; background: #f4f5f7; border: 1px solid #e3e5e9; }
+  .mc .mc-percorso li small { font-size: 15px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #5a6069; }
+  .mc .mc-percorso li b { display: block; font-size: 19px; line-height: 1.2; }
+  .mc .mc-percorso li.mc-firma { background: #f1f7ee; border-color: #258900; }
+  .mc .mc-barre { border-top: 1px solid #e3e5e9; }
+  .mc .mc-barre p { flex-basis: 100%; display: grid; grid-template-columns: 140px 1fr; align-items: center; gap: 14px; font-size: 20px; font-weight: 600; }
+  .mc .mc-barre i { display: block; height: 20px; width: var(--v); border-radius: 4px; background: #b4b9c2; transform-origin: left; }
+  .mc .mc-barre .mc-on i { background: #1f7400; }
+  .mc .mc-barre small { flex-basis: 100%; font-size: 16px; color: #5a6069; }
+</style>

@@ -6,6 +6,7 @@
  */
 import { SCENE, type ScenaId } from '../data/pop';
 import { POP3D } from '../data/pop3d';
+import Meccanismo from './Meccanismo.astro';
 import '../styles/pop.css';
 interface Props { scena: ScenaId; }
 const { scena } = Astro.props as Props;
@@ -28,6 +29,7 @@ const base3d = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.cli
     </header>
 
     <div class="pp-scena">
+      <Meccanismo scena={scena} />
       <div class="pp-3d" data-pp3d={JSON.stringify(p3)} data-base={base3d} aria-hidden="true">
         <video muted playsinline preload="none"></video>
         <div class="pp-3d-et"></div>
@@ -147,9 +149,9 @@ const base3d = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.cli
      Blender ha calcolato a fine passo: l'etichetta NUOVA del passo ha il bordo,
      le altre si attenuano. */
   .pp-3d { display: none; }
-  :global(html[data-pop3d='on']) dialog.pp:not([data-pp3d-ko]) .pp-scena { container-type: size; padding: clamp(0.6rem, 1.4vh, 1.2rem); background: #0d2901; }
-  :global(html[data-pop3d='on']) dialog.pp:not([data-pp3d-ko]) .pp-scena > :not(.pp-3d) { display: none; }
-  :global(html[data-pop3d='on']) dialog.pp:not([data-pp3d-ko]) .pp-3d {
+  :global(html[data-pop3d='video']) dialog.pp:not([data-pp3d-ko]) .pp-scena { container-type: size; padding: clamp(0.6rem, 1.4vh, 1.2rem); background: #0d2901; }
+  :global(html[data-pop3d='video']) dialog.pp:not([data-pp3d-ko]) .pp-scena > :not(.pp-3d) { display: none; }
+  :global(html[data-pop3d='video']) dialog.pp:not([data-pp3d-ko]) .pp-3d {
     display: block; position: relative; margin: auto; overflow: hidden; border-radius: 0.6rem;
     width: min(100cqw, calc(100cqh * 16 / 9)); aspect-ratio: 16 / 9; background: #0d2901;
   }
@@ -182,7 +184,7 @@ const base3d = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.cli
   type Stato3d = { cap: { da: number; a: number }[]; et: Et[]; ferma: number | null; pronto: Promise<void> };
   const stati = new WeakMap<HTMLElement, Stato3d>();
   const acceso3d = (d: HTMLDialogElement) =>
-    document.documentElement.dataset.pop3d === 'on' && !d.hasAttribute('data-pp3d-ko');
+    document.documentElement.dataset.pop3d === 'video' && !d.hasAttribute('data-pp3d-ko');
 
   function prepara3d(d: HTMLDialogElement): Stato3d | null {
     const palco = d.querySelector<HTMLElement>('.pp-3d');
@@ -265,6 +267,22 @@ const base3d = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.cli
     nota.textContent = t ?? ''; nota.classList.toggle('on', !!t);
   }
 
+  /* ── La variante 2D (?pop3d=1): components/Meccanismo.astro + scripts/meccanismi.ts.
+     Si prepara alla prima apertura, a pop-in già aperto, perché misura il layout vero. */
+  const mecc = new WeakMap<HTMLElement, Promise<import('../scripts/meccanismi').Meccanismo>>();
+  function passo2d(d: HTMLDialogElement, p: number, avanti: boolean) {
+    if (document.documentElement.dataset.pop3d !== 'on') return;
+    const root = d.querySelector<HTMLElement>('.mc');
+    if (!root) return;
+    let m = mecc.get(root);
+    if (!m) { m = import('../scripts/meccanismi').then((x) => x.prepara(root)); mecc.set(root, m); }
+    m.then((x) => { if (Number(d.dataset.passo) === p) x.vai(p, avanti); });
+  }
+  addEventListener('resize', () => {
+    const d = aperto(); const root = d?.querySelector<HTMLElement>('.mc');
+    if (root) mecc.get(root)?.then((x) => x.adatta());
+  });
+
   function passo3d(d: HTMLDialogElement, p: number, avanti: boolean) {
     const st = prepara3d(d);
     if (!st) return;
@@ -289,6 +307,7 @@ const base3d = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.cli
     const prima = Number(d.dataset.passo ?? 0);
     d.dataset.passo = String(p);
     passo3d(d, p, p === prima + 1);
+    passo2d(d, p, p === prima + 1);
     d.querySelectorAll<HTMLElement>('[data-da],[data-a]').forEach((el) => {
       const da = Number(el.dataset.da ?? 1);
       const a = Number(el.dataset.a ?? 99);

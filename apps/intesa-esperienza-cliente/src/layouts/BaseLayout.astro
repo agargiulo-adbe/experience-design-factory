@@ -141,10 +141,11 @@ const docTitle = (isHome || title === SITE_NAME || title === SITE.name) ? SITE_N
       })();
     </script>
     {/* ── L'interruttore dei pop-in in 3D ──────────────────────────────
-        `?pop3d=1` sostituisce le scene HTML dei tre «Come funziona» con le
-        clip Blender a passi (data/pop3d.ts); `?pop3d=0` torna alle scene
-        HTML. Resta in localStorage come `domande`. Default: SPENTO, perché
-        la versione 3D non ha ancora il verdetto del panel. */}
+        `?pop3d=1` sostituisce le scene HTML dei tre «Come funziona» con i
+        meccanismi in 2D fatti con i componenti del deck (Meccanismo.astro);
+        `?pop3d=video` con le clip Blender a passi (data/pop3d.ts), tenute per
+        confronto; `?pop3d=0` torna alle scene HTML. Resta in localStorage come
+        `domande`. Default: SPENTO — il deck principale non cambia. */}
     <script is:inline define:vars={{ PROJECT_SLUG }}>
       (function () {
         var CHIAVE = 'edf:pop3d:' + PROJECT_SLUG;
@@ -153,10 +154,11 @@ const docTitle = (isHome || title === SITE_NAME || title === SITE.name) ? SITE_N
           try {
             var q = forza ? null : new URLSearchParams(location.search).get('pop3d');
             if (q === '1' || q === 'on' || q === 'si') { stato = 'on'; localStorage.setItem(CHIAVE, 'on'); }
+            else if (q === 'video' || q === '3d') { stato = 'video'; localStorage.setItem(CHIAVE, 'video'); }
             else if (q === '0' || q === 'off' || q === 'no') { stato = 'off'; localStorage.setItem(CHIAVE, 'off'); }
             else if (!forza) { stato = localStorage.getItem(CHIAVE); }
           } catch (e) {}
-          if (stato === 'on') document.documentElement.setAttribute('data-pop3d', 'on');
+          if (stato === 'on' || stato === 'video') document.documentElement.setAttribute('data-pop3d', stato);
           else document.documentElement.removeAttribute('data-pop3d');
         }
         applica();
@@ -166,7 +168,7 @@ const docTitle = (isHome || title === SITE_NAME || title === SITE.name) ? SITE_N
         }
         /* Dalla console: vince sul parametro dell'indirizzo, che altrimenti lo riscriverebbe. */
         window.__imPop3d = function (acceso) {
-          var stato = acceso === false ? 'off' : 'on';
+          var stato = acceso === false ? 'off' : (acceso === 'video' ? 'video' : 'on');
           try { localStorage.setItem(CHIAVE, stato); } catch (e) {}
           applica(stato);
         };
