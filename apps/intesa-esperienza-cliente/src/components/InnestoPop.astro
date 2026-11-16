@@ -15,13 +15,13 @@ const frecciaD = 'M1 7h24M19 1l6 6-6 6';
 /* La versione 3D (data/pop3d.ts) si accende con `?pop3d=1`: senza, questo palco resta
    vuoto e nascosto, e non scarica niente. Se il video non parte, torna la scena HTML. */
 const p3 = POP3D[scena];
-const base3d = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.clip}/`;
+const base3d = p3 ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.clip}/` : '';
 ---
-<dialog class="pp" data-pp data-deck-nochrome data-audit-skip data-tot={s.passi.length} data-scena={scena} aria-label={s.prodotto}>
+<dialog class="pp" data-pp data-deck-nochrome data-audit-skip data-tot={s.passi.length} data-scena={scena} data-e2e={scena === 'e2e' ? '' : null} aria-label={s.prodotto}>
   <div class="pp-in">
     <header class="pp-testa">
       <div class="pp-testa-t">
-        <p class="pp-k">Componente Adobe</p>
+        <p class="pp-k">{s.occhiello ?? 'Componente Adobe'}</p>
         <h3 class="pp-h">{s.prodotto}</h3>
       </div>
       <p class:list={['pp-cosa', s.v2d?.cosa && 'pp-ha-v2d']}>{s.cosa}</p>
@@ -31,11 +31,13 @@ const base3d = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.cli
 
     <div class="pp-scena">
       <Meccanismo scena={scena} />
-      <div class="pp-3d" data-pp3d={JSON.stringify(p3)} data-base={base3d} aria-hidden="true">
-        <video muted playsinline preload="none"></video>
-        <div class="pp-3d-et"></div>
-        <p class="pp-3d-nota"></p>
-      </div>
+      {p3 && (
+        <div class="pp-3d" data-pp3d={JSON.stringify(p3)} data-base={base3d} aria-hidden="true">
+          <video muted playsinline preload="none"></video>
+          <div class="pp-3d-et"></div>
+          <p class="pp-3d-nota"></p>
+        </div>
+      )}
       {scena === 'cja' && (
         <div class="pp-cja">
           <div class="pp-strato" data-da="2">
@@ -44,7 +46,7 @@ const base3d = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.cli
               <ol class="pp-viaggio" data-da="5" data-a="5">
                 <li><small>Sito</small><strong>Simula il mutuo</strong></li>
                 <li><small>Email</small><strong>Riprende la richiesta</strong></li>
-                <li><small>Filiale</small><strong>Appuntamento tenuto</strong></li>
+                <li><small>Filiale · nasce l’NDG</small><strong>Apre la pratica</strong></li>
                 <li data-on><small>Esito</small><strong>Richiesta firmata</strong></li>
               </ol>
               <div class="pp-barre" data-da="6">
@@ -129,6 +131,14 @@ const base3d = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.cli
           </>);
         })}
       </div>
+      {s.capitoli && (
+        <nav class="pp-capitoli" aria-label="Capitoli">
+          {s.capitoli.map((c) => {
+            const [verbo, chi] = c.t.split(' · ');
+            return <button type="button" class="pp-cap" data-pp-vai={c.da} data-da-cap={c.da} data-a-cap={c.a}><b>{verbo}</b><span>{chi}</span></button>;
+          })}
+        </nav>
+      )}
       <div class="pp-nav">
         <div class="pp-punti" aria-hidden="true">{s.passi.map((_, i) => <span data-punto={i + 1}></span>)}</div>
         <button type="button" class="pp-b-n" data-pp-prev aria-label="Passo precedente">←</button>
@@ -149,6 +159,34 @@ const base3d = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.cli
      a capo SOTTO la proposta invece di spingere la riga fuori dal riquadro. */
   dialog.pp .pp-cand li[data-motivo] { flex-wrap: wrap; row-gap: 0.25rem; }
   dialog.pp .pp-cand li[data-motivo] em { flex-basis: 100%; white-space: normal; }
+
+  /* I CAPITOLI del racconto unico: tre tratti di una stessa linea, non tre schede. Il
+     tratto acceso è il capitolo in corso; quelli già fatti restano verdi a metà. Si
+     cliccano e portano al primo passo del capitolo, senza animare. */
+  .pp-capitoli { grid-column: 1 / -1; grid-row: 1; display: grid; grid-template-columns: 3fr 3fr 4fr; gap: 0.5rem; margin-bottom: 0.15rem; }
+  .pp-cap { display: flex; align-items: baseline; gap: 0.55rem; min-width: 0; min-height: 2.75rem; padding: 0.55rem 0 0.2rem; border: 0; border-top: 3px solid var(--color-grigio-200);
+            background: none; color: var(--color-grigio-600); font: inherit; text-align: left; cursor: pointer; transition: border-color 0.3s, color 0.3s; }
+  .pp-cap b { font-family: var(--font-display); font-size: clamp(1rem, calc(0.95 * var(--vu)), 1.5rem); font-weight: 700; white-space: nowrap; }
+  .pp-cap span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: clamp(0.85rem, calc(0.8 * var(--vu)), 1.25rem); font-weight: 600; }
+  .pp-cap:hover { color: var(--color-ardesia-notte); border-top-color: var(--color-grigio-400); }
+  .pp-cap:focus-visible { outline: 2px solid var(--color-verde); outline-offset: 3px; border-radius: 2px; }
+  .pp-cap.pp-on { color: var(--color-ardesia-notte); border-top-color: var(--color-verde); }
+  .pp-cap.pp-on b { color: var(--color-verde); }
+  @media (max-width: 900px) { .pp-cap span { display: none; } }
+  /* Su uno schermo basso il palco del racconto unico è quello che conta: testata e
+     piede si stringono perché la scena guadagni altezza (a 1000×633 scalava a un terzo). */
+  /* Senza la riga «cosa» (nascosta sotto i 760px) la × resterebbe nella colonna di mezzo. */
+  dialog.pp[data-e2e] .pp-x { justify-self: end; }
+  @media (max-height: 760px) {
+    dialog.pp[data-e2e] { height: 96vh; width: 96vw; }
+    dialog.pp[data-e2e] .pp-testa { padding-block: 0.5rem; }
+    dialog.pp[data-e2e] .pp-cap { min-height: 2.25rem; padding-top: 0.35rem; }
+    dialog.pp[data-e2e] .pp-cap span { display: none; }
+    dialog.pp[data-e2e] :global(.pp-piede) { padding-block: 0.45rem 0.5rem; }
+    dialog.pp[data-e2e] :global(.pp-d) { font-size: 1.05rem; }
+    dialog.pp[data-e2e] :global(.pp-didas) { min-height: 2.8em; }
+    dialog.pp[data-e2e] :global(.pp-punti) { display: none; }
+  }
 
   /* ── La versione 3D (?pop3d=1) ─────────────────────────────
      Il palco 16:9 sta nella cella della scena senza deformarsi (unità del
@@ -186,6 +224,8 @@ const base3d = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.cli
   /* Una delega sola sul documento: regge ai cambi di capitolo (ClientRouter) e a
      più istanze per pagina. Lo script di un componente Astro gira una volta. */
   const aperto = () => document.querySelector<HTMLDialogElement>('dialog.pp[open]');
+  /** Da quale passo del racconto unico entra ciascuna carta (data/pop.ts → e2e.capitoli). */
+  const INGRESSO: Record<string, number> = { cdp: 1, decisioning: 4, cja: 7 };
 
   /* ── La versione 3D ──────────────────────────────────────────
      Ogni passo riproduce SOLO il suo tratto di video e si ferma sullo stato finale
@@ -328,6 +368,11 @@ const base3d = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.cli
     d.querySelectorAll<HTMLElement>('[data-passo-t]').forEach((el) => {
       el.classList.toggle('pp-on', Number(el.dataset.passoT) === p);
     });
+    d.querySelectorAll<HTMLElement>('[data-da-cap]').forEach((el) => {
+      const on = p >= Number(el.dataset.daCap) && p <= Number(el.dataset.aCap);
+      el.classList.toggle('pp-on', on);
+      if (on) el.setAttribute('aria-current', 'step'); else el.removeAttribute('aria-current');
+    });
     d.querySelectorAll<HTMLElement>('[data-punto]').forEach((el) => {
       el.classList.toggle('pp-on', Number(el.dataset.punto) <= p);
     });
@@ -343,11 +388,12 @@ const base3d = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.cli
     else vai(d, p + 1);
   }
 
-  function apri(d: HTMLDialogElement) {
+  function apri(d: HTMLDialogElement, da = 1) {
     d.closest('[data-deck]')?.setAttribute('data-deck-lock', '');
     d.showModal();
-    d.dataset.passo = '0';
-    vai(d, 1);
+    // Si entra al passo `da` animandolo, come se si venisse dal precedente.
+    d.dataset.passo = String(da - 1);
+    vai(d, da);
     d.querySelector<HTMLElement>('[data-pp-next]')?.focus();
   }
 
@@ -356,7 +402,12 @@ const base3d = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.cli
     const open = t.closest<HTMLElement>('[data-pp-open]');
     if (open) {
       const d = open.parentElement?.querySelector<HTMLDialogElement>('dialog.pp');
-      if (d) { e.preventDefault(); apri(d); }
+      // Dietro `?pop3d=1` le tre carte aprono IL racconto unico, ognuna al suo capitolo.
+      const e2e = document.documentElement.dataset.pop3d === 'on'
+        ? open.closest('[data-deck]')?.querySelector<HTMLDialogElement>('dialog.pp[data-e2e]') : null;
+      const ingresso = d ? INGRESSO[d.dataset.scena ?? ''] : undefined;
+      if (e2e && ingresso) { e.preventDefault(); apri(e2e, ingresso); }
+      else if (d) { e.preventDefault(); apri(d); }
       return;
     }
     const d = t.closest<HTMLDialogElement>('dialog.pp');
@@ -364,6 +415,7 @@ const base3d = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.cli
     if (t === d || t.closest('[data-pp-chiudi]')) d.close();
     else if (t.closest('[data-pp-next]')) avanti(d);
     else if (t.closest('[data-pp-prev]')) vai(d, Number(d.dataset.passo) - 1);
+    else if (t.closest('[data-pp-vai]')) vai(d, Number(t.closest<HTMLElement>('[data-pp-vai]')!.dataset.ppVai));
   });
 
   /* `close` non risale: si ascolta in cattura. Copre Esc, la ×, l'ultimo passo. */

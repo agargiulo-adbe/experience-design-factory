@@ -24,7 +24,8 @@ export interface Pop3d {
   note?: Record<number, string>;
 }
 
-export const POP3D: Record<ScenaId, Pop3d> = {
+/* Il racconto unico (`e2e`) non ha una clip: vive solo nella variante 2D. */
+export const POP3D: Partial<Record<ScenaId, Pop3d>> = {
   cdp: {
     clip: 'rta',
     nomi: { giulia: 'Giulia', sito: 'Sito', profilo: 'Profilo', segmento: 'Segmento «mutuo prima casa»', tirante: 'Email e consenso', ajo: 'Journey Optimizer', crm: 'CRM di filiale' },

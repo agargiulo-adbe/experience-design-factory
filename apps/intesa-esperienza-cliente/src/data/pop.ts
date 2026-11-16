@@ -15,13 +15,46 @@
  * · Le frasi su prospect, precedenza e contatto telefonico sono CANONICHE: le
  *   stesse parole stanno in m-04 (`momenti.ts`). Non si parafrasano.
  */
-export type ScenaId = 'cja' | 'decisioning' | 'cdp';
+export type ScenaId = 'cja' | 'decisioning' | 'cdp' | 'e2e';
 /** `v2d`: testi della SOLA variante 2D (`?pop3d=1`), dopo il panel del 16 nov 2026. Il deck
  *  principale legge `cosa` e `passi` e non cambia; dove `v2d` manca, la variante usa quelli. */
 export interface Scena { prodotto: string; cosa: string; passi: string[]; nota: string; fonti: { label: string; url: string }[];
-  v2d?: { cosa?: string; passi?: (string | null)[] }; }
+  v2d?: { cosa?: string; passi?: (string | null)[] };
+  /** La riga sopra il titolo del pop-in; manca = «Componente Adobe». */
+  occhiello?: string;
+  /** Il racconto unico: i capitoli si cliccano nel piede e aprono al loro primo passo. */
+  capitoli?: { t: string; da: number; a: number }[]; }
 const EL = 'https://experienceleague.adobe.com/en/docs';
 export const SCENE: Record<ScenaId, Scena> = {
+  /* IL RACCONTO UNICO (owner, 16 nov 2026), solo dietro `?pop3d=1`: i tre «Come funziona»
+     diventano un flusso solo, da Real-Time Activation a CJA, su Giulia (sopra) e sul
+     sistema (sotto), con i sistemi della banca in scena come attori. Ogni carta apre al
+     suo capitolo. Le frasi vengono dalle `v2d` delle tre scene (panel del 16 nov): niente
+     affermazioni nuove; l'NDG nasce al 06, all'apertura della pratica (owner, 16 nov). */
+  e2e: {
+    occhiello: 'Come funziona',
+    prodotto: 'Dall’annuncio alla firma',
+    cosa: 'Un flusso solo sulla stessa persona: Real-Time Activation la riconosce, Journey Optimizer sceglie e invia, Customer Journey Analytics misura.',
+    capitoli: [
+      { t: 'Riconosce · Real-Time Activation', da: 1, a: 3 },
+      { t: 'Sceglie e invia · Journey Optimizer', da: 4, a: 6 },
+      { t: 'Misura · Customer Journey Analytics', da: 7, a: 10 },
+    ],
+    passi: [
+      'Giulia arriva dall’annuncio e accetta i cookie di profilazione. Il sistema registra quello che fa, ma non sa ancora chi è.',
+      'Simula la rata ed entra in tempo reale nel segmento «mutuo prima casa».',
+      'Lascia l’email e il consenso marketing. Le visite fatte prima di lasciare il nome si uniscono al suo profilo.',
+      'Si ferma perché le manca un documento. Journey Optimizer lo sa subito; gli score del vostro motore, se esistono sul non cliente, arrivano come attributi.',
+      'AI Decisioning mette in fila quattro proposte. Regole e consenso ne escludono due, e vince il promemoria con appuntamento.',
+      'La proposta compare sul sito e poi arriva per email, e Giulia riprende la pratica. Le vostre iniziative programmate continuano come oggi.',
+      'In filiale apre la pratica: la banca la censisce e nasce l’NDG. Il grafo lo lega all’email e alle visite di prima.',
+      'Firma ed è cliente. Customer Journey Analytics legge sito, app, CRM di filiale e Filiale Digitale sull’NDG, in un percorso solo.',
+      'Le firme si attribuiscono ai canali, filiale compresa. Se la campagna ha funzionato lo dice il gruppo di controllo, che si fissa in fase 0.',
+      'Conversioni e audience tornano alla decisione, e le regole si rivedono su quel risultato. Da cliente, sulle proposte decide il vostro motore.',
+    ],
+    nota: '',
+    fonti: [],
+  },
   cja: {
     prodotto: 'Customer Journey Analytics',
     cosa: 'Analisi omnicanale: legge insieme il comportamento digitale e le fonti offline, sulla stessa persona.',
@@ -30,7 +63,7 @@ export const SCENE: Record<ScenaId, Scena> = {
       'Customer Journey Analytics raccoglie il comportamento su sito e app.',
       'Entrano il CRM di filiale e la Filiale Digitale, una fonte alla volta.',
       'I segmenti e gli score del motore di targeting entrano come attributi del profilo.',
-      'Per chi si identifica, simulazione online, contatti e firma in filiale si leggono in un unico percorso.',
+      'Dall’apertura della pratica l’NDG lega simulazione online, contatti e firma in un unico percorso.',
       'Le richieste firmate si attribuiscono ai canali, filiale compresa.',
     ],
     nota: '',

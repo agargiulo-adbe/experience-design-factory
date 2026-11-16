@@ -110,14 +110,19 @@ const BANCA = [
    oggi la storia si perde. È quella che lui chiama la killer application per il
    Controllo di Gestione. Il momento 01 non sta qui: la risposta di un
    assistente non si osserva, e la slide non finge di vederla. Le fonti sono in
-   calce: stitching di CJA (finestra per pacchetto) e Identity Service. */
+   calce: stitching di CJA (finestra per pacchetto) e Identity Service.
+   L'NDG NASCE AL 06 (owner, 16 nov 2026): la banca censisce Giulia quando apre
+   la pratica in filiale (identificazione, adeguata verifica, Centrale Rischi),
+   non alla firma. Così il grafo lega l'NDG alle visite delle settimane prima e
+   lo stitching di CJA le riporta sull'NDG dentro la finestra del pacchetto
+   (7/14/30 giorni, Select/Prime/Ultimate). Da confermare con i Mutui in fase 0. */
 const CHIAVE = [
   { m: '02', id: 'ecid', passo: 1, dove: { it: 'Sito, dall’annuncio', en: 'Site, from the ad' }, k: { it: 'Pseudonimo del browser', en: 'Browser pseudonym' } },
   { m: '03', id: 'email', passo: 2, dove: { it: 'Simulazione', en: 'Simulation' }, k: { it: 'Pseudonimo + email, col consenso', en: 'Pseudonym + email, with consent' }, unisce: true },
   { m: '04', id: 'email', passo: 3, dove: { it: 'Sito, si ferma', en: 'Site, stops' }, k: { it: 'Email', en: 'Email' } },
   { m: '05', id: 'email', passo: 3, dove: { it: 'Email', en: 'Email' }, k: { it: 'Email', en: 'Email' } },
-  { m: '06', id: 'tel', passo: 4, dove: { it: 'Filiale', en: 'Branch' }, k: { it: 'Email e telefono', en: 'Email and phone' } },
-  { m: '07', id: 'ndg', passo: 5, dove: { it: 'Firma e app', en: 'Signing and app' }, k: { it: 'NDG, all’apertura del rapporto', en: 'Customer ID (NDG), at account opening' }, cliente: true },
+  { m: '06', id: 'ndg', passo: 4, dove: { it: 'Filiale, apre la pratica', en: 'Branch, opens the application' }, k: { it: 'Email, telefono e NDG', en: 'Email, phone and customer ID (NDG)' } },
+  { m: '07', id: 'ndg', passo: 5, dove: { it: 'Firma e app', en: 'Signing and app' }, k: { it: 'NDG, già suo: diventa cliente', en: 'Customer ID, already hers: she becomes a customer' }, cliente: true },
 ];
 
 /* IL MOTORE DI TARGETING RESTA (panel del 30 ott 2026, P0). Davanti a chi i
@@ -339,6 +344,10 @@ const RITORNO = [
           {/* LA COLONNA DEL MOMENTO (owner, 13 nov 2026): si apre dalla pillola,
               a destra, sopra la colonna dei canali. Non è un modale: non blocca
               il deck e si chiude con la ×, con Esc o ripremendo la pillola. */}
+          {/* IL RACCONTO UNICO dei tre «Come funziona» (owner, 16 nov 2026): esiste solo
+              dietro `?pop3d=1`, dove le tre carte lo aprono ognuna al suo capitolo. Nel
+              deck principale resta chiuso e nessun pulsante lo apre. */}
+          <InnestoPop scena="e2e" />
           <aside class="im-gm" id="im-gm" aria-label="Il momento di Giulia" hidden>
             <button type="button" class="im-gm-x" data-mom-chiudi aria-label="Chiudi"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" /></svg></button>
             {Object.entries(MOMENTO_SCHEMA).map(([k, m]) => (
@@ -425,7 +434,7 @@ const RITORNO = [
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <div class="im-capmap-testa"><T as="h2" class="im-ado-t im-ado-t--stretto" it="Più identificativi, una persona sola: dal sito alla filiale e oltre la firma" en="Many identifiers, one person: from the site to the branch and past the signature" /><MappaCapacita accese={['riconosce']} /></div>
-        <T as="p" class="im-ado-l" it="Pseudonimo, email, telefono e NDG si collegano alla stessa persona: quando diventa cliente, la sua storia di prima resta con lei." en="Pseudonym, email, phone and customer ID link to the same person: when she becomes a customer, her earlier history stays with her." />
+        <T as="p" class="im-ado-l" it="Pseudonimo, email, telefono e NDG si collegano alla stessa persona: l’NDG nasce quando apre la pratica, e alla firma la sua storia è già lì." en="Pseudonym, email, phone and customer ID link to the same person: the ID is created when she opens the application, so at signing her history is already there." />
 
         {/* L'IDENTITY GRAPH E LA RICUCITURA (owner, 14 nov 2026). A sinistra il
             grafo che si forma, a destra la storia di Giulia. Al passo 1 l'ECID
@@ -447,7 +456,7 @@ const RITORNO = [
               <line x1="50" y1="38" x2="17" y2="15" pathLength="1" data-dal="2" data-k="ecid" />
               <line x1="50" y1="38" x2="83" y2="15" pathLength="1" data-dal="2" data-k="email" />
               <line x1="50" y1="38" x2="83" y2="61" pathLength="1" data-dal="4" data-k="tel" />
-              <line x1="50" y1="38" x2="17" y2="61" pathLength="1" data-dal="5" data-k="ndg" />
+              <line x1="50" y1="38" x2="17" y2="61" pathLength="1" data-dal="4" data-k="ndg" />
             </svg>
             <div class="im-idg-n im-idg-n--chi" style="--x:50%;--y:50%">
               <span class="im-idg-chi-q">?</span>
@@ -456,7 +465,7 @@ const RITORNO = [
             <div class="im-idg-n" data-dal="1" data-k="ecid" style="--x:17%;--y:20%"><b>ECID</b><T as="small" it="il browser" en="the browser" /></div>
             <div class="im-idg-n" data-dal="2" data-k="email" style="--x:83%;--y:20%"><b>Email</b><T as="small" it="col consenso" en="with consent" /></div>
             <div class="im-idg-n" data-dal="4" data-k="tel" style="--x:83%;--y:80%"><T as="b" it="Telefono" en="Phone" /><T as="small" it="in filiale" en="in the branch" /></div>
-            <div class="im-idg-n" data-dal="5" data-k="ndg" style="--x:17%;--y:80%"><b>NDG</b><T as="small" it="unico nel grafo" en="unique in the graph" /></div>
+            <div class="im-idg-n" data-dal="4" data-k="ndg" style="--x:17%;--y:80%"><b>NDG</b><T as="small" it="alla pratica, unico" en="at the application, unique" /></div>
           </div>
           <ol class="im-idg-tl">
             {CHIAVE.map((c) => (
@@ -474,7 +483,7 @@ const RITORNO = [
         </div>
         <div class="im-chv-barra im-idg-barra" data-dal="5">
           <T as="span" class="im-chv-prima" it="non‑cliente" en="Non-customer" />
-          <T as="span" class="im-chv-dopo" it="Cliente da oggi: la storia si legge in CJA" en="Customer from today: the history reads in CJA" />
+          <T as="span" class="im-chv-dopo" it="Cliente da oggi: in CJA la storia è già sul suo NDG" en="Customer from today: in CJA her history is already on her ID" />
         </div>
         <T as="p" class="im-idg-nota" data-dal="5" it="Un PC condiviso in famiglia non fonde due persone: l’NDG è unico nel grafo, e ogni visita autenticata resta associata a chi l’ha fatta." en="A family PC does not merge two people: the customer ID is unique in the graph, and every authenticated visit stays linked to whoever made it." />
 
