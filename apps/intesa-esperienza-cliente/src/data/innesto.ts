@@ -61,7 +61,7 @@ export const OGGI: { t: Testo; s?: Testo; d: Testo; lega?: Testo; forte?: boolea
     d: { it: 'filiale, Filiale Digitale, app, sito, aree self-service, media a pagamento', en: 'branch, Filiale Digitale, app, site, self-service areas, paid media' },
     canali: [
       { k: 'online', t: { it: 'Online', en: 'Online' }, d: { it: 'sito, app, annunci', en: 'site, app, ads' } },
-      { k: 'offline', t: { it: 'Offline', en: 'Offline' }, d: { it: 'filiale, Filiale Digitale, self-service', en: 'branch, Filiale Digitale, self-service' } },
+      { k: 'offline', t: { it: 'Offline', en: 'Offline' }, d: { it: 'filiale, Filiale Digitale', en: 'branch, Filiale Digitale' } },
     ] },
 ];
 

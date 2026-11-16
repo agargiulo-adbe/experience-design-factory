@@ -37,10 +37,10 @@ export const SCENE: Record<ScenaId, Scena> = {
   e2e: {
     occhiello: 'Come funziona',
     prodotto: 'Dall’annuncio alla firma',
-    cosa: 'Un flusso solo sulla stessa persona: Real-Time Activation la riconosce, Journey Optimizer sceglie e invia, Customer Journey Analytics misura.',
+    cosa: 'Un flusso solo sulla stessa persona: Real-Time Activation la riconosce, Journey Optimizer sceglie e orchestra, Customer Journey Analytics misura.',
     capitoli: [
       { t: 'Riconosce · Real-Time Activation', da: 1, a: 3 },
-      { t: 'Sceglie e invia · Journey Optimizer', da: 4, a: 6 },
+      { t: 'Sceglie e orchestra · Journey Optimizer', da: 4, a: 6 },
       { t: 'Misura · Customer Journey Analytics', da: 7, a: 11 },
     ],
     passi: [

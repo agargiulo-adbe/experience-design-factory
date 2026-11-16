@@ -52,9 +52,17 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     const x0 = s.x + s.w / 2 - p.w / 2, y0 = s.y + s.h / 2 - p.h / 2;
     const x1 = d.x + d.w / 2 - p.w / 2, y1 = d.y + d.h / 2 - p.h / 2;
     gsap.set(pill, { left: 0, top: 0 });
-    T.fromTo(pill, { autoAlpha: 0, x: x0, y: y0 }, { autoAlpha: 1, x: x0, y: y0, duration: .2, immediateRender: true }, at)
-     .to(pill, { x: x1, y: y1, duration: 1, ease: MUOVE }, '>');
-    if (!resta) T.to(pill, { autoAlpha: 0, duration: .25 }, '>-.05');
+    /* Si legge tre volte: alla partenza (.6s ferma sulla fonte), in volo (1.3s,
+       non più 1s, che a parete era una striscia), e soprattutto all'arrivo, dove
+       resta 1.4s prima di sciogliersi. Prima spariva 50ms dopo essere arrivata:
+       in sala si vedeva che qualcosa passava, non che cosa. 16 nov 2026. */
+    T.fromTo(pill, { autoAlpha: 0, x: x0, y: y0, scale: .9 }, { autoAlpha: 1, x: x0, y: y0, scale: 1, duration: .3, ease: ENTRA, immediateRender: true }, at)
+     .to(pill, { x: x1, y: y1, duration: 1.3, ease: MUOVE }, '>+.6');
+    const arrivo = (T.recent() as gsap.core.Tween).endTime();
+    if (!resta) T.to(pill, { autoAlpha: 0, duration: .35 }, arrivo + 1.4);
+    /* Aggiunto per ultimo: il '>' di chi chiama resta l'ARRIVO (+.6), così la
+       destinazione reagisce mentre la pillola è ancora lì da leggere. */
+    T.fromTo(pill, { boxShadow: '0 0 0 0 rgba(255,255,255,.7)' }, { boxShadow: '0 0 0 8px rgba(255,255,255,0)', duration: .6, ease: 'sine.out', immediateRender: false }, arrivo);
   };
   const appare = (el: HTMLElement | HTMLElement[], at: string | number, extra: gsap.TweenVars = {}) =>
     T.fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: .6, immediateRender: true, ...extra }, at);
@@ -261,7 +269,7 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
      .to(sessT1, { autoAlpha: 1, duration: .4 }, '<.1')
      .to(sess, { borderColor: '#258900', borderStyle: 'solid', backgroundColor: '#f1f7ee', duration: .6 }, '<');
 
-    // ── Sceglie e invia ──
+    // ── Sceglie e orchestra ──
     passo('p4');
     fuoco([rta, ajo, motore], 'p4');
     tappa(2, 'p4');
@@ -280,6 +288,7 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     stato(o2, 'mc-fuori', 'p5+=1.75');
     stato(o3, 'mc-fuori', 'p5+=2.35');
     T.to(regola, { autoAlpha: 0, duration: .25 }, 'p5+=2.75')
+     .set(regola, { y: 0 }, '>')
      .to(ranghi[0], { autoAlpha: 1, scale: 1, duration: .45, ease: 'back.out(2)' }, 'p5+=2.9')
      .to(ranghi[1], { autoAlpha: 1, scale: 1, duration: .45, ease: 'back.out(2)' }, 'p5+=3.05');
 

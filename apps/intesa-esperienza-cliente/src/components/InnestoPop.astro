@@ -177,6 +177,13 @@ const base3d = p3 ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p
      piede si stringono perché la scena guadagni altezza (a 1000×633 scalava a un terzo). */
   /* Senza la riga «cosa» (nascosta sotto i 760px) la × resterebbe nella colonna di mezzo. */
   dialog.pp[data-e2e] .pp-x { justify-self: end; }
+  /* NIENTE DIDASCALIA nel racconto unico (team e owner, 16 nov 2026): la racconta chi
+     presenta, e in sala si leggeva invece di ascoltare. Restano i capitoli, i punti e
+     i comandi, sulla stessa riga; il palco prende lo spazio. */
+  dialog.pp[data-e2e] :global(.pp-didas) { display: none; }
+  dialog.pp[data-e2e] .pp-capitoli { grid-row: 1; grid-column: 1; margin-bottom: 0; align-self: center; }
+  dialog.pp[data-e2e] :global(.pp-nav) { grid-row: 1; grid-column: 2; }
+  @media (max-width: 1600px) { dialog.pp[data-e2e] .pp-cap span { display: none; } }
   @media (max-height: 760px) {
     dialog.pp[data-e2e] { height: 96vh; width: 96vw; }
     dialog.pp[data-e2e] .pp-testa { padding-block: 0.5rem; }
@@ -323,7 +330,8 @@ const base3d = p3 ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p
      Si prepara alla prima apertura, a pop-in già aperto, perché misura il layout vero. */
   const mecc = new WeakMap<HTMLElement, Promise<import('../scripts/meccanismi').Meccanismo>>();
   function passo2d(d: HTMLDialogElement, p: number, avanti: boolean) {
-    if (document.documentElement.dataset.pop3d !== 'on') return;
+    // Il racconto unico ha solo il palco 2D: si muove anche nel deck principale.
+    if (document.documentElement.dataset.pop3d !== 'on' && !d.hasAttribute('data-e2e')) return;
     const root = d.querySelector<HTMLElement>('.mc');
     if (!root) return;
     let m = mecc.get(root);
@@ -379,13 +387,15 @@ const base3d = p3 ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p
     const prev = d.querySelector<HTMLButtonElement>('[data-pp-prev]');
     const next = d.querySelector<HTMLButtonElement>('[data-pp-next]');
     if (prev) prev.disabled = p === 1;
-    if (next) next.textContent = p === tot ? 'Chiudi' : 'Avanti →';
+    if (next) next.textContent = p < tot ? 'Avanti →' : d.hasAttribute('data-e2e') ? 'Quattro domande →' : 'Chiudi';
   }
 
   function avanti(d: HTMLDialogElement) {
     const p = Number(d.dataset.passo);
-    if (p >= Number(d.dataset.tot)) d.close();
-    else vai(d, p + 1);
+    if (p < Number(d.dataset.tot)) { vai(d, p + 1); return; }
+    d.close();
+    // Il racconto unico finisce su CJA: il deck prosegue dalle sue «Quattro domande».
+    if (d.hasAttribute('data-e2e') && document.getElementById('slide-cja-banca')) location.hash = 'slide-cja-banca';
   }
 
   function apri(d: HTMLDialogElement, da = 1) {
@@ -399,6 +409,12 @@ const base3d = p3 ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p
 
   document.addEventListener('click', (e) => {
     const t = e.target as HTMLElement;
+    const unico = t.closest<HTMLElement>('[data-pp-e2e]');
+    if (unico) {
+      const d = unico.closest('[data-deck]')?.querySelector<HTMLDialogElement>('dialog.pp[data-e2e]');
+      if (d) { e.preventDefault(); apri(d, 1); }
+      return;
+    }
     const open = t.closest<HTMLElement>('[data-pp-open]');
     if (open) {
       const d = open.parentElement?.querySelector<HTMLDialogElement>('dialog.pp');

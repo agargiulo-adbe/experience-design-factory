@@ -124,6 +124,9 @@ export const DOMANDE_IN_SLIDE = false;
    resta qui, in `corpo`, ed è la traccia di chi parla: `true` lo riaccende. */
 export const CORPO_IN_SLIDE = false;
 
+/** Il titolo del giro: lo leggono il percorso intero (persona) e la versione breve. */
+export const TITOLO_GIRO = { it: 'Giulia diventa cliente in sette momenti', en: 'Giulia becomes a customer in seven moments' };
+
 export const MOMENTI: Momento[] = [
   {
     n: '01', of: '07',
@@ -140,7 +143,7 @@ export const MOMENTI: Momento[] = [
     messa: { it: 'Prodotto Adobe: agisce sui vostri contenuti', en: 'An Adobe product: it acts on your content' },
     cliente: {
       chrome: 'assistente', scena: 'scena-01-divano',
-      titolo: { it: 'Chiede a un assistente AI quale mutuo scegliere e trova Intesa Sanpaolo', en: 'She asks an AI assistant which mortgage to choose and finds Intesa Sanpaolo' },
+      titolo: { it: 'Chiede a un assistente AI quale mutuo scegliere e trova Intesa Sanpaolo', en: 'She asks an AI assistant which mortgage to choose and finds Intesa Sanpaolo' },
       corpo: {
         it: 'Chiede a ChatGPT: «qual è il mutuo migliore per chi compra la prima casa?». La risposta cita tre banche. Giulia non è vostra cliente e non ha motivo di partire da voi: se il marchio non compare qui, il confronto comincia senza di voi.',
         en: 'She asks ChatGPT: “which mortgage is best for a first home?”. The answer cites three banks. Giulia is not your customer and has no reason to start from you: if the brand is absent here, the comparison starts without you.',
@@ -170,7 +173,7 @@ export const MOMENTI: Momento[] = [
     messa: { it: 'Prodotto Adobe; l’annuncio arriva spento in Meta', en: 'An Adobe product; the ad lands paused in Meta' },
     cliente: {
       chrome: 'feed', scena: 'scena-02-bar',
-      titolo: { it: 'Vede un annuncio sul mutuo per la prima casa a Torino', en: 'She sees an ad for a first-home mortgage in Turin' },
+      titolo: { it: 'Vede un annuncio sul mutuo per la prima casa a Torino', en: 'She sees an ad for a first-home mortgage in Turin' },
       corpo: {
         it: 'Fra un caffè e il tram compare un annuncio: «Il mutuo per la prima casa, a Torino». È la variante per chi compra la prima casa nella sua città, una delle dodici nate da un brief solo.',
         en: 'Between a coffee and the tram an ad appears: “First-home mortgage, in Turin”. It is the variant for first-home buyers in her city, one of twelve born from a single brief.',
@@ -187,7 +190,7 @@ export const MOMENTI: Momento[] = [
   },
   {
     n: '03', of: '07',
-    blocco: { it: 'Customer Engagement', en: 'Customer engagement' },
+    blocco: { it: 'Ingaggio clienti e non clienti', en: 'Engaging customers and non-customers' },
     ora: { it: 'La sera stessa', en: 'That same evening' },
     dove: { it: 'Sul sito della banca', en: 'On the bank’s website' },
     short: { it: 'Simula la rata', en: 'Simulates the payment' },
@@ -200,7 +203,7 @@ export const MOMENTI: Momento[] = [
     messa: { it: 'Simulatore vostro; i dati li raccoglie il Web SDK', en: 'Your simulator; the Web SDK collects the data' },
     cliente: {
       chrome: 'sito', scena: 'scena-03-tavolo',
-      titolo: { it: 'Simula 180.000 euro su 25 anni e lascia l’email per salvare il risultato', en: 'She simulates 180,000 euro over 25 years and leaves her email to save the result' },
+      titolo: { it: 'Simula 180.000 euro su 25 anni e lascia l’email per salvare il risultato', en: 'She simulates 180,000 euro over 25 years and leaves her email to save the result' },
       corpo: {
         it: '180.000 euro su venticinque anni: 863 al mese. Per salvare la simulazione lascia l’email e dà il consenso. In quel momento smette di essere uno pseudonimo e diventa un profilo, con una data.',
         en: '180,000 euro over twenty-five years: 863 a month. To save the simulation she leaves her email and gives consent. At that moment she stops being a pseudonym and becomes a profile, with a date.',
@@ -217,7 +220,7 @@ export const MOMENTI: Momento[] = [
   },
   {
     n: '04', of: '07',
-    blocco: { it: 'Customer Engagement', en: 'Customer engagement' },
+    blocco: { it: 'Ingaggio clienti e non clienti', en: 'Engaging customers and non-customers' },
     ora: { it: 'La sera dopo', en: 'The next evening' },
     dove: { it: 'Sul sito della banca', en: 'On the bank’s website' },
     short: { it: 'Si interrompe', en: 'Stops halfway' },
@@ -230,7 +233,7 @@ export const MOMENTI: Momento[] = [
     messa: { it: 'La proposta arriva via API; il componente è vostro', en: 'The offer arrives over API; the component is yours' },
     cliente: {
       chrome: 'sito', scena: 'scena-04-documenti',
-      titolo: { it: 'Si ferma perché le manca un documento', en: 'She stops because a document is missing' },
+      titolo: { it: 'Si ferma perché le manca un documento', en: 'She stops because a document is missing' },
       corpo: {
         it: 'Le serve un documento che non ha sottomano. Chiude, e si dice che ci pensa nel weekend. Intanto la stessa domanda l’ha fatta ad altre due banche, e una di loro le scrive domani.',
         en: 'She needs a document she does not have to hand. She closes the tab, telling herself she will deal with it at the weekend. Meanwhile she asked two other banks the same question, and one writes to her tomorrow.',
@@ -247,7 +250,7 @@ export const MOMENTI: Momento[] = [
   },
   {
     n: '05', of: '07',
-    blocco: { it: 'Customer Engagement', en: 'Customer engagement' },
+    blocco: { it: 'Ingaggio clienti e non clienti', en: 'Engaging customers and non-customers' },
     ora: { it: 'Il mattino dopo', en: 'The next morning' },
     dove: { it: 'Via email', en: 'By email' },
     short: { it: 'Riprende la pratica', en: 'Resumes the application' },
@@ -260,7 +263,7 @@ export const MOMENTI: Momento[] = [
     messa: { it: 'Canale nativo di Journey Optimizer', en: 'A native Journey Optimizer channel' },
     cliente: {
       chrome: 'posta', scena: 'scena-05-colazione',
-      titolo: { it: 'Riceve un’email e completa la richiesta', en: 'She gets an email and completes the application' },
+      titolo: { it: 'Riceve un’email e completa la richiesta', en: 'She gets an email and completes the application' },
       corpo: {
         it: 'Ha lasciato un indirizzo email, ed è l’unico modo per scriverle. Arriva la sua simulazione, con il link per riprenderla e una proposta di appuntamento. Carica il documento mentre fa colazione, e accetta la data.',
         en: 'She left an email address, and that is the only way to write to her. Her simulation arrives, with the link to resume it and a proposed appointment. She uploads the document over breakfast, and accepts the date.',
@@ -277,7 +280,7 @@ export const MOMENTI: Momento[] = [
   },
   {
     n: '06', of: '07',
-    blocco: { it: 'Customer Engagement', en: 'Customer engagement' },
+    blocco: { it: 'Ingaggio clienti e non clienti', en: 'Engaging customers and non-customers' },
     ora: { it: 'Il mercoledì', en: 'On the Wednesday' },
     dove: { it: 'In filiale', en: 'In branch' },
     short: { it: 'Va in filiale', en: 'Goes to the branch' },
@@ -290,7 +293,7 @@ export const MOMENTI: Momento[] = [
     messa: { it: 'Lead e simulazione nel vostro CRM, via API', en: 'Lead and simulation in your CRM, over API' },
     cliente: {
       chrome: 'filiale', scena: 'scena-06-filiale',
-      titolo: { it: 'In filiale il gestore ha già aperta la sua simulazione', en: 'In the branch the adviser already has her simulation open' },
+      titolo: { it: 'In filiale il gestore ha già aperta la sua simulazione', en: 'In the branch the adviser already has her simulation open' },
       corpo: {
         it: 'Entra per l’appuntamento e trova la sua simulazione già aperta: stesso importo, stessa rata, stessi documenti. Non le viene chiesto di raccontare da capo quello che ha già fatto sul sito tre sere prima.',
         en: 'She arrives for the appointment and finds her simulation already open: same amount, same instalment, same documents. She is not asked to retell what she already did on the site three evenings earlier.',
@@ -312,7 +315,9 @@ export const MOMENTI: Momento[] = [
        NON martedì 8, che è l'Immacolata e le filiali sono chiuse; e non
        più sabato 5 alle 18:40, che il panel dell'11 nov 2026 ha visto. */
     ora: { it: 'Tre settimane dopo', en: 'Three weeks later' },
-    dove: { it: 'In filiale', en: 'In branch' },
+    /* «In filiale» ripeteva il 06 e diceva metà del momento: firma allo
+       sportello, poi la pratica vive nell'app (owner, 16 nov 2026). */
+    dove: { it: 'Apre l’app della banca', en: 'Opens the bank’s app' },
     short: { it: 'Diventa cliente', en: 'Becomes a customer' },
     funzione: { it: 'Quanto rende ogni canale', en: 'What each channel returns' },
     tessera: { it: 'Quanto costa e quanto rende ogni canale, dalla prima visita alla firma', en: 'What each channel costs and returns, from the first visit to signing' },
@@ -324,7 +329,7 @@ export const MOMENTI: Momento[] = [
     messa: { it: 'Dati di filiale via file o connettore', en: 'Branch data by file or connector' },
     cliente: {
       chrome: 'app', scena: 'scena-07-casa',
-      titolo: { it: 'Firma la richiesta e apre il conto: da oggi la pratica è nell’app', en: 'She signs the application and opens an account: from today the file is in the app' },
+      titolo: { it: 'Firma la richiesta e apre il conto: da oggi la pratica è nell’app', en: 'She signs the application and opens an account: from today the file is in the app' },
       corpo: {
         it: 'Firma la richiesta in filiale e apre il conto; l’istruttoria comincia adesso. L’app le serve da oggi: prima non aveva un rapporto, ed è il motivo per cui nei momenti precedenti non c’era. Da qui in avanti il canale è vostro.',
         en: 'She signs the application in branch and opens an account; the credit assessment starts now. The app matters from today: before she had no relationship, which is why it was absent from the earlier moments. From here the channel is yours.',

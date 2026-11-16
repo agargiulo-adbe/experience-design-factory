@@ -280,10 +280,10 @@
 /* Le etichette sopra la decisione stavano sul bordo di Experience Platform da
    quando la sua cornice sale di `--cornice-testa`: il corridoio si allunga
    della stessa misura e le etichette restano nella parte libera, sopra il bordo. */
-#slide-innesto .im-inn { grid-template-rows: auto minmax(calc(clamp(2.6rem, calc(3.6 * var(--vu)), 6rem) + var(--cornice-testa)), auto) auto clamp(2.6rem, calc(3.6 * var(--vu)), 6rem) auto; }
+#slide-innesto .im-inn { grid-template-rows: auto minmax(calc(clamp(2.6rem, calc(3.6 * var(--vu)), 6rem) + var(--cornice-testa)), auto) auto minmax(clamp(2.6rem, calc(3.6 * var(--vu)), 6rem), auto) auto; }
 #slide-innesto .im-inn-dec .im-inn-f > span { padding-bottom: calc(var(--cornice-testa) + clamp(0.45rem, calc(0.6 * var(--vu)), 1.2rem)); }
 @media (max-height: 820px) {
-  #slide-innesto .im-inn { grid-template-rows: auto minmax(calc(1.4rem + var(--cornice-testa)), auto) auto 1.25rem auto; }
+  #slide-innesto .im-inn { grid-template-rows: auto minmax(calc(1.4rem + var(--cornice-testa)), auto) auto minmax(1.25rem, auto) auto; }
 }
 /* 1280×800 (13 nov 2026): il titolo nuovo va su due righe; l'altezza si
    recupera dai margini sotto lo schema, non dal corpo. */
@@ -550,7 +550,9 @@
 @media (max-width: 1399px) { #slide-innesto .im-inn-dec .im-inn-f.im-inn-f--clienti > .im-inn-nbe { font-weight: 700; } }
 @keyframes im-inn-match { 0% { background: transparent; color: #ffffff; box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.75); } 55% { background: #ffffff; color: #0d2b05; box-shadow: 0 0 0 0.55rem rgba(255, 255, 255, 0); } 100% { background: #ffffff; border-color: #ffffff; color: #0d2b05; box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); } }
 @keyframes im-inn-spegni { to { opacity: 0.45; } }
-#slide-innesto:has(.im-inn-dec[data-substep-active]) .im-inn-tipo[data-match] { font-weight: 700; animation: im-inn-match 0.6s ease-out 0.8s both; }
+/* Il grassetto vero allarga la pillola e manda «su evento» a capo: si
+   ispessisce il tratto senza cambiare la larghezza. 16 nov 2026. */
+#slide-innesto:has(.im-inn-dec[data-substep-active]) .im-inn-tipo[data-match] { text-shadow: 0.03em 0 0 currentColor, -0.03em 0 0 currentColor; animation: im-inn-match 0.6s ease-out 0.8s both; }
 #slide-innesto:has(.im-inn-dec[data-substep-active]) .im-inn-tipo[data-spento] { animation: im-inn-spegni 0.4s ease-out 0.8s both; }
 
 /* Il binario verde: il nome sopra la linea, i due tipi in pillola sotto. */
@@ -992,11 +994,9 @@
 #slide-innesto .im-carta .im-inn-tipo { font-size: clamp(0.78rem, calc(0.92 * var(--vu)), 2rem); }
 #slide-innesto .im-carta .im-inn-tipi { gap: 0.3em 0.3em; }
 }
-@media (min-width: 1530px) and (min-height: 941px) {
-  #slide-innesto .im-carta .im-inn-tipi:has(.im-chi):has(.im-come)::after { content: ''; flex-basis: 100%; order: 1; }
-  #slide-innesto .im-carta .im-inn-tipi .im-chi { order: 0; }
-  #slide-innesto .im-carta .im-inn-tipi .im-come { order: 2; }
-}
+#slide-innesto .im-carta .im-inn-tipi:has(.im-chi):has(.im-come)::after { content: ''; flex-basis: 100%; order: 1; }
+#slide-innesto .im-carta .im-inn-tipi .im-chi { order: 0; }
+#slide-innesto .im-carta .im-inn-tipi .im-come { order: 2; }
 /* Il sottotitolo del pannello va a capo fra un pezzo e l'altro, mai dentro
    («dati / di esempio» a 1280). */
 .im-cjp-seg { display: inline-block; }
@@ -1005,7 +1005,11 @@
    sale da Customer Journey Analytics a Real-Time Activation, nella prima
    colonna; le pillole di CJA dicono il perimetro e non entrano nel ciclo
    della Next Best Experience, che non arriva lì. */
-.im-inn-f--simili { grid-column: 1; grid-row: 3; }
+.im-inn-f--simili { grid-column: 1; grid-row: 3; padding-bottom: 0.25rem; }
+@media (max-height: 820px) { .im-inn-f--simili { padding-bottom: 0; } }
+/* Va a capo nella sua colonna; la riga delle frecce verso Customer Journey
+   Analytics cresce con lei (prima era fissa, e nelle finestre basse la seconda
+   riga finiva sotto la barra). 16 nov 2026. */
 #slide-innesto .im-inn-f--simili[data-su] > span { white-space: normal; }
 @media (max-width: 900px) { .im-inn-f--simili { display: none; } }
 #slide-innesto [data-carta="cja"] .im-chi { animation: none !important; }
@@ -1053,3 +1057,81 @@
 @media (prefers-reduced-motion: reduce) { .im-flu-svg, .im-flu-svg path, .im-flu-l, .im-flu-nota { transition: none; } }
 @media (max-height: 820px) { .im-flu-g { height: clamp(11rem, calc(15.5 * var(--vu)), 30rem); margin-top: 1.9rem; } .im-flu { margin-top: 0.3rem; } .im-flu-nota { margin-top: 0.5rem; padding-block: 0.35rem; } }
 @media (max-width: 900px) { .im-flu-l--sx, .im-flu-l--dx { font-size: 0.78rem; } }
+
+
+/* ── IL COME FUNZIONA COME SLIDE (team e owner, 16 nov 2026) ───────────────
+   Il palco del racconto unico (1600×720, components/Meccanismo.astro) dentro
+   una slide: testata bassa con i tre capitoli, poi il palco più largo che la
+   slide permette, nel suo verde. Si scala intero, come nel pop-in. */
+#slide-funziona { --deck-chrome-safe: 96px; }
+.im-fz { width: 100%; display: grid; gap: clamp(0.5rem, calc(0.8 * var(--vu)), 1.6rem); }
+.im-fz-testa { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: end; gap: 1.5rem; }
+.im-fz-k { margin: 0; font-size: clamp(0.8rem, calc(0.74 * var(--vu)), 1.55rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #b9e6a3; }
+.im-fz-t { margin: 0.15rem 0 0; font-size: clamp(1.45rem, calc(1.75 * var(--vu)), 3.7rem); }
+.im-fz-cap { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 3fr 3fr 5fr; gap: 0.5rem; }
+.im-fz-cap li { display: grid; align-content: start; gap: 0.05rem; min-width: 0; padding-top: 0.45rem; border-top: 3px solid rgba(223, 241, 212, 0.25); color: rgba(223, 241, 212, 0.6); transition: border-color 0.3s ease, color 0.3s ease; }
+.im-fz-cap b { font-family: var(--font-display); font-size: clamp(1rem, calc(0.95 * var(--vu)), 2rem); font-weight: 700; white-space: nowrap; }
+.im-fz-cap span { white-space: nowrap; font-size: clamp(0.82rem, calc(0.76 * var(--vu)), 1.6rem); font-weight: 600; }
+.im-fz-cap li.fatto { border-top-color: rgba(185, 230, 163, 0.55); }
+.im-fz-cap li.on { border-top-color: #b9e6a3; color: #ffffff; }
+.im-fz-cap li.on b { color: #b9e6a3; }
+.im-fz-palco { position: relative; width: min(100%, calc((100dvh - 21.5rem) * 2.2222)); aspect-ratio: 1600 / 720; margin-inline: auto; border-radius: 16px; overflow: hidden;
+  background: radial-gradient(120% 95% at 16% 0%, #2f9a0a 0%, #258900 26%, #1f7400 50%, #143a05 80%, #0d2901 100%); box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.6); }
+#slide-funziona .mc { display: block; position: absolute; inset: 0; overflow: hidden; }
+/* Il palco porta la sua misura di riga, come nel pop-in: quella della slide (1,5)
+   allungava la finestra del sito fin sopra l'email. */
+#slide-funziona .mc-palco { line-height: 1.25; }
+#slide-funziona .mc-e-banca-t p { margin-top: 28px; }
+.im-fz-passo { position: absolute; width: 0; height: 0; overflow: hidden; }
+@media (max-width: 900px) { .im-fz-testa { grid-template-columns: 1fr; } .im-fz-cap span { display: none; } }
+/* Schermi bassi (portatile, 1280×800): titolo su una riga e palco più basso, che
+   finisca sopra i comandi del deck. */
+@media (max-height: 860px) {
+  .im-fz { gap: 0.45rem; }
+  .im-fz-cap li { padding-top: 0.3rem; }
+  .im-fz-cap b { font-size: 1rem; }
+  .im-fz-cap span { font-size: 0.82rem; }
+  .im-fz-palco { width: min(100%, calc((100dvh - 20rem) * 2.2222)); }
+}
+@media (max-width: 1500px) { .im-fz-cap span { display: none; } .im-fz-cap { grid-template-columns: repeat(3, auto); justify-content: end; gap: 1.1rem; } .im-fz-cap li { padding-inline-end: 0.4rem; } }
+
+
+/* IL BOTTONE «COME FUNZIONA» sul bordo della cornice di Experience Platform
+   (16 nov 2026). Simmetrico a «Come entrano i dati» (a sinistra, a contorno), ma
+   pieno nel verde della cornice: è l'unica azione primaria della slide. */
+#slide-innesto .im-inn-funziona { position: absolute; right: 1rem; bottom: calc(-1 * clamp(0.45rem, calc(0.6 * var(--vu)), 1.2rem)); translate: 0 50%; z-index: 3; pointer-events: auto;
+  display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.22rem 0.95rem 0.22rem 0.7rem; border: 0; border-radius: 999px; background: #6cc04a; color: #0d2a03;
+  font-family: inherit; font-size: clamp(0.84rem, calc(0.78 * var(--vu)), 1.7rem); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.3; white-space: nowrap; cursor: pointer;
+  box-shadow: 0 0 0 4px rgba(108, 192, 74, 0.18), 0 8px 18px -10px rgba(0, 0, 0, 0.6); transition: background 0.18s ease, box-shadow 0.25s ease; }
+#slide-innesto .im-inn-funziona svg { width: 0.95em; height: 0.95em; fill: currentColor; flex: none; }
+#slide-innesto .im-inn-funziona-d { font-weight: 600; letter-spacing: 0; text-transform: none; opacity: 0.8; }
+#slide-innesto .im-inn-funziona:hover { background: #8fd673; box-shadow: 0 0 0 6px rgba(108, 192, 74, 0.25), 0 10px 22px -10px rgba(0, 0, 0, 0.6); }
+#slide-innesto .im-inn-funziona:focus-visible { outline: 3px solid #ffffff; outline-offset: 2px; }
+#slide-innesto .im-inn[data-svc-aperto] .im-inn-funziona { visibility: hidden; }
+#slide-innesto .im-inn[data-ingresso-aperto] .im-inn-funziona-d { display: none; }
+#slide-innesto .im-inn[data-funziona-via] .im-inn-funziona { opacity: 0; pointer-events: none; }
+#slide-innesto .im-inn-funziona { transition: background 0.18s ease, box-shadow 0.25s ease, opacity 0.2s ease; }
+@media (max-width: 1200px) { #slide-innesto .im-inn-funziona-d { display: none; } }
+@media (max-width: 900px) { #slide-innesto .im-inn-funziona { position: static; translate: none; margin-top: 0.6rem; } }
+
+
+/* I CANALI SU UNA RIGA CIASCUNO (owner, 16 nov 2026): «Online» e «Offline» con la
+   stessa forma, una riga per voce. «self-service» è uscito dalla riga ed è nella nota
+   per chi presenta; il carattere non si riduce. */
+#slide-innesto .im-carta-canale { white-space: nowrap; column-gap: 0.35rem; }
+/* Il motore cede spazio alle iniziative (Journey Optimizer, sotto, le copre
+   tutte e due e non cambia): così «programmate» e «su evento» stanno su una
+   riga sola a ogni larghezza, e «clienti» resta sopra. 16 nov 2026. */
+#slide-innesto .im-inn { grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr) minmax(0, 1.15fr) minmax(0, 1.17fr); }
+#slide-innesto [data-carta="canali"] .im-carta-f { padding-inline: 0.8rem 0.7rem; }
+@media (max-width: 1100px) { #slide-innesto .im-carta-canale { white-space: normal; } }
+/* Con la colonna dei Canali più larga, sotto i 1360 px le etichette delle frecce
+   centrali hanno meno spazio: rientro più stretto, così non sbordano. */
+@media (max-width: 1359px) { #slide-innesto .im-inn-f > span { padding-left: 0.5rem; } }
+/* Sotto i 1360 px la colonna dei Canali si allarga meno (la freccia bianca «Next Best
+   Experience» ha bisogno della sua colonna) e la carta stringe ancora il margine. */
+@media (max-width: 1359px) {
+  #slide-innesto .im-inn { grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 1.2fr) minmax(0, 1.05fr); }
+  #slide-innesto [data-carta="canali"] .im-carta-f { padding-inline: 0.55rem 0.4rem; }
+  #slide-innesto .im-carta-canale { column-gap: 0.28rem; }
+}

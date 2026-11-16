@@ -1,5 +1,6 @@
 /** Ogni slide del deck, pagina per pagina: la leggono la console e le note per chi presenta. Ogni <Slide id> nuova va registrata qui. */
-export interface SlideEntry { id: string; label: string; }
+/** `riserva`: fuori dal percorso delle frecce, raggiungibile dal pannello «Vai a…» (components/ModoRelatore.astro). */
+export interface SlideEntry { id: string; label: string; riserva?: boolean }
 export interface PageEntry { slug: string; label: string; slides: SlideEntry[]; }
 
 export const PAGE_REGISTRY: PageEntry[] = [
@@ -27,25 +28,25 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-m-03', label: '03 Engagement: da pseudonimo a nome' },
     { id: 'slide-m-04', label: '04 Engagement: quattro candidate, una parte' },
     { id: 'slide-m-05', label: '05 Engagement: il percorso parte dall’evento' },
-    { id: 'slide-m-06', label: '06 Customer Engagement: il percorso attiva la filiale' },
+    { id: 'slide-m-06', label: '06 Ingaggio clienti e non clienti: il percorso attiva la filiale' },
     { id: 'slide-m-07', label: '07 CX Analytics: quanto è costato acquisirla' },
   ]},
   { slug: 'messa-a-terra', label: 'Dove si collega Adobe e che cosa si misura (03)', slides: [
     { id: 'slide-cover', label: 'Cover: Dove si collega Adobe e che cosa si misura' },
     { id: 'slide-innesto', label: 'L’innesto: Adobe si aggiunge, si parte dai percorsi nuovi, Real-Time Activation, Journey Optimizer · AI Decisioning e CJA' },
-    { id: 'slide-capacita', label: 'Che cosa fa ciascun componente nel percorso di Giulia: le capability' },
-    { id: 'slide-chiave', label: 'Più identificativi, una persona sola: la storia da non‑cliente a cliente' },
     { id: 'slide-cja-banca', label: 'Quattro risposte che una banca ottiene da CJA' },
+    { id: 'slide-chiave', label: 'Più identificativi, una persona sola: la storia da non‑cliente a cliente' },
     { id: 'slide-flusso', label: 'Dalla email allo sportello: il flusso fra i punti di contatto (Sankey)' },
     { id: 'slide-attribuzione', label: 'Quanto vale ogni canale, anche quando la vendita si chiude in filiale' },
-    { id: 'slide-ritorno', label: 'Quello che si impara da Giulia migliora la relazione con il prossimo cliente' },
+    { id: 'slide-capacita', label: 'In sintesi: che cosa fa ciascun componente (riepilogo prima di Coworker)' },
+    { id: 'slide-ritorno', label: 'Quello che si impara da Giulia migliora la relazione con il prossimo cliente', riserva: true },
   ]},
   { slug: 'coworker', label: 'CX Enterprise Coworker (04)', slides: [
     { id: 'slide-cover', label: 'Cover: divisore del capitolo' },
     // slide-cosa depubblicata il 13 nov 2026 (COSA_PUBBLICATA in coworker.astro)
     { id: 'slide-video', label: 'Video demo con i dati del cliente: slot da console' },
   ]},
-  { slug: 'risultati', label: 'Banche che lo fanno già (05)', slides: [
+  { slug: 'risultati', label: 'Referenze (05)', slides: [
     { id: 'slide-cover',   label: 'Cover: una banca che lo fa già' },
     { id: 'slide-santander',       label: 'Santander Brasil: reagire entro 15 minuti' },
     { id: 'slide-credit-agricole', label: 'Crédit Agricole Italia: +15% al primo acquisto' },
@@ -54,8 +55,9 @@ export const PAGE_REGISTRY: PageEntry[] = [
   ]},
   { slug: 'prossimi-passi', label: 'I prossimi passi (06)', slides: [
     { id: 'slide-cover',  label: 'Cover: prossimi passi' },
-    { id: 'slide-da-voi', label: 'La proposta: un trimestre sul mutuo, quattro misure e l’ask (le altre a richiesta)' },
-    { id: 'slide-fasi',   label: 'Come si parte: tre tappe, chi guida e quando (il dettaglio a richiesta)' },
+    { id: 'slide-insieme', label: 'Da qui, insieme: che cosa approfondiamo e in che ordine (tavola per la discussione)' },
+    { id: 'slide-da-voi', label: 'La proposta: un trimestre sul mutuo, quattro misure e l’ask (le altre a richiesta)', riserva: true },
+    { id: 'slide-fasi',   label: 'Come si parte: tre tappe, chi guida e quando (il dettaglio a richiesta)', riserva: true },
     { id: 'slide-firma',  label: 'La firma: Adobe × Intesa Sanpaolo, chiude il percorso' },
   ]},
   /* ⚠️ Le pagine FUORI PERCORSO stanno in coda. La console costruisce

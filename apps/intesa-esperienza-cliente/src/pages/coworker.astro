@@ -40,6 +40,26 @@ const currentPath = Astro.url.pathname;
    cambiarla si cambia l'URN qui, una riga. */
 const COSA_PUBBLICATA = false;
 const VIDEO_DEMO = 'https://delivery-p151367-e1559221.adobeaemcloud.com/adobe/assets/urn:aaid:aem:f5401ffd-52b6-4ec1-bbc6-14f9f50f45d0/play';
+/* IL PLAYER, NEL DECK E NON IN UN IFRAME (16 nov 2026). La pagina «/play» di Dynamic
+   Media inizializza il suo player con `isLetterBoxed: false`, che sul video diventa
+   `object-fit: cover` in linea: a schermo intero, su uno schermo non 16:9, il video
+   si TAGLIA (ai lati su un MacBook 16:10, sopra e sotto su un ultrawide). Dentro un
+   iframe di un'altra origine non si corregge. Qui si carica lo stesso player, dagli
+   stessi indirizzi Adobe, con `isLetterBoxed: true`: stesso streaming, stessi
+   comandi, il video intero. Se il player non arriva (rete), resta l'iframe di prima. */
+const VIDEO_ASSET = VIDEO_DEMO.replace(/\/play$/, '');
+/* I SEGNALIBRI (team, 16 nov 2026): per saltare da un passaggio all'altro mentre si
+   racconta. I tempi vengono dai fotogrammi del video (uno ogni 5 secondi). */
+const SEGNALIBRI = [
+  { t: 0, it: 'Coworker e le sue personalizzazioni', en: 'Coworker and its customisations' },
+  { t: 32, it: 'Clienti per canale', en: 'Customers by channel' },
+  { t: 58, it: 'Canali e metriche di business', en: 'Channels and business metrics' },
+  { t: 98, it: 'Il funnel del mutuo', en: 'The mortgage funnel' },
+  { t: 148, it: 'L’audience da riprendere', en: 'The audience to win back' },
+  { t: 173, it: 'Il journey, preparato da Coworker', en: 'The journey, drafted by Coworker' },
+  { t: 208, it: 'In Journey Optimizer', en: 'In Journey Optimizer' },
+];
+const mmss = (t: number) => `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`;
 
 const STORY = [
   { n: '1', t: { it: 'Obiettivo', en: 'Objective' },
@@ -66,7 +86,7 @@ const STORY = [
     <Slide id="slide-cover" bg="secondary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
       <div slot="backdrop" class="im-div-bg" style={`--foto: url('${fondo.src}'); --fuoco: center 44%`}></div>
       <Divisore num={ch.num}
-        tIt="Coworker prepara una bozza; l’approvazione resta a chi approva oggi" tEn="Coworker prepares a draft; approval stays with today’s approvers" />
+        tIt="Dall’analisi all’azione, in una conversazione sola" tEn="From analysis to action, in a single conversation" />
     </Slide>
 
     {/* DEPUBBLICATA (owner, 13 nov 2026): la slide «Prepara audience,
@@ -125,7 +145,12 @@ const STORY = [
           <T as="h2" class="im-ado-t im-ado-t--stretto" it="Un’iniziativa sul mutuo preparata in una sessione" en="A mortgage initiative prepared in one session" />
           {/* Il player è quello di Dynamic Media, in iframe (13 nov 2026):
               controlli, schermo intero e streaming adattivo li porta lui. */}
-          <iframe class="im-cow-video" src={VIDEO_DEMO} title="Video della dimostrazione" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+          <div class="im-cow-video im-cow-player" id="im-cow-player" data-asset={VIDEO_ASSET} data-play={VIDEO_DEMO} role="region" aria-label="Video della dimostrazione"></div>
+          <ol class="im-cow-seg" aria-label="Segnalibri del video">
+            {SEGNALIBRI.map((s) => (
+              <li><button type="button" data-seg-t={s.t}><span class="im-cow-seg-t">{mmss(s.t)}</span><T as="span" it={s.it} en={s.en} /></button></li>
+            ))}
+          </ol>
           <T as="p" class="im-fonte-riga" it="Sui vostri dati, dopo l’attivazione e con il perimetro concordato in fase 0." en="On your data, after activation and within the scope agreed in phase 0." />
         </div>
         <ol class="im-story">
@@ -146,17 +171,82 @@ const STORY = [
 </BaseLayout>
 
 <script>
-  /* Il player sta in un iframe di un'altra origine: dopo un clic la tastiera
-     resta a lui e le frecce non fanno più avanzare il deck (verificato il
-     13 nov 2026). Il clic intanto è già arrivato al player, quindi il focus
-     si restituisce al deck; a schermo intero no, lì i tasti sono del player. */
-  window.addEventListener('blur', () => {
+  /* Il player di Dynamic Media montato nella pagina (vedi la nota su VIDEO_ASSET).
+     Si carica quando la slide del video è a portata: CSS e script dagli indirizzi
+     Adobe, poi init con il video intero (`isLetterBoxed: true`). */
+  const DM = 'https://delivery-p151367-e1559221.adobeaemcloud.com/adobe/assets/urn:aaid:aem:';
+  type DmWin = Window & { dmViewers?: { VideoPlayer?: { init(id: string, o: object): Promise<{ setupPlayer(c: unknown): void }> }; CorePlayer?: unknown } };
+  const w = window as DmWin;
+  const carica = (src: string) => new Promise<void>((ok, ko) => {
+    if (document.querySelector(`script[src="${src}"]`)) { ok(); return; }
+    const sc = Object.assign(document.createElement('script'), { src, async: false });
+    sc.onload = () => ok(); sc.onerror = () => ko(new Error(src));
+    document.head.appendChild(sc);
+  });
+  function ripiego(box: HTMLElement) {
+    if (box.querySelector('iframe')) return;
+    box.replaceChildren(Object.assign(document.createElement('iframe'), {
+      src: box.dataset.play!, title: 'Video della dimostrazione', allow: 'autoplay; fullscreen; picture-in-picture; encrypted-media',
+    }));
+  }
+  async function avvia(box: HTMLElement) {
+    if (box.dataset.pronto) return;
+    box.dataset.pronto = '1';
+    const asset = box.dataset.asset!;
+    if (!document.querySelector('link[data-dm-css]')) {
+      const l = Object.assign(document.createElement('link'), { rel: 'stylesheet', href: DM + 'dmviewers-html5-css/as/core-player.css' });
+      l.dataset.dmCss = '';
+      document.head.appendChild(l);
+    }
+    try {
+      await carica(DM + 'dmviewers-html5/as/VideoPlayer.js');
+      const p = w.dmViewers!.VideoPlayer!.init(box.id, {
+        sources: { DASH: asset + '/manifest.mpd', HLS: asset + '/manifest.m3u8' },
+        posterImage: asset + '/as/thumbnail.jpeg?width=1280&height=720',
+        solution: 'polaris', autoplay: false, controls: true, isLetterBoxed: true,
+      });
+      await carica(DM + 'dmviewers-html5/as/CorePlayer.js');
+      (await p).setupPlayer(w.dmViewers!.CorePlayer);
+    } catch { ripiego(box); }
+  }
+  const video = () => document.querySelector<HTMLVideoElement>('#im-cow-player video');
+  function prepara() {
+    const box = document.getElementById('im-cow-player');
+    if (!box) return;
+    const slide = box.closest<HTMLElement>('[data-slide]');
+    const via = () => { if (!slide || slide.getAttribute('aria-hidden') !== 'true') void avvia(box); };
+    via();
+    if (slide) new MutationObserver(via).observe(slide, { attributes: true, attributeFilter: ['aria-hidden'] });
+    setTimeout(() => { if (!box.querySelector('video, iframe')) ripiego(box); }, 9000);
+  }
+  prepara();
+  document.addEventListener('astro:page-load', prepara);
+
+  /* I segnalibri: saltano e fanno partire. Quello in corso resta acceso. */
+  document.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-seg-t]');
+    if (!b) return;
+    const v = video();
+    if (!v) return;
+    v.currentTime = Number(b.dataset.segT);
+    void v.play().catch(() => {});
+    b.blur();
+  });
+  document.addEventListener('timeupdate', (e) => {
+    const v = e.target as HTMLVideoElement;
+    if (!v.closest?.('#im-cow-player')) return;
+    const bs = [...document.querySelectorAll<HTMLButtonElement>('[data-seg-t]')];
+    let on = -1; bs.forEach((b, i) => { if (v.currentTime + 0.5 >= Number(b.dataset.segT)) on = i; });
+    bs.forEach((b, i) => b.toggleAttribute('aria-current', i === on));
+  }, true);
+
+  /* Dopo un clic nel player il fuoco resta lì e Spazio o le frecce non muovono più
+     il deck: si restituisce, salvo a schermo intero, dove i tasti sono del player. */
+  document.addEventListener('pointerup', (e) => {
+    if (!(e.target as HTMLElement).closest?.('#im-cow-player')) return;
     setTimeout(() => {
-      const a = document.activeElement;
-      if (a instanceof HTMLIFrameElement && a.classList.contains('im-cow-video') && !document.fullscreenElement) {
-        a.blur();
-        window.focus();
-      }
+      const a = document.activeElement as HTMLElement | null;
+      if (a && a.closest('#im-cow-player') && !document.fullscreenElement) a.blur();
     }, 0);
   });
 </script>

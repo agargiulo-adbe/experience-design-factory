@@ -145,7 +145,8 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Cas
       testo: { it: 'Governance globale dei dati · un ecosistema comune fra i Paesi del gruppo', en: 'Global data governance · one ecosystem shared across the group’s countries' },
       icona: 'rete',
     },
-    ponte: { it: 'Nessuno di questi casi è uguale al vostro: i numeri sono quelli dichiarati in pubblico.', en: 'None of these cases is the same as yours: the figures are the ones stated in public.' },
+    /* La frase «Nessuno di questi casi è uguale al vostro» esce dalla slide e si dice
+       a voce, prima del caso (commento del team, 16 nov 2026): sta nelle note. */
     fonte: { url: FONTI.santander, nome: 'business.adobe.com · Santander' },
   },
   creditAgricole: {

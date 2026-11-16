@@ -31,7 +31,7 @@ export const CHAPTERS: Chapter[] = [
   { slug: 'momenti', num: '', title: { it: 'I sette momenti', en: 'The seven moments' } },
   { slug: 'messa-a-terra', num: '03', title: { it: 'Dove ci innestiamo', en: 'Where we plug in' } },
   { slug: 'coworker', num: '04', title: { it: 'CX Enterprise Coworker', en: 'CX Enterprise Coworker' } },
-  { slug: 'risultati', num: '05', title: { it: 'Banche che lo fanno già', en: 'Banks already doing it' } },
+  { slug: 'risultati', num: '05', title: { it: 'Referenze', en: 'References' } },
   { slug: 'prossimi-passi', num: '06', title: { it: 'I prossimi passi', en: 'Next steps' } },
 ];
 
@@ -41,7 +41,7 @@ export const VOCI_NAV: { n: string; it: string; en: string; slug: string; ancora
   { n: '02', it: 'Giulia', en: 'Giulia', slug: 'scenario', pagine: ['scenario', 'persona', 'momenti'] },
   { n: '03', it: 'Dove ci innestiamo', en: 'Where we plug in', slug: 'messa-a-terra', pagine: ['messa-a-terra', 'approfondimenti'] },
   { n: '04', it: 'Coworker', en: 'Coworker', slug: 'coworker', pagine: ['coworker'] },
-  { n: '05', it: 'Banche', en: 'Banks', slug: 'risultati', pagine: ['risultati'] },
+  { n: '05', it: 'Referenze', en: 'References', slug: 'risultati', pagine: ['risultati'] },
   { n: '06', it: 'I prossimi passi', en: 'Next steps', slug: 'prossimi-passi', pagine: ['prossimi-passi'] },
 ];
 

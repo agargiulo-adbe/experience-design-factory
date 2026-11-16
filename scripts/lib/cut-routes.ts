@@ -41,7 +41,9 @@ export const CUT_SETS: Record<string, CutSpec> = {
     /* `innesto.ts` dall'11 nov 2026: la slide «Accanto» del taglio e
        l'innesto del percorso intero leggono la stessa riga di confine. */
     fonti: ['src/data/momenti.ts', 'src/data/referenze.ts', 'src/data/innesto.ts'],
-    slideMax: 6,
+    /* Sette dal 16 nov 2026: i sette momenti stanno in due tavole (prima e dopo
+       l'email) invece di uno solo, perché la versione breve è il piano B in sala. */
+    slideMax: 7,
     numeriSoloNelTaglio: ['10'],
   },
   'bper-sopra-quello-che-avete': {

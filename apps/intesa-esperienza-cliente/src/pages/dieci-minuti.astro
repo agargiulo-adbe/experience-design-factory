@@ -1,7 +1,9 @@
 ---
 /**
- * «In dieci minuti» — la Storia quando l'ora concessa diventa venti
- * minuti, e la versione che l'interlocutore gira al suo capo.
+ * «In breve» (era «In dieci minuti»: il nome diceva un tempo che con la
+ * versione breve del 16 nov 2026 non è più quello) — la Storia quando l'ora
+ * concessa si accorcia, e la versione che l'interlocutore gira al suo capo.
+ * È il piano B in sala: si apre dal pannello «Vai a…» (tasto G).
  *
  * ⚠️ PERCHÉ ESISTE (detto in riunione il 29 ott 2026, parole testuali):
  * «Già troppo lungo. […] così solo sta roba ci leva 40 minuti.» Il
@@ -31,7 +33,7 @@ import CoBrand from '../components/CoBrand.astro';
 import LoopVideo from '@edf/core/blocks/immersive/LoopVideo.astro';
 import T from '@edf/core/blocks/i18n/T.astro';
 import { href } from '@edf/core/utils/url.js';
-import { MOMENTI, DOMANDE_IN_SLIDE, CORPO_IN_SLIDE } from '../data/momenti';
+import { MOMENTI, TITOLO_GIRO } from '../data/momenti';
 import { MISURE, ASK, SEGUITO, CASI } from '../data/referenze';
 import Caso from '../components/Caso.astro';
 import { TITOLO, CONFINE, OGGI, ACCANTO, TAVOLO, IPOTESI, WEB_ANALYTICS } from '../data/innesto';
@@ -46,24 +48,18 @@ type Bil = { it: string; en: string };
 const corto = (m: (typeof MISURE)[number], k: 'l' | 'oggi' | 'poi'): Bil =>
   ((m as unknown as Record<string, Bil | undefined>)[`${k}Breve`]) ?? m[k];
 import CircoloJourney from '../components/CircoloJourney.astro';
-import MockCliente from '../components/MockCliente.astro';
-import MockAdobe from '../components/MockAdobe.astro';
-import DaVerificare from '../components/DaVerificare.astro';
-import Azione from '../components/Azione.astro';
 import ritratto from '../assets/generated/persona-giulia.webp';
-import scena from '../assets/generated/scena-03-tavolo.webp';
 import fondo from '../assets/generated/fondo-risultati.webp';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 const CLIP = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media';
 
-/* Il momento che porta la differenza: da visita anonima a persona con un
-   nome. È il terzo, ed è quello in cui la piattaforma fa una cosa che il
-   CRM non può fare, perché il CRM conosce i clienti. */
-const M = MOMENTI[2];
+/* I sette momenti in due tavole, come nello scenario: prima e dopo l'email. */
+const PRIMA = MOMENTI.slice(0, 3);
+const DOPO = MOMENTI.slice(3);
 ---
-<BaseLayout title="In dieci minuti">
+<BaseLayout title="In breve">
   <div class="fixed top-0 left-0 right-0 z-50">
     <Navigation currentPath={currentPath} base={base} />
   </div>
@@ -90,61 +86,54 @@ const M = MOMENTI[2];
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-cerslide" data-reveal>
         <T as="p" class="im-mom-blocco" it="Il percorso, in un giro" en="The path, as one loop" />
-        <T as="h2" class="im-cerslide-t" it="Giulia diventa cliente in sette momenti" en="Giulia becomes a customer in seven moments" data-reveal data-reveal-delay="0.08" />
+        <T as="h2" class="im-cerslide-t" it={TITOLO_GIRO.it} en={TITOLO_GIRO.en} data-reveal data-reveal-delay="0.08" />
         <CircoloJourney grande data-reveal data-reveal-delay="0.16" />
         <T as="p" class="im-cerslide-l" it="Per ogni fermata: il canale, quello che fa lei, e quello che fate voi." en="For each stop: the channel, what she does, and what you do." data-reveal data-reveal-delay="0.26" /> {/* copy-audit-ignore · L3 — parallelo voluto: il suo lato e il vostro. La forma breve («la sua mossa e la vostra») scende del 19%, fuori dal contratto di lunghezza. */}
       </div>
     </Slide>
 
-    <Slide id="slide-momento" bg="inverse" align="left">
-      <div slot="backdrop" class="im-bg-vx" style={`--foto: url('${scena.src}'); --fuoco: center 42%`}></div>
-      <div class="im-due" data-reveal>
-        <header class="im-due-testa">
-          <T as="span" class="im-mom-blocco" data-gruppo={M.gruppo} it={M.blocco.it} en={M.blocco.en} />
-          <T as="span" class="im-due-ora" it={`${M.ora.it} · ${M.dove.it}`} en={`${M.ora.en} · ${M.dove.en}`} />
-          <span class="im-due-passo">
-            <span class="im-due-passo-n">{M.n}</span>
-            <span class="im-due-passo-d">/ {M.of}</span>
-          </span>
+    {/* IL CAPITOLO DI GIULIA, COMPRESSO (owner, 16 nov 2026). Nella versione breve i sette
+        momenti stanno in due slide, divise come nello scenario: prima dell'email e dopo email
+        e consenso. I testi sono quelli del percorso intero, dalla stessa fonte (`MOMENTI`):
+        quando e dove, che cosa fa Giulia, che cosa fa la banca, il prodotto Adobe. Cambia
+        la misura, non il contenuto. Nessun ↓: la slide si racconta intera. */}
+    <Slide id="slide-prima" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-br" data-reveal>
+        <header class="im-br-testa">
+          <T as="p" class="im-br-k" it="Giulia · i sette momenti" en="Giulia · the seven moments" />
+          <T as="h2" class="im-ado-t im-br-t" it="Prima dell’email" en="Before the email" />
         </header>
+        <ol class="im-br-g" data-n={PRIMA.length}>
+          {PRIMA.map((m) => (
+            <li class="im-br-c" data-gruppo={m.gruppo}>
+              <p class="im-br-h"><span class="im-br-n">{m.n}</span><T as="span" class="im-br-ora" it={`${m.ora.it} · ${m.dove.it}`} en={`${m.ora.en} · ${m.dove.en}`} /></p>
+              <p class="im-br-lato"><img class="im-br-r" src={ritratto.src} alt="" width="56" height="56" loading="lazy" /><T as="span" it={m.cliente.titolo.it} en={m.cliente.titolo.en} /></p>
+              <p class="im-br-lato im-br-lato--is"><span class="im-br-is" aria-hidden="true">IS</span><T as="span" it={m.interno.titolo.it} en={m.interno.titolo.en} /></p>
+              <p class="im-br-p"><span class="adb-tile im-br-adobe" role="img" aria-label="Adobe"></span><strong>{m.prodotto.replace('AI Decisioning', 'AI\u00a0Decisioning').replace('for Performance', 'for\u00a0Performance')}</strong></p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </Slide>
 
-        <section class="im-due-banda" data-lato="cliente" data-substep data-side="in">
-          <div class="im-due-txt">
-            <p class="im-due-chi">
-              <img class="im-due-chi-r" src={ritratto.src} alt="" width="120" height="120" loading="eager" />
-              <span>
-                <T as="span" class="im-due-chi-n" it="Giulia" en="Giulia" />
-                <T as="span" class="im-due-chi-q" it="Non ancora cliente" en="Not a customer yet" />
-              </span>
-            </p>
-            <T as="h2" class="im-due-t" it={M.cliente.titolo.it} en={M.cliente.titolo.en} />
-            {CORPO_IN_SLIDE && <T as="p" class="im-due-b" it={M.cliente.corpo.it} en={M.cliente.corpo.en} />}
-          </div>
-          <div class="im-due-mock">
-            <MockCliente chrome={M.cliente.chrome} scena="simulazione" compatto />
-            <Azione segno={M.cliente.chrome} />
-          </div>
-        </section>
-
-        <section class="im-due-banda" data-lato="interno" data-substep data-side="in">
-          <div class="im-due-txt">
-            <p class="im-due-chi">
-              <span class="im-due-chi-s" aria-hidden="true">IS</span>
-              <span>
-                <T as="span" class="im-due-chi-n" it="In Intesa Sanpaolo" en="Inside Intesa Sanpaolo" />
-                <T as="span" class="im-due-chi-q" it="Che cosa fa la banca" en="What the bank does" />
-              </span>
-            </p>
-            <T as="h2" class="im-due-t" it={M.interno.titolo.it} en={M.interno.titolo.en} />
-            {CORPO_IN_SLIDE && <T as="p" class="im-due-b" it={M.interno.corpo.it} en={M.interno.corpo.en} />}
-            <p class="im-due-pro im-due-tess"><strong>{M.prodotto}</strong><T as="span" it={M.funzione.it} en={M.funzione.en} /></p>
-            {DOMANDE_IN_SLIDE && <DaVerificare it={M.verifica.it} en={M.verifica.en} />}
-          </div>
-          <div class="im-due-mock">
-            <MockAdobe prodotto={M.interno.prodotto} compatto />
-            <Azione segno={M.gruppo} />
-          </div>
-        </section>
+    <Slide id="slide-dopo" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-br" data-reveal>
+        <header class="im-br-testa">
+          <T as="p" class="im-br-k" it="Giulia · i sette momenti" en="Giulia · the seven moments" />
+          <T as="h2" class="im-ado-t im-br-t" it="Dopo email e consenso" en="After email and consent" />
+        </header>
+        <ol class="im-br-g" data-n={DOPO.length}>
+          {DOPO.map((m) => (
+            <li class="im-br-c" data-gruppo={m.gruppo}>
+              <p class="im-br-h"><span class="im-br-n">{m.n}</span><T as="span" class="im-br-ora" it={`${m.ora.it} · ${m.dove.it}`} en={`${m.ora.en} · ${m.dove.en}`} /></p>
+              <p class="im-br-lato"><img class="im-br-r" src={ritratto.src} alt="" width="56" height="56" loading="lazy" /><T as="span" it={m.cliente.titolo.it} en={m.cliente.titolo.en} /></p>
+              <p class="im-br-lato im-br-lato--is"><span class="im-br-is" aria-hidden="true">IS</span><T as="span" it={m.interno.titolo.it} en={m.interno.titolo.en} /></p>
+              <p class="im-br-p"><span class="adb-tile im-br-adobe" role="img" aria-label="Adobe"></span><strong>{m.prodotto.replace('AI Decisioning', 'AI\u00a0Decisioning').replace('for Performance', 'for\u00a0Performance')}</strong></p>
+            </li>
+          ))}
+        </ol>
       </div>
     </Slide>
 

@@ -113,11 +113,25 @@ const frecce = MOMENTI.map((m, i) => {
 const LEGENDA = [
   { g: 'trovare', it: 'Farsi trovare', en: 'Brand visibility' },
   { g: 'contenuto', it: 'Content Factory', en: 'Content supply chain' },
-  { g: 'engagement', it: 'Customer Engagement', en: 'Customer engagement' },
+  { g: 'engagement', it: 'Ingaggio clienti e non clienti', en: 'Engaging customers and non-customers' },
   { g: 'piattaforma', it: 'CX Analytics', en: 'CX Analytics' },
 ] as const;
 
 const acceso = attivo > 0 ? MOMENTI[attivo - 1] : null;
+
+/* TRE PASSI, UNO PER FASE (team e owner, 16 nov 2026). Sette ↓ sul giro
+   erano sette pause prima di arrivare al punto, e i momenti si raccontano
+   comunque uno per uno nelle slide dopo. Il telecomando ne ha tre: blu
+   (01), rosa (02), verde (03→07, con il ritorno). Nel terzo i momenti
+   entrano DA SOLI uno dopo l'altro: il primo della fase è il passo, gli
+   altri lo seguono (`data-segue`, con il loro ritardo). */
+const fase = (g: string) => (g === 'trovare' ? 1 : g === 'contenuto' ? 2 : 3);
+const testa = (i: number) => i === 0 || fase(MOMENTI[i].gruppo) !== fase(MOMENTI[i - 1].gruppo);
+const ritardo = (i: number) => { let k = 0; for (let j = i; j > 0 && !testa(j); j--) k++; return k; };
+const passoAttr = (i: number) => !aPassi ? {} : testa(i)
+  ? { 'data-substep': '', 'data-side': 'in', 'data-fase-testa': String(fase(MOMENTI[i].gruppo)) }
+  : { 'data-segue': '', style: `--d:${(ritardo(i) * 0.38).toFixed(2)}s` };
+const ritornoAttr = aPassi ? { 'data-segue': '', style: `--d:${((ritardo(N - 1) + 1) * 0.38 + 0.1).toFixed(2)}s` } : {};
 ---
 <figure class:list={['im-cer', grande && 'im-cer--grande', ampio && 'im-cer--ampio', aPassi && 'im-cer--passi', className]}>
   <div class="im-cer-campo">
@@ -142,7 +156,7 @@ const acceso = attivo > 0 ? MOMENTI[attivo - 1] : null;
       const a = n.i > 0 ? archi[n.i - 1] : null;
       const f = n.i > 0 ? frecce[n.i - 1] : null;
       return (
-        <div class="im-cer-passo" data-substep={aPassi ? '' : null} data-side={aPassi ? 'in' : null}>
+        <div class="im-cer-passo" {...passoAttr(n.i)}>
           <svg class="im-cer-svg" viewBox="0 0 100 100" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
             {a && f && (
               <>
@@ -183,7 +197,7 @@ const acceso = attivo > 0 ? MOMENTI[attivo - 1] : null;
 
     {/* Il ritorno 07→01: l'ultimo passo, da solo. «Il settimo riporta al
         primo» è la frase che regge la slide, e qui si vede succedere. */}
-    <div class="im-cer-passo" data-substep={aPassi ? '' : null} data-side={aPassi ? 'in' : null}>
+    <div class="im-cer-passo" {...ritornoAttr}>
       <svg class="im-cer-svg" viewBox="0 0 100 100" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
         <circle class="im-cer-arco" data-gruppo={archi[N - 1].gruppo} data-ritorno
                 cx="50" cy="50" r={R}
