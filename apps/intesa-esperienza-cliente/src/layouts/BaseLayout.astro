@@ -140,6 +140,38 @@ const docTitle = (isHome || title === SITE_NAME || title === SITE.name) ? SITE_N
         };
       })();
     </script>
+    {/* ── L'interruttore dei pop-in in 3D ──────────────────────────────
+        `?pop3d=1` sostituisce le scene HTML dei tre «Come funziona» con le
+        clip Blender a passi (data/pop3d.ts); `?pop3d=0` torna alle scene
+        HTML. Resta in localStorage come `domande`. Default: SPENTO, perché
+        la versione 3D non ha ancora il verdetto del panel. */}
+    <script is:inline define:vars={{ PROJECT_SLUG }}>
+      (function () {
+        var CHIAVE = 'edf:pop3d:' + PROJECT_SLUG;
+        function applica(forza) {
+          var stato = forza || null;
+          try {
+            var q = forza ? null : new URLSearchParams(location.search).get('pop3d');
+            if (q === '1' || q === 'on' || q === 'si') { stato = 'on'; localStorage.setItem(CHIAVE, 'on'); }
+            else if (q === '0' || q === 'off' || q === 'no') { stato = 'off'; localStorage.setItem(CHIAVE, 'off'); }
+            else if (!forza) { stato = localStorage.getItem(CHIAVE); }
+          } catch (e) {}
+          if (stato === 'on') document.documentElement.setAttribute('data-pop3d', 'on');
+          else document.documentElement.removeAttribute('data-pop3d');
+        }
+        applica();
+        if (!window.__imPop3dBound) {
+          window.__imPop3dBound = true;
+          document.addEventListener('astro:after-swap', function () { applica(); });
+        }
+        /* Dalla console: vince sul parametro dell'indirizzo, che altrimenti lo riscriverebbe. */
+        window.__imPop3d = function (acceso) {
+          var stato = acceso === false ? 'off' : 'on';
+          try { localStorage.setItem(CHIAVE, stato); } catch (e) {}
+          applica(stato);
+        };
+      })();
+    </script>
     <ClientRouter />
   </head>
   <body>

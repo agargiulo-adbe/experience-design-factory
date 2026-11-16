@@ -5,11 +5,16 @@
  * dentro un SVG. Da chiuso è `display: none`, quindi i gate di layout non lo misurano.
  */
 import { SCENE, type ScenaId } from '../data/pop';
+import { POP3D } from '../data/pop3d';
 import '../styles/pop.css';
 interface Props { scena: ScenaId; }
 const { scena } = Astro.props as Props;
 const s = SCENE[scena];
 const frecciaD = 'M1 7h24M19 1l6 6-6 6';
+/* La versione 3D (data/pop3d.ts) si accende con `?pop3d=1`: senza, questo palco resta
+   vuoto e nascosto, e non scarica niente. Se il video non parte, torna la scena HTML. */
+const p3 = POP3D[scena];
+const base3d = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p3.clip}/`;
 ---
 <dialog class="pp" data-pp data-deck-nochrome data-audit-skip data-tot={s.passi.length} data-scena={scena} aria-label={s.prodotto}>
   <div class="pp-in">
@@ -23,6 +28,11 @@ const frecciaD = 'M1 7h24M19 1l6 6-6 6';
     </header>
 
     <div class="pp-scena">
+      <div class="pp-3d" data-pp3d={JSON.stringify(p3)} data-base={base3d} aria-hidden="true">
+        <video muted playsinline preload="none"></video>
+        <div class="pp-3d-et"></div>
+        <p class="pp-3d-nota"></p>
+      </div>
       {scena === 'cja' && (
         <div class="pp-cja">
           <div class="pp-strato" data-da="2">
@@ -130,6 +140,32 @@ const frecciaD = 'M1 7h24M19 1l6 6-6 6';
      a capo SOTTO la proposta invece di spingere la riga fuori dal riquadro. */
   dialog.pp .pp-cand li[data-motivo] { flex-wrap: wrap; row-gap: 0.25rem; }
   dialog.pp .pp-cand li[data-motivo] em { flex-basis: 100%; white-space: normal; }
+
+  /* ── La versione 3D (?pop3d=1) ─────────────────────────────
+     Il palco 16:9 sta nella cella della scena senza deformarsi (unità del
+     contenitore). Le etichette sono HTML sopra il video, alle coordinate che
+     Blender ha calcolato a fine passo: l'etichetta NUOVA del passo ha il bordo,
+     le altre si attenuano. */
+  .pp-3d { display: none; }
+  :global(html[data-pop3d='on']) dialog.pp:not([data-pp3d-ko]) .pp-scena { container-type: size; padding: clamp(0.6rem, 1.4vh, 1.2rem); background: #0d2901; }
+  :global(html[data-pop3d='on']) dialog.pp:not([data-pp3d-ko]) .pp-scena > :not(.pp-3d) { display: none; }
+  :global(html[data-pop3d='on']) dialog.pp:not([data-pp3d-ko]) .pp-3d {
+    display: block; position: relative; margin: auto; overflow: hidden; border-radius: 0.6rem;
+    width: min(100cqw, calc(100cqh * 16 / 9)); aspect-ratio: 16 / 9; background: #0d2901;
+  }
+  .pp-3d video { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .pp-3d :global(.pp-3d-e) {
+    position: absolute; transform: translate(-50%, -100%); white-space: pre-line; width: max-content; text-align: center; pointer-events: none;
+    font-weight: 600; font-size: clamp(0.75rem, 1.3cqw, 1.3rem); line-height: 1.25; color: #fff;
+    padding: 0.1em 0.5em; border-radius: 0.35em; background: rgba(13, 41, 1, 0.82);
+    opacity: 0; transition: opacity 0.45s, left 0.6s, top 0.6s;
+  }
+  .pp-3d :global(.pp-3d-e.on) { opacity: 0.62; }
+  .pp-3d :global(.pp-3d-e.nuova) { opacity: 1; box-shadow: 0 0 0 1px #5ca740; }
+  .pp-3d :global(.pp-3d-e.no) { color: #c8d0c4; white-space: nowrap; }
+  .pp-3d :global(.pp-3d-e.no small) { display: inline; font-size: 0.85em; font-weight: 400; color: inherit; letter-spacing: 0; }
+  dialog.pp .pp-3d-nota { position: absolute; right: 1.2%; bottom: 2%; font-size: clamp(0.75rem, 1.2cqw, 1.1rem); color: #c8d0c4; opacity: 0; transition: opacity 0.45s; }
+  dialog.pp .pp-3d-nota.on { opacity: 1; }
 </style>
 
 <script>
@@ -137,10 +173,122 @@ const frecciaD = 'M1 7h24M19 1l6 6-6 6';
      più istanze per pagina. Lo script di un componente Astro gira una volta. */
   const aperto = () => document.querySelector<HTMLDialogElement>('dialog.pp[open]');
 
+  /* ── La versione 3D ──────────────────────────────────────────
+     Ogni passo riproduce SOLO il suo tratto di video e si ferma sullo stato finale
+     (segmentazione): il video segue chi parla. Indietro, o con la riduzione del
+     movimento, si salta allo stato finale senza animare. */
+  const FPS = 24;
+  type Et = { passo: number; nome: string; x: number; y: number; visibile: boolean };
+  type Stato3d = { cap: { da: number; a: number }[]; et: Et[]; ferma: number | null; pronto: Promise<void> };
+  const stati = new WeakMap<HTMLElement, Stato3d>();
+  const acceso3d = (d: HTMLDialogElement) =>
+    document.documentElement.dataset.pop3d === 'on' && !d.hasAttribute('data-pp3d-ko');
+
+  function prepara3d(d: HTMLDialogElement): Stato3d | null {
+    const palco = d.querySelector<HTMLElement>('.pp-3d');
+    if (!palco || !acceso3d(d)) return null;
+    let st = stati.get(palco);
+    if (st) return st;
+    const v = palco.querySelector('video')!;
+    const base = palco.dataset.base!;
+    const clip = JSON.parse(palco.dataset.pp3d!).clip as string;
+    const ko = () => { d.setAttribute('data-pp3d-ko', ''); };
+    st = { cap: [], et: [], ferma: null, pronto: Promise.resolve() };
+    const s = st;
+    st.pronto = Promise.all([
+      fetch(base + 'capitoli.json').then((r) => r.json()),
+      fetch(base + 'etichette.json').then((r) => r.json()),
+    ]).then(([c, e]) => {
+      s.cap = c.capitoli ?? c; s.et = e;
+      v.poster = base + clip + '.poster.jpg';
+      v.innerHTML = `<source src="${base}${clip}.webm" type="video/webm"><source src="${base}${clip}.mp4" type="video/mp4">`;
+      v.querySelector('source:last-child')?.addEventListener('error', ko);
+      v.preload = 'auto'; v.load();
+      return new Promise<void>((ok) => {
+        if (v.readyState >= 2) ok(); else v.addEventListener('loadeddata', () => ok(), { once: true });
+        setTimeout(ok, 4000);
+      });
+    }).catch(ko);
+    v.addEventListener('timeupdate', () => {
+      if (s.ferma !== null && v.currentTime >= s.ferma) { v.pause(); v.currentTime = s.ferma - 0.5 / FPS; s.ferma = null; }
+    });
+    stati.set(palco, st);
+    return st;
+  }
+
+  function etichette3d(palco: HTMLElement, st: Stato3d, p: number) {
+    const cfg = JSON.parse(palco.dataset.pp3d!) as {
+      nomi: Record<string, string>; escluse?: Record<string, number>; motivi?: Record<string, string>;
+      sposta?: Record<string, [number, number]>; note?: Record<string, string>;
+    };
+    const box = palco.querySelector<HTMLElement>('.pp-3d-et')!;
+    if (!box.childElementCount) {
+      for (const n of Object.keys(cfg.nomi)) {
+        const e = document.createElement('span'); e.className = 'pp-3d-e'; e.dataset.n = n; box.appendChild(e);
+      }
+    }
+    box.querySelectorAll<HTMLElement>('.pp-3d-e').forEach((e) => {
+      const n = e.dataset.n!;
+      const qui = st.et.find((x) => x.passo === p && x.nome === n);
+      const prima = st.et.find((x) => x.passo === p - 1 && x.nome === n);
+      // Un oggetto tagliato dal bordo non porta etichetta: tirerebbe l'occhio fuori scena.
+      const on = !!qui && qui.visibile && qui.x > 0.06 && qui.x < 0.94 && qui.y > 0.06 && qui.y < 0.82;
+      e.classList.toggle('on', on);
+      e.classList.toggle('nuova', on && !(prima && prima.visibile));
+      const esclusa = !!(cfg.escluse?.[n] && p >= cfg.escluse[n]);
+      e.classList.toggle('no', esclusa);
+      const nome = cfg.nomi[n];
+      // Il motivo sta accanto all'ULTIMA esclusione fatta: quelle di prima restano
+      // barrate senza motivo, se no il fondo della scena diventa un elenco.
+      const ultima = Math.max(0, ...Object.values(cfg.escluse ?? {}).filter((x) => x <= p));
+      if (esclusa && cfg.motivi?.[n] && cfg.escluse![n] === ultima) {
+        e.replaceChildren(Object.assign(document.createElement('s'), { textContent: nome.replace('\n', ' ') }), ' ',
+          Object.assign(document.createElement('small'), { textContent: '· ' + cfg.motivi[n] }));
+      } else if (esclusa) {
+        e.replaceChildren(Object.assign(document.createElement('s'), { textContent: nome.replace('\n', ' ') }));
+      } else e.textContent = nome;
+      if (qui) {
+        const [dx, dy] = cfg.sposta?.[n] ?? [0, 0];
+        e.style.left = qui.x * 100 + dx + '%'; e.style.top = qui.y * 100 + dy + '%';
+      }
+    });
+    // Un'etichetta larga vicino al bordo si tiene DENTRO il palco: tagliata a metà
+    // («tore di targeting») si legge peggio che spostata di qualche pixel.
+    const W = palco.clientWidth, m = 6;
+    box.querySelectorAll<HTMLElement>('.pp-3d-e.on').forEach((e) => {
+      const c = (parseFloat(e.style.left) / 100) * W, w = e.offsetWidth;
+      const dx = Math.max(0, m + w / 2 - c) - Math.max(0, c + w / 2 - (W - m));
+      e.style.transform = `translate(calc(-50% + ${dx}px), -100%)`;
+    });
+    const nota = palco.querySelector<HTMLElement>('.pp-3d-nota')!;
+    const t = cfg.note?.[String(p)];
+    nota.textContent = t ?? ''; nota.classList.toggle('on', !!t);
+  }
+
+  function passo3d(d: HTMLDialogElement, p: number, avanti: boolean) {
+    const st = prepara3d(d);
+    if (!st) return;
+    const palco = d.querySelector<HTMLElement>('.pp-3d')!;
+    const v = palco.querySelector('video')!;
+    st.pronto.then(() => {
+      if (!acceso3d(d) || Number(d.dataset.passo) !== p) return;
+      const c = st.cap[p - 1];
+      if (!c) return;
+      const ridotto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (avanti && !ridotto) {
+        v.currentTime = c.da / FPS; st.ferma = (c.a + 1) / FPS;
+        v.play().catch(() => { st.ferma = null; v.currentTime = c.a / FPS; });
+      } else { v.pause(); st.ferma = null; v.currentTime = c.a / FPS; }
+      etichette3d(palco, st, p);
+    });
+  }
+
   function vai(d: HTMLDialogElement, n: number) {
     const tot = Number(d.dataset.tot);
     const p = Math.min(Math.max(1, n), tot);
+    const prima = Number(d.dataset.passo ?? 0);
     d.dataset.passo = String(p);
+    passo3d(d, p, p === prima + 1);
     d.querySelectorAll<HTMLElement>('[data-da],[data-a]').forEach((el) => {
       const da = Number(el.dataset.da ?? 1);
       const a = Number(el.dataset.a ?? 99);
@@ -167,6 +315,7 @@ const frecciaD = 'M1 7h24M19 1l6 6-6 6';
   function apri(d: HTMLDialogElement) {
     d.closest('[data-deck]')?.setAttribute('data-deck-lock', '');
     d.showModal();
+    d.dataset.passo = '0';
     vai(d, 1);
     d.querySelector<HTMLElement>('[data-pp-next]')?.focus();
   }
