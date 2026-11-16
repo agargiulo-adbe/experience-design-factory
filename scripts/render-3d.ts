@@ -1,7 +1,7 @@
 /**
  * render-3d — rende una scena 3D di `scripts/3d/render.py` nei colori di un'experience.
  *
- *   pnpm render:3d --app <cartella-app> --scena fondo|innesto|rta|decisioning|cja [--secondi 8] [--fps 24]
+ *   pnpm render:3d --app <cartella-app> --scena fondo|innesto|rta|decisioning|cja|genstudio [--secondi 8] [--fps 24]
  *                  [--anteprima] [--out <cartella>]
  *
  * Che cosa fa, in ordine:
@@ -37,7 +37,7 @@ const app = arg('app');
 const scena = arg('scena', 'fondo')!;
 const anteprima = arg('anteprima') === 'true';
 if (!app) {
-  console.error('uso: pnpm render:3d --app <cartella-app> --scena fondo|innesto|rta|decisioning|cja [--anteprima]');
+  console.error('uso: pnpm render:3d --app <cartella-app> --scena fondo|innesto|rta|decisioning|cja|genstudio [--anteprima]');
   process.exit(2);
 }
 if (!existsSync(BLENDER)) {

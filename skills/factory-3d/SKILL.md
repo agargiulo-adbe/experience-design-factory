@@ -35,7 +35,7 @@ abbiamo già.
 ## Il giro
 
 ```
-pnpm render:3d --app <cartella-app> --scena fondo|innesto [--anteprima] [--secondi 8]
+pnpm render:3d --app <cartella-app> --scena fondo|innesto|rta|decisioning|cja|genstudio [--anteprima] [--secondi 8]
 ```
 
 1. **Esplora** (facoltativo) con Blender MCP: si compone parlando, si guarda lo
@@ -60,7 +60,7 @@ pnpm render:3d --app <cartella-app> --scena fondo|innesto [--anteprima] [--secon
 
 ## Le scene che spiegano un meccanismo
 
-`scripts/3d/spiegazioni.py` (scene `rta`, `decisioning`, `cja`) porta il telaio `Scena`:
+`scripts/3d/spiegazioni.py` (scene `rta`, `decisioning`, `cja`, `genstudio`) porta il telaio `Scena`:
 passi a tempo, materiali animabili per oggetto, gettoni che viaggiano, `filo()` per i
 segnali di relazione, e **ancore**: alla fine di ogni passo Blender calcola dove cade ogni
 oggetto sullo schermo e scrive `etichette.json`, così l'HTML posa le etichette da solo.
@@ -81,6 +81,9 @@ Mayer, Tversky, Boucheix & Lowe, Heer & Robertson). Le regole che contano:
   nel movimento della scena.
 - **Quello che si esclude resta visibile**, attenuato, con il motivo nell'etichetta.
 - **Camera quasi ferma**: una sola stretta per scena, mai un'orbita (WCAG 2.3.3).
+- **Si verifica il flusso prima di disegnarlo.** La scena `genstudio` segue le guide di
+  Experience League (16 nov 2026), e da lì viene il dettaglio che la rende vera: Activate
+  consegna l'annuncio al canale **spento**, e si accende dal gestore annunci del canale.
 - **Chiaro non vuol dire capito** (Muller): in sala, dopo il clic, si chiede «dove va adesso
   il dato?» prima di farlo vedere.
 
@@ -91,6 +94,22 @@ riproduce **solo** il tratto della sua fase e si ferma: il video non corre da so
 chi parla. Indietro = salto allo stato finale della fase prima. Con la riduzione del
 movimento si salta direttamente allo stato. Il poster di una scena a fasi è l'**ultimo**
 fotogramma (lo stato completo), quello di un loop il primo.
+
+**Dentro un pop-in del deck, dietro un interruttore.** Il caso fatto è
+`apps/intesa-esperienza-cliente/src/components/InnestoPop.astro`: con `?pop3d=1` (o
+`window.__imPop3d(true)`) la scena HTML del pop-in lascia il posto al palco 3D, e ogni
+`Avanti` del pop-in riproduce il suo tratto. Le parole delle etichette stanno in
+`src/data/pop3d.ts` (con `\n` per andare a capo e `sposta` per staccare due etichette
+vicine); le clip in `public/media/3d/<clip>/`. Tre regole nate provandolo:
+- **Default spento**, e senza interruttore non si scarica nessun video (`preload="none"`
+  finché il pop-in non si apre in 3D). Se un file manca, torna la scena HTML da sola.
+- **Le etichette si tengono dentro il palco**: tagliata dal bordo, «Motore di targeting»
+  diventava «tore di targeting». Si misura la larghezza e si sposta, non si nasconde.
+- **Il motivo accompagna solo l'ultima esclusione.** Con tre proposte escluse e tre motivi
+  accesi, il fondo della scena era un elenco che copriva la proposta scelta.
+
+⚠️ `astro preview` non vede una build rifatta mentre gira, e un `goto` che cambia solo
+l'hash non ricarica la pagina: dopo ogni build si riavvia il server e si cambia la query.
 
 Prova funzionante: `docs/Factory/3d/intesa-esperienza-cliente/innesto/anteprima.html`
 (git-ignorata). Serve un server con le richieste Range (`vite preview`), altrimenti il

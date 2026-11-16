@@ -595,4 +595,120 @@ def scena_cja(args):
     return S
 
 
-SCENE = {"rta": scena_rta, "decisioning": scena_decisioning, "cja": scena_cja}
+
+# ═════════════════════════════════════════════════════════════════════════════
+# GENSTUDIO FOR PERFORMANCE MARKETING — dal brief all'annuncio, e ritorno (7 passi)
+# Flusso verificato su Experience League il 16 nov 2026: linee guida (Brand, Prodotti,
+# Personas) → Create genera varianti → content check su marchio, piattaforma e
+# accessibilità → si corregge e si ricontrolla → revisione e approvazione → Activate
+# consegna al canale a pagamento SPENTO (si accende dal gestore del canale) → Insights
+# legge il rendimento per attributo e alimenta la Create successiva.
+# ═════════════════════════════════════════════════════════════════════════════
+
+def scena_genstudio(args):
+    S = Scena(args, [3.0, 3.0, 3.4, 2.6, 3.0, 3.4, 4.2])
+    C = S.C
+    S.ambiente(camera_mira=(0.2, 0, 0.6), ortho=15.0)
+
+    # Passo 1: le linee guida entrano una alla volta, poi diventano i binari della generazione.
+    guide = []
+    for k, (nome, y) in enumerate((("brand", 1.5), ("prodotti", 0.0), ("personas", -1.5))):
+        g = S.scatola(f"Guida_{nome}", (1.3, 1.0, 0.16), (-6.6, y, 0.08), C["bianco"], emis=0.15, smusso=0.05)
+        S.compare(g, S.p(1, 0.05 + k * 0.15), S.p(1, 0.2 + k * 0.15))
+        guide.append(g)
+        S.ancora(nome, g, (0, 0, 0.25))
+    create = S.scatola("Create", (1.8, 2.6, 0.16), (-3.8, 0, 0.08), C["marchio"], emis=0.2, smusso=0.05)
+    S.compare(create, S.p(1, 0.55), S.p(1, 0.7))
+    S.ancora("create", create, (0, -1.6, 0))
+    for k, g in enumerate(guide):
+        f0 = S.p(1, 0.6 + k * 0.08)
+        S.gettone(f"Regola{k}", [tuple(g.location) , (-5.2, g.location.y * 0.4, 0.9), (-3.8, 0, 0.3)], f0, f0 + 14, C["bianco"], r=0.1)
+    binari = [S.filo(f"Binario{k}", (-2.8, y, 0.06), (4.2, y, 0.06), S.p(1, 0.75), S.p(1, 0.98), C["verde"], spessore=0.07, emis=1.5)
+              for k, y in enumerate((1.0, -1.0))]
+    S.ancora("binari", binari[1], (5.6, -0.2, 0))
+
+    # Passo 2: un brief entra in Create; escono quattro varianti, dentro i binari.
+    S.gettone("Brief", [(-3.8, -3.4, 0.6), (-3.8, -1.8, 1.4), (-3.8, 0, 0.4)], S.p(2, 0.0), S.p(2, 0.25), C["bianco"], r=0.16)
+    xs = [-1.6, 0.0, 1.6, 3.2]
+    var = []
+    for k, x in enumerate(xs):
+        v = S.scatola(f"Variante{k}", (1.0, 0.14, 1.4), (-3.8, 0, 0.85), C["bianco"], emis=0.25, smusso=0.04)
+        f0 = S.p(2, 0.3 + k * 0.12)
+        S.compare(v, f0, f0 + 4)
+        S.percorso(v, f0, f0 + 16, [(-3.8, 0, 0.85), (x, 0, 0.85)], arco=0.5)
+        var.append(v)
+        S.ancora(f"variante{k}", v, (0, 0, 0.9))
+
+    # Passo 3: il content check passa su ognuna. Due non passano: restano, grigie, di lato.
+    porta = S.scatola("Controllo", (0.1, 2.4, 2.2), (-2.6, 0, 1.1), C["verde"], emis=1.4, alpha=0.5, smusso=0.02)
+    S.compare(porta, S.p(3, 0.0), S.p(3, 0.08))
+    S.sposta(porta, S.p(3, 0.08), S.p(3, 0.75), (4.2, 0, 1.1))
+    S.scompare(porta, S.p(3, 0.8), S.p(3, 0.9))
+    S.ancora("controllo", porta, (0, 0, 1.3))
+    spunte = {}
+    for k, x in enumerate(xs):
+        f = S.p(3, 0.08 + (x + 2.6) / 6.8 * 0.67)
+        if k in (1, 2):
+            S.vira(var[k], f, f + 5, C["bianco"], C["grigio"], emis=(0.25, 0.0), alpha=(1.0, 0.55))
+            S.sposta(var[k], f + 5, f + 18, (x, 1.9, 0.85))
+        else:
+            sp = S.sfera(f"Spunta{k}", 0.14, (x, 0, 1.85), C["verde"], emis=3.0)
+            S.compare(sp, f + 2, f + 7)
+            spunte[k] = sp
+
+    # Passo 4: la variante 1 si corregge e si ricontrolla; la 2 resta da rivedere.
+    S.vira(var[1], S.p(4, 0.1), S.p(4, 0.3), C["grigio"], C["bianco"], emis=(0.0, 0.25), alpha=(0.55, 1.0))
+    S.sposta(var[1], S.p(4, 0.3), S.p(4, 0.6), (xs[1], 0, 0.85))
+    sp = S.sfera("Spunta1", 0.14, (xs[1], 0, 1.85), C["verde"], emis=3.0)
+    S.compare(sp, S.p(4, 0.7), S.p(4, 0.8))
+    spunte[1] = sp
+
+    # Passo 5: revisione e approvazione. Due persone (creativi, legale) e un varco.
+    rev = [S.pedina(f"Revisore{k}", (5.2, y, 0), C["grigio"]) for k, y in enumerate((1.5, -1.5))]
+    for k, r in enumerate(rev):
+        S.compare(r, S.p(5, 0.0 + k * 0.08), S.p(5, 0.12 + k * 0.08))
+    S.ancora("revisori", rev[0], (0, 0, 1.5))
+    for j, k in enumerate((0, 1, 3)):
+        f = S.p(5, 0.35 + j * 0.18)
+        S.vira(var[k], f, f + 6, C["bianco"], C["verde"], emis=(0.25, 0.9))
+        S.scompare(spunte[k], f, f + 6)
+
+    # Passo 6: Activate. Le approvate arrivano al canale a pagamento, ma SPENTE.
+    canale = S.scatola("Canale", (0.2, 3.0, 2.0), (7.8, 0, 1.0), C["grigio"], rough=0.4)
+    S.compare(canale, S.p(6, 0.0), S.p(6, 0.12))
+    S.ancora("canale", canale, (0, 0, 1.25))
+    arrivi = {0: (7.2, -0.9, 0.85), 1: (7.2, 0.0, 0.85), 3: (7.2, 0.9, 0.85)}
+    for j, (k, dest) in enumerate(arrivi.items()):
+        f0 = S.p(6, 0.15 + j * 0.15)
+        S.chiave(var[k], f0, loc=tuple(var[k].location))
+        S.percorso(var[k], f0, f0 + 22, [(xs[k], 0, 0.85), (5.6, (dest[1]) * 0.5, 2.2), dest], arco=0.3)
+        S.vira(var[k], f0 + 18, f0 + 24, C["verde"], C["verde"], emis=(0.9, 0.0), alpha=(1.0, 0.35))
+    S.ancora("spente", var[3], (0, 0, 0.9))
+    S.inquadra(S.p(6, 0.0), ortho=15.0)
+    S.inquadra(S.p(6, 0.35), mira=(1.6, -0.4, 0.6), ortho=16.5)
+
+    # Passo 7: il gestore del canale le accende; Insights legge il rendimento per
+    # attributo e il risultato torna a Create, per la variante successiva.
+    for k in arrivi:
+        S.vira(var[k], S.p(7, 0.05), S.p(7, 0.18), C["verde"], C["verde"], emis=(0.0, 0.9), alpha=(0.35, 1.0))
+    barre = []
+    for j, (h, col) in enumerate(((1.6, C["verde"]), (0.7, C["bianco"]), (1.1, C["bianco"]))):
+        b = S.scatola(f"Attributo{j}", (0.6, 0.6, h), (5.4 + j * 0.9, -3.0, h / 2), col, emis=0.3 if j == 0 else 0.15, smusso=0.04)
+        # La base all'origine, così la barra cresce dal pavimento verso l'alto.
+        b.data.transform(Matrix.Translation((0, 0, h / 2)))
+        b.location = (5.4 + j * 0.9, -3.0, 0)
+        f0 = S.p(7, 0.25 + j * 0.06)
+        S.chiave(b, 0, scala=0.0001)          # prima del passo non esiste, nemmeno piatta
+        S.chiave(b, f0 - 1, scala=0.0001)
+        S.chiave(b, f0, scala=(1, 1, 0.0001))
+        S.chiave(b, S.p(7, 0.45 + j * 0.06), scala=(1, 1, 1))
+        barre.append(b)
+        S.ancora(f"attributo{j}", b, (0, 0, h + 0.25))
+    S.gettone("Ritorno", [(5.4, -3.0, 2.0), (2.0, -3.2, 1.2), (-3.8, -2.0, 0.6), (-3.8, 0, 0.4)],
+              S.p(7, 0.6), S.p(7, 0.92), C["verde"], r=0.16)
+    S.vira(create, S.p(7, 0.9), S.p(7, 0.95), C["marchio"], C["verde"], emis=(0.2, 1.2))
+    S.vira(create, S.p(7, 0.96), S.p(7, 1.0), C["verde"], C["marchio"], emis=(1.2, 0.2))
+    return S
+
+
+SCENE = {"rta": scena_rta, "decisioning": scena_decisioning, "cja": scena_cja, "genstudio": scena_genstudio}
