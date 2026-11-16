@@ -1,6 +1,6 @@
 ---
 name: factory-3d
-description: Use when an experience of the Factory needs a 3D asset — a background loop in the client's exact palette, or an object/architecture that builds itself step by step — and before opening Blender, composing a scene over MCP, or touching scripts/3d/. Not for flat diagrams: those stay SVG.
+description: Use when an experience of the Factory needs a 3D asset — a background loop in the client's exact palette, or layers that build themselves where depth IS the message — and before opening Blender, composing a scene over MCP, or touching scripts/3d/. Also read it before animating how a product works (a mechanism, a data flow): those go in 2D with the deck's own components, and this skill says why. Not for flat diagrams: those stay SVG.
 ---
 
 # factory-3d — Blender dentro la Factory
@@ -9,6 +9,45 @@ Blender produce due cose che Firefly e l'SVG non danno: **un loop che si chiude 
 costruzione nei colori esatti del cliente**, e **un oggetto che si costruisce in fasi
 con la profondità di due strati**. Tutto il resto lo fanno meglio gli strumenti che
 abbiamo già.
+
+## Un meccanismo si spiega in 2D, non in 3D (verdetto del 16 nov 2026)
+
+Le tre scene `rta`, `decisioning`, `cja` sono nate in Blender e sono state messe, sullo
+stesso passo, accanto a un prototipo 2D fatto con i componenti del deck. Il 2D ha vinto, e
+non perché «è più facile»:
+
+- **il testo sta dentro l'oggetto**: niente etichette sospese, che in 3D si scontravano,
+  si tagliavano al bordo e uscivano a 12 px su una parete;
+- **niente prospettiva**: nessun oggetto ne copre un altro, nessuna scritta è inclinata;
+- **gli oggetti sono quelli che la sala ha già visto** (la finestra del sito del momento
+  03, la scheda Adobe col quadratino arancio): si riconoscono invece di impararli. In 3D
+  il profilo era un cilindro e il sito una lastra;
+- **il 3D aveva la grammatica dei colori rovesciata**: verde = Adobe, mentre nel deck il
+  verde è il cliente e Adobe è l'arancio `#fa9600`.
+
+Vestire gli oggetti 3D con una texture del mockup non risolve: in assonometria il testo
+arriva inclinato e piccolo. Il 3D resta per ciò in cui **la profondità è il messaggio**
+(uno strato sotto i sistemi della banca) e per gli sfondi in loop.
+
+Il caso fatto: `apps/intesa-esperienza-cliente/src/components/Meccanismo.astro` +
+`src/scripts/meccanismi.ts`, dietro `?pop3d=1` (le clip Blender restano su
+`?pop3d=video`). La grammatica da riusare:
+
+| Famiglia | Aspetto |
+| --- | --- |
+| sistema di oggi del cliente | contorno bianco, nessun riempimento, «Oggi, in banca» |
+| componente Adobe | barra scura col quadratino del colore Adobe del deck, corpo bianco |
+| ciò che vede la persona | i chrome di `MockCliente` in miniatura, col marchio vero |
+| il dato che si muove | una pillola **con il suo nome**, che vola dalla fonte al posto che la aspetta |
+| escluso | barrato, attenuato, nel suo riquadro, col motivo canonico |
+
+Tre trappole già prese, tutte silenziose:
+- `dialog.pp p` (0,1,2) batte una classe sola (0,1,0): le regole del palco vanno scritte
+  `.mc .mc-x`, se no saltano margini e colori senza errori;
+- `scale(k) translate(-50%,-50%)`, in quest'ordine: invertito, il palco esce dal riquadro;
+- un passo comincia a `T.duration()`, non a `'>'`: `'>'` è la fine dell'ULTIMA tween
+  aggiunta, e il passo dopo partiva con il precedente ancora a metà. E il tratto in corsa
+  (`tweenFromTo`) si uccide prima di un «Indietro», se no continua a spingere la timeline.
 
 ## Quando NO
 
@@ -74,8 +113,10 @@ Mayer, Tversky, Boucheix & Lowe, Heer & Robertson). Le regole che contano:
   L'architettura resta un disegno fermo; si animano unire, filtrare, risalire.
 - **Prima il concreto**: Giulia e un gesto, non «la piattaforma».
 - **Un passo, un verbo, uno stato finale fermo** su cui chi presenta parla.
-- **Un colore, un significato**, uguale in tutte le scene: grigio = anonimo, escluso, della
-  banca · bianco = un dato · verde = ciò che Adobe aggiunge, identificato, scelto.
+- **Un colore, un significato, e lo stesso del deck.** Quello delle clip (grigio = della
+  banca · bianco = un dato · verde = Adobe) era rovesciato rispetto al deck di Intesa, dove
+  il verde è il cliente e Adobe è l'arancio: la grammatica si prende dal deck, non si
+  inventa nella scena.
 - **Segnale di relazione, non accensione**: un filo che si tende, un cancello che le proposte
   attraversano, il merito che risale il percorso. Un oggetto che si illumina da solo si perde
   nel movimento della scena.
