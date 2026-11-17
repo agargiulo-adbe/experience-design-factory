@@ -248,6 +248,9 @@
   function chiudi(e) {
     if (e && e.type === 'keydown') { e.preventDefault(); e.stopPropagation(); }
     var t = performance.now() - T0 + salto;
+    // Un secondo tasto, a titolo già in volo, chiude l'apertura subito: chi presenta
+    // preme → due volte e si aspetta di essere in copertina, non di aspettare.
+    if (e && e.type === 'keydown' && t >= VOLO0 - 50) { fine(); return; }
     if (t < VOLO0 - 50) { salto += VOLO0 - 50 - t; Object.keys({ t: 1, s1: 1, s2: 1 }).forEach(function (k) { ev[k] = 1; });
       parole = ['ciascuno', 'conta']; parola(aEl, parole[0], true, true); parola(bEl, parole[1], false, false); aEl.classList.remove('is-rosso'); bEl.classList.remove('is-rosso'); aEl.style.transform = bEl.style.transform = ''; tEl.classList.add('is-on'); }
   }

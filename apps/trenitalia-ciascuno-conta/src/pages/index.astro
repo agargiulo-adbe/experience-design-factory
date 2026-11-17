@@ -28,7 +28,6 @@ const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
 const first = CHAPTERS[0];
 const AGENDA = [...PRESENTAZIONE, CHAPTERS.find((c) => c.slug === 'annex')!];
-const last = CHAPTERS[CHAPTERS.length - 1];
 ---
 <BaseLayout title={SITE.name}>
   <!-- L'apertura: il concept a tutta pagina, poi si ritira nella copertina. -->
@@ -37,7 +36,9 @@ const last = CHAPTERS[CHAPTERS.length - 1];
     <Navigation currentPath={currentPath} base={base} />
   </div>
 
-  <DeckContainer wallScale nextHref={href(base, '/' + first.slug)} prevHref={href(base, '/' + last.slug)}>
+  <!-- Niente prevHref: dalla copertina ← non va da nessuna parte. Prima tornava
+       all'ultima slide dell'annex, e in sala «le frecce non funzionano» (16 nov 2026). -->
+  <DeckContainer wallScale nextHref={href(base, '/' + first.slug)}>
 
     <!-- ── 0 · Copertina e agenda ───────────────────────────────────────── -->
     <Slide id="slide-cover" data-audio="loud" bg="primary" align="left">
