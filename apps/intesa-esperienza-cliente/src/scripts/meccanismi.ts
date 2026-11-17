@@ -228,6 +228,7 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     const [ecid, email, pratica, ndg, seg, segSim, sess, sessT0, sessT1, visita, sim] =
       qq('id-ecid', 'id-email', 'id-pratica', 'id-ndg', 'seg', 'seg-sim', 'sess', 'sess-t0', 'sess-t1', 'p-visita', 'p-sim');
     const [ev, score, regola, o0, o1, o2, o3] = qq('ev', 'a-score', 'regola', 'o0', 'o1', 'o2', 'o3');
+    const [evFirma, evPila] = qq('ev-firma', 'ev-pila');
     const [rata, spazio, banner] = qq('rata', 'spazio', 'banner');
     const fonti = qq('f-sito', 'f-app', 'f-crm', 'f-fd');
     const [percorso, barre, ctrl] = qq('percorso', 'barre', 'ctrl');
@@ -236,7 +237,7 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     const [vEmail, vProp, vApp, vRit, vIniz] = qq('v-email', 'v-prop', 'v-app', 'v-ritorno', 'v-iniz');
     const ranghi = [o0, o1].map((o) => o.querySelector<HTMLElement>('.mc-rango')!);
 
-    gsap.set([foto, st1, st2, sessT1, banner, mail, percorso, barre, ctrl, motorePoi, crmPoi, vEmail, vProp, vApp, vRit, vIniz, regola, segSim], { autoAlpha: 0 });
+    gsap.set([foto, st1, st2, sessT1, banner, mail, percorso, barre, ctrl, motorePoi, crmPoi, vEmail, vProp, vApp, vRit, vIniz, regola, segSim, evFirma], { autoAlpha: 0 });
     gsap.set([o0, o1, o2, o3], { autoAlpha: 0 });
     gsap.set(ranghi, { autoAlpha: 0, scale: .4 });
 
@@ -338,10 +339,16 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     appare(ctrl, 'p9+=1.5');
 
     passo('p10');
-    fuoco([cja, ajo, rta], 'p10');
-    // Chi ha firmato torna alla decisione: la proposta del mutuo, per lui, si chiude.
-    viaggia(vRit, cja, ajo, 'p10+=.2');
-    T.to(o0, { opacity: .45, duration: .5 }, '>-.1');
+    fuoco([rta, ajo], 'p10');
+    // LA FIRMA ARRIVA DAL CORE, NON DA CJA (17 nov 2026). L'NDG emesso alla firma è nel
+    // profilo di Real-Time Activation: da lì l'evento «richiesta firmata» va a Journey
+    // Optimizer, si posa al posto di «pratica lasciata a metà» e la proposta del mutuo
+    // si chiude. Un'audience di CJA arriverebbe dopo ore (caricamento e aggiornamento),
+    // e Giulia potrebbe ricevere il promemoria per un mutuo già firmato.
+    viaggia(vRit, ndg, evPila, 'p10+=.2');
+    T.to(ev, { autoAlpha: 0, duration: .3 }, '>-.1').to(evFirma, { autoAlpha: 1, duration: .4 }, '<.1');
+    stato(o0, 'mc-chiuso', '<');
+    stato(o1, 'mc-chiuso', '<');
     // Il look-alike NASCE in Real-Time Activation, da chi ha firmato (l'NDG): la base di
     // un look-alike deve essere creata in Experience Platform (Experience League), quindi
     // non viaggia da CJA. 17 nov 2026.
@@ -353,7 +360,6 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     // Giulia ora è cliente: il dato di CJA entra nelle Iniziative, nelle PROGRAMMATE
     // (come nella slide dell'innesto: su evento si valuta, il dato dei clienti arriva in ore).
     fuoco([cja, iniz, motore], 'p11');
-    T.set(o0, { opacity: 1 }, 'p11');
     viaggia(vIniz, cja, inizProg, 'p11+=.2');
     accende(iniz, '>-.1');
     stato(inizProg, 'mc-acceso', '<');
@@ -373,7 +379,7 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
       classi(inizProg, p === 11 ? 'mc-acceso' : '');
       classi(crm, p === 7 ? 'mc-attivo' : '');
       classi(o2, p >= 5 ? 'mc-fuori' : ''); classi(o3, p >= 5 ? 'mc-fuori' : '');
-      classi(o0, p >= 6 ? 'mc-vince' : ''); classi(o1, p >= 6 ? 'mc-seconda' : '');
+      classi(o0, p >= 10 ? 'mc-chiuso' : p >= 6 ? 'mc-vince' : ''); classi(o1, p >= 10 ? 'mc-chiuso' : p >= 6 ? 'mc-seconda' : '');
     };
   }
 

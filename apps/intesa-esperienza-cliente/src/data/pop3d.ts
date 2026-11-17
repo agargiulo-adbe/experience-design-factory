@@ -37,7 +37,7 @@ export const POP3D: Partial<Record<ScenaId, Pop3d>> = {
             proposta0: 'Promemoria\ncon appuntamento', proposta1: 'Promemoria', proposta2: 'Contatto\nFiliale Digitale', proposta3: 'Polizza casa',
             regole: 'Regole e consenso', canale: 'Sito', cja: 'Customer Journey Analytics' },
     escluse: { proposta2: 4, proposta3: 4, proposta1: 6 },
-    motivi: { proposta2: 'manca il consenso al contatto telefonico', proposta3: 'solo dopo la firma', proposta1: 'seconda per priorità' },
+    motivi: { proposta2: 'manca il consenso al contatto telefonico', proposta3: 'offerta per i clienti', proposta1: 'seconda per priorità' },
     // Dal passo 6 la proposta scelta si posa sul canale: il nome del canale va sotto.
     // Le due proposte ammesse stanno a un decimo di palco: le etichette si allargano.
     sposta: { canale: [0, 24], proposta0: [-3, 0], proposta1: [2, 0] },

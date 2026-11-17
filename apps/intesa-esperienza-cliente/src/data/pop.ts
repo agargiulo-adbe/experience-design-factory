@@ -62,7 +62,7 @@ export const SCENE: Record<ScenaId, Scena> = {
       'In filiale apre la pratica: è la stessa della simulazione, e il grafo la lega all’email, al telefono e alle visite di prima.',
       'Firma: il core emette l’NDG e lo lega al codice pratica (ipotesi di lavoro). Customer Journey Analytics legge sito, app, CRM e Filiale Digitale in un percorso solo.',
       'Le firme si attribuiscono ai canali, filiale compresa. Se la campagna ha funzionato lo dice il gruppo di controllo, che si definisce insieme prima di partire.',
-      'Chi ha firmato torna alla decisione, e la proposta del mutuo per lui si chiude. In Real-Time Activation, da chi ha firmato nasce un’audience look‑alike: serve a trovare il prossimo non cliente.',
+      'Firma: Giulia esce dalla proposta del mutuo, e nessuno le riscrive per una pratica chiusa. Da chi ha firmato, Real-Time Activation costruisce un’audience look‑alike: serve a trovare il prossimo non cliente.',
       'Ora Giulia è cliente. Il dato di Customer Journey Analytics arriva alle vostre iniziative commerciali, che lavorano sui clienti: audience per up-sell e cross-sell, nelle campagne programmate. Sulle proposte decide il vostro motore.',
     ],
     nota: '',
