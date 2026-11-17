@@ -55,7 +55,7 @@ export const PAGE_REGISTRY: PageEntry[] = [
   ]},
   { slug: 'prossimi-passi', label: 'I prossimi passi (06)', slides: [
     { id: 'slide-cover',  label: 'Cover: prossimi passi' },
-    { id: 'slide-insieme', label: 'Da qui, insieme: che cosa approfondiamo e in che ordine (tavola per la discussione)' },
+    { id: 'slide-insieme', label: 'Da dove vi piacerebbe ripartire: i temi di oggi e i modi per approfondirli (tavola per il confronto)' },
     { id: 'slide-da-voi', label: 'La proposta: un trimestre sul mutuo, quattro misure e l’ask (le altre a richiesta)', riserva: true },
     { id: 'slide-fasi',   label: 'Come si parte: tre tappe, chi guida e quando (il dettaglio a richiesta)', riserva: true },
     { id: 'slide-firma',  label: 'La firma: Adobe × Intesa Sanpaolo, chiude il percorso' },
