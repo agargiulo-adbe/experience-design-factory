@@ -3,18 +3,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
-import Divisore from '../components/Divisore.astro';
 import Guscio from '../components/Guscio.astro';
 import { href } from '@edf/core/utils/url.js';
-import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { CHAPTERS, prevSlug } from '../data/chapters';
 import CoBrand from '../components/CoBrand.astro';
 import Folla from '../components/Folla.astro';
 import { COVER } from '../data/contenuti';
-import foto from '../assets/stock/decisione.webp';
 
 /**
- * Capitolo 03 della presentazione — Rischi e prossime date. Chiude con la firma;
- * dopo la firma comincia l'annex. La richiesta sta in apertura (index).
+ * Capitolo 03 della presentazione — Rischi e prossime date. Chiude con la firma, e
+ * dalla firma → si ferma (17 nov 2026): l'annex si apre dalla barra, dal bottone della
+ * firma o dai link «Il dettaglio», e ha le sue frecce. La richiesta sta in apertura.
  */
 const SLUG = 'decisione';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -26,12 +25,7 @@ const currentPath = Astro.url.pathname;
     <Navigation currentPath={currentPath} base={base} />
   </div>
 
-  <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
-
-    <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Stock" data-made-with-for="fotografia">
-      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${foto.src})`}></div>
-      <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
-    </Slide>
+  <DeckContainer wallScale prevHref={href(base, prevSlug(SLUG))}>
 
     <Guscio id="r-rischi" dettaglio="punti#r-annex-sintesi" />
 

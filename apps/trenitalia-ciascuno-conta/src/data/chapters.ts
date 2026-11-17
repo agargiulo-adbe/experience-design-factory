@@ -4,9 +4,11 @@
  *
  * UN DOCUMENTO INTERNO, IN DUE PARTI (13 novembre 2026, per il leadership team Adobe
  * Italia, 45 minuti):
- * - **presentazione** (`parte: 'presentazione'`): apertura, Il programma, Quanto vale
- *   e quanto costa, Rischi e prossime date, firma;
- * - **annex** (`parte: 'annex'`): dopo la firma, un sommario e sei parti di dettaglio.
+ * - **presentazione** (`parte: 'presentazione'`): undici slide in fila, senza divisori
+ *   (17 nov 2026) — copertina e tesi, L'iniziativa, Quanto vale e quanto costa, Rischi e
+ *   prossime date, firma. Dalla firma → si ferma;
+ * - **annex** (`parte: 'annex'`): un sommario e sei parti di dettaglio, con le sue
+ *   frecce: dalla prima slide ← non torna nella presentazione.
  *   Le slide della presentazione ci portano con «Il dettaglio →» (Dettaglio.astro).
  *
  * Tutto è dietro il link a token: senza, si vede solo la copertina (Riservato.astro).
@@ -40,8 +42,8 @@ const t = (s: string) => ({ it: s, en: s });
  * il link a token (il bundle resta pubblico e senza nulla di riservato; senza token
  * si vede la copertina e basta). La versione per il cliente si ricaverà da qui. */
 export const CHAPTERS: Chapter[] = [
-  { slug: 'programma', num: '01', title: t('Il programma'), short: 'Il programma',
-    punto: 'Quattro atti, e una prova che si chiude prima della giornata.', foto: 'viaggio', riservato: true, parte: 'presentazione' },
+  { slug: 'programma', num: '01', title: t('L’iniziativa'), short: 'L’iniziativa',
+    punto: 'Tre verbi, quattro momenti, e una condizione prima della giornata.', foto: 'viaggio', riservato: true, parte: 'presentazione' },
   { slug: 'valore', num: '02', title: t('Quanto vale, quanto costa'), short: 'Quanto vale, quanto costa',
     punto: '', foto: 'rete', riservato: true, parte: 'presentazione' },
   { slug: 'decisione', num: '03', title: t('Rischi e prossime date'), short: 'Rischi e date',

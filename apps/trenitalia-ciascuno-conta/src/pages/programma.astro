@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
-import Divisore from '../components/Divisore.astro';
+import Guscio from '../components/Guscio.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import Atti from '../components/Atti.astro';
@@ -12,12 +12,12 @@ import Folla from '../components/Folla.astro';
 import Direttrici from '../components/Direttrici.astro';
 import Dettaglio from '../components/Dettaglio.astro';
 import { ATTI, SEQUENZA, FOLLA } from '../data/contenuti';
-import foto from '../assets/stock/programma.webp';
 
 /**
- * Capitolo 01 della presentazione — Il programma. Le tre direttrici, i quattro
- * atti nel tempo, la prova in due stadi con il cancello. Il circuito dei dati
- * sta nell'annex (Scegliere e misurare).
+ * Capitolo 01 della presentazione — L'iniziativa. Flusso a 11 slide (17 nov 2026):
+ * niente divisore. I tre verbi, la timeline in quattro momenti, com'è organizzato
+ * l'MVP (riservata) e la condizione della riconciliazione. Il circuito dei dati sta
+ * nell'annex (Scegliere e misurare).
  */
 const SLUG = 'programma';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -31,11 +31,6 @@ const currentPath = Astro.url.pathname;
 
   <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Stock" data-made-with-for="fotografia">
-      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${foto.src})`}></div>
-      <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
-    </Slide>
-
     <Slide id="slide-folla" bg="primary" align="left" data-tono="scuro">
       <div slot="backdrop" class="xd-bg-piano cc-folla-scura"><Folla /></div>
       <div class="xd-sl" data-reveal>
@@ -43,6 +38,7 @@ const currentPath = Astro.url.pathname;
         <div class="cc-corpo">
           <Direttrici />
           <p class="cc-dirs-chiusa">{FOLLA.chiusa}</p>
+          <p class="cc-noi" data-r="noi-verbi"></p>
         </div>
       </div>
       <Dettaglio to="idea#slide-mattina" label="Il racconto per il cliente" />
@@ -58,6 +54,8 @@ const currentPath = Astro.url.pathname;
       </div>
       <Dettaglio to="scegliere#slide-scegliere" />
     </Slide>
+
+    <Guscio id="r-mvp" dettaglio="giornata#slide-postazioni" />
 
     <Slide id="slide-sequenza" bg="primary" align="left" data-tono="scuro">
       <div slot="backdrop" class="xd-bg-piano"></div>

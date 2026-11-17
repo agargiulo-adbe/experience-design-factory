@@ -7,10 +7,10 @@
  * sta nello strato interno in Supabase (`restricted_docs.content.deck`), che il runtime
  * `Riservato.astro` carica con il link a token. Seed git-ignorato in docs/Ferrovie/.
  *
- * Riscritta il 12 nov 2026 sera, dopo la call con l'AE: la prova non è più solo una
- * misura. Due binari: la misura su CJA, completa alla giornata, e uno o due test veri
- * su Target, messi in opera da Accenture, con i primi dati alla giornata e il
- * risultato ad aprile.
+ * Riscritta il 17 nov 2026 (decisioni in docs/Ferrovie/strato-deck/DECISIONI-2026-11-17.md):
+ * tre verbi — misurare, conoscere, personalizzare — con il consenso trasversale; l'MVP
+ * con i servizi professionali Adobe e Accenture; la riconciliazione degli ECID come
+ * condizione, senza piano B sull'aggregato; il lab di marzo diviso fra dati veri e demo.
  *
  * Voce: frasi intere e corte, un fatto per riga. Niente occhielli sopra i titoli,
  * niente antitesi, niente motti. Il titolo dice il punto della slide.
@@ -35,30 +35,32 @@ export const MATTINA = {
   nota: 'Schermata d’esempio con dati illustrativi.',
 };
 
+/** I tre verbi dell'iniziativa (proposta della SC Data, 16 nov 2026). Il consenso non
+ *  è un quarto obiettivo: tiene insieme gli altri tre, e sta nella chiusa. */
 export const FOLLA = {
-  titolo: 'Il programma serve a tre cose',
+  titolo: 'L’iniziativa serve a misurare, conoscere e personalizzare',
   ancore: [
-    { k: 'prova', t: 'La prova', b: 'Quale proposta fa vendere di più, misurato sul venduto' },
-    { k: 'risposta', t: 'La risposta in un minuto', b: 'Perché il venduto cala, guardando tutte le variabili' },
-    { k: 'consenso', t: 'Il consenso', b: 'Al referente di Trenitalia serve un sì condiviso: lui fissa il perimetro, FS Technology e i partner lo portano a terra' },
+    { k: 'misurare', t: 'Misurare', b: 'Il percorso intero, dalla ricerca su trenitalia.com all’acquisto su LeFrecce e sull’app' },
+    { k: 'conoscere', t: 'Conoscere', b: 'Dove e perché si perde la vendita, viaggiatore per viaggiatore' },
+    { k: 'personalizzare', t: 'Personalizzare', b: 'La proposta giusta su trenitalia.com, misurata sul venduto' },
   ],
-  variabili: ['sito e app', 'biglietterie', 'agenzie e OTA', 'prezzo e offerta', 'concorrenza', 'calendario', 'perturbazioni'],
-  chiusa: 'Ogni passo del programma serve ad almeno una delle tre.',
+  variabili: ['trenitalia.com', 'LeFrecce', 'app'],
+  chiusa: 'Il consenso li tiene insieme, dalla Direzione Sales ad Accenture.',
 };
 
 /* ── Il programma ──────────────────────────────────────────────────────── */
-export const DIRETTRICI: Record<string, string> = { prova: 'La prova', risposta: 'La risposta', consenso: 'Il consenso' };
+export const DIRETTRICI: Record<string, string> = { misurare: 'Misurare', conoscere: 'Conoscere', personalizzare: 'Personalizzare', consenso: 'Il consenso' };
 
 export const ATTI = {
-  titolo: 'Quattro atti, da dicembre a giugno',
+  titolo: 'L’iniziativa commerciale in quattro momenti',
   mesi: ['dic', 'gen', 'feb', 'mar', 'apr', 'mag', 'giu'],
   atti: [
     { n: '1', v: 'Scegliere', q: 'entro l’11 dicembre', serve: ['consenso'], da: 0, a: 0.5,
       esce: 'Il perimetro dei casi d’uso, con Trenitalia e Accenture' },
-    { n: '2', v: 'Capire e provare', q: 'dic – feb · l’MVP', serve: ['risposta', 'prova'], da: 0.5, a: 3,
+    { n: '2', v: 'L’MVP', q: 'dic – feb · in produzione', serve: ['misurare', 'conoscere', 'personalizzare'], da: 0.5, a: 3,
       esce: 'Casi d’uso in produzione, misurati sul venduto' },
-    { n: '3', v: 'Decidere', q: 'marzo · la giornata', serve: ['prova', 'consenso'], da: 3, a: 4,
-      esce: 'Dai risultati dell’MVP a un perimetro condiviso' },
+    { n: '3', v: 'Decidere', q: 'marzo · la giornata', serve: ['consenso'], da: 3, a: 4,
+      esce: 'Dai risultati dell’MVP alla visione completa, a cerchi concentrici' },
     { n: '4', v: 'Portare a contratto', q: 'apr – giu', serve: ['consenso'], da: 4, a: 7,
       esce: 'La proposta dai risultati, la firma a giugno' },
   ],
@@ -67,24 +69,24 @@ export const ATTI = {
   ],
 };
 
-/** La prova in sequenza, con un cancello a metà: prima la risposta sui dati
- *  storici, poi il test dal vivo, e la giornata solo quando la prova è chiusa.
- *  «Misurato sul venduto», mai «comprovato»: in quattro settimane si osserva
- *  l'effetto con il suo margine, anche nullo, e per una prova basta. */
+/** L'MVP in sequenza, con la condizione a metà: la riconciliazione degli ECID fra
+ *  trenitalia.com e LeFrecce. Non c'è più un piano B sul dato aggregato (16 nov 2026):
+ *  senza il percorso fra i due siti cade la misura sul venduto, e non si procede.
+ *  «Misurato sul venduto», mai «comprovato». */
 export const SEQUENZA = {
-  titolo: 'L’MVP si chiude prima della giornata',
+  titolo: 'Senza riconciliare i due siti non si procede',
   passi: [
-    { q: 'dic – gen', l: 'La risposta', d: 'Sui dati storici, dove\u00a0si perde la vendita fra trenitalia.com e\u00a0LeFrecce' },
-    { q: 'fine gennaio', l: 'Il cancello', d: 'Come si legge il venduto fra i due siti', cancello: true },
-    { q: 'febbraio', l: 'Il test', d: 'Target su trenitalia.com, con il criterio scritto\u00a0prima' },
+    { q: 'dic – gen', l: 'Conoscere', d: 'Su tre mesi, dove\u00a0si perde la vendita fra trenitalia.com e\u00a0LeFrecce' },
+    { q: 'fine gennaio', l: 'La condizione', d: 'I due siti letti come un viaggiatore\u00a0solo', cancello: true },
+    { q: 'febbraio', l: 'Personalizzare', d: 'Target su trenitalia.com, con il criterio scritto\u00a0prima' },
     { q: 'marzo', l: 'La giornata', d: 'I risultati dell’MVP, poi il perimetro\u00a0condiviso', forte: true },
   ],
-  /** Il retro del cancello: il programma non dipende da un aspetto tecnico. */
+  /** Il retro della condizione: perché lo è, e chi ci lavora. */
   retro: [
-    { k: 'Con la chiave:', b: 'il venduto per viaggiatore, la misura migliore.' },
-    { k: 'Senza:', b: 'il passaggio verso l’acquisto, in aggregato.' },
+    { k: 'Perché:', b: 'senza, la misura sul venduto cade.' },
+    { k: 'Chi:', b: 'Accenture e l’engineering Adobe.' },
   ],
-  retroChiusa: 'In tutti e due i casi si va avanti.',
+  retroChiusa: 'Se serve più tempo, la giornata slitta ad aprile.',
 };
 
 /** Il circuito dei dati: da dove arrivano, dove diventano un pubblico, dove si
@@ -93,7 +95,7 @@ export const CIRCUITO = {
   titolo: 'Un solo circuito, dai dati al risultato del test',
   fonti: [
     { t: 'Analytics di trenitalia.com' },
-    { t: 'Analytics di LeFrecce' },
+    { t: 'Analytics di LeFrecce e dell’app' },
     { t: 'CartaFreccia', n: 'ipotesi, non bloccante' },
   ],
   cuore: { t: 'Customer Journey Analytics', n: 'Il pubblico di ogni caso d’uso' },
@@ -131,7 +133,7 @@ export const MISURARE = {
   corsie: [
     { k: 'CJA', blocchi: [
       { da: 0.4, a: 1, t: 'Accessi e dati' },
-      { da: 1, a: 2, t: 'La risposta sullo storico', forte: true },
+      { da: 1, a: 2, t: 'Conoscere, sui tre mesi di storico', forte: true },
       { da: 2, a: 3, t: 'La lettura del test' },
     ] as Blocco[] },
     { k: 'Target', blocchi: [
@@ -170,19 +172,21 @@ export const SCALETTA = {
     { o: '11:30', t: 'Le mani sugli strumenti', d: 'Tre postazioni a rotazione' },
     { o: '14:30', t: 'Chi l’ha già fatto', d: 'Un’azienda di viaggio e il suo modello' },
     { o: '15:15', t: 'Le priorità', d: 'Dieci casi d’uso, ne restano tre' },
-    { o: '16:00', t: 'La squadra', d: 'Chi fa che cosa fra Trenitalia, Accenture e Adobe' },
+    { o: '16:00', t: 'La squadra', d: 'I servizi Adobe e Accenture: chi fa che cosa dopo la firma' },
     { o: '16:45', t: 'La rotta', d: 'Le tappe a 3, 6 e 9 mesi', dir: true },
     { o: '17:15', t: 'Chiusura', d: 'Le domande della sala' },
   ],
 };
 
+/** Le mani sugli strumenti: sui dati veri solo quello che l'MVP ha costruito, tutto
+ *  il resto in ambiente demo, e lo si dice prima (decisione del 16–17 nov 2026). */
 export const POSTAZIONI = {
-  titolo: 'Due ore, tre salette, gruppi misti',
+  titolo: 'Due ore, tre salette: una sui vostri dati, due in demo',
   sub: 'Sei o sette persone per gruppo, un cambio ogni quaranta minuti.',
   stanze: [
-    { k: 'Leggere', t: 'I percorsi in CJA', b: 'Sui dati della prova' },
-    { k: 'Proporre', t: 'Un’attività su Target', b: 'Con Accenture, su un vostro pubblico' },
-    { k: 'Produrre', t: 'Le varianti', b: 'Con GenStudio for Performance Marketing' },
+    { k: 'Sui vostri dati', t: 'CJA e Target', b: 'I percorsi e l’attività che l’MVP ha messo in produzione' },
+    { k: 'In demo', t: 'Analisi e decisione', b: 'Coworker su CJA, Content Analytics, Decisioning di Journey Optimizer' },
+    { k: 'In demo', t: 'Contenuti e visibilità', b: 'GenStudio for Performance Marketing, Brand Visibility, Brand Concierge' },
   ],
 };
 
@@ -228,7 +232,7 @@ export const RUOLI = {
   colonne: [
     { k: 'Trenitalia', t: 'Decide e vende', b: 'La Direzione Sales sceglie i casi d’uso e guida il programma' },
     { k: 'Accenture e FS Technology', t: 'Mettono in opera', b: 'Le attività su Target, l’accesso ai dati, i rilasci' },
-    { k: 'Adobe', t: 'Porta prodotto e metodo', b: 'La misura in CJA e la regia della giornata' },
+    { k: 'Adobe', t: 'Porta prodotto e metodo', b: 'I servizi professionali sull’MVP, il prodotto e la regia della giornata' },
   ],
 };
 

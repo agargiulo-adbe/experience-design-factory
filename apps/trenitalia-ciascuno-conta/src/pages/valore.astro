@@ -2,17 +2,15 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Navigation from '../components/Navigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
-import Slide from '@edf/core/blocks/immersive/Slide.astro';
-import Divisore from '../components/Divisore.astro';
 import Guscio from '../components/Guscio.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 
-import foto from '../assets/stock/valore.webp';
 
 /**
- * Capitolo 02 della presentazione — Quanto vale, quanto costa. Il ritorno, la leva
- * su CJA, l'effort, e quanto si spende prima del cancello. Tutto dallo strato interno.
+ * Capitolo 02 della presentazione — Quanto vale, quanto costa. Due slide (flusso a 11,
+ * 17 nov 2026): il valore del primo anno, con la leva in una riga e il dettaglio
+ * nell'annex; l'effort, con quanto si spende prima dei risultati. Dallo strato interno.
  */
 const SLUG = 'valore';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -26,18 +24,9 @@ const currentPath = Astro.url.pathname;
 
   <DeckContainer wallScale nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <Slide id="slide-cover" bg="primary" align="left" data-made-with="Adobe Stock" data-made-with-for="fotografia">
-      <div slot="backdrop" class="xd-div-bg" style={`--foto: url(${foto.src})`}></div>
-      <Divisore num={ch.num} titolo={ch.title.it} punto={ch.punto} slug={SLUG} />
-    </Slide>
+    <Guscio id="r-gnarr" dettaglio="numeri#r-leva" />
 
-    <Guscio id="r-gnarr" dettaglio="numeri#r-gnarr-dettaglio" />
-
-    <Guscio id="r-leva" scuro dettaglio="punti#r-annex-1" />
-
-    <Guscio id="r-sforzo" />
-
-    <Guscio id="r-esposizione" scuro dettaglio="punti#r-annex-2" />
+    <Guscio id="r-sforzo" scuro dettaglio="punti#r-annex-1" />
 
   </DeckContainer>
 </BaseLayout>
