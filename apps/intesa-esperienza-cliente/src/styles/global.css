@@ -5232,3 +5232,26 @@ html:not(.js) [data-segue] { opacity: 1; visibility: visible; transform: none; }
   .im-due-banda[data-substep-active] .im-aj-tela > .im-aj-n::before,
   .im-due-banda[data-substep-active] .im-aj-tela .im-aj-rami::before { animation: none !important; }
 }
+
+/* ── Il flusso di Journey Optimizer: fili da bordo a bordo, ramificazione simmetrica (17 nov 2026)
+   I fili andavano da centro a centro e passavano SOPRA le icone; i tre canali stavano
+   impilati sotto «Email» senza un filo che li legasse. Ora: il filo corre fra i bordi
+   delle icone; da «Ha ripreso?» parte un tronco verticale, e ogni canale ha il suo ramo.
+   Il canale di mezzo sta sulla linea del flusso, gli altri due a pari distanza. */
+.im-aj-tela > .im-aj-n:not(:first-child)::before { right: calc(50% + 1.25rem); width: calc(100% + 0.3rem - 2.5rem); }
+.im-aj-tela:has(> .im-aj-rami) { --aj-tronco: 0.55rem; --aj-ramo: 0.85rem; --aj-gap: 0.55rem; grid-template-columns: repeat(3, minmax(0, 0.82fr)) minmax(0, 1.55fr); align-items: center; }
+/* le etichette del flusso principale pendono sotto l'icona: così il centro del nodo È il centro dell'icona */
+.im-aj-tela:has(> .im-aj-rami) > .im-aj-n > span { position: absolute; top: calc(100% + 0.3rem); left: 0; width: 100%; }
+.im-aj-tela .im-aj-rami::after { content: ''; position: absolute; top: 50%; margin-top: -1px; right: calc(100% - var(--aj-tronco)); width: calc(100% * 0.82 / 1.55 / 2 - 1.25rem + 0.3rem + var(--aj-tronco)); height: 2px; background: #98a0ac; } /* il filo da «Ha ripreso?» al tronco parte dai rami e va a sinistra: un filo che esce a destra dal nodo lo farebbe sbordare */
+.im-aj-tela[data-col] .im-aj-rami { grid-auto-rows: 1fr; gap: var(--aj-gap); padding-left: calc(var(--aj-tronco) + var(--aj-ramo)); }
+.im-aj-tela .im-aj-rami::before { top: calc((100% - 2 * var(--aj-gap)) / 6); bottom: calc((100% - 2 * var(--aj-gap)) / 6); left: var(--aj-tronco); right: auto; width: 2px; height: auto; }
+.im-aj-rami .im-aj-n { grid-template-columns: auto minmax(0, 1fr); justify-items: start; align-items: center; gap: 0.5rem; text-align: left; }
+.im-aj-rami .im-aj-n:first-child i { margin-top: 0; }
+.im-aj-rami .im-aj-n::before { content: ''; position: absolute; top: 50%; left: calc(-1 * var(--aj-ramo)); width: var(--aj-ramo); height: 2px; margin-top: -1px; background: #98a0ac; }
+/* la costruzione passo per passo: il filo verso il tronco, poi il tronco si apre dal centro, poi i rami */
+.im-due-banda[data-substep-active] .im-aj-tela .im-aj-rami::after { transform-origin: left center; animation: im-aj-filo 320ms both ease-out; animation-delay: calc(450ms + 3 * 650ms - 330ms); }
+.im-due-banda[data-substep-active] .im-aj-tela .im-aj-rami::before { transform-origin: center; animation: im-aj-tronco 300ms both ease-out; animation-delay: calc(450ms + 3 * 650ms - 120ms); }
+@keyframes im-aj-tronco { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .im-due-banda[data-substep-active] .im-aj-tela .im-aj-rami::after { animation: none !important; }
+}
