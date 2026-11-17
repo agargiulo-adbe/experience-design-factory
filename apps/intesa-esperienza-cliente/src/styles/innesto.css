@@ -1045,10 +1045,10 @@
 .im-flu-nota { margin: clamp(0.6rem, calc(0.9 * var(--vu)), 1.8rem) 0 0; max-width: 62rem; padding: 0.55rem 0.9rem; border-left: 3px solid #b9e6a3; background: rgba(255, 255, 255, 0.06); font-size: clamp(0.96rem, calc(0.9 * var(--vu)), 1.95rem); line-height: 1.35; color: #e3eedf; opacity: 0; transition: opacity 0.5s ease 0.2s; }
 .im-flu-nota strong { display: block; color: #b9e6a3; }
 #slide-flusso:has(.im-flu-passo[data-p="1"][data-substep-active]) .im-flu-svg { clip-path: inset(-2% -2% -2% -2%); }
-#slide-flusso:has(.im-flu-passo[data-p="2"][data-substep-active]) .im-flu-svg path:not([data-on]) { opacity: 0.35; }
-#slide-flusso:has(.im-flu-passo[data-p="2"][data-substep-active]) .im-flu-svg path[data-on] { fill: #b9e6a3; }
-#slide-flusso:has(.im-flu-passo[data-p="2"][data-substep-active]) .im-flu-l:not([data-n="email"]):not([data-n="filiale"]):not([data-n="nuovo"]) { opacity: 0.55; }
-#slide-flusso:has(.im-flu-passo[data-p="2"][data-substep-active]) .im-flu-nota { opacity: 1; }
+#slide-flusso:has(.im-flu-passo[data-p="2"][data-substep-active]):not(:has(.im-flu-passo[data-p="3"][data-substep-active])) .im-flu-svg path:not([data-on]) { opacity: 0.35; }
+#slide-flusso:has(.im-flu-passo[data-p="2"][data-substep-active]):not(:has(.im-flu-passo[data-p="3"][data-substep-active])) .im-flu-svg path[data-on] { fill: #b9e6a3; }
+#slide-flusso:has(.im-flu-passo[data-p="2"][data-substep-active]):not(:has(.im-flu-passo[data-p="3"][data-substep-active])) .im-flu-l:not([data-n="email"]):not([data-n="filiale"]):not([data-n="nuovo"]) { opacity: 0.55; }
+#slide-flusso:has(.im-flu-passo[data-p="2"][data-substep-active]):not(:has(.im-flu-passo[data-p="3"][data-substep-active])) .im-flu-nota { opacity: 1; }
 /* Con il mouse su un'etichetta si leggono solo i suoi nastri, come in Workspace. */
 #slide-flusso .im-flu[data-fuoco] .im-flu-svg path { opacity: 0.18; }
 #slide-flusso .im-flu[data-fuoco] .im-flu-svg path[data-hit] { opacity: 1; fill: #b9e6a3; }
@@ -1150,3 +1150,56 @@
 #slide-innesto .im-inn[data-fz='icona'] .im-inn-funziona > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 #slide-innesto .im-inn[data-ing-corto] .im-inn-ingresso[aria-expanded='false'] .im-ing-i { display: none; }
 #slide-innesto .im-inn[data-svc-corto] .im-inn-svc-k { display: none; }
+
+/* IL SANKEY SI RIDISEGNA (owner, 17 nov 2026): al terzo passo «Prodotto» va sulla
+   colonna di mezzo. Le due serie di etichette e d'intestazione stanno entrambe nel
+   DOM e si scambiano; i nastri e i nodi li muove lo script. `visibility` oltre
+   all'opacità: la regola del secondo passo rialza l'opacità di tutte le etichette
+   non evidenziate, e non deve far riapparire quelle dell'altra vista. */
+.im-flu { position: relative; }
+.im-flu-int > .im-flu-int-m { height: 1.6em; }
+.im-flu-int-m > span { position: absolute; left: 0; top: 0; white-space: nowrap; transition: opacity 0.35s ease, visibility 0s linear 0s; }
+#slide-flusso .im-flu[data-vista="interazione"] [data-v="prodotto"],
+#slide-flusso .im-flu[data-vista="prodotto"] [data-v="interazione"] { opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0s linear 0.25s; }
+#slide-flusso .im-flu[data-vista="prodotto"] .im-flu-int-m { color: #b9e6a3; }
+
+/* La zona di rilascio: la colonna di mezzo, intestazione compresa. Si vede solo
+   mentre si trascina, e si accende quando il bottone le passa sopra. */
+.im-flu-zona { position: absolute; left: calc(var(--x) - 1.6%); width: 15.5%; top: calc(-1 * clamp(3.1rem, calc(3.9 * var(--vu)), 7.4rem)); bottom: -0.6rem; border: 1.5px dashed rgba(185, 230, 163, 0.5); border-radius: 10px; opacity: 0; pointer-events: none; transition: opacity 0.2s ease, background-color 0.2s ease, border-color 0.2s ease; }
+.im-flu[data-trascina] .im-flu-zona { opacity: 1; }
+.im-flu-zona[data-sopra] { border-style: solid; border-color: #b9e6a3; background: rgba(185, 230, 163, 0.1); }
+
+/* La nota del terzo passo occupa la stessa casella di quella del secondo: la
+   slide non cresce, e una nota esce mentre l'altra entra. ⚠️ Il deck lascia
+   `data-substep-active` anche sui passi già passati: per questo le regole del
+   secondo passo (percorso evidenziato e sua nota) escludono il terzo. */
+.im-flu-note { display: grid; }
+.im-flu-note > .im-flu-nota { grid-area: 1 / 1; }
+.im-flu-nota--dim { display: flex; align-items: center; gap: clamp(0.8rem, calc(1.1 * var(--vu)), 2.2rem); max-width: none; visibility: hidden; transition: opacity 0.45s ease, visibility 0s linear 0.45s; }
+.im-flu-nota--dim > p { margin: 0; }
+#slide-flusso:has(.im-flu-passo[data-p="3"][data-substep-active]) .im-flu-nota--dim { opacity: 1; visibility: visible; transition: opacity 0.45s ease, visibility 0s linear 0s; }
+.im-flu-dim { display: flex; flex: none; align-items: center; gap: 0.45rem; }
+.im-flu-dim-k { margin-right: 0.15rem; font-size: 0.78em; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #c9dcc2; }
+
+/* I bottoni delle dimensioni: come i componenti nel pannello di Workspace, con la
+   presa a sei punti. Si trascinano o si premono. */
+.im-flu-chip { position: relative; display: inline-flex; align-items: center; gap: 0.45em; padding: 0.28em 0.75em 0.28em 0.5em; border: 1px solid rgba(185, 230, 163, 0.55); border-radius: 5px; background: #0b1f06; color: #ffffff; font: inherit; font-weight: 600; line-height: 1.2; white-space: nowrap; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease; }
+.im-flu-chip svg { width: 0.5em; height: 0.75em; fill: currentColor; opacity: 0.7; flex: none; }
+.im-flu-chip:hover { border-color: #b9e6a3; background: #143509; }
+.im-flu-chip[aria-pressed="true"] { border-color: #6cc04a; background: #6cc04a; color: #0d2a03; }
+.im-flu-chip:focus-visible { outline: 3px solid #ffffff; outline-offset: 2px; }
+.im-flu-chip:active { cursor: grabbing; }
+
+/* Il bottone mentre viaggia: sopra tutto, con un'ombra che lo stacca dalla slide. */
+.im-flu-ghost { position: absolute; z-index: 6; margin: 0; pointer-events: none; cursor: grabbing; box-shadow: 0 12px 26px -10px rgba(0, 0, 0, 0.75), 0 2px 6px rgba(0, 0, 0, 0.35); }
+.im-flu-chip .im-flu-cursore { position: absolute; right: -0.55rem; bottom: -1.05rem; width: 1rem; height: 1.25rem; opacity: 1; fill: #ffffff; stroke: #0b1f06; stroke-width: 1.2; stroke-linejoin: round; filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5)); }
+@media (prefers-reduced-motion: reduce) { .im-flu-zona, .im-flu-int-m > span, .im-flu-nota--dim { transition: none; } }
+@media (max-width: 900px) { .im-flu-nota--dim { flex-direction: column; align-items: flex-start; gap: 0.5rem; } }
+/* Con le animazioni ridotte il deck non attiva i passi («il CSS mostra ogni
+   passo», deck.ts): qui i nastri aspettavano il primo passo e la slide restava
+   con le sole barre, anche nella versione pubblicata. Ora il grafico è intero e
+   i bottoni delle dimensioni sono pronti; la dimostrazione animata non parte. */
+@media (prefers-reduced-motion: reduce) {
+  .im-flu-svg { clip-path: none; }
+  .im-flu-nota--dim { opacity: 1; visibility: visible; }
+}

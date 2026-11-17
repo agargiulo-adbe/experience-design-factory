@@ -28,7 +28,7 @@ import InnestoPop from '../components/InnestoPop.astro';
 import Segno from '../components/Segno.astro';
 import FiguraCapacita from '../components/FiguraCapacita.astro';
 import { ATTRIBUZIONE, DIGITALE } from '../data/attribuzione';
-import { CONTATTO, INTERAZIONE, ESITO, NL, NM, NR, FLUSSI, GEO } from '../data/flusso';
+import { CONTATTO, INTERAZIONE, PRODOTTO, ESITO, NL, NM, NM_P, NR, FLUSSI, FLUSSI_P, GEO } from '../data/flusso';
 import MappaCapacita from '../components/MappaCapacita.astro';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import Divisore from '../components/Divisore.astro';
@@ -534,27 +534,44 @@ const RITORNO = [
         <T as="p" class="im-ado-l" it="Clienti e non‑clienti, canali digitali e fisici nella stessa vista: da quale contatto parte una vendita, e dove si chiude." en="Customers and non-customers, digital and physical channels in one view: which contact starts a sale, and where it closes." />
         <i class="im-flu-passo" data-substep data-p="1" aria-hidden="true"></i>
         <i class="im-flu-passo" data-substep data-p="2" aria-hidden="true"></i>
-        <figure class="im-flu" data-flu>
+        {/* Terzo passo (owner, 17 nov 2026): la dimensione «Prodotto» trascinata sulla
+            colonna di mezzo. Dati e fonti in `data/flusso.ts`; lo script è «Il Sankey si
+            ridisegna», in fondo alla pagina. */}
+        <i class="im-flu-passo" data-substep data-p="3" aria-hidden="true"></i>
+        <figure class="im-flu" data-flu data-vista="interazione">
           <div class="im-flu-int" aria-hidden="true">
             <T as="span" style={`--x:${(GEO.X[0] + GEO.NW) / 10}%`} class="im-flu-int-l" it="Canale di contatto" en="Contact channel" />
-            <T as="span" style={`--x:${GEO.X[1] / 10}%`} it="Dove interagisce" en="Where they interact" />
+            <span class="im-flu-int-m" style={`--x:${GEO.X[1] / 10}%`}><T as="span" data-v="interazione" it="Dove interagisce" en="Where they interact" /><T as="span" data-v="prodotto" it="Prodotto" en="Product" /></span>
             <T as="span" style={`--x:${GEO.X[2] / 10}%`} it="Esito" en="Outcome" />
           </div>
           <div class="im-flu-g" data-datalake role="img" aria-label="Flusso di esempio: dai canali di contatto (email, annunci, ricerca, notifiche, diretto) a sito, app, Filiale Digitale e filiale, fino a nuovi clienti e clienti con un nuovo prodotto">
             <svg class="im-flu-svg" viewBox={`0 0 ${GEO.W} ${GEO.H}`} preserveAspectRatio="none" aria-hidden="true">
-              {FLUSSI.map((f) => <path d={f.d} data-da={f.da} data-a={f.a} data-tratto={f.tratto} data-on={f.on ? '' : null} />)}
+              {FLUSSI.map((f, i) => <path d={f.d} data-d1={f.d} data-d2={FLUSSI_P[i].d} data-k1={f.tratto === 1 ? f.a : f.da} data-k2={f.tratto === 1 ? FLUSSI_P[i].a : FLUSSI_P[i].da} data-da={f.da} data-a={f.a} data-tratto={f.tratto} data-on={f.on ? '' : null} />)}
             </svg>
             <svg class="im-flu-nodi" viewBox={`0 0 ${GEO.W} ${GEO.H}`} preserveAspectRatio="none" aria-hidden="true">
               {NL.map((n, i) => <rect class="im-flu-n" x={n.x} y={n.y} width={GEO.NW} height={n.h} data-n={CONTATTO[i].k} />)}
-              {NM.map((n, i) => <rect class="im-flu-n" x={n.x} y={n.y} width={GEO.NW} height={n.h} data-n={INTERAZIONE[i].k} />)}
+              {NM.map((n, i) => <rect class="im-flu-n im-flu-n--m" x={n.x} y={n.y} width={GEO.NW} height={n.h} data-n={INTERAZIONE[i].k} data-y1={n.y} data-h1={n.h} data-y2={NM_P[i].y} data-h2={NM_P[i].h} />)}
               {NR.map((n, i) => <rect class="im-flu-n" x={n.x} y={n.y} width={GEO.NW} height={n.h} data-n={ESITO[i].k} />)}
             </svg>
             {NL.map((n, i) => <T as="span" class="im-flu-l im-flu-l--sx" data-n={CONTATTO[i].k} style={`--x:${(n.x - 10) / 10}%;--y:${(n.y + n.h / 2) / 4}%`} it={CONTATTO[i].it} en={CONTATTO[i].en} />)}
-            {NM.map((n, i) => <T as="span" class="im-flu-l im-flu-l--su" data-n={INTERAZIONE[i].k} style={`--x:${n.x / 10}%;--y:${n.y / 4}%`} it={INTERAZIONE[i].it} en={INTERAZIONE[i].en} />)}
+            {NM.map((n, i) => <T as="span" class="im-flu-l im-flu-l--su" data-v="interazione" data-n={INTERAZIONE[i].k} style={`--x:${n.x / 10}%;--y:${n.y / 4}%`} it={INTERAZIONE[i].it} en={INTERAZIONE[i].en} />)}
+            {NM_P.map((n, i) => <T as="span" class="im-flu-l im-flu-l--su" data-v="prodotto" data-n={PRODOTTO[i].k} style={`--x:${n.x / 10}%;--y:${n.y / 4}%`} it={PRODOTTO[i].it} en={PRODOTTO[i].en} />)}
+            {/* La zona di rilascio: la colonna di mezzo, intestazione compresa. */}
+            <div class="im-flu-zona" style={`--x:${GEO.X[1] / 10}%`} aria-hidden="true"></div>
             {NR.map((n, i) => <T as="span" class="im-flu-l im-flu-l--dx" data-n={ESITO[i].k} style={`--x:${(n.x + GEO.NW + 10) / 10}%;--y:${(n.y + n.h / 2) / 4}%`} it={ESITO[i].it} en={ESITO[i].en} />)}
           </div>
         </figure>
-        <p class="im-flu-nota" data-dal="2"><T as="strong" it="Percorso evidenziato" en="Highlighted path" /> <T as="span" it="email, poi filiale, poi nuovo cliente: la vendita si chiude allo sportello, e nel flusso si vede che è partita dall’email." en="email, then branch, then new customer: the sale closes at the counter, and the flow shows it started with the email." /></p>
+        <div class="im-flu-note">
+          <p class="im-flu-nota" data-dal="2"><T as="strong" it="Percorso evidenziato" en="Highlighted path" /> <T as="span" it="email, poi filiale, poi nuovo cliente: la vendita si chiude allo sportello, e nel flusso si vede che è partita dall’email." en="email, then branch, then new customer: the sale closes at the counter, and the flow shows it started with the email." /></p>
+          <div class="im-flu-nota im-flu-nota--dim" data-dal="3">
+            <div class="im-flu-dim" role="group" aria-label="Dimensione della colonna di mezzo">
+              <T as="span" class="im-flu-dim-k" it="Dimensioni" en="Dimensions" />
+              <button type="button" class="im-flu-chip" data-dim="interazione" aria-pressed="true"><svg viewBox="0 0 8 12" aria-hidden="true"><circle cx="2" cy="2" r="1" /><circle cx="6" cy="2" r="1" /><circle cx="2" cy="6" r="1" /><circle cx="6" cy="6" r="1" /><circle cx="2" cy="10" r="1" /><circle cx="6" cy="10" r="1" /></svg><T as="span" it="Dove interagisce" en="Where they interact" /></button>
+              <button type="button" class="im-flu-chip" data-dim="prodotto" aria-pressed="false"><svg viewBox="0 0 8 12" aria-hidden="true"><circle cx="2" cy="2" r="1" /><circle cx="6" cy="2" r="1" /><circle cx="2" cy="6" r="1" /><circle cx="6" cy="6" r="1" /><circle cx="2" cy="10" r="1" /><circle cx="6" cy="10" r="1" /></svg><T as="span" it="Prodotto" en="Product" /></button>
+            </div>
+            <p><T as="strong" it="La stessa vista, un’altra domanda" en="Same view, another question" /> <T as="span" it="si trascina una dimensione su una colonna e il flusso si ridisegna, senza chiedere un report nuovo." en="drag a dimension onto a column and the flow redraws itself, without asking for a new report." /></p>
+          </div>
+        </div>
         <p class="im-fonte-riga">
           <span data-lang-it>Esempio illustrativo: larghezze di esempio, non dati. In Customer Journey Analytics: </span><span data-lang-en>Illustrative example: sample widths, not data. In Customer Journey Analytics: </span>
           <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-workspace/visualizations/flow/flow" target="_blank" rel="noopener"><span data-lang-it>visualizzazione Flow</span><span data-lang-en>Flow visualization</span></a><span> · </span>
@@ -958,6 +975,148 @@ const RITORNO = [
       });
       l.addEventListener('mouseleave', () => { flu.removeAttribute('data-fuoco'); nastri.forEach((p) => p.removeAttribute('data-hit')); });
     });
+
+    /* IL SANKEY SI RIDISEGNA (owner, 17 nov 2026). Al terzo passo la dimensione
+       «Prodotto» va sulla colonna di mezzo, come in Customer Journey Analytics, e
+       il flusso si ridisegna nastro per nastro: i lati restano fermi, cambia solo
+       la domanda. Si fa anche a mano, trascinando i bottoni delle dimensioni sulla
+       colonna (mouse e touch) o premendoli. Niente tempi promessi: l'animazione è
+       breve perché si legga in sala, non perché il prodotto sia istantaneo. */
+    const slide = document.getElementById('slide-flusso')!;
+    const zona = flu.querySelector<HTMLElement>('.im-flu-zona')!;
+    const rett = [...flu.querySelectorAll<SVGRectElement>('.im-flu-n--m')];
+    const chips = [...slide.querySelectorAll<HTMLButtonElement>('.im-flu-chip')];
+    const p3 = slide.querySelector<HTMLElement>('.im-flu-passo[data-p="3"]');
+    const lento = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const NUM = /-?\d+(?:\.\d+)?(?:e-?\d+)?/g;
+    const forme = nastri.map((p) => ({ a: p.dataset.d1!.match(NUM)!.map(Number), b: p.dataset.d2!.match(NUM)!.map(Number), sk: p.dataset.d1!.split(NUM) }));
+    const disegna = (t: number) => {
+      nastri.forEach((p, i) => {
+        const { a, b, sk } = forme[i];
+        let d = sk[0];
+        for (let k = 0; k < a.length; k++) d += (a[k] + (b[k] - a[k]) * t).toFixed(2) + sk[k + 1];
+        p.setAttribute('d', d);
+      });
+      rett.forEach((r) => {
+        const y = +r.dataset.y1! + (+r.dataset.y2! - +r.dataset.y1!) * t;
+        const h = +r.dataset.h1! + (+r.dataset.h2! - +r.dataset.h1!) * t;
+        r.setAttribute('y', y.toFixed(2)); r.setAttribute('height', h.toFixed(2));
+      });
+    };
+    let vista = 'interazione', pos = 0, raf = 0;
+    const vai = (nuova: string, anima = true) => {
+      const meta = nuova === 'prodotto' ? 1 : 0;
+      vista = nuova;
+      flu.dataset.vista = nuova;
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.dim === nuova)));
+      nastri.forEach((p) => {
+        const k = meta ? p.dataset.k2! : p.dataset.k1!;
+        if (p.dataset.tratto === '1') p.dataset.a = k; else p.dataset.da = k;
+      });
+      cancelAnimationFrame(raf);
+      if (!anima || lento()) { pos = meta; disegna(pos); return; }
+      const da = pos, t0 = performance.now(), dur = 780;
+      const passo = (ora: number) => {
+        const x = Math.min(1, (ora - t0) / dur);
+        const e = x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+        pos = da + (meta - da) * e; disegna(pos);
+        if (x < 1) raf = requestAnimationFrame(passo);
+      };
+      raf = requestAnimationFrame(passo);
+    };
+
+    /* Il fantasma che si trascina vive DENTRO la figura (non nel body), così si vede
+       anche a schermo intero; la figura può essere scalata dal deck, e le coordinate
+       si riportano alla sua scala. */
+    const scala = () => { const b = flu.getBoundingClientRect(); return { b, s: b.width / (flu.offsetWidth || 1) }; };
+    const fantasma = (c: HTMLElement, demo = false) => {
+      const g = c.cloneNode(true) as HTMLElement;
+      g.classList.add('im-flu-ghost'); g.removeAttribute('aria-pressed'); g.setAttribute('aria-hidden', 'true');
+      if (demo) g.insertAdjacentHTML('beforeend', '<svg class="im-flu-cursore" viewBox="0 0 16 20" aria-hidden="true"><path d="M1 1v15l4-4 3 7 3-1.4-3-6.6h6z" /></svg>');
+      flu.appendChild(g);
+      return g;
+    };
+    const metti = (g: HTMLElement, cx: number, cy: number) => {
+      const { b, s } = scala();
+      g.style.left = `${(cx - b.left) / s - g.offsetWidth / 2}px`;
+      g.style.top = `${(cy - b.top) / s - g.offsetHeight / 2}px`;
+    };
+    const sopra = (cx: number, cy: number) => {
+      const r = zona.getBoundingClientRect();
+      return cx >= r.left - 24 && cx <= r.right + 24 && cy >= r.top - 24 && cy <= r.bottom + 24;
+    };
+
+    /* A mano: trascinare un bottone sulla colonna, oppure premerlo. */
+    let sopprimi = false;
+    chips.forEach((c) => {
+      let g: HTMLElement | null = null, x0 = 0, y0 = 0, giu = false;
+      c.addEventListener('pointerdown', (e) => {
+        if (e.button !== 0) return;
+        giu = true; x0 = e.clientX; y0 = e.clientY;
+        c.setPointerCapture(e.pointerId);
+      });
+      c.addEventListener('pointermove', (e) => {
+        if (!giu) return;
+        if (!g && Math.hypot(e.clientX - x0, e.clientY - y0) < 6) return;
+        if (!g) { g = fantasma(c); flu.setAttribute('data-trascina', ''); stopDemo(); }
+        metti(g, e.clientX, e.clientY);
+        zona.toggleAttribute('data-sopra', sopra(e.clientX, e.clientY));
+      });
+      const fine = (e: PointerEvent, annulla = false) => {
+        if (!giu) return;
+        giu = false;
+        if (!g) return;
+        if (!annulla && sopra(e.clientX, e.clientY)) vai(c.dataset.dim!);
+        g.remove(); g = null; sopprimi = true;
+        flu.removeAttribute('data-trascina'); zona.removeAttribute('data-sopra');
+      };
+      c.addEventListener('pointerup', (e) => fine(e));
+      c.addEventListener('pointercancel', (e) => fine(e, true));
+      c.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (sopprimi) { sopprimi = false; return; }
+        stopDemo(); vai(c.dataset.dim!);
+      });
+      /* Uno swipe sul touch farebbe avanzare il deck: il trascinamento non lo è. */
+      c.addEventListener('touchend', (e) => e.stopPropagation());
+    });
+
+    /* Al terzo passo, la dimostrazione: il bottone «Prodotto» va sulla colonna. */
+    let timer = 0, demo: Animation | null = null, demoG: HTMLElement | null = null;
+    const stopDemo = () => {
+      clearTimeout(timer); demo?.cancel(); demo = null; demoG?.remove(); demoG = null;
+      flu.removeAttribute('data-trascina'); zona.removeAttribute('data-sopra');
+    };
+    const dimostra = () => {
+      const c = chips.find((x) => x.dataset.dim === 'prodotto');
+      if (!c || vista === 'prodotto') return;
+      if (lento()) { vai('prodotto', false); return; }
+      const { b, s } = scala();
+      const da = c.getBoundingClientRect(), a = zona.getBoundingClientRect();
+      const g = demoG = fantasma(c, true);
+      metti(g, da.left + da.width / 2, da.top + da.height / 2);
+      const dx = (a.left + a.width / 2 - (da.left + da.width / 2)) / s;
+      const dy = (a.top + Math.min(a.height * 0.18, 60) - (da.top + da.height / 2)) / s;
+      flu.setAttribute('data-trascina', '');
+      demo = g.animate([
+        { transform: 'translate(0, 0) scale(1)', opacity: 0 },
+        { transform: 'translate(0, 0) scale(1.06)', opacity: 1, offset: 0.12 },
+        { transform: `translate(${dx}px, ${dy}px) scale(1.06)`, opacity: 1, offset: 0.82 },
+        { transform: `translate(${dx}px, ${dy}px) scale(0.92)`, opacity: 0 },
+      ], { duration: 1500, easing: 'cubic-bezier(0.45, 0, 0.2, 1)', fill: 'forwards' });
+      timer = window.setTimeout(() => zona.setAttribute('data-sopra', ''), 900);
+      demo.finished.then(() => { stopDemo(); vai('prodotto'); }).catch(() => {});
+    };
+    if (p3) {
+      new MutationObserver(() => {
+        if (p3.hasAttribute('data-substep-active')) { stopDemo(); timer = window.setTimeout(dimostra, 450); }
+        else if (vista !== 'interazione') { stopDemo(); vai('interazione'); }
+        else stopDemo();
+      }).observe(p3, { attributes: true, attributeFilter: ['data-substep-active'] });
+    }
+    new MutationObserver(() => {
+      if (slide.getAttribute('aria-hidden') === 'true') { stopDemo(); vai('interazione', false); }
+    }).observe(slide, { attributes: true, attributeFilter: ['aria-hidden'] });
   }
 </script>
 
