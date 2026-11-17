@@ -1,16 +1,26 @@
 ---
 /**
- * 01 · IL PROGRAMMA — che cosa è il Customer POD, come ci si arriva, e che
- * cosa fa Coworker in due minuti.
+ * 01 · IL QUADRO — la visione d'insieme, prima dei due approfondimenti.
  *
- * La prima slide è RICOMPOSTA dalla slide 7 del deck presentato il 6 nov 2026,
- * che diceva esattamente questo: nessuna promessa in più. La linea del tempo
- * viene dal SAL scritto dall'AE al cliente lo stesso giorno, e porta una data
- * solo sull'ultima tappa, perché è l'unica detta.
+ * Giro del 17 nov 2026 (richiesta dell'owner): prima il quadro, poi Analytics,
+ * poi Analytics e Target. Quattro slide di contenuto, quattro superfici:
+ *   · il Customer POD, su petrolio pieno: la cifra e le tre cose che dà;
+ *   · LA MAPPA, sul fondo scuro: tutto il programma in una pagina, a fasi
+ *     (`Mappa.astro`): è la slide-firma del deck;
+ *   · le tappe, su carta: da oggi al primo punto con la direzione;
+ *   · la demo, sul fondo scuro.
  *
- * Il video arriva dopo (`public/media/coworker-demo-banca.mp4` + poster): finché
- * il file non c'è, la slide mostra un segnaposto e il resto regge da solo.
- * Niente autoplay: si avvia da chi presenta, con i comandi del lettore.
+ * Il POD è RICOMPOSTO dalla slide 7 del deck presentato il 6 nov 2026, che
+ * diceva esattamente questo: nessuna promessa in più. Il programma parte su
+ * Adobe Analytics e Adobe Target si aggancia circa tre settimane dopo (accordo
+ * interno Adobe del 17 nov 2026): mai un giorno preciso in pagina.
+ *
+ * IL VIDEO. Andrà su Adobe Dynamic Media, come su Intesa
+ * (`apps/intesa-esperienza-cliente/src/pages/coworker.astro`): il player di
+ * Dynamic Media montato in pagina con `isLetterBoxed: true`, e l'iframe di
+ * `/play` come ripiego. Finché l'URL non c'è (`VIDEO_DEMO = ''`), si proietta
+ * il `.mp4` locale in `public/media/`; senza nemmeno quello, il segnaposto.
+ * Niente autoplay: si avvia da chi presenta.
  */
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -24,6 +34,7 @@ import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
 import Figura from '../components/Figura.astro';
 import Divisore from '../components/Divisore.astro';
 import Motivo from '../components/Motivo.astro';
+import Mappa from '../components/Mappa.astro';
 import LineaTempo from '../components/LineaTempo.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
@@ -35,7 +46,11 @@ const currentPath = Astro.url.pathname;
 
 const EL_AA = 'https://experienceleague.adobe.com/en/docs/coworker/content/chat/use-cases/data-insights/analytics-overview';
 
-/* Il file video si cerca nel `public/` dell'app al momento della build: il
+/* Il video della demo. L'URL arriva da Dynamic Media: una riga, qui
+   (`https://delivery-…/adobe/assets/urn:aaid:aem:<id>/play`). */
+const VIDEO_DEMO = 'https://delivery-p97303-e890303.adobeaemcloud.com/adobe/assets/urn:aaid:aem:c78cf9a8-0020-43b7-adf1-252d32fb76d6/play';
+const VIDEO_ASSET = VIDEO_DEMO.replace(/\/play$/, '');
+/* Il ripiego locale si cerca nel `public/` dell'app al momento della build: il
    build gira con la cartella dell'app come cartella di lavoro. */
 const VIDEO = 'media/coworker-demo-banca.mp4';
 const POSTER = 'media/coworker-demo-banca.poster.jpg';
@@ -43,6 +58,10 @@ const pub = (p: string) => join(process.cwd(), 'public', p);
 const conVideo = existsSync(pub(VIDEO));
 const conPoster = existsSync(pub(POSTER));
 const b = base.replace(/\/?$/, '/');
+
+/* Il righello dei novanta giorni: un trattino al giorno, uno più lungo a
+   settimana. Le prime tre settimane, solo Analytics, sono quelle accese. */
+const GIORNI = Array.from({ length: 90 }, (_, i) => i);
 ---
 <BaseLayout title={ch.title}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -52,87 +71,119 @@ const b = base.replace(/\/?$/, '/');
   <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
     <Slide id="slide-cover" bg="secondary" align="left">
-      <div slot="backdrop" class="xd-div-bg" data-senza-foto><Motivo k="tempo" /></div>
+      <div slot="backdrop" class="xd-div-bg" data-senza-foto><Motivo k="corsie" /></div>
       <Divisore num={ch.num} titolo={ch.title} punto={ch.punto} />
     </Slide>
 
     {/* ── Il Customer POD: la cifra, e le tre cose che il programma dà ────── */}
-    <Slide id="slide-pod" bg="primary" align="left">
-      <div slot="backdrop" class="ex-bg-paper"></div>
-      <div class="xd-sl" data-reveal>
-        <div class="xd-sl-head">
-          <p class="xd-n">Il programma</p>
-          <h2 class="xd-h2">Il Customer POD di Coworker</h2>
-        </div>
-        <div class="uc-pod">
-          <div class="uc-pod-cifra" data-reveal data-reveal-delay="0.08">
-            <p class="uc-pod-n" data-display>90</p>
-            <p class="uc-pod-u">giorni sui vostri casi d’uso</p>
-            <p class="uc-pod-d">Un team di prodotto e ingegneria Adobe lavora con voi.</p>
-          </div>
+    <Slide id="slide-pod" bg="brand" align="left">
+      <div slot="backdrop" class="uc-bg-petrolio"></div>
+      <div class="uc-pod ex-on-dark uc-on-brand" data-reveal>
+        <figure class="uc-pod-cifra">
+          <p class="uc-pod-n" data-display><span>90</span><span class="uc-pod-u">giorni</span></p>
+          <svg class="uc-pod-righello" viewBox="0 0 900 60" preserveAspectRatio="none" aria-hidden="true">
+            {GIORNI.map((g) => (
+              <line x1={g * 10 + 5} x2={g * 10 + 5} y1={g % 7 === 0 ? 4 : 24} y2="56" class={g % 7 === 0 ? 'p' : ''} />
+            ))}
+          </svg>
+          <figcaption class="uc-pod-cap"><span>Firma dell’accordo</span><span>Giorno 90</span></figcaption>
+        </figure>
+        <div class="uc-pod-dx">
+          <p class="uc-pod-k">Customer POD</p>
+          <h2 class="uc-pod-t">Novanta giorni con il team di prodotto Adobe sui vostri casi</h2>
           <ul class="uc-pod-lista" data-stagger>
             <li class="uc-pod-i">
-              <p class="uc-pod-a">Accesso aperto per tutto il programma</p>
-              <p class="uc-pod-r">Senza consumare il vostro periodo di prova.</p>
+              <p class="uc-pod-a">Prodotto e ingegneria Adobe</p>
+              <p class="uc-pod-r">Lavorano con voi sui casi scelti insieme, dentro il perimetro del programma.</p>
             </li>
             <li class="uc-pod-i">
-              <p class="uc-pod-a">Le richieste entrano in pipeline</p>
-              <p class="uc-pod-r">Quello che chiedete viene registrato e, dove ha senso, entra nello sviluppo del prodotto.</p>
+              <p class="uc-pod-a">Accesso a Coworker per tutto il programma</p>
+              <p class="uc-pod-r">Per la durata del POD, sui casi scelti insieme.</p>
+            </li>
+            <li class="uc-pod-i">
+              <p class="uc-pod-a">Le richieste arrivano al prodotto</p>
+              <p class="uc-pod-r">Le vostre richieste arrivano al prodotto Adobe. Che cosa sviluppare lo decide il prodotto: nessuna promessa di roadmap.</p>
             </li>
           </ul>
+          <p class="uc-pod-accordo">Si parte con la firma di un accordo di partecipazione al programma: i novanta giorni contano da lì. Lo riceve il vostro ufficio legale prima del kickoff.</p>
+          <p class="uc-nota">Su invito, con uno sponsor nella direzione Adobe.</p>
         </div>
-        <p class="uc-nota">Su invito, con sponsorship esecutiva Adobe. La data di partenza la conferma il team Adobe quando lo slot del programma è assegnato.</p>
       </div>
     </Slide>
 
-    {/* ── Come ci arriviamo: quattro tappe, una data sola ───────────────── */}
+    {/* ── LA MAPPA: tutto il programma in una pagina, a fasi ─────────────── */}
+    <Slide id="slide-mappa" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--dark uc-sl-largo" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Il programma in una pagina</p>
+          <h2 class="xd-h2 uc-mappa-titolo">Si parte da Analytics, e Target entra circa tre settimane dopo</h2>
+        </div>
+        <Mappa />
+      </div>
+    </Slide>
+
+    {/* ── Le tappe: da oggi al primo punto con la direzione ───────────────── */}
     <Slide id="slide-percorso" bg="primary" align="left">
       <div slot="backdrop" class="ex-bg-paper"></div>
-      <div class="xd-sl" data-reveal>
+      <div class="xd-sl uc-sl-largo" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">Come ci arriviamo</p>
-          <h2 class="xd-h2">Da oggi al primo punto, in quattro tappe</h2>
-          <p class="xd-sub">Quello che dite oggi il PM del programma lo legge per primo.</p>
+          <p class="xd-n">Le tappe</p>
+          <h2 class="xd-h2">Da oggi al primo punto con la direzione</h2>
+          <p class="xd-sub">Quello che dite oggi lo legge per primo chi guida il programma.</p>
         </div>
         <LineaTempo fatte={0} />
       </div>
     </Slide>
 
-    {/* ── Coworker al lavoro, in quattro minuti: il video della demo ─────────────────── */}
+    {/* ── Coworker al lavoro: il video della demo ─────────────────────────── */}
     <Slide id="slide-video" bg="inverse" align="left">
       <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="xd-sl xd-sl--dark" data-reveal>
-        <div class="xd-sl-head">
-          <p class="xd-n">La demo</p>
-          <h2 class="xd-h2 uc-firma-t">Coworker al lavoro, in quattro minuti</h2>
-        </div>
+      <div class="xd-sl xd-sl--dark uc-sl-largo" data-reveal>
         <div class="uc-video">
           <figure class="uc-video-fig">
-            <div class="uc-video-box">
-              {conVideo ? (
-                <video controls preload="metadata" playsinline
-                       poster={conPoster ? `${b}${POSTER}` : undefined}
-                       aria-label="Demo di Coworker su Adobe Analytics, ambiente dimostrativo">
-                  <source src={`${b}${VIDEO}`} type="video/mp4" />
-                </video>
-              ) : (
-                <div class="uc-video-attesa">
-                  <svg viewBox="0 0 64 64" aria-hidden="true">
-                    <circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2.5" />
-                    <path d="M26 20 L46 32 L26 44 Z" fill="currentColor" />
-                  </svg>
-                  <p>La demo si proietta da qui</p>
-                </div>
-              )}
-            </div>
-            <figcaption class="uc-video-cap">Ambiente dimostrativo Adobe, dati di una banca fittizia.</figcaption>
+            {VIDEO_DEMO ? (
+              <div class="uc-video-box uc-video-dm" id="uc-video-dm" data-asset={VIDEO_ASSET} data-play={VIDEO_DEMO}
+                   role="region" aria-label="Video della dimostrazione"></div>
+            ) : (
+              <div class="uc-video-box">
+                {conVideo ? (
+                  <video controls preload="metadata" playsinline
+                         poster={conPoster ? `${b}${POSTER}` : undefined}
+                         aria-label="Demo di Coworker su Adobe Analytics, ambiente dimostrativo">
+                    <source src={`${b}${VIDEO}`} type="video/mp4" />
+                  </video>
+                ) : (
+                  <div class="uc-video-attesa">
+                    <svg viewBox="0 0 64 64" aria-hidden="true">
+                      <circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2.5" />
+                      <path d="M26 20 L46 32 L26 44 Z" fill="currentColor" />
+                    </svg>
+                    <p>La demo si proietta da qui</p>
+                  </div>
+                )}
+              </div>
+            )}
+            <figcaption class="uc-video-cap">Ambiente dimostrativo Adobe Analytics, dati di una banca fittizia. La report suite di prova ha «CJA» nel nome: la skill e il pulsante sono quelli di Analytics.</figcaption>
           </figure>
           <div class="uc-video-dx">
+            <p class="xd-n">Coworker su Analytics</p>
+            <h2 class="xd-h2 uc-firma-t">La demo: tre minuti e quaranta su dati di una banca fittizia</h2>
             <ul class="uc-ancore-v" data-stagger>
-              <li>Si chiede in italiano</li>
+              <li>Nella demo si chiede in italiano</li>
               <li>Risponde sui dati Analytics</li>
               <li>Con i permessi che avete già</li>
             </ul>
+            {/* Che cosa cambia rispetto a un assistente generico: solo fatti già
+                confermati dalle fonti del deck, nessun altro prodotto nominato. */}
+            <div class="uc-diverso">
+              <p class="uc-diverso-k">Che cosa cambia rispetto a un assistente generico</p>
+              <ul class="uc-diverso-l">
+                <li>Interroga le vostre report suite, con i vostri permessi</li>
+                <li>Riapre in Workspace ogni visualizzazione</li>
+                <li>In Target prepara le attività</li>
+              </ul>
+            </div>
             <HowItWorks title="Che cosa vuol dire, una per una" tone="onDark" class="ex-dett ex-dett--scuro">
               <Dettaglio>
                 <DettaglioVoce>
@@ -147,11 +198,108 @@ const b = base.replace(/\/?$/, '/');
                 </DettaglioVoce>
               </Dettaglio>
             </HowItWorks>
+            <p class="xd-fonte">Fonte: <a href={EL_AA} target="_blank" rel="noopener">Experience League, analisi dei dati con Coworker Chat</a></p>
           </div>
         </div>
-        <p class="xd-fonte">Fonte: <a href={EL_AA} target="_blank" rel="noopener">Experience League, analisi dei dati con Coworker Chat</a></p>
+      </div>
+    </Slide>
+
+    {/* ── Dati e approvazioni: chi porta che cosa, prima del kickoff ───────
+        Panel del 17 nov 2026 (P1). Solo ciò che ha una fonte: niente su
+        residenza dei dati o addestramento dei modelli. */}
+    <Slide id="slide-dati" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl uc-sl-largo" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Dati e approvazioni</p>
+          <h2 class="xd-h2">Prima del kickoff, la valutazione si fa da due lati</h2>
+        </div>
+        <figure class="uc-dati">
+          <div class="uc-dati-c">
+            <svg class="uc-dati-fig" viewBox="0 0 64 64" aria-hidden="true">
+              <rect x="14" y="8" width="36" height="48" rx="4" /><path d="M22 22h20M22 31h20M22 40h12" />
+            </svg>
+            <p class="uc-dati-k">Da Adobe</p>
+            <p class="uc-dati-t">La documentazione su Coworker per la vostra valutazione: trattamento e conservazione dei dati, accordo di partecipazione.</p>
+          </div>
+          <div class="uc-dati-c">
+            <svg class="uc-dati-fig" viewBox="0 0 64 64" aria-hidden="true">
+              <path d="M32 6 L54 14 V30 C54 44 44 53 32 58 C20 53 10 44 10 30 V14 Z" /><path d="M22 32 l7 7 13-14" />
+            </svg>
+            <p class="uc-dati-k">Da voi, prima del kickoff</p>
+            <p class="uc-dati-t">Sicurezza IT, protezione dati, governance AI e l’ufficio legale per l’accordo.</p>
+          </div>
+        </figure>
       </div>
     </Slide>
 
   </DeckContainer>
 </BaseLayout>
+
+<script>
+  /* Il player di Dynamic Media montato nella pagina, come su Intesa: CSS e
+     script dagli indirizzi Adobe, poi init con il video intero
+     (`isLetterBoxed: true`, se no a schermo intero su un 16:10 il video si
+     taglia). Se il player non arriva (rete), l'iframe di `/play`. Senza URL
+     (`VIDEO_DEMO = ''`) il riquadro non esiste e qui non succede niente. */
+  type DmWin = Window & { dmViewers?: { VideoPlayer?: { init(id: string, o: object): Promise<{ setupPlayer(c: unknown): void }> }; CorePlayer?: unknown } };
+  const w = window as DmWin;
+  const carica = (src: string) => new Promise<void>((ok, ko) => {
+    if (document.querySelector(`script[src="${src}"]`)) { ok(); return; }
+    const sc = Object.assign(document.createElement('script'), { src, async: false });
+    sc.onload = () => ok(); sc.onerror = () => ko(new Error(src));
+    document.head.appendChild(sc);
+  });
+  function ripiego(box: HTMLElement) {
+    if (box.querySelector('iframe')) return;
+    box.replaceChildren(Object.assign(document.createElement('iframe'), {
+      src: box.dataset.play!, title: 'Video della dimostrazione', allow: 'autoplay; fullscreen; picture-in-picture; encrypted-media',
+    }));
+  }
+  function originale(box: HTMLElement) {
+    const asset = box.dataset.asset!;
+    box.replaceChildren(Object.assign(document.createElement('video'), {
+      src: asset + '/original/as/video.mp4', poster: asset + '/as/thumbnail.jpeg?width=1280&height=720',
+      controls: true, preload: 'metadata', playsInline: true,
+    }));
+  }
+  async function avvia(box: HTMLElement) {
+    if (box.dataset.pronto) return;
+    box.dataset.pronto = '1';
+    const asset = box.dataset.asset!;
+    const urn = 'urn:aaid:aem:';
+    const dm = asset.slice(0, asset.indexOf(urn) + urn.length);
+    if (!document.querySelector('link[data-dm-css]')) {
+      const l = Object.assign(document.createElement('link'), { rel: 'stylesheet', href: dm + 'dmviewers-html5-css/as/core-player.css' });
+      l.dataset.dmCss = '';
+      document.head.appendChild(l);
+    }
+    /* Il manifest di streaming nasce dopo la codifica adattiva: su un asset appena
+       caricato (17 nov 2026) l'originale c'è e i manifest danno 404, e allora né il
+       player né `/play` partono. Si proietta l'originale col player nativo finché il
+       manifest non risponde; poi il deck passa allo streaming da sé. */
+    const pronto = await fetch(asset + '/manifest.m3u8', { method: 'HEAD' }).then((r) => r.ok).catch(() => false);
+    if (!pronto) { originale(box); return; }
+    try {
+      await carica(dm + 'dmviewers-html5/as/VideoPlayer.js');
+      const p = w.dmViewers!.VideoPlayer!.init(box.id, {
+        sources: { DASH: asset + '/manifest.mpd', HLS: asset + '/manifest.m3u8' },
+        posterImage: asset + '/as/thumbnail.jpeg?width=1280&height=720',
+        solution: 'polaris', autoplay: false, controls: true, isLetterBoxed: true,
+      });
+      await carica(dm + 'dmviewers-html5/as/CorePlayer.js');
+      (await p).setupPlayer(w.dmViewers!.CorePlayer);
+    } catch { ripiego(box); }
+  }
+  function prepara() {
+    const box = document.getElementById('uc-video-dm');
+    if (!box) return;
+    const slide = box.closest<HTMLElement>('[data-slide]');
+    const via = () => { if (!slide || slide.getAttribute('aria-hidden') !== 'true') void avvia(box); };
+    via();
+    if (slide) new MutationObserver(via).observe(slide, { attributes: true, attributeFilter: ['aria-hidden'] });
+    setTimeout(() => { if (!box.querySelector('video, iframe')) ripiego(box); }, 9000);
+  }
+  prepara();
+  document.addEventListener('astro:page-load', prepara);
+</script>

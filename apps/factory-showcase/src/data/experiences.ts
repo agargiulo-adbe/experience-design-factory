@@ -423,15 +423,15 @@ export const EXPERIENCES: Experience[] = [
     url: `${LIVE}/unicredit-coworker-pod/`,
     shot: 'shots/unicredit-coworker-pod.webp',
     accent: '#007a91',
-    sections: 5,
+    sections: 4,
     defaultPublished: false,
     tag: {
-      en: '5 chapters · IT · scaffold',
-      it: '5 capitoli · IT · scaffold',
+      en: '4 chapters · IT · internal draft',
+      it: '4 capitoli · IT · bozza interna',
     },
     desc: {
-      en: 'Generated from the «Playbook» skeleton: 5 chapters, a cover and a signature. Copy and design system still come from the brief.',
-      it: 'Generata dallo scheletro «Playbook»: 5 capitoli, una copertina e una firma. Copy e design system arrivano ancora dal brief.',
+      en: 'Working session on Coworker over Adobe Analytics and Adobe Target: the whole Customer POD on one map, then a deep dive on each.',
+      it: 'Sessione di lavoro su Coworker con Adobe Analytics e Adobe Target: tutto il Customer POD su una mappa, poi un approfondimento per ciascuno.',
     },
   },
 ];

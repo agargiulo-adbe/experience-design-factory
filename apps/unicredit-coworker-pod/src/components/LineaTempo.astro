@@ -1,9 +1,9 @@
 ---
 /**
- * LA LINEA DEL TEMPO del programma — quattro tappe, disegnate.
+ * LA LINEA DEL TEMPO del programma — cinque tappe, disegnate.
  *
  * Una sola fonte per le due slide che la mostrano (capitolo 01, «Come ci
- * arriviamo», e capitolo 05, «I prossimi passi»): se le tappe vivessero in due
+ * arriviamo», e capitolo 04, «I prossimi passi»): se le tappe vivessero in due
  * pagine, divergerebbero alla prima correzione.
  *
  * `fatte` = quante tappe sono già passate. Nel capitolo 01 è 0 (la prima è
@@ -11,19 +11,27 @@
  * seconda. Le tappe entrano una alla volta sotto le frecce del deck
  * (`data-substep`): chi presenta si ferma su quella di cui sta parlando.
  *
- * Date: solo sulla quarta, perché è l'unica con una data detta al cliente
- * (mail dell'AE del 6 nov 2026). Sulle tappe 2 e 3 una data sarebbe nostra.
+ * Date: nessun giorno. La quarta tappa è «circa tre settimane dopo» il kickoff
+ * (accordo interno Adobe, 17 nov 2026), la quinta è «fine gennaio, inizio
+ * febbraio» (mail dell'AE del 6 nov 2026). Sulle altre una data sarebbe nostra.
  * ⚠️ Il nome del referente non sta in slide: il deck parla all'organizzazione,
  * e il repo è pubblico. Chi è «la direzione» lo dice chi presenta.
  */
 import { TAPPE } from '../data/contenuti';
-interface Props { fatte?: number }
-const { fatte = 0 } = Astro.props;
+interface Props { fatte?: number; figura?: boolean }
+/* `figura={false}` rende un <div>: solo per il ritmo del capitolo 04, dove
+   la slide prima è già una figura (audit:ritmo legge `figure svg`). */
+const { fatte = 0, figura = true } = Astro.props;
+const Tag = figura ? 'figure' : 'div';
+const N = TAPPE.length;
+const c = (i: number) => ((i + 0.5) / N) * 1000;
 ---
-<div class="uc-tempo" data-fatte={fatte}>
+{/* Le tappe stanno in colonne uguali: il centro della colonna i è a
+    (i + 0,5) / N della larghezza, e la linea va dal primo all'ultimo centro. */}
+<Tag class="uc-tempo" data-fatte={fatte} style={`--n:${N}`}>
   <svg class="uc-tempo-linea" viewBox="0 0 1000 40" preserveAspectRatio="none" aria-hidden="true">
-    <line class="uc-tempo-tr" x1="125" y1="20" x2="875" y2="20" />
-    {fatte > 0 && <line class="uc-tempo-tr-fatto" x1="125" y1="20" x2={125 + 250 * fatte} y2="20" />}
+    <line class="uc-tempo-tr" x1={c(0)} y1="20" x2={c(N - 1)} y2="20" />
+    {fatte > 0 && <line class="uc-tempo-tr-fatto" x1={c(0)} y1="20" x2={c(fatte)} y2="20" />}
   </svg>
   <ol class="uc-tempo-g" role="list">
   {TAPPE.map((x, i) => (
@@ -40,4 +48,4 @@ const { fatte = 0 } = Astro.props;
     </li>
   ))}
   </ol>
-</div>
+</Tag>

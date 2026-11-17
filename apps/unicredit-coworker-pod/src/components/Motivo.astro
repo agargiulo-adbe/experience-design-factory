@@ -7,14 +7,36 @@
  * generato dice poco. Il motivo dice in anticipo la forma dell'argomento:
  * la linea del tempo, le sei caselle, le quattro frecce, l'anello, la spunta.
  *
+ * Giro del 17 nov 2026: i motivi sono il GESTO dei divisori, e sono coerenti
+ * fra loro — stessa mano, stessa scala, un elemento acceso (`.p`) per motivo:
+ *   `corsie` (Il quadro) le due corsie della mappa e il filo fra le due;
+ *   `chat` (Analytics) tre domande in chat, una accesa;
+ *   `anello` (Analytics e Target) il giro; `spunte` (Da dove si comincia).
+ *
  * Sta DENTRO il fondo (`<div slot="backdrop">`), mai nel flusso: nel flusso
  * coprirebbe il testo. In basso nel pannello, lontano dalla riga del punto,
  * che sta al centro. L'opacità si verifica con `audit:ink`, non a occhio.
  */
-interface Props { k: 'tempo' | 'caselle' | 'frecce' | 'anello' | 'spunte' }
+interface Props { k: 'tempo' | 'caselle' | 'frecce' | 'anello' | 'spunte' | 'corsie' | 'chat' }
 const { k } = Astro.props;
 ---
 <svg class="uc-motivo" viewBox="0 0 400 200" aria-hidden="true">
+  {k === 'corsie' && (
+    <g>
+      <rect x="20" y="40" width="360" height="34" rx="8" class="p" />
+      <rect x="110" y="132" width="270" height="34" rx="8" />
+      <path d="M110 120 V178" stroke-dasharray="3 9" />
+      <path d="M170 74 C170 104, 214 102, 214 132" class="p" />
+      <circle cx="214" cy="132" r="7" class="p" />
+    </g>
+  )}
+  {k === 'chat' && (
+    <g>
+      <path d="M40 22 H250 a12 12 0 0 1 12 12 V64 a12 12 0 0 1 -12 12 H64 L46 92 V76 H40 a12 12 0 0 1 -12 -12 V34 a12 12 0 0 1 12 -12 Z" />
+      <path class="p" d="M150 86 H360 a12 12 0 0 1 12 12 V128 a12 12 0 0 1 -12 12 H174 L156 156 V140 H150 a12 12 0 0 1 -12 -12 V98 a12 12 0 0 1 12 -12 Z" />
+      <path d="M70 150 H230 a12 12 0 0 1 12 12 V180 a12 12 0 0 1 -12 12 H70 a12 12 0 0 1 -12 -12 V162 a12 12 0 0 1 12 -12 Z" />
+    </g>
+  )}
   {k === 'tempo' && (
     <g>
       <path d="M30 100 H370" stroke-dasharray="3 12" />

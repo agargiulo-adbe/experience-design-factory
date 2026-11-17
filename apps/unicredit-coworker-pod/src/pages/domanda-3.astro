@@ -1,6 +1,16 @@
 ---
 /**
- * 04 · DAL NUMERO AL TEST, E RITORNO — Analytics e Target insieme.
+ * 03 · ANALYTICS E TARGET — il secondo approfondimento.
+ *
+ * Giro del 17 nov 2026: il capitolo su Target da solo (`domanda-2`) è
+ * confluito qui, perché il POD parte su Analytics e Target si aggancia circa
+ * tre settimane dopo. Prima i quattro momenti di un test con Coworker su
+ * Target (le skill dietro «Scopri come»), poi il giro dal numero al test, poi
+ * due casi dal campo, poi la domanda alla sala.
+ *
+ * Fonti Target: Experience League, «Coworker skills for Adobe Target»
+ * (aggiornata al 27 ott 2026): le skill, gli esempi di prompt, e la tabella
+ * dove Coworker NON crea attività di Automated Personalization.
  *
  * Il giro si costruisce sotto le frecce: prima Analytics, che il team conosce,
  * poi un passo alla volta fino al risultato che torna nella stessa
@@ -24,6 +34,7 @@ import Motivo from '../components/Motivo.astro';
 import Giro from '../components/Giro.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { MOMENTI } from '../data/contenuti';
 
 const SLUG = 'domanda-3';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -32,6 +43,12 @@ const currentPath = Astro.url.pathname;
 
 const EL_AA = 'https://experienceleague.adobe.com/en/docs/coworker/content/chat/use-cases/data-insights/analytics-overview';
 const EL_TGT = 'https://experienceleague.adobe.com/en/docs/target/using/introduction/coworker-skills';
+
+/* I prompt dei momenti sono quelli d'esempio della pagina di Experience League,
+   resi in italiano («+5%» è l'esempio della skill Test Calculator). */
+const chev = (i: number) => i === 0
+  ? 'M0 0 H176 L200 30 L176 60 H0 Z'
+  : 'M0 0 H176 L200 30 L176 60 H0 L24 30 Z';
 ---
 <BaseLayout title={ch.title}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -45,14 +62,70 @@ const EL_TGT = 'https://experienceleague.adobe.com/en/docs/target/using/introduc
       <Divisore num={ch.num} titolo={ch.title} punto={ch.punto} occhiello="Analytics e Target" />
     </Slide>
 
+    {/* ── I quattro momenti di un test, con Coworker su Target ────────────── */}
+    <Slide id="slide-momenti" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl uc-sl-largo" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Adobe Target</p>
+          <h2 class="xd-h2">In Target, Coworker c’è in ogni momento di un test</h2>
+        </div>
+        <figure class="uc-momenti-fig">
+          <ol class="uc-momenti" role="list">
+            {MOMENTI.map((m, i) => (
+              <li class="uc-mom" data-substep={i === 0 ? null : ''}>
+                <div class="uc-mom-box">
+                  <svg class="uc-mom-chev" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path d={chev(i)} /></svg>
+                  <p class="uc-mom-a">{m.a}</p>
+                </div>
+                <p class="uc-mom-r">{m.r}</p>
+                <p class="uc-prompt">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v10H9l-5 4z" /></svg>
+                  «{m.p}»
+                </p>
+              </li>
+            ))}
+          </ol>
+        </figure>
+        <p class="uc-nota">Le attività di Automated Personalization si creano ancora in Target.</p>
+        <p class="xd-chiusa uc-chiusa-dom">Oggi un test si ferma di più a decidere che cosa provare, o a costruirlo?</p>
+        <HowItWorks title="Le skill, momento per momento" tone="onLight" class="ex-dett">
+          <Dettaglio>
+            <DettaglioVoce>
+              <Figura k="inventario" />
+              <p slot="ancora">Capire</p>
+              <p slot="riga">Target Browse, Target Activity Verdict, Target Portfolio Report.</p>
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="calcolo" />
+              <p slot="ancora">Decidere</p>
+              <p slot="riga">Target Strategist, Target Test Calculator.</p>
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="costruire" />
+              <p slot="ancora">Costruire</p>
+              <p slot="riga">Target Design, Target VEC, Target Setup, Target Audience Composer.</p>
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="collisione" />
+              <p slot="ancora">Tenere in ordine</p>
+              <p slot="riga">Target Intelligence, Target Recommendations, Target Recommendations Diagnose.</p>
+            </DettaglioVoce>
+          </Dettaglio>
+        </HowItWorks>
+        <p class="xd-fonte">Fonte: <a href={EL_TGT} target="_blank" rel="noopener">Experience League, le skill di Coworker per Adobe Target</a></p>
+      </div>
+    </Slide>
+
     {/* ── Il giro, a fasi ──────────────────────────────────────────────── */}
     <Slide id="slide-giro" bg="inverse" align="left">
       <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="uc-giro-sl" data-reveal>
         <div class="uc-giro-sx">
           <p class="uc-dom-k">Analytics e Target</p>
-          <h2 class="xd-h2 uc-firma-t">Il giro, in cinque passi</h2>
-          <p class="xd-chiusa uc-giro-marca">Ogni passo esiste oggi. Il passaggio fra l’uno e l’altro, e la lettura del risultato con Analytics for Target dentro Coworker, è quello che il programma serve a provare.</p>
+          <h2 class="xd-h2 uc-firma-t">Dal numero al test, e ritorno</h2>
+          <p class="xd-chiusa uc-giro-marca">I passi esistono uno per uno. Il filo che li lega, tratteggiato, si prova nel programma.</p>
+          <p class="uc-giro-appr-r"><svg viewBox="-20 -20 40 40" aria-hidden="true"><rect x="-17" y="-17" width="34" height="34" rx="8" /><path d="M-8 0 l5 5 10 -11" /></svg><span><span class="ex-frase">Approvazione: contenuti, compliance, brand.</span> <span class="ex-frase">Resta al vostro flusso.</span></span></p>
           <HowItWorks title="Quale skill c’è dietro ogni passo" tone="onDark" class="ex-dett ex-dett--scuro">
             <Dettaglio>
               <DettaglioVoce>
@@ -67,10 +140,10 @@ const EL_TGT = 'https://experienceleague.adobe.com/en/docs/target/using/introduc
               </DettaglioVoce>
               <DettaglioVoce>
                 <Figura k="costruire" />
-                <p slot="ancora">4 · In linea</p>
-                <p slot="riga">Target Design, Target VEC e Target Setup creano e attivano l’attività.</p>
+                <p slot="ancora">4 · L’attività preparata</p>
+                <p slot="riga">Target Design, Target VEC e Target Setup preparano l’attività, e Target Setup può anche attivarla con il ruolo di Approver. Nel programma proponiamo che l’attivazione resti al vostro team, dopo le vostre approvazioni.</p>
               </DettaglioVoce>
-              <p slot="nota">Il quinto passo, la lettura con Analytics for Target dentro Coworker, non è documentato: è da provare nel programma.</p>
+              <p slot="nota">Il passaggio da Analytics a Target e la lettura del risultato con Analytics for Target dentro Coworker non sono documentati come giro: si provano nel programma.</p>
             </Dettaglio>
           </HowItWorks>
           <p class="xd-fonte">Fonti: <a href={EL_AA} target="_blank" rel="noopener">Coworker su Analytics</a> · <a href={EL_TGT} target="_blank" rel="noopener">le skill di Coworker per Target</a></p>
@@ -82,11 +155,12 @@ const EL_TGT = 'https://experienceleague.adobe.com/en/docs/target/using/introduc
     {/* ── Due casi dal campo ──────────────────────────────────────────── */}
     <Slide id="slide-campo" bg="primary" align="left">
       <div slot="backdrop" class="ex-bg-paper"></div>
-      <div class="xd-sl" data-reveal>
+      <div class="xd-sl uc-sl-largo" data-reveal>
         <div class="xd-sl-head">
           <p class="uc-campo-tag">Dal campo · clienti Adobe anonimizzati</p>
           <h2 class="xd-h2">Due modi di cominciare, visti da altri clienti</h2>
         </div>
+        <figure class="uc-casi-fig">
         <ul class="uc-casi" data-stagger>
           <li class="uc-caso">
             {/* Tante righe di KPI per prodotto diventano una sintesi; la spunta è della persona. */}
@@ -100,10 +174,10 @@ const EL_TGT = 'https://experienceleague.adobe.com/en/docs/target/using/introduc
             </svg>
             <p class="uc-caso-chi">Un assicuratore europeo</p>
             <p class="uc-caso-a">La sintesi settimanale dei KPI per prodotto</p>
-            <p class="uc-caso-r"><span class="ex-frase">Al posto del report fatto a mano.</span> <span class="ex-frase">Le persone validano i risultati e scelgono le azioni.</span></p>
+            <p class="uc-caso-r"><span class="ex-frase">Sostituisce il report a mano;</span> <span class="ex-frase">il team valida i numeri e sceglie le azioni.</span></p>
           </li>
           <li class="uc-caso">
-            {/* Un test A/B: due varianti, Coworker aiuta a pianificare e leggere, la persona approva. */}
+            {/* Un test A/B: due varianti, Coworker prepara e legge, il team approva. */}
             <svg class="uc-caso-fig" viewBox="0 0 320 100" preserveAspectRatio="xMinYMid meet" aria-hidden="true">
               <path class="s" d="M8 50 H52" />
               <path class="s" d="M52 50 C76 50, 76 22, 100 22 H150 M52 50 C76 50, 76 78, 100 78 H150" />
@@ -115,9 +189,10 @@ const EL_TGT = 'https://experienceleague.adobe.com/en/docs/target/using/introduc
             </svg>
             <p class="uc-caso-chi">Un fondo pensione europeo</p>
             <p class="uc-caso-a">Partire da test A/B controllati</p>
-            <p class="uc-caso-r"><span class="ex-frase">Coworker aiuta a pianificare e leggere.</span> <span class="ex-frase">Le persone approvano.</span></p>
+            <p class="uc-caso-r"><span class="ex-frase">Coworker prepara e legge il test;</span> <span class="ex-frase">l’approvazione resta al team.</span></p>
           </li>
         </ul>
+        </figure>
         <p class="xd-fonte">Fonte: dal campo, clienti Adobe anonimizzati (fonti interne Adobe).</p>
       </div>
     </Slide>
@@ -128,7 +203,7 @@ const EL_TGT = 'https://experienceleague.adobe.com/en/docs/target/using/introduc
       <div class="uc-dom" data-reveal>
         <div class="uc-dom-sx">
           <p class="uc-dom-k">La domanda per voi</p>
-          <h2 class="uc-dom-t uc-firma-t">Avete un numero che si è mosso e che vorreste trasformare in un test?</h2>
+          <h2 class="uc-dom-t uc-firma-t">Oggi, quando un numero si muove, il test lo propone l’analista o il marketing?</h2>
         </div>
         {/* Una serie che cala, e dal punto del calo parte un test. */}
         <svg class="uc-dom-fig" viewBox="0 0 360 200" aria-hidden="true">

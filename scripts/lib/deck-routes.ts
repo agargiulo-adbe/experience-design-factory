@@ -223,7 +223,6 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
     { name: 'home',       route: '/experience-design-factory/unicredit-coworker-pod/' },
     { name: 'partenza',   route: '/experience-design-factory/unicredit-coworker-pod/partenza/' },
     { name: 'domanda-1',  route: '/experience-design-factory/unicredit-coworker-pod/domanda-1/' },
-    { name: 'domanda-2',  route: '/experience-design-factory/unicredit-coworker-pod/domanda-2/' },
     { name: 'domanda-3',  route: '/experience-design-factory/unicredit-coworker-pod/domanda-3/' },
     { name: 'casa',       route: '/experience-design-factory/unicredit-coworker-pod/casa/' },
   ],

@@ -7,7 +7,10 @@
  *
  * Gli slug vengono dallo scaffolder e non si toccano: sono già registrati in
  * deploy, hub, showcase e `scripts/lib/deck-routes.ts`. Il capitolo si chiama
- * per la domanda che fa alla sala, non per lo slug.
+ * con un'etichetta breve, tutte della stessa forma (prima il quadro, poi i due
+ * approfondimenti, poi l'inizio): il fatto sta nei titoli di slide.
+ * Giro del 17 nov 2026: `domanda-2` (Target da solo) è confluito in
+ * `domanda-3`, perché il POD parte su Analytics e Target si aggancia dopo.
  *
  * `punto` è la riga della copertina di capitolo: la conseguenza, non il
  * riassunto (memoria `punto-del-capitolo`).
@@ -23,23 +26,19 @@ export interface Chapter {
 
 export const CHAPTERS: Chapter[] = [
   {
-    slug: 'partenza', num: '01', title: 'Il programma', breve: 'Il programma',
-    punto: 'Novanta giorni con il prodotto accanto, sui casi che scegliete voi.',
+    slug: 'partenza', num: '01', title: 'Il quadro', breve: 'Il quadro',
+    punto: 'Novanta giorni sui vostri casi: si parte da Analytics, e Target si aggancia circa tre settimane dopo.',
   },
   {
-    slug: 'domanda-1', num: '02', title: 'Che cosa chiedereste ai vostri dati?', breve: 'Analytics',
-    punto: 'Sei famiglie di domande che oggi passano da un progetto Workspace o da un’analista.',
+    slug: 'domanda-1', num: '02', title: 'Analytics', breve: 'Analytics',
+    punto: 'Le domande che oggi chiedono un progetto in Workspace, in chat partono da una frase.',
   },
   {
-    slug: 'domanda-2', num: '03', title: 'Dove si fermano i vostri test?', breve: 'Target',
-    punto: 'Su Target Coworker è disponibile oggi, in chat e dentro Target.',
+    slug: 'domanda-3', num: '03', title: 'Analytics e Target', breve: 'Analytics e Target',
+    punto: 'Dal calo trovato in Analytics al test in Target: i passi esistono uno per uno, il filo che li lega si prova nel programma.',
   },
   {
-    slug: 'domanda-3', num: '04', title: 'Dal numero al test, e ritorno', breve: 'Analytics e Target',
-    punto: 'Quello che Analytics trova diventa un test, e il risultato torna nella stessa conversazione.',
-  },
-  {
-    slug: 'casa', num: '05', title: 'Che cosa portiamo al PM', breve: 'Al PM',
+    slug: 'casa', num: '04', title: 'Da dove si comincia', breve: 'Da dove si comincia',
     punto: 'Quello che dite oggi è il contesto con cui il programma comincia.',
   },
 ];

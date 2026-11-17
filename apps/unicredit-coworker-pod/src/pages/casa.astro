@@ -1,7 +1,8 @@
 ---
 /**
- * 05 · CHE COSA PORTIAMO AL PM — le tre cose che servono dal team, la linea
- * del tempo con la prima tappa spuntata, e la slide-firma.
+ * 04 · DA DOVE SI COMINCIA — le tre risposte che servono dal team, con chi
+ * le porta («da chiedere» dove non lo sappiamo), la linea del tempo con la
+ * prima tappa spuntata, e la slide-firma.
  *
  * La linea del tempo è la STESSA del capitolo 01 (`LineaTempo.astro`, una
  * fonte sola), con `fatte={1}`: la sessione di oggi è la tappa passata.
@@ -20,7 +21,7 @@ import Motivo from '../components/Motivo.astro';
 import LineaTempo from '../components/LineaTempo.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug } from '../data/chapters';
-import { SERVONO } from '../data/contenuti';
+import { SERVONO, SERVONO_2 } from '../data/contenuti';
 
 const SLUG = 'casa';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -39,13 +40,13 @@ const currentPath = Astro.url.pathname;
       <Divisore num={ch.num} titolo={ch.title} punto={ch.punto} />
     </Slide>
 
-    {/* ── Tre cose che ci servono da voi ─────────────────────────────── */}
-    <Slide id="slide-servono" bg="primary" align="left">
-      <div slot="backdrop" class="ex-bg-paper"></div>
-      <div class="xd-sl" data-reveal>
+    {/* ── Per partire, tre risposte dal vostro team ─────────────────────── */}
+    <Slide id="slide-servono" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--dark uc-sl-largo" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">Che cosa portiamo al PM</p>
-          <h2 class="xd-h2">Tre cose che ci servono da voi</h2>
+          <p class="xd-n">Da dove si comincia</p>
+          <h2 class="xd-h2 uc-firma-t">Per partire, tre risposte dal vostro team</h2>
         </div>
         <ol class="uc-servono" role="list">
           {SERVONO.map((x, i) => (
@@ -53,21 +54,47 @@ const currentPath = Astro.url.pathname;
               <p class="uc-serve-n" aria-hidden="true">{i + 1}</p>
               <p class="uc-serve-a">{x.a}</p>
               <p class="uc-serve-r">{x.r}</p>
+              <p class="uc-serve-chi" data-da-chiedere={x.chi.includes('da chiedere') ? '' : null}>{x.chi}</p>
             </li>
           ))}
         </ol>
       </div>
     </Slide>
 
+    {/* ── Le altre due risposte: la misura, e le persone (panel, 17 nov) ─── */}
+    <Slide id="slide-misure" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl uc-sl-largo" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Da dove si comincia</p>
+          <h2 class="xd-h2">E due scelte da fare oggi: la misura e le persone</h2>
+        </div>
+        <figure class="uc-servono uc-servono--due">
+          {SERVONO_2.map((x, i) => (
+            <div class="uc-serve" data-substep={i === 0 ? null : ''}>
+              <p class="uc-serve-n" aria-hidden="true">{i + 4}</p>
+              {i === 0
+                ? <svg class="uc-serve-fig" viewBox="0 0 64 40" aria-hidden="true"><path d="M4 36 H60" /><rect x="8" y="22" width="9" height="14" rx="2" /><rect x="24" y="14" width="9" height="22" rx="2" /><rect class="a" x="40" y="6" width="9" height="30" rx="2" /></svg>
+                : <svg class="uc-serve-fig" viewBox="0 0 64 40" aria-hidden="true"><circle cx="14" cy="12" r="6" /><path d="M4 36 c0-9 5-14 10-14 s10 5 10 14" /><circle cx="32" cy="12" r="6" /><path d="M22 36 c0-9 5-14 10-14 s10 5 10 14" /><circle class="a" cx="50" cy="12" r="6" /><path class="a" d="M40 36 c0-9 5-14 10-14 s10 5 10 14" /></svg>}
+              <p class="uc-serve-a">{x.a}</p>
+              <p class="uc-serve-r">{x.r}</p>
+              <p class="uc-serve-chi">{x.chi}</p>
+            </div>
+          ))}
+        </figure>
+      </div>
+    </Slide>
+
     {/* ── I prossimi passi: la stessa linea, con la prima tappa spuntata ─ */}
     <Slide id="slide-passi" bg="primary" align="left">
       <div slot="backdrop" class="ex-bg-paper"></div>
-      <div class="xd-sl" data-reveal>
+      <div class="xd-sl uc-sl-largo" data-reveal>
         <div class="xd-sl-head">
           <p class="xd-n">I prossimi passi</p>
           <h2 class="xd-h2">Oggi è fatto, il resto parte da qui</h2>
         </div>
-        <LineaTempo fatte={1} />
+        <LineaTempo fatte={1} figura={false} />
+        <p class="uc-nota">Le date le conferma il team Adobe.</p>
       </div>
     </Slide>
 
@@ -77,7 +104,7 @@ const currentPath = Astro.url.pathname;
       <div class="xd-firma" data-reveal>
         <CoBrand variant="hero" class="edf-cobrand--on-dark" />
         <p class="xd-firma-l" data-reveal data-reveal-delay="0.1">Da dove partiamo lo decidete voi.</p>
-        <p class="xd-firma-n" data-reveal data-reveal-delay="0.16">Coworker su Adobe Analytics e Adobe Target, nel Customer POD.</p>
+        <p class="xd-firma-n" data-reveal data-reveal-delay="0.16">Coworker su Adobe Analytics e Adobe Target, nel Customer POD proposto.</p>
         <a href={href(base, '/')} class="edf-sig-cta" data-reveal data-reveal-delay="0.22">Torna all’inizio</a>
       </div>
     </Slide>

@@ -9,57 +9,69 @@
  * `audit:wrap` ha trovato appesa: mai su tutta la frase.
  */
 
-/** Capitolo 02 — le sei famiglie di domande su Analytics. Il prompt è al
+/** Capitolo 02 — le sei famiglie di domande su Analytics. `breve` è la parola
+    che le nomina sulla mappa del capitolo 01: due o tre parole, non di più. Il prompt è al
     singolare perché è una chat (eccezione dichiarata alla voce istituzionale).
     `oggi` è una NOSTRA ipotesi su come lavora il team, e la slide lo dice. */
 export const CATEGORIE = [
-  { a: 'Domande al volo', p: 'Come si dividono le visite tra sito, app e mobile web?',
+  { a: 'Domande al volo', breve: 'Al volo', p: 'Come si dividono le visite tra sito, app e mobile web?',
     oggi: 'Un progetto Workspace, o una richiesta all’analista', con: 'La domanda in chat, la risposta con grafico e tabella' },
-  { a: 'Dove si perdono le persone', p: 'Dove perdiamo chi inizia una richiesta online?',
+  { a: 'Dove si perdono le persone', breve: 'Dove si perde', p: 'Dove perdiamo chi inizia una richiesta online?',
     oggi: 'Un funnel da costruire in Workspace, passo per passo', con: 'Il funnel e i punti di abbandono, chiesti in una frase' },
-  { a: 'Perché si è mosso un numero', p: 'Perché le richieste completate sono calate la settimana scorsa?',
-    oggi: 'Un breakdown dopo l’altro, finché la causa si trova', con: 'Le dimensioni e i segmenti che spiegano la variazione' },
-  { a: 'Chi si comporta diversamente', p: 'Chi inizia da mobile converte diversamente da chi inizia dal sito?',
+  { a: 'Perché si è mosso un numero', breve: 'Perché si è mosso', p: 'Perché le richieste completate sono calate la settimana scorsa?',
+    oggi: 'Un breakdown dopo l’altro, o Contribution Analysis se l’avete', con: 'Le dimensioni e i segmenti che spiegano la variazione' },
+  { a: 'Chi si comporta diversamente', breve: 'Chi è diverso', p: 'Chi inizia da mobile converte diversamente da chi inizia dal sito?',
     oggi: 'Un segmento da costruire e un confronto da impostare', con: 'I due segmenti messi a confronto, fianco a fianco' },
-  { a: 'Dove arriveremo', p: 'A fine mese siamo in linea con l’obiettivo?',
-    oggi: 'Una proiezione fatta a mano, fuori da Workspace', con: 'La previsione della metrica, calcolata sullo storico' },
-  { a: 'Il mese in una pagina', p: 'Fammi la sintesi del mese per il management.',
-    oggi: 'Una slide fatta a mano, un numero alla volta', con: 'Una sintesi del periodo in chat, da rivedere prima di girarla' },
+  { a: 'Dove arriveremo', breve: 'Dove arriveremo', p: 'Dove arriva la metrica a fine mese, se l’andamento resta questo?',
+    oggi: 'Una trendline in Workspace, o una proiezione a mano', con: 'La previsione della metrica, calcolata sullo storico' },
+  { a: 'Il mese in una pagina', breve: 'La sintesi del mese', p: 'Fammi la sintesi del mese per il management.',
+    oggi: 'Una slide fatta a mano, o un progetto pianificato', con: 'Una sintesi del periodo in chat, da rivedere prima di girarla' },
 ];
 
-/** Capitolo 03 — i quattro momenti di un test su Target. I prompt sono gli
+/** Capitolo 03 (Analytics e Target) e la mappa del capitolo 01 — i quattro momenti di un test su Target. I prompt sono gli
     esempi della pagina Experience League delle skill, resi in italiano. */
 export const MOMENTI = [
-  { a: 'Capire', r: 'Che cosa è attivo, come va il portafoglio, se un test si può chiudere.', p: 'Questo test si può chiudere?' },
+  { a: 'Capire', r: 'Che cosa è attivo, come va il portafoglio, se un test si può chiudere.', p: 'Il test si può chiudere?' },
   { a: 'Decidere', r: 'Che cosa testare dopo, quanto traffico e quanti giorni servono.', p: 'Quanti giorni servono per vedere un +5%?' },
   { a: 'Costruire', r: 'L’attività, il Visual Experience Composer, il link di QA, l’audience.', p: 'Crea un test A/B sulla homepage.' },
   { a: 'Tenere in ordine', r: 'Collisioni, configurazioni sbagliate, Recommendations che non funzionano.', p: 'Ci sono collisioni fra le attività?' },
 ];
 
-/** Capitolo 04 — il giro dal numero al test. `lato` dice dove sta l'ancora
+/** Capitolo 03 — il giro dal numero al test. `lato` dice dove sta l'ancora
     rispetto al nodo. */
 export const PASSI = [
   { a: 'Analytics trova dove si perde', p: 'Adobe Analytics', lato: 'su' },
   { a: 'Coworker propone che cosa testare', p: 'Coworker', lato: 'dx' },
-  { a: 'Il test si dimensiona sul traffico vero', p: 'Coworker su Target', lato: 'dx' },
-  { a: 'Target lo mette in linea', p: 'Adobe Target', lato: 'sx' },
+  { a: 'Il test si dimensiona: campione, durata, lift rilevabile', p: 'Coworker su Target', lato: 'dx' },
+  { a: 'Coworker prepara l’attività e può attivarla; nel programma l’attivazione resta a voi', p: 'Coworker su Target', lato: 'giu' },
   { a: 'Il risultato torna nella stessa conversazione', p: 'Coworker', lato: 'sx' },
 ];
 
-/** Capitoli 01 e 05 — le quattro tappe. Data solo sulla quarta: è l'unica
-    detta al cliente (mail dell'AE del 6 nov 2026). Il referente non si nomina:
-    il deck parla all'organizzazione e il repo è pubblico. */
+/** Capitoli 01 e 04 — le cinque tappe. Due date sole, e nessuna è un giorno:
+    «circa tre settimane dopo» il kickoff per Target (accordo interno Adobe del
+    17 nov 2026) e «fine gennaio, inizio febbraio» per il primo punto con la
+    direzione (mail dell'AE del 6 nov 2026). Le date esatte le conferma il team
+    Adobe. Il referente non si nomina: il deck parla all'organizzazione e il
+    repo è pubblico. */
 export const TAPPE = [
-  { k: 'Oggi', t: 'Le categorie e le vostre priorità' },
-  { k: 'Dopo la sessione', t: 'Il PM del programma riceve il contesto' },
-  { k: 'Poi', t: 'Il kickoff' },
+  { k: 'Oggi', t: 'Le vostre priorità' },
+  { k: 'Dopo la sessione', t: 'Il contesto passa a chi guiderà il programma, appena assegnato' },
+  { k: 'Poi', t: 'Il kickoff su Analytics' },
+  { k: 'Circa tre settimane dopo', t: 'Entra Target' },
   { k: 'Fine gennaio, inizio febbraio', t: 'Il primo punto con la direzione' },
 ];
 
-/** Capitolo 05 — le tre cose che servono dal team. */
+/** Capitolo 04 — le tre risposte che servono dal team per partire. `chi` dice
+    chi la porta: per funzione, mai un nome (repo pubblico) e mai «da chiedere» in una slide che va al cliente. */
 export const SERVONO = [
-  { a: 'Le due o tre categorie che contano', r: 'Quelle da cui volete partire, nell’ordine che decidete voi.' },
-  { a: 'Come le fate oggi', r: 'Chi, con che strumento, quanto tempo.' },
-  { a: 'Da quale report suite partire', r: 'Quella su cui il programma lavora per primo.' },
+  { a: 'Le due o tre categorie che contano', r: 'Quelle da cui volete partire, nell’ordine che decidete voi.', chi: 'Oggi, in sala' },
+  { a: 'Come le fate oggi', r: 'Chi, con che strumento, quanto tempo.', chi: 'Oggi, in sala' },
+  { a: 'Da quale report suite partire', r: 'Quella su cui il programma lavora per primo.', chi: 'Con chi amministra Analytics' },
 ];
 
+/** Capitolo 04 — le altre due voci (panel del 17 nov 2026): come si dirà che
+    ha funzionato, e chi serve dal team. Si scelgono oggi, in sala. */
+export const SERVONO_2 = [
+  { a: 'Come si dice che ha funzionato', r: 'Due o tre misure da scegliere oggi: tempo per evadere una richiesta, domande chiuse senza passare dall’analista, ore di report a mano risparmiate.', chi: 'Oggi, in sala' },
+  { a: 'Chi serve da voi', r: 'Un’analista Analytics, chi amministra Analytics e, per la seconda fase, chi possiede Target.', chi: 'Oggi, in sala' },
+];

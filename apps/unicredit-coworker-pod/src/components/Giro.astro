@@ -11,6 +11,13 @@
  * la radice sulla parete e i gate (`copy-audit`, `audit:wrap`, `audit:ink`)
  * continuano a misurarle.
  *
+ * Il primo arco (da Analytics a Coworker su Target), gli ultimi due archi e il
+ * quinto nodo sono TRATTEGGIATI (panel del 17 nov 2026: il filo fra i passi si
+ * prova, i passi esistono uno per uno). Sull'arco fra il passo 3 e il 4 c'è il
+ * segno dell'approvazione, che resta al flusso del cliente.
+ * è il passo non documentato, da provare nel programma (giro del 17 nov 2026),
+ * e il disegno lo dice con la forma prima che con le parole.
+ *
  * ⚠️ Che cosa è documentato e che cosa no lo dice la slide, sotto il disegno:
  * ogni passo esiste, il passaggio fra un passo e l'altro è quello che il
  * programma serve a provare. Il disegno non deve dire di più.
@@ -33,15 +40,25 @@ const W = 1000, H = 600;
     {/* L'arco i va dal nodo i al nodo i+1, e arriva con il nodo i+1.
         L'arco 4 (dal quinto al primo) chiude l'anello con il quinto passo. */}
     {PASSI.map((_, i) => (
-      <g class="uc-giro-arco" data-arco={i}>
+      <g class="uc-giro-arco" data-arco={i} data-da-provare={i === 0 || i >= PASSI.length - 2 ? '' : null}>
         <path d={arco(i)} />
       </g>
     ))}
     {nodi.map(([x, y], i) => (
-      <g class="uc-giro-nodo" data-nodo={i}>
+      <g class="uc-giro-nodo" data-nodo={i} data-da-provare={i === nodi.length - 1 ? "" : null}>
         <circle cx={x} cy={y} r="30" />
       </g>
     ))}
+    {(() => {
+      const a = ((ang(2) + ang(3)) / 2);
+      const x = CX + R * Math.cos(a), y = CY + R * Math.sin(a);
+      return (
+        <g class="uc-giro-appr" transform={`translate(${x.toFixed(1)} ${y.toFixed(1)})`}>
+          <rect x="-17" y="-17" width="34" height="34" rx="8" />
+          <path d="M-8 0 l5 5 10 -11" />
+        </g>
+      );
+    })()}
   </svg>
   <ol class="uc-giro-ancore" role="list">
     {PASSI.map((s, i) => {

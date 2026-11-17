@@ -1,0 +1,141 @@
+---
+/**
+ * LA MAPPA — tutto il programma in una pagina, e si costruisce a fasi.
+ *
+ * È la slide-firma del deck (giro del 17 nov 2026): chi la guarda deve capire
+ * il programma in un colpo d'occhio, e chi presenta deve poterla raccontare un
+ * pezzo alla volta. Quattro fasi sotto le frecce del deck:
+ *   1. la corsia di Adobe Analytics, dal kickoff a giorno 90 (in vista da subito);
+ *   2. sopra la corsia, le sei famiglie di domande, come messaggi in chat;
+ *   3. entra la corsia di Adobe Target, «circa tre settimane dopo», con i
+ *      quattro momenti di un test;
+ *   4. il filo: dal numero che si muove in Analytics al test in Target, e il
+ *      ritorno del risultato, tratteggiato perché è da provare.
+ *
+ * Come è fatta. Una griglia a righe nominate (asse · famiglie · Analytics ·
+ * passaggio · Target · legenda): le ancore sono HTML, così crescono con la
+ * radice e i gate le misurano. Il filo è l'unico pezzo disegnato a misura:
+ * un SVG sopra tutta la griglia, con il tracciato calcolato dalle scatole vere
+ * dei due estremi (vedi lo script in fondo). Senza JavaScript il tracciato di
+ * ripiego è quello scritto qui, in proporzione.
+ *
+ * Le fasi 2-4 sono wrapper in `display: contents` con `data-substep`: il motore
+ * li accende in ordine, `visibility` passa ai figli, e i figli si dissolvono
+ * con la loro transizione (sul wrapper `opacity` non avrebbe una scatola).
+ *
+ * ⚠️ Nessuna data in pagina che non sia stata detta: «circa tre settimane
+ * dopo» è l'accordo interno Adobe del 17 nov 2026, e sotto la mappa sta scritto
+ * che le date le conferma il team Adobe.
+ * ⚠️ Il filo NON è documentato come giro (panel del 17 nov 2026): i passi
+ * esistono uno per uno, il passaggio da Analytics a Target e il ritorno del
+ * risultato si provano nel programma. Per questo ENTRAMBI i tratti sono
+ * tratteggiati, e la legenda lo dice.
+ */
+import { CATEGORIE, MOMENTI } from '../data/contenuti';
+/* L'inizio di Target sull'asse: tre settimane su circa tredici. */
+const TGT = 23;
+/* La famiglia da cui parte il filo, e il momento in cui entra in Target. */
+const DA = 2;   // «Perché si è mosso»
+const A = 1;    // «Decidere»
+---
+<div class="uc-mappa" style={`--tgt:${TGT}%`} data-mappa>
+  {/* ── L'asse del tempo ───────────────────────────────────────── */}
+  <div class="uc-m-asse" aria-hidden="true">
+    <span class="uc-m-asse-linea"></span>
+  </div>
+  <p class="uc-m-t uc-m-t--inizio">Kickoff</p>
+  <p class="uc-m-t uc-m-t--fine">Fine del programma</p>
+
+  {/* ── Fase 1: la corsia di Analytics ─────────────────────────── */}
+  <div class="uc-m-corsia uc-m-corsia--aa">
+    <p class="uc-m-prod">Adobe Analytics</p>
+    <p class="uc-m-quando">dal kickoff</p>
+  </div>
+
+  {/* ── Fase 2: le sei famiglie, come domande in chat ──────────── */}
+  <div class="uc-m-fase" data-substep>
+    <ol class="uc-m-fam" role="list" aria-label="Le sei famiglie di domande">
+      {CATEGORIE.map((c, i) => (
+        <li class="uc-m-bolla" data-perno={i === DA ? '' : null} style={`--i:${i}`}>{c.breve}</li>
+      ))}
+    </ol>
+  </div>
+
+  {/* ── Fase 3: entra Target, circa tre settimane dopo ─────────── */}
+  <div class="uc-m-fase" data-substep>
+    <p class="uc-m-t uc-m-t--tgt">circa tre settimane dopo</p>
+    <span class="uc-m-attesa" aria-hidden="true"></span>
+    <div class="uc-m-corsia uc-m-corsia--tgt">
+      <p class="uc-m-prod">Adobe Target</p>
+      <ol class="uc-m-mom" role="list" aria-label="I quattro momenti di un test">
+        {MOMENTI.map((m, i) => (
+          <li class="uc-m-seg" data-perno={i === A ? '' : null} style={`--i:${i}`}>{m.a}</li>
+        ))}
+      </ol>
+    </div>
+  </div>
+
+  {/* ── Fase 4: il filo fra le due corsie ──────────────────────── */}
+  <div class="uc-m-fase" data-substep>
+    <svg class="uc-m-filo" viewBox="0 0 1000 600" preserveAspectRatio="none" aria-hidden="true" data-filo-svg>
+      <path class="uc-m-filo-va" d="M410 250 C410 330, 452 330, 452 420" data-filo-va />
+      <path class="uc-m-filo-torna" d="M900 420 C900 330, 860 330, 860 250" data-filo-torna />
+      <circle class="uc-m-filo-dot" cx="452" cy="420" r="7" data-filo-dot />
+    </svg>
+    <p class="uc-m-filo-t uc-m-filo-t--va">Dal numero al test</p>
+    <p class="uc-m-filo-t uc-m-filo-t--torna">Il risultato torna in chat</p>
+    <p class="uc-m-legenda">
+      <span class="uc-m-leg uc-m-leg--tratto">tratteggio: da provare nel programma</span>
+    </p>
+  </div>
+</div>
+
+<script>
+  /* Il filo si disegna fra le scatole vere: dalla famiglia «Perché si è mosso»,
+     attraverso la corsia di Analytics, fino al momento «Decidere» di Target; e
+     il ritorno, dal momento finale alla corsia di Analytics. Si ricalcola a
+     ogni cambio di misura: la griglia cresce con la radice, il tracciato no. */
+  function traccia(m: HTMLElement) {
+    const svg = m.querySelector<SVGSVGElement>('[data-filo-svg]');
+    const da = m.querySelector<HTMLElement>('.uc-m-bolla[data-perno]');
+    const aa = m.querySelector<HTMLElement>('.uc-m-corsia--aa');
+    const a = m.querySelector<HTMLElement>('.uc-m-seg[data-perno]');
+    const segs = m.querySelectorAll<HTMLElement>('.uc-m-seg');
+    const va = m.querySelector<SVGPathElement>('[data-filo-va]');
+    const torna = m.querySelector<SVGPathElement>('[data-filo-torna]');
+    const dot = m.querySelector<SVGCircleElement>('[data-filo-dot]');
+    if (!svg || !da || !aa || !a || !va || !torna || !dot || !segs.length) return;
+    const r = m.getBoundingClientRect();
+    if (r.width < 10) return;
+    const box = (e: HTMLElement) => {
+      const b = e.getBoundingClientRect();
+      return { x: b.left - r.left, y: b.top - r.top, w: b.width, h: b.height };
+    };
+    const bd = box(da), bl = box(aa), ba = box(a), bf = box(segs[segs.length - 1]);
+    svg.setAttribute('viewBox', `0 0 ${r.width.toFixed(0)} ${r.height.toFixed(0)}`);
+    const x1 = bd.x + bd.w / 2, y1 = bl.y + bl.h;
+    const x2 = ba.x + ba.w / 2, y2 = ba.y;
+    const k = (y2 - y1) * 0.55;
+    va.setAttribute('d', `M${x1} ${y1} C${x1} ${y1 + k}, ${x2} ${y2 - k}, ${x2} ${y2}`);
+    const x3 = bf.x + bf.w / 2, y3 = bf.y;
+    const x4 = x3 - bf.w * 0.12;
+    torna.setAttribute('d', `M${x3} ${y3} C${x3} ${y3 - k}, ${x4} ${y1 + k}, ${x4} ${y1}`);
+    dot.setAttribute('cx', String(x2)); dot.setAttribute('cy', String(y2));
+    m.style.setProperty('--va-x', `${(Math.min(x1, x2) / r.width) * 100}%`);
+    m.style.setProperty('--torna-x', `${(Math.min(x3, x4) / r.width) * 100}%`);
+    const len = va.getTotalLength();
+    va.style.setProperty('--len', String(Math.ceil(len)));
+  }
+  function prepara() {
+    document.querySelectorAll<HTMLElement>('[data-mappa]').forEach((m) => {
+      if (m.dataset.pronta) { traccia(m); return; }
+      m.dataset.pronta = '1';
+      traccia(m);
+      new ResizeObserver(() => traccia(m)).observe(m);
+      /* Le fasi cambiano le scatole solo in opacità, ma i caratteri arrivano dopo. */
+      document.fonts?.ready.then(() => traccia(m));
+    });
+  }
+  prepara();
+  document.addEventListener('astro:page-load', prepara);
+</script>
