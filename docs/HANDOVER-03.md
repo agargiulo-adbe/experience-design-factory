@@ -5,6 +5,9 @@
 
 ## 11. Change log recente
 
+### 2026-11-17 pomeriggio · Storia di Intesa: Sankey trascinabile, attribuzione 20% → 66%, Prossimi passi dai temi di oggi, loghi sulle Referenze
+`18d401e` il Sankey si ridisegna trascinando «Prodotto» sulla colonna di mezzo; `e742782` ridisegno in tre battute leggibili; `9e3ee51` la fascia sotto il grafico non sovrappone più due testi; `4cbfa73` didascalia più grande e gradino sotto i 780 px; `121f986` Prossimi passi con i cinque temi colorati e i loghi ufficiali delle referenze; `833247a` l'attribuzione chiude sul 20% → 66% per il Controllo di Gestione; `c8c886e` merge del branch del Sankey; `3fea4ff` titolo «Da dove vi piacerebbe ripartire?» e tema «Customer Journey Analytics». §42.21 (Parte 24). Da un'altra sessione: `942e337` nasce `apps/unicredit-coworker-pod` («Da dove partiamo», per il 23 nov), senza sezione qui.
+
 ### 2026-11-17 · «Ciascuno conta»: l'iniziativa in undici slide, e la riconciliazione come condizione per partire
 `8f80b58` le frecce si fermano ai due capi del deck; `4aaa054` tre verbi (misurare, conoscere, personalizzare), flusso a 11 slide senza divisori, `r-mvp` con i servizi professionali Adobe e il partner, lab di marzo a tre salette; `59ba33c` la riconciliazione fra i due siti diventa la condizione per partire (verdetto a inizio dicembre), non un cancello a fine gennaio. Strato v7 caricato, deploy verificato online. §43 (Parte 23).
 

@@ -150,3 +150,23 @@ Quattro richieste dell'owner, in `/impeccable`, tutte pubblicate (`7440366`, `3a
 **Gate**: typecheck 0 errori; `audit:wrap` PULITO; `audit:taglio` ALLINEATO; `audit:deck` messa-a-terra 21 e momenti 25, come prima; approfondimenti 52, tutti `a` e `i`, senza un conteggio di partenza con cui confrontarlo.
 
 ⚠️ **Panel non rifatto su questo stato** (P0 nella Parte 2).
+
+## 42.21 Storia di Intesa · il 17 novembre pomeriggio, il Sankey trascinabile, l'attribuzione per il Controllo di Gestione, i Prossimi passi dai temi di oggi
+
+Dopo la call interna delle 10 (trascrizione Plaud letta riga per riga, orari Plaud in UTC: 09:13 UTC = 10:13) e una serie di richieste dell'owner in `/impeccable`. Tutto su `main` e pubblicato: due branch locali (`locale/sankey-prodotto`, `locale/attribuzione`) uniti senza conflitti in `c8c886e` e `833247a`, poi cancellati; ultimo `3fea4ff`.
+
+**Il Sankey dei punti di contatto** (`slide-flusso`, `messa-a-terra.astro` + `styles/innesto.css`; `18d401e`, `e742782`, `9e3ee51`, `4cbfa73`).
+- Si ridisegna **trascinando una dimensione** («Prodotto») sulla colonna di mezzo, come in CJA. La dimostrazione automatica dura 2400 ms in cinque battute (presa, sosta, volo, sosta sulla colonna, rilascio); la zona si accende dopo 1600 ms, poi `vai('prodotto', true, 1600)`.
+- Il ridisegno era troppo rapido per la sala: ora `vai(nuova, anima, dur=1300)` mette `data-cambia`, aspetta 350 ms e anima; le etichette centrali spariscono durante il cambio, così non restano sopra i rettangoli sbagliati.
+- La fascia sotto il grafico (`.im-flu-banda`, sostituisce `.im-flu-note`) porta didascalia del passo e bottoni delle dimensioni; i passi 2 e 3 sono esclusivi (`:has(p2):not(:has(p3))`), perché una regola del giro prima (`e742782`) (`visibility:visible` su ogni nota) li faceva sovrapporre. Corpo alzato a `clamp(1.1rem, 1.12vu, 2.4rem)`, fondo verde tenue.
+- **Sotto i 780 px di altezza** (1280×720) la banda finiva sotto i comandi del deck (109 px di scorrimento, preesistente): gradino dedicato, e le etichette di mezzo passano accanto alle barre (`--yc`), invece di schiacciarsi. Specificità su `#slide-flusso`.
+
+**L'attribuzione chiude sul risultato** (`slide-attribuzione`, `833247a`). Sottotitolo per il Controllo di Gestione («quanto pesa il digitale sulle vendite che si firmano in filiale. Esempio: il mutuo.»). Al posto della nota, un esito in due cifre: **20%** con l'ultimo clic, che dà la firma alla filiale, poi **66%** con il modello algoritmico sugli stessi dati; chiusa «due terzi delle firme, non un quinto… la filiale non perde niente». Nota del relatore con il ponte dal Sankey. Il selettore del modello funziona anche online: in call il problema era il tasto → che salta la slide (↓/spazio apre il passo).
+
+**I Prossimi passi ripartono dai temi di oggi** (`prossimi-passi.astro` + blocco `.im-ins-*` in `global.css`; `121f986`, `3fea4ff`). Titolo **«Da dove vi piacerebbe ripartire?»**, sottotitolo aperto al confronto (owner: «meno direttivo»). Cinque temi colorati con la tassonomia del cerchio di Giulia (`--blk-*`: trovare, contenuto, engagement, piattaforma tratteggiata), ognuno con prodotto e link alla slide dove se n'è parlato; un tocco li numera in ordine di priorità (`aria-pressed`). Il tema di analisi si chiama **Customer Journey Analytics** (in sala è il nome sentito), con «CX Analytics» come etichetta del gruppo. Sotto, «Alcuni modi per approfondirli»: sei formati senza riquadri. Sotto i 780 px spariscono prodotti e descrizioni.
+
+**I loghi sulle Referenze** (`121f986`, decisione dell'owner). `MarchioRef.astro` usa l'SVG ufficiale se c'è in `src/assets/loghi/`: TSB, Santander (versione positiva di santander.co.uk, perché quella del gruppo è bianca), Crédit Agricole, Unipol. Unipol esiste solo in negativo e si posa su una piastra del suo navy `#001c35`, mai ricolorato. Fonti in `loghi/LEGGIMI.md`; il permesso d'uso si verifica con l'account team, e l'esito non va nel repo.
+
+**Gate** sul `main` unito: `astro check` 0 errori; `audit:deck` messa-a-terra 21, risultati 15, prossimi-passi 7, tutti `a`/`i`; `audit:wrap` PULITO; `audit:taglio` ALLINEATO; `audit:docs` PULITO; fotogrammi a 1440×900 e 1280×720.
+
+⚠️ **Resta**: la slide di attribuzione scorre di 128 px a 1280×720 (preesistente, il pannello a sinistra); panel non rifatto su questo stato (P0 nella Parte 2).
