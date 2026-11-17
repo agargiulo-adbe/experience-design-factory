@@ -5,6 +5,9 @@
 
 ## 11. Change log recente
 
+### 2026-11-17 · «Ciascuno conta»: l'iniziativa in undici slide, e la riconciliazione come condizione per partire
+`8f80b58` le frecce si fermano ai due capi del deck; `4aaa054` tre verbi (misurare, conoscere, personalizzare), flusso a 11 slide senza divisori, `r-mvp` con i servizi professionali Adobe e il partner, lab di marzo a tre salette; `59ba33c` la riconciliazione fra i due siti diventa la condizione per partire (verdetto a inizio dicembre), non un cancello a fine gennaio. Strato v7 caricato, deploy verificato online. §43 (Parte 23).
+
 ### 2026-11-17 · Storia di Intesa: fili di Journey Optimizer, bottoni sempre cliccabili, «In breve» spento · `HowItWorks` nel motore · regole dei deck fuori da CLAUDE.md
 `7440366` fili da bordo a bordo e ramificazione simmetrica nei flussi di JO; `3a1d494` i bottoni del bordo della mappa si accorciano invece di sparire (`bordo()`); `d90a27b` in `HowItWorks` la freccia segue l'ultima parola (delta su 81 bottoni di otto experience: un solo cambiamento); `6020d8c` «In breve» spento. §42.20 (Parte 24). Da altre sessioni, committati qui: `f09a2fe` le regole delle experience passano da `CLAUDE.md` a `.claude/rules/experience-decks.md` (si caricano sui file di `apps/`, `packages/`…); `8f80b58` «Ciascuno conta», le frecce si fermano ai capi del deck e il secondo tasto chiude l'apertura.
 
