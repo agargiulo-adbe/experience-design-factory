@@ -55,6 +55,19 @@ compresi, e per ogni slide si risponde a queste domande prima di riscrivere:
    fonte e data.
 7. **La nota fa solo la nota?** Una riga di fonte dice da dove viene il dato. Un'affermazione
    che conta non si nasconde lì.
+8. **Il wording regge le tredici regole?** Con `skills/experience-design/references/wording.md`
+   accanto, controlla:
+   - il titolo è un inventario («Quattro X», «in N passi»)? (R1)
+   - i titoli dei capitoli hanno una forma sola? (R2)
+   - la domanda alla sala comincia con «Oggi» e offre due alternative, o presuppone il
+     difetto? (R3)
+   - il confine «vostro / Adobe» è scritto? (R4) Si presume invece di scrivere i due rami? (R5)
+   - l'ipotesi è presentata come lavoro comune? (R6) Le cose aperte dicono chi e quando? (R7)
+   - l'approvazione ha un ruolo? (R8) Il limite dice dove resta la cosa? (R9)
+   - c'è gergo interno in pagina? (R10) Il titolo parte dal gesto? (R11)
+   - il punto afferma più della slide? (R12) Il titolo parla di «noi»? (R13)
+   ⚠️ `lenti` verde non lo garantisce: sul deck di riferimento la stilometria era quasi
+   uguale a quella di un deck peggiore, e la differenza stava tutta qui.
 
 **Esempio inventato, con gli stessi difetti incontrati su un deck reale:**
 

@@ -56,6 +56,12 @@ che cambia la forma usando fatti già verificati; ciò che cambia una tesi, una
 promessa, l'ask o una frase protetta va in una lista per chi possiede il contenuto,
 con la riscrittura pronta.
 
+**Le tredici regole di wording** (titoli che non siano un inventario, domanda alla
+sala con «Oggi» e due alternative, confine «vostro / Adobe», niente gergo interno in
+pagina, punto che non afferma più della slide…) stanno in **`wording.md`**. Sono
+state ricavate il 17 nov 2026 dal deck che l'owner indica come riferimento di voce, e
+sono la parte del Giro 0 che nessun gate e nessuna misura di `lenti` vede.
+
 Il ±10% dei giri seguenti si misura **sul testo uscito da qui**, e il Giro 0 si
 committa a parte. La checklist per slide, i vincoli e il registro da tenere stanno
 in **`/umanizza`**.

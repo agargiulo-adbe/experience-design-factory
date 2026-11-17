@@ -78,6 +78,13 @@ gate dopo ogni modifica di copia: `copy-audit` → `audit:wrap` → `audit:deck`
 Le eccezioni si dichiarano sulla riga con `copy-audit-ignore` **e il motivo accanto**.
 Metodo, tipi di intervento con il prima/dopo vero, i due buchi di gate trovati e le due
 sonde da NON costruire: **`references/umanizzazione.md`**.
+**Il wording, già in prima stesura:** tredici regole ricavate dal deck di riferimento
+di voce, in **`references/wording.md`**. Fra queste: il numero nel titolo è un fatto e
+non l'inventario dei riquadri; la domanda alla sala comincia con «Oggi» e offre due
+alternative; il confine «vostro / Adobe» si scrive su ogni pezzo; il gergo interno
+(pipeline, rollout, coorti, i nomi macchina delle skill) resta dietro `HowItWorks`.
+Misurato il 17 nov 2026: due deck con stilometria quasi identica differivano proprio
+su questi punti, e su nient'altro.
 
 ## Step 0-ter — Il guscio sensoriale (marchio, movimento, suono, scala)
 Quattro cose si vedono prima che si legga una riga, e nessun check le fa fallire:
