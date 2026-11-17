@@ -1,28 +1,30 @@
 # I marchi delle banche citate come referenza
 
-Qui dentro va **il file ufficiale** del marchio, e nient'altro:
-`tsb.svg`, `santander.svg`, `credit-agricole.svg`.
+Qui dentro va **il file ufficiale** del marchio, e nient'altro. `MarchioRef.astro`
+lo usa appena il file c'è: non serve toccare il codice.
 
-Appena un file compare, `MarchioRef.astro` lo usa al posto del ripiego a
-testo. Non serve toccare il codice: si mette il file e si ricompila.
+## Da dove vengono (17 nov 2026)
 
-## Perché non ce li ho messi io
+Ogni file è quello che il titolare pubblica sul proprio sito, non ritoccato:
 
-Due ragioni, e nessuna è pigrizia.
+| File | Fonte |
+| --- | --- |
+| `tsb.svg` | tsb.co.uk, logo della testata |
+| `santander.svg` | santander.co.uk, versione positiva rossa del marchio di gruppo |
+| `credit-agricole.svg` | credit-agricole.it, logo della testata (tolto solo l'attributo `class`) |
+| `unipol.svg` | unipol.it, logo della testata: esiste **solo in negativo** |
 
-1. **Un logo non si ricostruisce e non si prende dal web.** È la stessa
-   regola del co-brand: solo l'SVG ufficiale che il titolare distribuisce.
-   Un marchio rifatto a mano è *wrong-brand imagery*, che la Quality Bar
-   vieta esplicitamente.
+Unipol pubblica il marchio soltanto bianco, sulla sua testata navy `#001c35`. Non
+si ricolora: `MarchioRef` lo posa su una piastra di quel navy, come lo mostra lui.
 
-2. **Il diritto di usarlo è contrattuale, e va verificato per ciascuno.**
-   Adobe ha una clausola apposta nel Sales Order — le «NASCAR» logo
-   slides — con cui il cliente concede l'uso di nome e logo su materiale
-   esterno senza doverlo chiedere ogni volta; fuori da quella, si va caso
-   per caso d'accordo con il cliente. Che TSB, Santander e Crédit Agricole
-   l'abbiano, da qui non si può sapere: lo sa il team di account, o chi
-   gestisce il programma referenze.
+## Le due regole che restano
 
-Finché non ci sono, il ripiego è il **nome in carattere display**, che è
-la stessa soluzione che il co-brand usa per i clienti senza SVG
-ufficiale. È una scelta dichiarata, non una dimenticanza.
+1. **Un logo non si ricostruisce.** Solo l'SVG che il titolare distribuisce. Un
+   marchio rifatto a mano è *wrong-brand imagery*, che la Quality Bar vieta.
+2. **Il diritto di usarlo si verifica per ciascun cliente**, con il team di
+   account: Adobe ha una clausola apposita nel Sales Order (le «NASCAR» logo
+   slides), e fuori da quella si concorda caso per caso. I quattro loghi sono
+   stati messi su decisione dell'owner il 17 nov 2026; l'esito della verifica
+   non si scrive qui, perché il repo è pubblico.
+
+Togliere un file basta a togliere il logo dalla sua slide.

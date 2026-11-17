@@ -92,7 +92,20 @@ const CRITERIO = {
   it: 'Perché il mutuo prima del cross-sell: è un perimetro dove la classifica del vostro motore non si tocca, e dal primo invio la misura si chiude in un trimestre.',
   en: 'Why the mortgage before cross-sell: it is a scope where your engine’s ranking is untouched, and from the first send the measurement closes within a quarter.',
 };
-/* I sei approfondimenti possibili (commenti del team, 16 nov 2026). Nessun numero e
+/* I TEMI DI OGGI (call del team, 17 nov 2026): chi decide i prossimi passi deve
+   ritrovare i temi di cui si è parlato, con i nomi e i colori che ha già visto nel
+   deck. Sono i quattro gruppi della codifica a colori (global.css, «la codifica a
+   colori dei blocchi dell'offerta») più il Coworker, che sta nel neutro della
+   piattaforma come CX Analytics. Ogni tema rimanda al punto del deck dove è stato
+   trattato. */
+const TEMI = [
+  { g: 'trovare', t: { it: 'Farsi trovare', en: 'Brand visibility' }, d: { it: 'Dove gli assistenti AI vi citano, e come esserci dove mancate', en: 'Where AI assistants cite you, and how to show up where you are missing' }, p: 'Brand Visibility', dove: { it: 'Giulia, momento 01', en: 'Giulia, moment 01' }, url: '/momenti/#slide-m-01' },
+  { g: 'contenuto', t: { it: 'Content Factory', en: 'Content Factory' }, d: { it: 'Annunci su misura per ogni canale, già validati sul marchio', en: 'Ads tailored to each channel, already checked against the brand' }, p: 'GenStudio for Performance Marketing', dove: { it: 'Giulia, momento 02', en: 'Giulia, moment 02' }, url: '/momenti/#slide-m-02' },
+  { g: 'engagement', t: { it: 'Ingaggio clienti e\u00a0non clienti', en: 'Engaging customers and non\u2011customers' }, d: { it: 'Riconoscere chi arriva, scegliere la proposta, riprendere la pratica fino in filiale', en: 'Recognise who arrives, choose the offer, resume the application all the way to the branch' }, p: 'Real-Time Activation · Journey Optimizer', dove: { it: 'Momenti 03–06 · Dove ci innestiamo', en: 'Moments 03–06 · Where we plug in' }, url: '/messa-a-terra/#slide-innesto' },
+  { g: 'piattaforma', t: { it: 'CX Analytics', en: 'CX Analytics' }, d: { it: 'Analisi multicanale: dove passa chi compra, e quanto vale ogni canale, filiale compresa', en: 'Cross-channel analysis: the path to a purchase, and what each channel is worth, branch included' }, p: 'Customer Journey Analytics', dove: { it: 'Momento 07 · Dove ci innestiamo', en: 'Moment 07 · Where we plug in' }, url: '/messa-a-terra/#slide-cja-banca' },
+  { g: 'piattaforma', t: { it: 'CX Enterprise Coworker', en: 'CX Enterprise Coworker' }, d: { it: 'Audience, contenuti e percorso preparati in una conversazione, fino all’approvazione', en: 'Audience, content and journey prepared in one conversation, up to approval' }, p: 'Adobe CX Enterprise Coworker', dove: { it: 'Capitolo 04', en: 'Chapter 04' }, url: '/coworker/#slide-video' },
+] as const;
+/* I sei modi di approfondirli (commenti del team, 16 nov 2026). Nessun numero e
    nessun ordine: l'ordine lo danno loro. Il nome della banca della reference call
    non si scrive: lo si dice a voce, se chiedono. */
 const INSIEME = [
@@ -101,7 +114,7 @@ const INSIEME = [
   { t: { it: 'Executive workshop', en: 'Executive workshop' }, d: { it: 'Ambizione e priorità, con chi decide', en: 'Ambition and priorities, with the decision makers' } },
   { t: { it: 'Business case', en: 'Business case' }, d: { it: 'Il valore, costruito sui vostri numeri', en: 'The value, built on your own numbers' } },
   { t: { it: 'Reference call', en: 'Reference call' }, d: { it: 'Con una banca che lo fa già', en: 'With a bank already doing it' } },
-  { t: { it: 'Un incontro per dipartimento', en: 'One meeting per department' }, d: { it: 'Marketing, Advanced Analytics, Controllo di Gestione, IT: il riscontro di ciascuno', en: 'Marketing, Advanced Analytics, Management Control, IT: each team’s feedback' } },
+  { t: { it: 'Un incontro per dipartimento', en: 'One meeting per department' }, d: { it: 'Marketing, Advanced Analytics, Controllo di Gestione, IT', en: 'Marketing, Advanced Analytics, Management Control, IT' } },
 ];
 ---
 <BaseLayout title={ch.title.it}>
@@ -126,17 +139,45 @@ const INSIEME = [
     <Slide id="slide-insieme" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ins" data-reveal>
-        <T as="p" class="im-ins-k" it="Da qui, insieme" en="From here, together" />
-        <T as="h2" class="im-ins-t" it="Che cosa approfondiamo, e in che ordine?" en="What do we explore next, and in what order?" />
-        <T as="p" class="im-ins-l" it="Le priorità le fissate voi. Ecco quello che possiamo mettere a disposizione." en="You set the priorities. Here is what we can put on the table." />
-        <ul class="im-ins-g">
-          {INSIEME.map((x) => (
-            <li class="im-ins-i">
-              <T as="span" class="im-ins-n" it={x.t.it} en={x.t.en} />
-              <T as="span" class="im-ins-d" it={x.d.it} en={x.d.en} />
-            </li>
-          ))}
-        </ul>
+        <div class="im-ins-testa">
+          <T as="h2" class="im-ins-t" it="Che cosa approfondiamo, e in che ordine?" en="What do we explore next, and in what order?" />
+          <T as="p" class="im-ins-l" it="Le priorità le fissate voi. Sopra, i temi di oggi; sotto, i modi per approfondirli." en="You set the priorities. Above, today’s topics; below, the ways to go deeper." />
+        </div>
+
+        {/* I TEMI: un tocco li mette in ordine (1, 2, 3…), un secondo tocco toglie il
+            numero e fa scalare gli altri. È la risposta al titolo, scritta in sala.
+            Il rimando sotto ogni tema porta al punto del deck dove se n'è parlato. */}
+        <section class="im-ins-temi" aria-labelledby="ins-temi-k">
+          <div class="im-ins-riga">
+            <T as="h3" id="ins-temi-k" class="im-ins-k" it="I temi di oggi" en="Today’s topics" />
+            <T as="p" class="im-ins-aiuto" it="Un tocco per metterli in ordine" en="Tap to put them in order" />
+          </div>
+          <ol class="im-ins-tg">
+            {TEMI.map((x) => (
+              <li class="im-ins-tema" data-gruppo={x.g}>
+                <button type="button" class="im-ins-tb" aria-pressed="false">
+                  <span class="im-ins-ord" aria-hidden="true"></span>
+                  <T as="span" class="im-ins-tn" it={x.t.it} en={x.t.en} />
+                  <T as="span" class="im-ins-td" it={x.d.it} en={x.d.en} />
+                  <span class="im-ins-tp">{x.p}</span>
+                </button>
+                <a class="im-ins-dove" href={href(base, x.url)}><T as="span" it={x.dove.it} en={x.dove.en} /><span aria-hidden="true"> ↗</span></a>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section class="im-ins-modi" aria-labelledby="ins-modi-k">
+          <T as="h3" id="ins-modi-k" class="im-ins-k" it="Come approfondirli" en="How to go deeper" />
+          <ul class="im-ins-g">
+            {INSIEME.map((x) => (
+              <li class="im-ins-i">
+                <T as="span" class="im-ins-n" it={x.t.it} en={x.t.en} />
+                <T as="span" class="im-ins-d" it={x.d.it} en={x.d.en} />
+              </li>
+            ))}
+          </ul>
+        </section>
       </div>
     </Slide>
 
@@ -287,3 +328,25 @@ const INSIEME = [
      sicura senza rimpicciolire il tipo (check exp, 11 nov 2026). */
   @media (max-height: 920px) { [data-slide]:has(.im-pp-dett[data-hiw-on]) :is(.im-h2, .im-ado-t) { display: none; } }
 </style>
+
+<script>
+  /* L'ORDINE DEI TEMI, deciso in sala: ogni tocco assegna il numero successivo,
+     un secondo tocco lo toglie e fa scalare gli altri. Il bottone perde il fuoco
+     dopo il clic, così le frecce restano al deck. */
+  const tavola = document.querySelector<HTMLElement>('#slide-insieme .im-ins-tg');
+  if (tavola) {
+    const bottoni = [...tavola.querySelectorAll<HTMLButtonElement>('.im-ins-tb')];
+    let ordine: HTMLButtonElement[] = [];
+    const scrivi = () => bottoni.forEach((b) => {
+      const i = ordine.indexOf(b);
+      b.setAttribute('aria-pressed', String(i >= 0));
+      b.closest('li')!.toggleAttribute('data-scelto', i >= 0);
+      b.querySelector('.im-ins-ord')!.textContent = i >= 0 ? String(i + 1) : '';
+    });
+    bottoni.forEach((b) => b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      ordine = ordine.includes(b) ? ordine.filter((x) => x !== b) : [...ordine, b];
+      scrivi(); b.blur();
+    }));
+  }
+</script>

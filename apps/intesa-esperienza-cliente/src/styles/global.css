@@ -4633,7 +4633,15 @@ img.im-marchio { width: auto; height: 100%; object-fit: contain; object-position
 }
 .im-caso-t em { font-style: normal; color: #258900; }
 .im-caso-marchio { margin: 0.2rem 0 0; flex: none; }
-.im-caso-marchio .im-marchio { height: clamp(1.8rem, calc(2 * var(--vu)), 4rem); max-width: 16rem; }
+/* Il marchio del cliente, in alto a destra e ben presente (owner, 17 nov 2026).
+   Un'altezza e una larghezza massima comuni: i marchi larghi (Santander, Crédit
+   Agricole) li ferma la larghezza, quelli compatti (TSB) l'altezza, e i quattro
+   pesano in modo simile. Allineati a destra, sulla riga del titolo. */
+.im-caso-marchio { display: flex; justify-content: flex-end; align-self: center; }
+.im-caso-marchio .im-marchio { height: clamp(3rem, calc(3.8 * var(--vu)), 7.2rem); max-width: clamp(13rem, calc(17 * var(--vu)), 31rem); }
+.im-caso-marchio img.im-marchio { object-position: right center; }
+.im-marchio-piastra { display: inline-flex; align-items: center; padding: 0.45em 0.8em; border-radius: 6px; background: var(--piastra); }
+.im-caso-marchio .im-marchio-piastra .im-marchio { height: clamp(2.6rem, calc(3.2 * var(--vu)), 6rem); }
 .im-caso-marchio .im-marchio--testo {
   font-family: var(--font-display); font-weight: 700;
   font-size: clamp(1.15rem, calc(1.15 * var(--vu)), 2.4rem); letter-spacing: 0.01em; color: #1b1d21;
@@ -5165,18 +5173,55 @@ html:not(.js) [data-segue] { opacity: 1; visibility: visible; transform: none; }
 /* ── DA QUI, INSIEME (prossimi passi, 16 nov 2026) ──────────────────────
    Una tavola quasi di sfondo: la domanda grande, sei approfondimenti in tono
    basso, senza numeri e senza un ordine. Sta in sala mentre si discute. */
-.im-ins { width: 100%; display: grid; align-content: center; gap: clamp(0.6rem, calc(0.9 * var(--vu)), 1.8rem); }
-.im-ins-k { margin: 0; font-size: clamp(0.82rem, calc(0.76 * var(--vu)), 1.6rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #b9e6a3; }
-.im-ins-t { margin: 0; max-width: 28ch; font-family: var(--font-display); font-weight: 700; font-size: clamp(2rem, calc(2.8 * var(--vu)), 5.8rem); line-height: 1.1; color: #ffffff; }
-.im-ins-l { margin: 0; max-width: none; font-size: clamp(1.05rem, calc(1.05 * var(--vu)), 2.2rem); line-height: 1.45; color: #c9dcc2; }
-.im-ins-g { list-style: none; margin: clamp(0.6rem, calc(1.2 * var(--vu)), 2.4rem) 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.5rem, calc(0.8 * var(--vu)), 1.6rem); }
-.im-ins-i { display: grid; align-content: start; gap: 0.3rem; padding: clamp(0.8rem, calc(1 * var(--vu)), 2rem) clamp(0.9rem, calc(1.1 * var(--vu)), 2.2rem);
-  border-radius: 14px; border: 1px dashed rgba(185, 230, 163, 0.35); background: rgba(255, 255, 255, 0.035); }
-.im-ins-n { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.1rem, calc(1.1 * var(--vu)), 2.3rem); line-height: 1.2; color: #ffffff; }
-.im-ins-d { font-size: clamp(0.95rem, calc(0.88 * var(--vu)), 1.9rem); line-height: 1.4; color: #c9dcc2; }
-#slide-insieme .im-ins-l, #slide-insieme .im-ins-t { max-width: none; }
-#slide-insieme .im-ins-t { max-width: 28ch; }
-@media (max-width: 900px) { .im-ins-g { grid-template-columns: 1fr; } }
+/* DA QUI, INSIEME (rifatta il 17 nov 2026). Due piani: sopra i temi di oggi, nei
+   colori della codifica dei blocchi (il neutro tratteggiato è la piattaforma),
+   sotto i sei modi di approfondirli, più piccoli e senza scatole. I temi si
+   mettono in ordine con un tocco: il numero prende il colore del gruppo. */
+.im-ins { width: 100%; display: grid; align-content: center; gap: clamp(1.1rem, calc(1.9 * var(--vu)), 3.8rem); }
+.im-ins-testa { display: grid; gap: clamp(0.4rem, calc(0.6 * var(--vu)), 1.2rem); }
+.im-ins-t { margin: 0; max-width: none; font-family: var(--font-display); font-weight: 700; font-size: clamp(2rem, calc(2.6 * var(--vu)), 5.4rem); line-height: 1.08; letter-spacing: -0.01em; color: #ffffff; text-wrap: balance; }
+#slide-insieme .im-ins-l { margin: 0; max-width: none; font-size: clamp(1.08rem, calc(1.15 * var(--vu)), 2.4rem); line-height: 1.45; color: #d6e6cf; }
+.im-ins-riga { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.im-ins-k { margin: 0; font-size: clamp(0.82rem, calc(0.78 * var(--vu)), 1.65rem); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #b9e6a3; }
+.im-ins-aiuto { margin: 0; font-size: clamp(0.82rem, calc(0.76 * var(--vu)), 1.6rem); color: #a9c3a0; }
+.im-ins-temi { display: grid; gap: clamp(0.55rem, calc(0.8 * var(--vu)), 1.6rem); }
+
+/* I temi: cinque colonne con il filo del gruppo in testa, come i blocchi del deck. */
+.im-ins-tg { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(0.5rem, calc(0.8 * var(--vu)), 1.6rem); }
+.im-ins-tema { position: relative; display: grid; grid-template-rows: 1fr auto; border-top: 4px solid var(--gruppo); border-radius: 2px 2px 8px 8px; background: rgba(255, 255, 255, 0.045); transition: background-color 0.25s ease; }
+.im-ins-tema[data-gruppo='piattaforma'] { border-top-style: dashed; }
+.im-ins-tema[data-scelto] { background: color-mix(in srgb, var(--gruppo) 16%, rgba(255, 255, 255, 0.03)); }
+.im-ins-tb { all: unset; box-sizing: border-box; color: #ffffff; display: grid; align-content: start; gap: clamp(0.3rem, calc(0.4 * var(--vu)), 0.8rem); padding: clamp(0.8rem, calc(1 * var(--vu)), 2rem) clamp(0.85rem, calc(1 * var(--vu)), 2rem) clamp(0.5rem, calc(0.6 * var(--vu)), 1.2rem); cursor: pointer; }
+.im-ins-tema:hover:not([data-scelto]) { background: rgba(255, 255, 255, 0.075); }
+.im-ins-tema[data-scelto] .im-ins-tp { color: #ffffff; }
+.im-ins-tb:focus-visible { outline: 3px solid #ffffff; outline-offset: -3px; border-radius: 6px; }
+.im-ins-tn { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.1rem, calc(1.2 * var(--vu)), 2.5rem); line-height: 1.15; color: #ffffff; }
+.im-ins-td { font-size: clamp(0.94rem, calc(0.92 * var(--vu)), 1.95rem); line-height: 1.38; color: #d6e6cf; }
+.im-ins-tp { font-size: clamp(0.78rem, calc(0.74 * var(--vu)), 1.55rem); font-weight: 600; line-height: 1.3; color: var(--gruppo); }
+.im-ins-tema[data-gruppo='piattaforma'] .im-ins-tp { color: #e3e0d2; }
+/* Il numero d'ordine: vuoto finché non si sceglie, poi un disco nel colore del gruppo. */
+.im-ins-ord { position: absolute; top: 0; right: clamp(0.8rem, calc(1 * var(--vu)), 2rem); translate: 0 calc(-50% - 2px); display: grid; place-items: center; width: 1.9em; height: 1.9em; border: 1.5px dashed rgba(255, 255, 255, 0.4); border-radius: 50%; background: #0f2e06; font-family: var(--font-display); font-weight: 800; font-size: clamp(0.9rem, calc(0.95 * var(--vu)), 2rem); line-height: 1; color: #0b1f06; transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.25s cubic-bezier(0.2, 0.8, 0.3, 1.4); }
+.im-ins-tema[data-scelto] .im-ins-ord { border: 0; background: var(--gruppo); transform: scale(1.08); }
+.im-ins-dove { justify-self: start; margin: 0 clamp(0.85rem, calc(1 * var(--vu)), 2rem) clamp(0.75rem, calc(0.9 * var(--vu)), 1.8rem); font-size: clamp(0.8rem, calc(0.76 * var(--vu)), 1.6rem); color: #c9dcc2; text-decoration: underline; text-decoration-color: rgba(201, 220, 194, 0.45); text-underline-offset: 0.2em; }
+.im-ins-dove:hover { color: #ffffff; text-decoration-color: currentColor; }
+
+/* I modi di approfondire: sei voci senza scatole, un filo sottile sopra ciascuna. */
+.im-ins-modi { display: grid; gap: clamp(0.5rem, calc(0.7 * var(--vu)), 1.4rem); }
+.im-ins-g { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.55rem, calc(0.8 * var(--vu)), 1.6rem) clamp(0.9rem, calc(1.4 * var(--vu)), 2.8rem); }
+.im-ins-i { display: grid; align-content: start; gap: 0.15rem; padding-top: clamp(0.45rem, calc(0.55 * var(--vu)), 1.1rem); border-top: 1px solid rgba(185, 230, 163, 0.28); }
+.im-ins-n { font-weight: 700; font-size: clamp(0.98rem, calc(0.98 * var(--vu)), 2.05rem); line-height: 1.25; color: #ffffff; }
+.im-ins-d { font-size: clamp(0.88rem, calc(0.84 * var(--vu)), 1.8rem); line-height: 1.35; color: #c9dcc2; }
+@media (prefers-reduced-motion: reduce) { .im-ins-tema, .im-ins-ord { transition: none; } }
+/* Sugli schermi bassi: i modi restano solo come nomi, su una fila; i temi più asciutti. */
+@media (max-height: 780px) and (min-width: 901px) {
+  .im-ins { gap: 0.85rem; }
+  .im-ins-tb { padding-top: 0.7rem; gap: 0.25rem; }
+  .im-ins-tp { display: none; }
+  .im-ins-g { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .im-ins-d { display: none; }
+}
+@media (max-width: 1100px) { .im-ins-tg { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 900px) { .im-ins-tg, .im-ins-g { grid-template-columns: 1fr; } .im-ins-riga { flex-direction: column; gap: 0.2rem; } }
 
 
 /* ── LA VERSIONE BREVE: I SETTE MOMENTI IN DUE TAVOLE (16 nov 2026) ───────
