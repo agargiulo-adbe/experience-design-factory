@@ -33,11 +33,20 @@ export const SCENE: Record<ScenaId, Scena> = {
      affermazioni nuove. Dalla call interna del 16 nov: il codice pratica nasce alla
      simulazione e si riconcilia con l'NDG che il core emette alla firma (ipotesi di lavoro
      dichiarata); il look-alike passa da Real-Time Activation; il dato di CJA va anche alle
-     iniziative commerciali sui clienti. */
+     iniziative commerciali sui clienti.
+     17 nov 2026 (owner, dopo la call delle 10): (1) la frase in testa ripeteva i tre
+     capitoli del piede, che ora portano verbo e prodotto e lampeggiano al cambio: tolta;
+     (2) prima del passo 1 una guida «Come si legge» (call: «spiega la slide come si
+     legge… un'audience ibrida»); (3) le iniziative commerciali lavorano sui clienti
+     (slide dell'innesto): non si accendono più al passo 6, che è sul non cliente; al
+     passo 11 Giulia è cliente, e il dato entra nelle programmate; (4) la «fase 0» non è
+     mai presentata nel percorso: tolta; (5) il look-alike nasce in Real-Time Activation
+     da chi ha firmato, non da un'audience di CJA: Experience League vuole la base
+     «created within Experience Platform». */
   e2e: {
     occhiello: 'Come funziona',
     prodotto: 'Dall’annuncio alla firma',
-    cosa: 'Un flusso solo sulla stessa persona: Real-Time Activation la riconosce, Journey Optimizer sceglie e orchestra, Customer Journey Analytics misura.',
+    cosa: '',
     capitoli: [
       { t: 'Riconosce · Real-Time Activation', da: 1, a: 3 },
       { t: 'Sceglie e orchestra · Journey Optimizer', da: 4, a: 6 },
@@ -49,12 +58,12 @@ export const SCENE: Record<ScenaId, Scena> = {
       'Lascia l’email e il consenso marketing, e nasce il codice pratica. Le visite fatte prima di lasciare il nome si uniscono al suo profilo.',
       'Si ferma perché le manca un documento. Journey Optimizer lo sa subito; gli score del vostro motore, se esistono sul non cliente, arrivano come attributi.',
       'AI Decisioning mette in fila quattro proposte. Regole e consenso ne escludono due, e vince il promemoria con appuntamento.',
-      'La proposta compare sul sito e poi arriva per email, e Giulia riprende la pratica. Le vostre iniziative programmate continuano come oggi.',
+      'La proposta compare sul sito e poi arriva per email, e Giulia riprende la pratica.',
       'In filiale apre la pratica: è la stessa della simulazione, e il grafo la lega all’email, al telefono e alle visite di prima.',
       'Firma: il core emette l’NDG e lo lega al codice pratica (ipotesi di lavoro). Customer Journey Analytics legge sito, app, CRM e Filiale Digitale in un percorso solo.',
-      'Le firme si attribuiscono ai canali, filiale compresa. Se la campagna ha funzionato lo dice il gruppo di controllo, che si fissa in fase 0.',
-      'Conversioni e audience tornano alla decisione. Da chi ha firmato nasce un’audience look‑alike, che passa da Real-Time Activation: serve al prossimo non cliente.',
-      'Lo stesso dato arriva alle vostre iniziative commerciali: audience per up-sell e cross-sell sui clienti. Da cliente, sulle proposte decide il vostro motore.',
+      'Le firme si attribuiscono ai canali, filiale compresa. Se la campagna ha funzionato lo dice il gruppo di controllo, che si definisce insieme prima di partire.',
+      'Chi ha firmato torna alla decisione, e la proposta del mutuo per lui si chiude. In Real-Time Activation, da chi ha firmato nasce un’audience look‑alike: serve a trovare il prossimo non cliente.',
+      'Ora Giulia è cliente. Il dato di Customer Journey Analytics arriva alle vostre iniziative commerciali, che lavorano sui clienti: audience per up-sell e cross-sell, nelle campagne programmate. Sulle proposte decide il vostro motore.',
     ],
     nota: '',
     fonti: [],
@@ -99,11 +108,11 @@ export const SCENE: Record<ScenaId, Scena> = {
       passi: [
         'Il motore di targeting continua a calcolare target e propensione sui clienti. Da quale sistema arrivi l’eleggibilità è da confermare con voi.',
         'Sul non cliente, solo se esistono: arrivano ad AI Decisioning come attributi del profilo. L’eleggibilità può stare nel profilo o arrivare dal vostro sistema nella richiesta di decisione.',
-        'Per Giulia ci sono quattro proposte possibili. Se risulta già cliente, decide il vostro motore; chi decide su chi non ha fatto login si fissa in fase 0.',
+        'Per Giulia ci sono quattro proposte possibili. Se risulta già cliente, decide il vostro motore; chi decide su chi non ha fatto login si stabilisce insieme.',
         null,
         null,
         'Dopo le regole ne restano due: vince la prima per priorità, sul canale ammesso dal consenso.',
-        'Customer Journey Analytics confronta chi ha visto la proposta con un gruppo di controllo: appuntamenti, poi firme. Chi lo estrae, quanto è grande e quanto dura, e il tetto di contatti, si fissano in fase 0.',
+        'Customer Journey Analytics confronta chi ha visto la proposta con un gruppo di controllo: appuntamenti, poi firme. Chi lo estrae, quanto è grande e quanto dura, e il tetto di contatti, si stabiliscono insieme prima di partire.',
       ],
     },
   },

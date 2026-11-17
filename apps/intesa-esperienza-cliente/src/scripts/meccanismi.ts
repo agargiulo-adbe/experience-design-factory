@@ -232,11 +232,11 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     const fonti = qq('f-sito', 'f-app', 'f-crm', 'f-fd');
     const [percorso, barre, ctrl] = qq('percorso', 'barre', 'ctrl');
     const punti = ['02', '03', '04', '05', '06', '07'].map((n) => q(`c${n}`));
-    const [motorePoi, inizPoi, inizPoi2, crmPoi] = qq('motore-poi', 'iniz-poi', 'iniz-poi2', 'crm-poi');
-    const [vEmail, vProp, vApp, vRit, vSim, vIniz] = qq('v-email', 'v-prop', 'v-app', 'v-ritorno', 'v-simili', 'v-iniz');
+    const [motorePoi, crmPoi, inizProg] = qq('motore-poi', 'crm-poi', 'iniz-prog');
+    const [vEmail, vProp, vApp, vRit, vIniz] = qq('v-email', 'v-prop', 'v-app', 'v-ritorno', 'v-iniz');
     const ranghi = [o0, o1].map((o) => o.querySelector<HTMLElement>('.mc-rango')!);
 
-    gsap.set([foto, st1, st2, sessT1, banner, mail, percorso, barre, ctrl, motorePoi, inizPoi, inizPoi2, crmPoi, vEmail, vProp, vApp, vRit, vSim, vIniz, regola, segSim], { autoAlpha: 0 });
+    gsap.set([foto, st1, st2, sessT1, banner, mail, percorso, barre, ctrl, motorePoi, crmPoi, vEmail, vProp, vApp, vRit, vIniz, regola, segSim], { autoAlpha: 0 });
     gsap.set([o0, o1, o2, o3], { autoAlpha: 0 });
     gsap.set(ranghi, { autoAlpha: 0, scale: .4 });
 
@@ -292,8 +292,10 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
      .to(ranghi[0], { autoAlpha: 1, scale: 1, duration: .45, ease: 'back.out(2)' }, 'p5+=2.9')
      .to(ranghi[1], { autoAlpha: 1, scale: 1, duration: .45, ease: 'back.out(2)' }, 'p5+=3.05');
 
+    // Il passo 6 è sul NON cliente: le Iniziative commerciali lavorano sui clienti
+    // (slide dell'innesto) e qui restano spente (owner, 17 nov 2026).
     passo('p6');
-    fuoco([ajo, sito, canaliT, iniz], 'p6');
+    fuoco([ajo, sito, canaliT], 'p6');
     tappa(3, 'p6');
     stato(o0, 'mc-vince', 'p6');
     stato(o1, 'mc-seconda', 'p6');
@@ -301,13 +303,10 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     viaggia(vProp, o0, spazio, 'p6+=.3');
     T.to(banner, { autoAlpha: 1, duration: .45 }, '>-.1');
     T.fromTo(mail, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: .7, immediateRender: false }, '>+.2');
-    accende(iniz, '<');
-    appare(inizPoi, '<.2');
 
     // ── Misura ──
     passo('p7');
     fuoco([rta, crm, canaliT], 'p7');
-    spegne(iniz, 'p7');
     tappa(4, 'p7');
     T.to(mail, { opacity: .45, duration: .5 }, 'p7');
     viaggia(vApp, mail, crm, 'p7+=.2');
@@ -340,31 +339,38 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
 
     passo('p10');
     fuoco([cja, ajo, rta], 'p10');
+    // Chi ha firmato torna alla decisione: la proposta del mutuo, per lui, si chiude.
     viaggia(vRit, cja, ajo, 'p10+=.2');
-    T.fromTo(ranghi[0], { scale: 1 }, { scale: 1.35, duration: .25, yoyo: true, repeat: 1, ease: 'sine.inOut', immediateRender: false }, '>-.1');
-    // Il look-alike passa da Real-Time Activation (call interna, 16 nov 2026).
-    viaggia(vSim, cja, rta, '>+.25');
-    appare(segSim, '>-.15', { duration: .45 });
+    T.to(o0, { opacity: .45, duration: .5 }, '>-.1');
+    // Il look-alike NASCE in Real-Time Activation, da chi ha firmato (l'NDG): la base di
+    // un look-alike deve essere creata in Experience Platform (Experience League), quindi
+    // non viaggia da CJA. 17 nov 2026.
+    pulsa(ndg, '>+.2');
+    vola(segSim, ndg, '>+.1', .9);
     pulsa(segSim, '>');
 
     passo('p11');
+    // Giulia ora è cliente: il dato di CJA entra nelle Iniziative, nelle PROGRAMMATE
+    // (come nella slide dell'innesto: su evento si valuta, il dato dei clienti arriva in ore).
     fuoco([cja, iniz, motore], 'p11');
-    viaggia(vIniz, cja, iniz, 'p11+=.2');
+    T.set(o0, { opacity: 1 }, 'p11');
+    viaggia(vIniz, cja, inizProg, 'p11+=.2');
     accende(iniz, '>-.1');
-    T.to(inizPoi, { autoAlpha: 0, duration: .25 }, '<');
-    appare(inizPoi2, '<.15', { duration: .45 });
+    stato(inizProg, 'mc-acceso', '<');
+    pulsa(inizProg, '<', '255,196,107');
     accende(motore, '<');
     appare(motorePoi, '<');
     passo('fine');
     etichette = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9', 'p10', 'p11', 'fine'];
     const QUI = [0, 1, 1, 2, 2, 3, 4, 5, 5, 5, 5];
     const classi = (el: HTMLElement, c: string) => { el.className = `${base.get(el) ?? el.className} ${c}`.trim(); };
-    [...tappe, motore, iniz, crm, o0, o1, o2, o3].forEach((el) => { if (!base.has(el)) base.set(el, el.className); });
+    [...tappe, motore, iniz, crm, inizProg, o0, o1, o2, o3].forEach((el) => { if (!base.has(el)) base.set(el, el.className); });
     allinea = (p) => {
       const i = QUI[p - 1] ?? 0;
       tappe.forEach((li, j) => classi(li, j < i ? 'mc-fatto' : j === i ? 'mc-qui' : ''));
       classi(motore, p === 4 || p === 11 ? 'mc-attivo' : '');
-      classi(iniz, p === 6 || p === 11 ? 'mc-attivo' : '');
+      classi(iniz, p === 11 ? 'mc-attivo' : '');
+      classi(inizProg, p === 11 ? 'mc-acceso' : '');
       classi(crm, p === 7 ? 'mc-attivo' : '');
       classi(o2, p >= 5 ? 'mc-fuori' : ''); classi(o3, p >= 5 ? 'mc-fuori' : '');
       classi(o0, p >= 6 ? 'mc-vince' : ''); classi(o1, p >= 6 ? 'mc-seconda' : '');

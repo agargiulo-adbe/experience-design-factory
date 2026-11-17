@@ -36,10 +36,12 @@ const currentPath = Astro.url.pathname;
 /* Il video della demo, dal player di Dynamic Media (AEM Assets, delivery
    /play): è una PAGINA HTML col player integrato, non un .mp4, quindi va in
    un <iframe> e non in un <video> (13 nov 2026). Il segnaposto (uno spot) è
-   stato sostituito il 13 nov 2026 con la clip indicata dall'owner. Per
-   cambiarla si cambia l'URN qui, una riga. */
+   stato sostituito il 13 nov 2026 con la clip indicata dall'owner, e quella
+   il 17 nov 2026 con la nuova registrazione (3:32, altro ambiente AEM). Per
+   cambiarla si cambia l'indirizzo qui, una riga: il player si carica dallo
+   stesso host del video. */
 const COSA_PUBBLICATA = false;
-const VIDEO_DEMO = 'https://delivery-p151367-e1559221.adobeaemcloud.com/adobe/assets/urn:aaid:aem:f5401ffd-52b6-4ec1-bbc6-14f9f50f45d0/play';
+const VIDEO_DEMO = 'https://delivery-p97303-e890303.adobeaemcloud.com/adobe/assets/urn:aaid:aem:7d66ebc0-f6c1-48e4-8c6b-2890b8c2df95/play';
 /* IL PLAYER, NEL DECK E NON IN UN IFRAME (16 nov 2026). La pagina «/play» di Dynamic
    Media inizializza il suo player con `isLetterBoxed: false`, che sul video diventa
    `object-fit: cover` in linea: a schermo intero, su uno schermo non 16:9, il video
@@ -48,16 +50,17 @@ const VIDEO_DEMO = 'https://delivery-p151367-e1559221.adobeaemcloud.com/adobe/as
    stessi indirizzi Adobe, con `isLetterBoxed: true`: stesso streaming, stessi
    comandi, il video intero. Se il player non arriva (rete), resta l'iframe di prima. */
 const VIDEO_ASSET = VIDEO_DEMO.replace(/\/play$/, '');
-/* I SEGNALIBRI (team, 16 nov 2026): per saltare da un passaggio all'altro mentre si
-   racconta. I tempi vengono dai fotogrammi del video (uno ogni 5 secondi). */
+/* I SEGNALIBRI (team, 16 nov 2026; rifatti il 17 nov sul video nuovo): per saltare
+   da un passaggio all'altro mentre si racconta. Ogni tempo è il secondo in cui la
+   domanda viene scritta a Coworker, letto sui fotogrammi a un secondo. */
 const SEGNALIBRI = [
   { t: 0, it: 'Coworker e le sue personalizzazioni', en: 'Coworker and its customisations' },
-  { t: 32, it: 'Clienti per canale', en: 'Customers by channel' },
-  { t: 58, it: 'Canali e metriche di business', en: 'Channels and business metrics' },
-  { t: 98, it: 'Il funnel del mutuo', en: 'The mortgage funnel' },
-  { t: 148, it: 'L’audience da riprendere', en: 'The audience to win back' },
-  { t: 173, it: 'Il journey, preparato da Coworker', en: 'The journey, drafted by Coworker' },
-  { t: 208, it: 'In Journey Optimizer', en: 'In Journey Optimizer' },
+  { t: 33, it: 'Clienti per canale di accesso', en: 'Customers by access channel' },
+  { t: 57, it: 'Quale canale converte di più', en: 'Which channel converts best' },
+  { t: 90, it: 'Il funnel del mutuo, clienti e anonimi', en: 'The mortgage funnel, customers and anonymous' },
+  { t: 120, it: 'L’audience da riprendere', en: 'The audience to win back' },
+  { t: 146, it: 'Il journey, preparato da Coworker', en: 'The journey, drafted by Coworker' },
+  { t: 182, it: 'In Journey Optimizer', en: 'In Journey Optimizer' },
 ];
 const mmss = (t: number) => `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`;
 
@@ -151,7 +154,7 @@ const STORY = [
               <li><button type="button" data-seg-t={s.t}><span class="im-cow-seg-t">{mmss(s.t)}</span><T as="span" it={s.it} en={s.en} /></button></li>
             ))}
           </ol>
-          <T as="p" class="im-fonte-riga" it="Sui vostri dati, dopo l’attivazione e con il perimetro concordato in fase 0." en="On your data, after activation and within the scope agreed in phase 0." />
+          <T as="p" class="im-fonte-riga" it="Sui vostri dati, dopo l’attivazione e con il perimetro concordato insieme." en="On your data, after activation and within the scope agreed together." />
         </div>
         <ol class="im-story">
           {STORY.map((s) => (
@@ -174,7 +177,10 @@ const STORY = [
   /* Il player di Dynamic Media montato nella pagina (vedi la nota su VIDEO_ASSET).
      Si carica quando la slide del video è a portata: CSS e script dagli indirizzi
      Adobe, poi init con il video intero (`isLetterBoxed: true`). */
-  const DM = 'https://delivery-p151367-e1559221.adobeaemcloud.com/adobe/assets/urn:aaid:aem:';
+  /* Il player sta sullo stesso host del video: si ricava dall'indirizzo. */
+  const URN = 'urn:aaid:aem:';
+  const dmDi = (asset: string) => asset.slice(0, asset.indexOf(URN) + URN.length);
+  let DM = '';
   type DmWin = Window & { dmViewers?: { VideoPlayer?: { init(id: string, o: object): Promise<{ setupPlayer(c: unknown): void }> }; CorePlayer?: unknown } };
   const w = window as DmWin;
   const carica = (src: string) => new Promise<void>((ok, ko) => {
@@ -193,6 +199,7 @@ const STORY = [
     if (box.dataset.pronto) return;
     box.dataset.pronto = '1';
     const asset = box.dataset.asset!;
+    DM = dmDi(asset);
     if (!document.querySelector('link[data-dm-css]')) {
       const l = Object.assign(document.createElement('link'), { rel: 'stylesheet', href: DM + 'dmviewers-html5-css/as/core-player.css' });
       l.dataset.dmCss = '';
