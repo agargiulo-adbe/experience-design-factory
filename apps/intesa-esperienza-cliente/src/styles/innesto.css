@@ -1042,13 +1042,13 @@
 .im-flu-l--sx { translate: -100% -50%; text-align: right; }
 .im-flu-l--su { translate: 0 calc(-100% - 0.3rem); }
 .im-flu-l--dx { translate: 0 -50%; font-weight: 700; }
-.im-flu-nota { margin: clamp(0.6rem, calc(0.9 * var(--vu)), 1.8rem) 0 0; max-width: 62rem; padding: 0.55rem 0.9rem; border-left: 3px solid #b9e6a3; background: rgba(255, 255, 255, 0.06); font-size: clamp(0.96rem, calc(0.9 * var(--vu)), 1.95rem); line-height: 1.35; color: #e3eedf; opacity: 0; transition: opacity 0.5s ease 0.2s; }
+.im-flu-nota { margin: clamp(0.6rem, calc(0.9 * var(--vu)), 1.8rem) 0 0; max-width: 62rem; padding: 0.55rem 0.9rem; border-left: 3px solid #b9e6a3; background: rgba(255, 255, 255, 0.06); font-size: clamp(0.96rem, calc(0.9 * var(--vu)), 1.95rem); line-height: 1.35; color: #e3eedf; opacity: 0; visibility: hidden; transition: opacity 0.5s ease 0.2s, visibility 0s linear 0.7s; }
 .im-flu-nota strong { display: block; color: #b9e6a3; }
 #slide-flusso:has(.im-flu-passo[data-p="1"][data-substep-active]) .im-flu-svg { clip-path: inset(-2% -2% -2% -2%); }
 #slide-flusso:has(.im-flu-passo[data-p="2"][data-substep-active]):not(:has(.im-flu-passo[data-p="3"][data-substep-active])) .im-flu-svg path:not([data-on]) { opacity: 0.35; }
 #slide-flusso:has(.im-flu-passo[data-p="2"][data-substep-active]):not(:has(.im-flu-passo[data-p="3"][data-substep-active])) .im-flu-svg path[data-on] { fill: #b9e6a3; }
 #slide-flusso:has(.im-flu-passo[data-p="2"][data-substep-active]):not(:has(.im-flu-passo[data-p="3"][data-substep-active])) .im-flu-l:not([data-n="email"]):not([data-n="filiale"]):not([data-n="nuovo"]) { opacity: 0.55; }
-#slide-flusso:has(.im-flu-passo[data-p="2"][data-substep-active]):not(:has(.im-flu-passo[data-p="3"][data-substep-active])) .im-flu-nota { opacity: 1; }
+#slide-flusso:has(.im-flu-passo[data-p="2"][data-substep-active]):not(:has(.im-flu-passo[data-p="3"][data-substep-active])) .im-flu-nota { opacity: 1; visibility: visible; transition: opacity 0.5s ease 0.2s, visibility 0s; }
 /* Con il mouse su un'etichetta si leggono solo i suoi nastri, come in Workspace. */
 #slide-flusso .im-flu[data-fuoco] .im-flu-svg path { opacity: 0.18; }
 #slide-flusso .im-flu[data-fuoco] .im-flu-svg path[data-hit] { opacity: 1; fill: #b9e6a3; }
@@ -1162,6 +1162,12 @@
 #slide-flusso .im-flu[data-vista="interazione"] [data-v="prodotto"],
 #slide-flusso .im-flu[data-vista="prodotto"] [data-v="interazione"] { opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0s linear 0.25s; }
 #slide-flusso .im-flu[data-vista="prodotto"] .im-flu-int-m { color: #b9e6a3; }
+/* Mentre il flusso si ridisegna i nomi della colonna di mezzo restano spenti: i
+   nuovi si accendono solo quando i rettangoli sono arrivati sotto di loro. */
+#slide-flusso .im-flu[data-cambia] .im-flu-l--su { opacity: 0; visibility: hidden; transition: opacity 0.2s ease, visibility 0s linear 0.2s; }
+#slide-flusso .im-flu:not([data-cambia]) .im-flu-l--su { transition: opacity 0.6s ease 0.1s, visibility 0s; }
+#slide-flusso .im-flu[data-vista="interazione"]:not([data-cambia]) [data-v="prodotto"].im-flu-l--su,
+#slide-flusso .im-flu[data-vista="prodotto"]:not([data-cambia]) [data-v="interazione"].im-flu-l--su { opacity: 0; visibility: hidden; transition: none; }
 
 /* La zona di rilascio: la colonna di mezzo, intestazione compresa. Si vede solo
    mentre si trascina, e si accende quando il bottone le passa sopra. */

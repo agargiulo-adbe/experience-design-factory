@@ -1003,9 +1003,14 @@ const RITORNO = [
         r.setAttribute('y', y.toFixed(2)); r.setAttribute('height', h.toFixed(2));
       });
     };
-    let vista = 'interazione', pos = 0, raf = 0;
-    const vai = (nuova: string, anima = true) => {
+    let vista = 'interazione', pos = 0, raf = 0, attesa = 0;
+    /* Il tempo è quello di una sala, non di un clic (owner, 17 nov: «troppo
+       rapida per essere letta»). Tre battute: cambia l'intestazione, si muove il
+       flusso con i nomi di mezzo spenti (se no galleggiano su rettangoli non
+       loro), poi i nomi nuovi si accendono al posto giusto. */
+    const vai = (nuova: string, anima = true, dur = 1300) => {
       const meta = nuova === 'prodotto' ? 1 : 0;
+      if (anima && nuova === vista && pos === meta) return;
       vista = nuova;
       flu.dataset.vista = nuova;
       chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.dim === nuova)));
@@ -1013,16 +1018,22 @@ const RITORNO = [
         const k = meta ? p.dataset.k2! : p.dataset.k1!;
         if (p.dataset.tratto === '1') p.dataset.a = k; else p.dataset.da = k;
       });
-      cancelAnimationFrame(raf);
-      if (!anima || lento()) { pos = meta; disegna(pos); return; }
-      const da = pos, t0 = performance.now(), dur = 780;
-      const passo = (ora: number) => {
-        const x = Math.min(1, (ora - t0) / dur);
-        const e = x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
-        pos = da + (meta - da) * e; disegna(pos);
-        if (x < 1) raf = requestAnimationFrame(passo);
-      };
-      raf = requestAnimationFrame(passo);
+      cancelAnimationFrame(raf); clearTimeout(attesa);
+      if (!anima || lento()) { pos = meta; disegna(pos); flu.removeAttribute('data-cambia'); return; }
+      flu.setAttribute('data-cambia', '');
+      const da = pos;
+      /* una pausa breve: prima si legge la colonna che cambia nome, poi si muove */
+      attesa = window.setTimeout(() => {
+        const t0 = performance.now();
+        const passo = (ora: number) => {
+          const x = Math.min(1, (ora - t0) / dur);
+          const e = x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+          pos = da + (meta - da) * e; disegna(pos);
+          if (x < 1) raf = requestAnimationFrame(passo);
+          else flu.removeAttribute('data-cambia');
+        };
+        raf = requestAnimationFrame(passo);
+      }, 350);
     };
 
     /* Il fantasma che si trascina vive DENTRO la figura (non nel body), così si vede
@@ -1098,14 +1109,18 @@ const RITORNO = [
       const dx = (a.left + a.width / 2 - (da.left + da.width / 2)) / s;
       const dy = (a.top + Math.min(a.height * 0.18, 60) - (da.top + da.height / 2)) / s;
       flu.setAttribute('data-trascina', '');
+      /* si prende il bottone e lo si tiene un attimo (si legge «Prodotto»), lo si
+         porta sulla colonna, ci si ferma sopra (la colonna si accende), si lascia */
       demo = g.animate([
-        { transform: 'translate(0, 0) scale(1)', opacity: 0 },
-        { transform: 'translate(0, 0) scale(1.06)', opacity: 1, offset: 0.12 },
-        { transform: `translate(${dx}px, ${dy}px) scale(1.06)`, opacity: 1, offset: 0.82 },
+        { transform: 'translate(0, 0) scale(1)', opacity: 0, easing: 'ease-out' },
+        { transform: 'translate(0, 0) scale(1.08)', opacity: 1, offset: 0.1 },
+        { transform: 'translate(0, 0) scale(1.08)', opacity: 1, offset: 0.24, easing: 'cubic-bezier(0.45, 0, 0.2, 1)' },
+        { transform: `translate(${dx}px, ${dy}px) scale(1.08)`, opacity: 1, offset: 0.72 },
+        { transform: `translate(${dx}px, ${dy}px) scale(1.08)`, opacity: 1, offset: 0.9 },
         { transform: `translate(${dx}px, ${dy}px) scale(0.92)`, opacity: 0 },
-      ], { duration: 1500, easing: 'cubic-bezier(0.45, 0, 0.2, 1)', fill: 'forwards' });
-      timer = window.setTimeout(() => zona.setAttribute('data-sopra', ''), 900);
-      demo.finished.then(() => { stopDemo(); vai('prodotto'); }).catch(() => {});
+      ], { duration: 2400, fill: 'forwards' });
+      timer = window.setTimeout(() => zona.setAttribute('data-sopra', ''), 1600);
+      demo.finished.then(() => { stopDemo(); vai('prodotto', true, 1600); }).catch(() => {});
     };
     if (p3) {
       new MutationObserver(() => {
