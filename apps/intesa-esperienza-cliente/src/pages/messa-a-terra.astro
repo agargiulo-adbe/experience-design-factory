@@ -753,16 +753,38 @@ const RITORNO = [
       const on = apri ?? b.getAttribute('aria-expanded') !== 'true';
       b.setAttribute('aria-expanded', String(on));
       inn.toggleAttribute('data-ingresso-aperto', on);
-      /* Aperto, «Come entrano i dati» si allunga verso «Come funziona»: quello
-         perde il sottotitolo, e se ancora non c'è aria si fa da parte finché
-         l'altro non si richiude. Mai due pillole che si toccano. */
-      inn.removeAttribute('data-funziona-via');
-      if (on) requestAnimationFrame(() => {
-        const f = inn.querySelector<HTMLElement>('.im-inn-funziona');
-        if (!f) return;
-        if (b.getBoundingClientRect().right + 24 > f.getBoundingClientRect().left) inn.setAttribute('data-funziona-via', '');
-      });
+      bordo();
     };
+    /* IL BORDO BASSO (owner, 17 nov 2026): i tre bottoni restano cliccabili in
+       qualunque momento, quindi nessuno sparisce più. Quando uno si apre, gli altri si
+       accorciano un passo alla volta finché fra loro restano almeno 12 px: mai due
+       pillole che si toccano, mai un bottone nascosto. Il CSS dei passi è in
+       innesto.css, «Il bordo basso non nasconde più niente». */
+    const bordo = () => {
+      const ing = inn.querySelector<HTMLElement>('[data-ingresso]');
+      const fz = inn.querySelector<HTMLElement>('.im-inn-funziona');
+      const svc = document.getElementById('im-svc');
+      if (!ing || !fz || !svc) return;
+      ['data-fz', 'data-ing-corto', 'data-svc-corto'].forEach((a) => inn.removeAttribute(a));
+      inn.style.removeProperty('--svc-fine');
+      const svcOn = inn.hasAttribute('data-svc-aperto');
+      if (!svcOn && !inn.hasAttribute('data-ingresso-aperto')) return;
+      if (getComputedStyle(fz).position !== 'absolute') return; // sotto i 900 px i bottoni vanno a capo da sé
+      const ok = () => {
+        const f = fz.getBoundingClientRect();
+        if (!svcOn) return ing.getBoundingClientRect().right + 24 <= f.left;
+        const fine = svc.getBoundingClientRect().right + parseFloat(getComputedStyle(svc).marginInlineEnd || '0'); // il bordo destro della fascia senza margine
+        inn.style.setProperty('--svc-fine', `${Math.max(0, Math.ceil(fine - f.left + 14))}px`);
+        const s = svc.getBoundingClientRect();
+        return ing.getBoundingClientRect().right + 12 <= s.left && s.right + 12 <= f.left;
+      };
+      const passi: [string, string][] = svcOn
+        ? [['data-fz', 'corto'], ['data-ing-corto', ''], ['data-svc-corto', ''], ['data-fz', 'icona']]
+        : [['data-fz', 'corto'], ['data-fz', 'icona']];
+      for (const [a, v] of passi) { if (ok()) return; inn.setAttribute(a, v); }
+      ok();
+    };
+    addEventListener('resize', () => bordo());
     const servizi = (apri?: boolean) => {
       const b = inn.querySelector<HTMLButtonElement>('[data-svc]');
       const p = document.getElementById('im-svc');
@@ -771,7 +793,7 @@ const RITORNO = [
       b.setAttribute('aria-expanded', String(on));
       p.toggleAttribute('data-chiuso', !on);
       inn.toggleAttribute('data-svc-aperto', on);
-      if (on) ingresso(false);
+      if (on) ingresso(false); else bordo();
     };
     const gira = (c: HTMLElement) => posa(inn.dataset.carta === c.dataset.carta ? null : c.dataset.carta!);
 

@@ -655,7 +655,6 @@
 .im-ing-i .im-inn-segno { width: 1.25em; height: 1.25em; color: #ffffff; }
 .im-ing-n { display: none; }
 #slide-innesto .im-inn-ingresso[aria-expanded="true"] .im-ing-n { display: inline; }
-#slide-innesto .im-inn[data-svc-aperto] .im-inn-ingresso { visibility: hidden; }
 @media (max-width: 900px) { #slide-innesto .im-inn-ingresso { display: none; } }
 
 /* IL CICLO DELLE DUE NEXT BEST EXPERIENCE (owner, 14 nov 2026): l'unico
@@ -1107,9 +1106,7 @@
 #slide-innesto .im-inn-funziona-d { font-weight: 600; letter-spacing: 0; text-transform: none; opacity: 0.8; }
 #slide-innesto .im-inn-funziona:hover { background: #8fd673; box-shadow: 0 0 0 6px rgba(108, 192, 74, 0.25), 0 10px 22px -10px rgba(0, 0, 0, 0.6); }
 #slide-innesto .im-inn-funziona:focus-visible { outline: 3px solid #ffffff; outline-offset: 2px; }
-#slide-innesto .im-inn[data-svc-aperto] .im-inn-funziona { visibility: hidden; }
 #slide-innesto .im-inn[data-ingresso-aperto] .im-inn-funziona-d { display: none; }
-#slide-innesto .im-inn[data-funziona-via] .im-inn-funziona { opacity: 0; pointer-events: none; }
 #slide-innesto .im-inn-funziona { transition: background 0.18s ease, box-shadow 0.25s ease, opacity 0.2s ease; }
 @media (max-width: 1200px) { #slide-innesto .im-inn-funziona-d { display: none; } }
 @media (max-width: 900px) { #slide-innesto .im-inn-funziona { position: static; translate: none; margin-top: 0.6rem; } }
@@ -1135,3 +1132,21 @@
   #slide-innesto [data-carta="canali"] .im-carta-f { padding-inline: 0.55rem 0.4rem; }
   #slide-innesto .im-carta-canale { column-gap: 0.28rem; }
 }
+
+
+/* IL BORDO BASSO NON NASCONDE PIÙ NIENTE (owner, 17 nov 2026): «tutti i bottoni,
+   Adobe Experience Platform e Come entrano i dati compresi, cliccabili in qualunque
+   momento». Prima, aprendo i servizi comuni, «Come entrano i dati» e «Come funziona»
+   sparivano; aprendo «Come entrano i dati», «Come funziona» poteva sparire. Sul bordo
+   i tre pezzi interi non stanno a nessuna finestra (a 1440: 1378 px su 1267), quindi
+   chi non è aperto si fa più corto, un passo alla volta e solo quanto serve: lo
+   decide `bordo()` in messa-a-terra.astro misurando. I passi, in ordine: «Come
+   funziona» senza sottotitolo · «Come entrano i dati» senza icone · la fascia senza
+   l'intestazione (la dice già il bottone Experience Platform) · «Come funziona» col
+   solo ▶, col nome ancora letto dagli screen reader. */
+#slide-innesto p.im-inn-svc { margin-inline-end: var(--svc-fine, 0px); }
+#slide-innesto .im-inn[data-fz] .im-inn-funziona-d { display: none; }
+#slide-innesto .im-inn[data-fz='icona'] .im-inn-funziona { gap: 0; padding: 0.22rem 0.55rem; }
+#slide-innesto .im-inn[data-fz='icona'] .im-inn-funziona > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+#slide-innesto .im-inn[data-ing-corto] .im-inn-ingresso[aria-expanded='false'] .im-ing-i { display: none; }
+#slide-innesto .im-inn[data-svc-corto] .im-inn-svc-k { display: none; }
