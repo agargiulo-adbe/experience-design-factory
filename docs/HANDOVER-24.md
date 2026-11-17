@@ -170,3 +170,28 @@ Dopo la call interna delle 10 (trascrizione Plaud letta riga per riga, orari Pla
 **Gate** sul `main` unito: `astro check` 0 errori; `audit:deck` messa-a-terra 21, risultati 15, prossimi-passi 7, tutti `a`/`i`; `audit:wrap` PULITO; `audit:taglio` ALLINEATO; `audit:docs` PULITO; fotogrammi a 1440×900 e 1280×720.
 
 ⚠️ **Resta**: la slide di attribuzione scorre di 128 px a 1280×720 (preesistente, il pannello a sinistra); panel non rifatto su questo stato (P0 nella Parte 2).
+
+## 44. InSalute Servizi «Dalla parte dell'assicurato» (Prospettiva, 24 novembre) · e il motore che replica un deck HTML in PowerPoint
+
+Nata il **17 nov 2026** dal dossier gated su InSalute Servizi (§11, voce del 15 nov), per il primo incontro con il gestore delle prestazioni sanitarie della Divisione Insurance di Intesa Sanpaolo: **martedì 24 nov**, un'ora. Check interno **lunedì 23**. Il team Adobe ha chiesto la PPT **prima di venerdì 20**, per lavorarci sopra in condiviso. ⚠️ **Niente è committato** al momento di questa voce.
+
+**Che cos'è.** `apps/insalute-assicurato`, tipo **Prospettiva**, IT. La pelle è quella di `intesa-esperienza-cliente` (template, tipo e movimento li ha chiesti l'owner): il `src` è copiato dal suo HEAD e poi sfrondato (via le pagine, i componenti dei meccanismi, `innesto.css`, `pop.css`, i dati e tutte le immagini generate). Ricolorata sul **marchio InSalute**: blu `#4c6aac` letto dalla pagina resa, perché il CSS di produzione è il Bootstrap di default di Liferay e `brand:tokens` non lo vede; Open Sans; logo PNG ufficiale usato come maschera su `currentColor` (`CoBrand.astro`, `.ins-marchio`). Stili propri in `src/styles/insalute.css`, importato in testa a `global.css`.
+
+**Quattro capitoli, 17 slide** (`src/data/chapters.ts`, `slides.ts`):
+1. **Adobe, chi siamo** — i **tre** Adobe in sala (scelta dell'owner: non la patch intera), i Forrester Wave, le quattro funzioni di CX Enterprise. Il capitolo ripete quello del deck Intesa.
+2. **Chi l'ha già fatto** — **Inail** (200+ moduli WCAG 2.1 AA, **98%** di recapito su oltre 135.000 comunicazioni, prima PA italiana su AEM Forms; il 99% di un deck interno perde contro la pagina pubblica) e **CSS**, assicuratore malattia svizzero (da una giornata a un'ora per una newsletter, +570% di polizze online). CSS è **del 2020**, e la slide lo dichiara: una storia europea recente di assicurazione salute su AEP o AJO non risulta pubblicata. Il «riprendere da dove ci si era fermati» di CSS riguarda la **sottoscrizione**, non i rimborsi. Fonti aperte con Playwright il 17 nov (`src/data/referenze.ts`).
+3. **Tre idee da discutere** — il rimborso visto da chi lo chiede, che cosa rispondono di loro gli assistenti AI (Brand Visibility: solo i cinque motori coperti), moduli e comunicazioni già approvati. Ognuna chiude con **una domanda**, e porta un confine dichiarato: **niente dati sanitari in AEP** in Europa.
+4. **Partiamo da voi** — sei domande di discovery, tre passi possibili a scelta loro, la firma.
+
+Fuori per decisione dell'owner: un tema infrastrutturale che resta fuori perimetro (non si cita), e **nessun paragone con altri assicuratori**. Una referenza assicurativa italiana era stata proposta e poi tolta dopo l'avviso sul paragone.
+
+**Il motore di replica** (nuovo, riusabile su ogni deck della Factory). `deck:pptx` produce solo immagini; qui serviva un file che il team modificasse.
+- `pnpm deck:replica --app <alias> --out <dir>` (`scripts/deck-replica.ts`, con `DECK_URL` = origin della preview) — Playwright a 1920×1080 ×2, reducedMotion, `__edfDeck.goTo(k)` su ogni slide. Legge **box** (fondo pieno o bordi, punti del `clip-path`), **testo** a runs (corpo, peso, colore, spaziatura, link, maiuscole), gli **a capo misurati per carattere** con Range, la centratura dei contenitori grid/flex, le immagini, e i **gruppi d'animazione** da `[data-reveal]` e dai figli di `[data-stagger]`. Lo sfondo esce **svuotato** (testo trasparente, box e immagini nascosti), le note arrivano da `src/data/relatore.ts`.
+- `pnpm deck:replica:pptx <dir> <out.pptx>` (`scripts/pptx/replica.py`, `uv run --with python-pptx`) — 1 px = 6350 EMU, corpo a 0,5 pt per px, interlinea esatta, forme senza l'ombra del tema, link solo esterni col colore del testo (`hlinkClr`), comparse in dissolvenza **in automatico** (non a clic), transizione di slide, note del relatore.
+- Esito su InSalute: 17 slide, **210 caselle di testo native**, animazioni sulle slide di contenuto, note su tutte; guardato reso da PowerPoint stesso (export PDF via AppleScript). Il file sta in `docs/Intesa Sanpaolo/InSalute/` (git-ignorato).
+- Limiti: Open Sans arriva come **font cloud** di Office (senza, gli a capo cambiano); sfumature e filetti restano nello sfondo come immagine; una rigenerazione sovrascrive le modifiche fatte in PowerPoint.
+- Nota: questo deck sta sulla pelle **del cliente**, quindi il `.pptx` è una replica dell'HTML e **non** il template di Brand Center (scelta dell'owner, coerente con «un artefatto, un design system»).
+
+**Gate** (17 nov): `copy-audit` 0/0, `audit:wrap` PULITO, `audit:deck` **0 HARD** (44 SOFT di posizione/copertura su copertina, divisori e firma, ariosi per scelta), `audit:ink` PULITO, `audit:fonti` 0 HARD (i link business.adobe.com si aprono a mano; Inail e CSS aperti), `audit:docs` PULITO.
+
+⚠️ **Resta**: panel mai lanciato; commit; seed `0039` non applicato; `.pptx` da depositare nella cartella Teams; riga in CLAUDE.md «Experiences today» (la scrive l'owner). Backlog nella Parte 2.

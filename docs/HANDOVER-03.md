@@ -5,6 +5,9 @@
 
 ## 11. Change log recente
 
+### 2026-11-17 sera · InSalute «Dalla parte dell'assicurato»: experience e prima versione PowerPoint, con un motore di replica nuovo
+`apps/insalute-assicurato` (Prospettiva, 4 capitoli, 17 slide) sulla pelle della Storia di Intesa, ricolorata sul marchio InSalute; referenze Inail e CSS (2020, dichiarato); tre idee con una domanda ciascuna; sei domande di discovery. Nuovi `pnpm deck:replica` + `deck:replica:pptx`: il deck HTML diventa un `.pptx` modificabile (210 caselle di testo, animazioni, note). Gate verdi, **non committato**, panel non lanciato. Dettaglio in §44 (Parte 24).
+
 ### 2026-11-17 pomeriggio · Storia di Intesa: Sankey trascinabile, attribuzione 20% → 66%, Prossimi passi dai temi di oggi, loghi sulle Referenze
 `18d401e` il Sankey si ridisegna trascinando «Prodotto» sulla colonna di mezzo; `e742782` ridisegno in tre battute leggibili; `9e3ee51` la fascia sotto il grafico non sovrappone più due testi; `4cbfa73` didascalia più grande e gradino sotto i 780 px; `121f986` Prossimi passi con i cinque temi colorati e i loghi ufficiali delle referenze; `833247a` l'attribuzione chiude sul 20% → 66% per il Controllo di Gestione; `c8c886e` merge del branch del Sankey; `3fea4ff` titolo «Da dove vi piacerebbe ripartire?» e tema «Customer Journey Analytics». §42.21 (Parte 24). Da un'altra sessione: `942e337` nasce `apps/unicredit-coworker-pod` («Da dove partiamo», per il 23 nov), senza sezione qui.
 
