@@ -56,7 +56,7 @@ export const ATTI = {
   mesi: ['dic', 'gen', 'feb', 'mar', 'apr', 'mag', 'giu'],
   atti: [
     { n: '1', v: 'Scegliere', q: 'entro l’11 dicembre', serve: ['consenso'], da: 0, a: 0.5,
-      esce: 'Il perimetro dei casi d’uso, con Trenitalia e Accenture' },
+      esce: 'I casi d’uso e il verdetto sulla riconciliazione' },
     { n: '2', v: 'L’MVP', q: 'dic – feb · in produzione', serve: ['misurare', 'conoscere', 'personalizzare'], da: 0.5, a: 3,
       esce: 'Casi d’uso in produzione, misurati sul venduto' },
     { n: '3', v: 'Decidere', q: 'marzo · la giornata', serve: ['consenso'], da: 3, a: 4,
@@ -69,24 +69,24 @@ export const ATTI = {
   ],
 };
 
-/** L'MVP in sequenza, con la condizione a metà: la riconciliazione degli ECID fra
- *  trenitalia.com e LeFrecce. Non c'è più un piano B sul dato aggregato (16 nov 2026):
- *  senza il percorso fra i due siti cade la misura sul venduto, e non si procede.
- *  «Misurato sul venduto», mai «comprovato». */
+/** L'MVP in sequenza, con la condizione IN TESTA (17 nov 2026): la riconciliazione degli
+ *  ECID fra trenitalia.com e LeFrecce è preliminare, non un cancello a metà. Senza, il
+ *  racconto di CJA non sta in piedi e l'iniziativa non parte; «conoscere» lavora su dati
+ *  già riconciliati. Non c'è un piano B sul dato aggregato. «Misurato», mai «comprovato». */
 export const SEQUENZA = {
-  titolo: 'Senza riconciliare i due siti non si procede',
+  titolo: 'Senza riconciliare i due siti non si parte',
   passi: [
-    { q: 'dic – gen', l: 'Conoscere', d: 'Su tre mesi, dove\u00a0si perde la vendita fra trenitalia.com e\u00a0LeFrecce' },
-    { q: 'fine gennaio', l: 'La condizione', d: 'I due siti letti come un viaggiatore\u00a0solo', cancello: true },
+    { q: 'nov – dic', l: 'La condizione', d: 'I due siti letti come un viaggiatore\u00a0solo', cancello: true },
+    { q: 'gennaio', l: 'Conoscere', d: 'Su tre mesi riconciliati, dove\u00a0si perde la\u00a0vendita' },
     { q: 'febbraio', l: 'Personalizzare', d: 'Target su trenitalia.com, con il criterio scritto\u00a0prima' },
     { q: 'marzo', l: 'La giornata', d: 'I risultati dell’MVP, poi il perimetro\u00a0condiviso', forte: true },
   ],
   /** Il retro della condizione: perché lo è, e chi ci lavora. */
   retro: [
-    { k: 'Perché:', b: 'senza, la misura sul venduto cade.' },
+    { k: 'Perché:', b: 'senza, il percorso fra i due siti non\u00a0si\u00a0legge.' },
     { k: 'Chi:', b: 'Accenture e l’engineering Adobe.' },
   ],
-  retroChiusa: 'Se serve più tempo, la giornata slitta ad aprile.',
+  retroChiusa: 'Se non si può fare, l’iniziativa non\u00a0parte.',
 };
 
 /** Il circuito dei dati: da dove arrivano, dove diventano un pubblico, dove si
@@ -109,7 +109,7 @@ export const SCEGLIERE = {
   passi: [
     { q: 'Fine novembre', l: 'La lista', d: 'Quattro o cinque idee, discusse con la Direzione Sales' },
     { q: 'Inizio dicembre', l: 'La verifica', d: 'Accenture conferma che cosa si può fare su Target' },
-    { q: 'Inizio dicembre', l: 'I dati', d: 'Gli accessi, con FS Technology e chi gestisce LeFrecce' },
+    { q: 'Inizio dicembre', l: 'La riconciliazione', d: 'Il verdetto, con Accenture e l’engineering Adobe' },
     { q: 'Metà dicembre', l: 'I criteri', d: 'Misure e durata dei test, scritte prima di partire' },
   ],
 };
@@ -127,13 +127,13 @@ export const CRITERI = {
 type Blocco = { da: number; a: number; t: string; forte?: boolean };
 
 export const MISURARE = {
-  titolo: 'In CJA la risposta da dicembre, su Target il test a febbraio',
+  titolo: 'Prima la riconciliazione, poi la risposta, poi il test',
   scala: ['dicembre', 'gennaio', 'febbraio'],
   inizio: 0, fine: 3,
   corsie: [
     { k: 'CJA', blocchi: [
-      { da: 0.4, a: 1, t: 'Accessi e dati' },
-      { da: 1, a: 2, t: 'Conoscere, sui tre mesi di storico', forte: true },
+      { da: 0, a: 1, t: 'La riconciliazione', forte: true },
+      { da: 1, a: 2, t: 'Conoscere, su dati riconciliati', forte: true },
       { da: 2, a: 3, t: 'La lettura del test' },
     ] as Blocco[] },
     { k: 'Target', blocchi: [
