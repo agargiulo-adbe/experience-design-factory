@@ -1,0 +1,85 @@
+---
+/**
+ * 05 · CHE COSA PORTIAMO AL PM — le tre cose che servono dal team, la linea
+ * del tempo con la prima tappa spuntata, e la slide-firma.
+ *
+ * La linea del tempo è la STESSA del capitolo 01 (`LineaTempo.astro`, una
+ * fonte sola), con `fatte={1}`: la sessione di oggi è la tappa passata.
+ *
+ * L'ultima slide è la slide-FIRMA, e chiude il PERCORSO: per contratto è una
+ * slide a sé. Fallisce il check SOFT `i` di proposito (il lockup è un SVG e il
+ * parser non lo conta): non si aggiusta rimpicciolendo.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoBrand from '../components/CoBrand.astro';
+import Divisore from '../components/Divisore.astro';
+import Motivo from '../components/Motivo.astro';
+import LineaTempo from '../components/LineaTempo.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug } from '../data/chapters';
+import { SERVONO } from '../data/contenuti';
+
+const SLUG = 'casa';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/')} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="secondary" align="left">
+      <div slot="backdrop" class="xd-div-bg" data-senza-foto><Motivo k="spunte" /></div>
+      <Divisore num={ch.num} titolo={ch.title} punto={ch.punto} />
+    </Slide>
+
+    {/* ── Tre cose che ci servono da voi ─────────────────────────────── */}
+    <Slide id="slide-servono" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Che cosa portiamo al PM</p>
+          <h2 class="xd-h2">Tre cose che ci servono da voi</h2>
+        </div>
+        <ol class="uc-servono" role="list">
+          {SERVONO.map((x, i) => (
+            <li class="uc-serve" data-substep={i === 0 ? null : ''}>
+              <p class="uc-serve-n" aria-hidden="true">{i + 1}</p>
+              <p class="uc-serve-a">{x.a}</p>
+              <p class="uc-serve-r">{x.r}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </Slide>
+
+    {/* ── I prossimi passi: la stessa linea, con la prima tappa spuntata ─ */}
+    <Slide id="slide-passi" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">I prossimi passi</p>
+          <h2 class="xd-h2">Oggi è fatto, il resto parte da qui</h2>
+        </div>
+        <LineaTempo fatte={1} />
+      </div>
+    </Slide>
+
+    {/* ── La firma ─────────────────────────────────────────────────────── */}
+    <Slide id="slide-signature" bg="inverse" align="center">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-firma" data-reveal>
+        <CoBrand variant="hero" class="edf-cobrand--on-dark" />
+        <p class="xd-firma-l" data-reveal data-reveal-delay="0.1">Da dove partiamo lo decidete voi.</p>
+        <p class="xd-firma-n" data-reveal data-reveal-delay="0.16">Coworker su Adobe Analytics e Adobe Target, nel Customer POD.</p>
+        <a href={href(base, '/')} class="edf-sig-cta" data-reveal data-reveal-delay="0.22">Torna all’inizio</a>
+      </div>
+    </Slide>
+  </DeckContainer>
+</BaseLayout>

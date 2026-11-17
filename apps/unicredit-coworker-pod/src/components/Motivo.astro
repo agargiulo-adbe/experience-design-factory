@@ -1,0 +1,56 @@
+---
+/**
+ * IL MOTIVO DELLA COPERTINA DI CAPITOLO — la figura del capitolo ridotta a
+ * geometria, sul pannello di petrolio, in basso e a opacità bassa.
+ *
+ * Una copertina vuota è un deserto grafico (`audit:ritmo`); uno sfondo
+ * generato dice poco. Il motivo dice in anticipo la forma dell'argomento:
+ * la linea del tempo, le sei caselle, le quattro frecce, l'anello, la spunta.
+ *
+ * Sta DENTRO il fondo (`<div slot="backdrop">`), mai nel flusso: nel flusso
+ * coprirebbe il testo. In basso nel pannello, lontano dalla riga del punto,
+ * che sta al centro. L'opacità si verifica con `audit:ink`, non a occhio.
+ */
+interface Props { k: 'tempo' | 'caselle' | 'frecce' | 'anello' | 'spunte' }
+const { k } = Astro.props;
+---
+<svg class="uc-motivo" viewBox="0 0 400 200" aria-hidden="true">
+  {k === 'tempo' && (
+    <g>
+      <path d="M30 100 H370" stroke-dasharray="3 12" />
+      {[30, 143, 257, 370].map((x, i) => <circle cx={x} cy="100" r={i === 0 ? 18 : 14} class={i === 0 ? 'p' : ''} />)}
+    </g>
+  )}
+  {k === 'caselle' && (
+    <g>
+      {[0, 1, 2, 3, 4, 5].map((i) => <rect x={60 + (i % 3) * 98} y={14 + Math.floor(i / 3) * 92} width="82" height="80" rx="10" class={i === 2 ? 'p' : ''} />)}
+    </g>
+  )}
+  {k === 'frecce' && (
+    <g>
+      {[0, 1, 2, 3].map((i) => {
+        const x = 10 + i * 96;
+        return <path class={i === 0 ? 'p' : ''} d={i === 0 ? `M${x} 60 H${x + 76} L${x + 92} 100 L${x + 76} 140 H${x} Z` : `M${x} 60 H${x + 76} L${x + 92} 100 L${x + 76} 140 H${x} L${x + 16} 100 Z`} />;
+      })}
+    </g>
+  )}
+  {k === 'anello' && (
+    <g>
+      <circle cx="200" cy="100" r="80" />
+      {[0, 1, 2, 3, 4].map((i) => {
+        const a = ((-90 + 72 * i) * Math.PI) / 180;
+        return <circle cx={200 + 80 * Math.cos(a)} cy={100 + 80 * Math.sin(a)} r="13" class={i === 0 ? 'p' : ''} />;
+      })}
+    </g>
+  )}
+  {k === 'spunte' && (
+    <g>
+      {[0, 1, 2].map((i) => (
+        <g>
+          <rect x={40 + i * 116} y="50" width="96" height="96" rx="12" class={i === 0 ? 'p' : ''} />
+          <path d={`M${66 + i * 116} 98 l14 14 28 -32`} />
+        </g>
+      ))}
+    </g>
+  )}
+</svg>

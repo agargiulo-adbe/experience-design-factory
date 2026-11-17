@@ -1,0 +1,157 @@
+---
+/**
+ * 01 · IL PROGRAMMA — che cosa è il Customer POD, come ci si arriva, e che
+ * cosa fa Coworker in due minuti.
+ *
+ * La prima slide è RICOMPOSTA dalla slide 7 del deck presentato il 6 nov 2026,
+ * che diceva esattamente questo: nessuna promessa in più. La linea del tempo
+ * viene dal SAL scritto dall'AE al cliente lo stesso giorno, e porta una data
+ * solo sull'ultima tappa, perché è l'unica detta.
+ *
+ * Il video arriva dopo (`public/media/coworker-demo-banca.mp4` + poster): finché
+ * il file non c'è, la slide mostra un segnaposto e il resto regge da solo.
+ * Niente autoplay: si avvia da chi presenta, con i comandi del lettore.
+ */
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
+import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
+import Figura from '../components/Figura.astro';
+import Divisore from '../components/Divisore.astro';
+import Motivo from '../components/Motivo.astro';
+import LineaTempo from '../components/LineaTempo.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+
+const SLUG = 'partenza';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const EL_AA = 'https://experienceleague.adobe.com/en/docs/coworker/content/chat/use-cases/data-insights/analytics-overview';
+
+/* Il file video si cerca nel `public/` dell'app al momento della build: il
+   build gira con la cartella dell'app come cartella di lavoro. */
+const VIDEO = 'media/coworker-demo-banca.mp4';
+const POSTER = 'media/coworker-demo-banca.poster.jpg';
+const pub = (p: string) => join(process.cwd(), 'public', p);
+const conVideo = existsSync(pub(VIDEO));
+const conPoster = existsSync(pub(POSTER));
+const b = base.replace(/\/?$/, '/');
+---
+<BaseLayout title={ch.title}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="secondary" align="left">
+      <div slot="backdrop" class="xd-div-bg" data-senza-foto><Motivo k="tempo" /></div>
+      <Divisore num={ch.num} titolo={ch.title} punto={ch.punto} />
+    </Slide>
+
+    {/* ── Il Customer POD: la cifra, e le tre cose che il programma dà ────── */}
+    <Slide id="slide-pod" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Il programma</p>
+          <h2 class="xd-h2">Il Customer POD di Coworker</h2>
+        </div>
+        <div class="uc-pod">
+          <div class="uc-pod-cifra" data-reveal data-reveal-delay="0.08">
+            <p class="uc-pod-n" data-display>90</p>
+            <p class="uc-pod-u">giorni sui vostri casi d’uso</p>
+            <p class="uc-pod-d">Un team di prodotto e ingegneria Adobe lavora con voi.</p>
+          </div>
+          <ul class="uc-pod-lista" data-stagger>
+            <li class="uc-pod-i">
+              <p class="uc-pod-a">Accesso aperto per tutto il programma</p>
+              <p class="uc-pod-r">Senza consumare il vostro periodo di prova.</p>
+            </li>
+            <li class="uc-pod-i">
+              <p class="uc-pod-a">Le richieste entrano in pipeline</p>
+              <p class="uc-pod-r">Quello che chiedete viene registrato e, dove ha senso, entra nello sviluppo del prodotto.</p>
+            </li>
+          </ul>
+        </div>
+        <p class="uc-nota">Su invito, con sponsorship esecutiva Adobe. La data di partenza la conferma il team Adobe quando lo slot del programma è assegnato.</p>
+      </div>
+    </Slide>
+
+    {/* ── Come ci arriviamo: quattro tappe, una data sola ───────────────── */}
+    <Slide id="slide-percorso" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Come ci arriviamo</p>
+          <h2 class="xd-h2">Da oggi al primo punto, in quattro tappe</h2>
+          <p class="xd-sub">Quello che dite oggi il PM del programma lo legge per primo.</p>
+        </div>
+        <LineaTempo fatte={0} />
+      </div>
+    </Slide>
+
+    {/* ── Coworker al lavoro, in quattro minuti: il video della demo ─────────────────── */}
+    <Slide id="slide-video" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--dark" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">La demo</p>
+          <h2 class="xd-h2 uc-firma-t">Coworker al lavoro, in quattro minuti</h2>
+        </div>
+        <div class="uc-video">
+          <figure class="uc-video-fig">
+            <div class="uc-video-box">
+              {conVideo ? (
+                <video controls preload="metadata" playsinline
+                       poster={conPoster ? `${b}${POSTER}` : undefined}
+                       aria-label="Demo di Coworker su Adobe Analytics, ambiente dimostrativo">
+                  <source src={`${b}${VIDEO}`} type="video/mp4" />
+                </video>
+              ) : (
+                <div class="uc-video-attesa">
+                  <svg viewBox="0 0 64 64" aria-hidden="true">
+                    <circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2.5" />
+                    <path d="M26 20 L46 32 L26 44 Z" fill="currentColor" />
+                  </svg>
+                  <p>La demo si proietta da qui</p>
+                </div>
+              )}
+            </div>
+            <figcaption class="uc-video-cap">Ambiente dimostrativo Adobe, dati di una banca fittizia.</figcaption>
+          </figure>
+          <div class="uc-video-dx">
+            <ul class="uc-ancore-v" data-stagger>
+              <li>Si chiede in italiano</li>
+              <li>Risponde sui dati Analytics</li>
+              <li>Con i permessi che avete già</li>
+            </ul>
+            <HowItWorks title="Che cosa vuol dire, una per una" tone="onDark" class="ex-dett ex-dett--scuro">
+              <Dettaglio>
+                <DettaglioVoce>
+                  <Figura k="permessi" />
+                  <p slot="ancora">Gli stessi permessi di Workspace</p>
+                  <p slot="riga">Coworker eredita i permessi di Analytics: vede solo le report suite, le metriche e i segmenti che l’utente vede già.</p>
+                </DettaglioVoce>
+                <DettaglioVoce>
+                  <Figura k="riapri" />
+                  <p slot="ancora">Si riapre in Workspace</p>
+                  <p slot="riga">Ogni visualizzazione creata in chat si apre in Analysis Workspace, per lavorarla a mano.</p>
+                </DettaglioVoce>
+              </Dettaglio>
+            </HowItWorks>
+          </div>
+        </div>
+        <p class="xd-fonte">Fonte: <a href={EL_AA} target="_blank" rel="noopener">Experience League, analisi dei dati con Coworker Chat</a></p>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

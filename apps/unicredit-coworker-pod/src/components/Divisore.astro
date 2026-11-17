@@ -1,0 +1,36 @@
+---
+/**
+ * LA COPERTINA DI CAPITOLO COME DIVISORE (forma XD, a due campi).
+ *
+ * Pagina chiara: il numero e il titolo grandi a sinistra, il pannello di
+ * petrolio a destra con il punto del capitolo — la conseguenza, non il
+ * riassunto. Il ritmo che ne esce è metà del lavoro: le slide di contenuto
+ * sono dense, i divisori vuoti, e chi guarda sa di aver cambiato capitolo
+ * prima di leggere una parola.
+ *
+ * Due campi e non tre: il deck non ha fotografie, e un campo di mezzo vuoto
+ * lascia un buco invece di un respiro (variante `[data-senza-foto]` di XD).
+ *
+ * ⚠️ IL FONDO NON STA QUI. Astro non propaga `slot="backdrop"` attraverso un
+ * componente: un `<div slot="backdrop">` scritto qui finisce nel contenuto, in
+ * posizione assoluta SOPRA il testo. Il fondo lo mette la PAGINA, come figlio
+ * diretto di <Slide>: `<div slot="backdrop" class="xd-div-bg" data-senza-foto>`.
+ */
+interface Props {
+  num: string;
+  titolo: string;
+  punto: string;
+  occhiello?: string;
+}
+const { num, titolo, punto, occhiello = 'Il punto' } = Astro.props;
+---
+<div class="xd-div" data-senza-foto data-reveal>
+  <div class="xd-div-sx">
+    <p class="xd-div-num">Capitolo {num}</p>
+    <h2 class="xd-div-t" data-reveal data-reveal-delay="0.08">{titolo}</h2>
+  </div>
+  <div class="xd-div-dx" data-reveal data-reveal-delay="0.12">
+    <p class="xd-div-oc">{occhiello}</p>
+    <p class="xd-div-l">{punto}</p>
+  </div>
+</div>

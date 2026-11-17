@@ -1,0 +1,62 @@
+---
+/**
+ * IL GIRO — dal numero al test, e ritorno. Un anello a cinque passi che si
+ * costruisce sotto le frecce del deck.
+ *
+ * Il primo passo è in vista da subito (Analytics, che il team usa da anni); ogni
+ * freccia aggiunge il nodo successivo e l'arco che ci porta. L'ultimo arco, dal
+ * quinto al primo, chiude l'anello: è il «ritorno» del titolo, e si vede.
+ *
+ * Le ancore sono HTML sopra il disegno, non testo nell'SVG: così crescono con
+ * la radice sulla parete e i gate (`copy-audit`, `audit:wrap`, `audit:ink`)
+ * continuano a misurarle.
+ *
+ * ⚠️ Che cosa è documentato e che cosa no lo dice la slide, sotto il disegno:
+ * ogni passo esiste, il passaggio fra un passo e l'altro è quello che il
+ * programma serve a provare. Il disegno non deve dire di più.
+ */
+import { PASSI } from '../data/contenuti';
+const CX = 500, CY = 335, R = 200;
+const ang = (i: number) => ((-90 + 72 * i) * Math.PI) / 180;
+const pt = (i: number) => [CX + R * Math.cos(ang(i)), CY + R * Math.sin(ang(i))];
+const nodi = PASSI.map((_, i) => pt(i));
+const arco = (i: number) => {
+  const [x1, y1] = nodi[i];
+  const [x2, y2] = nodi[(i + 1) % nodi.length];
+  return `M${x1.toFixed(1)} ${y1.toFixed(1)} A${R} ${R} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+};
+const W = 1000, H = 600;
+---
+<div class="uc-giro" aria-label="Il giro in cinque passi">
+  <svg class="uc-giro-svg" viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
+    <circle class="uc-giro-guida" cx={CX} cy={CY} r={R} />
+    {/* L'arco i va dal nodo i al nodo i+1, e arriva con il nodo i+1.
+        L'arco 4 (dal quinto al primo) chiude l'anello con il quinto passo. */}
+    {PASSI.map((_, i) => (
+      <g class="uc-giro-arco" data-arco={i}>
+        <path d={arco(i)} />
+      </g>
+    ))}
+    {nodi.map(([x, y], i) => (
+      <g class="uc-giro-nodo" data-nodo={i}>
+        <circle cx={x} cy={y} r="30" />
+      </g>
+    ))}
+  </svg>
+  <ol class="uc-giro-ancore" role="list">
+    {PASSI.map((s, i) => {
+      const [x, y] = nodi[i];
+      return (
+        <li class="uc-giro-a" data-lato={s.lato} data-passo={i}
+            data-substep={i === 0 ? null : ''}
+            style={`--x:${(x / W) * 100}%; --y:${(y / H) * 100}%`}>
+          <span class="uc-giro-n" aria-hidden="true">{i + 1}</span>
+          <span class="uc-giro-testo">
+            <span class="uc-giro-t">{s.a}</span>
+            <span class="uc-giro-p">{s.p}</span>
+          </span>
+        </li>
+      );
+    })}
+  </ol>
+</div>

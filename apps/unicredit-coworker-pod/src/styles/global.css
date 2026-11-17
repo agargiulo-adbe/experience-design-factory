@@ -1,0 +1,766 @@
+@import "tailwindcss";
+
+/* Scan monorepo sources — pnpm symlinks are not auto-detected by Tailwind v4 */
+@source "../../../../packages/core/src/**/*.{astro,ts,tsx,js,jsx,mjs}";
+@source "../**/*.{astro,ts,tsx,js,jsx,mjs}";
+
+/* LO STRATO XD — la grammatica visiva condivisa (copertina, divisore di
+   capitolo, slide di contenuto, cifre, passi, referenze, figure, firma).
+   Vive nel motore: `packages/core/src/styles/xd.css`. Percorso relativo e non
+   alias: `@import` nel CSS lo risolve il bundler dei fogli di stile. */
+@import "../../../../packages/core/src/styles/xd.css";
+
+/* ═══════════════════════════════════════════════════════════════════════
+   «Da dove partiamo» — Adobe × UniCredit · sessione di lavoro del 23 nov 2026
+   Generata da `pnpm new:experience` il 2026-11-17 (tipo: playbook).
+
+   IL DESIGN SYSTEM È QUELLO VERO, E QUESTA È LA SUA FONTE.
+   Letto da `pnpm brand:tokens https://www.unicredit.it` il 17 nov 2026, e
+   coincide con quello già verificato in `apps/unicredit-engagement` sul CSS di
+   produzione (content.ucgstatic.eu/…/clientlibs/main.min.css):
+     #007A91   271 occorrenze   il PETROLIO: colore di SISTEMA (link, stati,
+                                tab, focus). È lui che struttura il deck.
+     #E2001A    13 occorrenze   il ROSSO: solo marchio (logo, barra, errori).
+                                Qui non entra nelle slide.
+     #006375   petrolio scuro · #00AED0 acqua · #262626 / #F5F5F5 neutri.
+   I valori sono COPIATI da unicredit-engagement, non importati: due experience
+   che condividono un foglio divergono al primo ritocco dell'una.
+
+   CARATTERI. unicredit.it monta il proprio carattere proprietario
+   (unicredit-light/regular/medium/bold), non distribuibile. Manrope ne è la
+   sostituta più vicina per proporzioni e tono e fa i titoli; Inter copre il
+   testo come l'Arial/Helvetica del loro fallback. Stessa scelta, con lo stesso
+   perché, di unicredit-engagement: non si cambia per gusto.
+
+   DOMINANTE CHIARA: primary/secondary chiari, inverse = petrolio notte (la
+   superficie scura non esiste su unicredit.it: è il petrolio di sistema portato
+   al nero, così il deck resta di marca anche al buio).
+   ═══════════════════════════════════════════════════════════════════════ */
+@theme {
+  --color-accent: #007a91;
+  --color-accent-deep: #006375;
+  --color-accent-soft: #00aed0;
+  --color-on-accent: #ffffff;
+  --color-cta: #007a91;
+  --color-on-cta: #ffffff;
+  --color-ink: #262626;
+  --color-ink-2: #464646;
+  --color-night: #04252d;
+  --color-night-2: #0d3a45;
+  --color-paper: #ffffff;
+  --color-paper-2: #f5f5f5;
+  --color-grey-100: #fafafa;
+  --color-grey-200: #e5e5e5;
+  --color-grey-300: #c9c9c9;
+  --color-grey-400: #909090;
+  --color-grey-500: #6b6b6b;
+  --color-grey-600: #585858;
+
+  --font-display: 'Manrope', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+}
+
+:root {
+  /* Primitivi UniCredit (vedi la fonte qui sopra) */
+  --color-petrolio: #007a91;
+  --color-petrolio-scuro: #006375;
+  --color-petrolio-notte: #04252d;
+  --color-acqua: #00aed0;
+  --color-acqua-tenue: #ccecea;
+  /* L'acqua pieno sul petrolio notte dà 4,5:1 appena: al limite. Come INCHIOSTRO
+     su fondo scuro si usa questa versione schiarita (6,3:1), il pieno resta ai
+     tratti e ai riempimenti. */
+  --color-acqua-chiaro: #4fcbe3;
+  --color-rosso: #e2001a;
+
+  --color-accent: #007a91;
+  --color-accent-rgb: 0, 122, 145;
+  --color-accent-deep: #006375;
+  --color-accent-soft: #00aed0;
+  --color-on-accent: #ffffff;
+  --color-cta: #007a91;
+  --color-on-cta: #ffffff;
+  --color-ink: #262626;
+  --color-ink-2: #464646;
+  --color-night: #04252d;
+  --color-night-2: #0d3a45;
+  --color-paper: #ffffff;
+  --color-paper-2: #f5f5f5;
+  --color-grey-100: #fafafa;
+  --color-grey-200: #e5e5e5;
+  --color-grey-300: #c9c9c9;
+  --color-grey-400: #909090;
+  --color-grey-500: #6b6b6b;
+  --color-grey-600: #585858;
+
+  --font-display: 'Manrope', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+
+  --fontWeight-regular: 400;
+  --fontWeight-medium: 500;
+  --fontWeight-semibold: 600;
+  --fontWeight-bold: 700;
+  --lineHeight-tight: 1.1;
+  --lineHeight-normal: 1.5;
+  --lineHeight-relaxed: 1.625;
+
+  /* Semantici — Surface (dominante CHIARA) */
+  --surface-primary: var(--color-paper-2);
+  --surface-secondary: var(--color-paper);
+  --surface-tertiary: var(--color-grey-100);
+  --surface-inverse: var(--color-night);
+  --surface-brand: var(--color-petrolio);
+
+  /* Semantici — Ink (`--ink-X` sta su `--surface-X`) */
+  --ink-primary: var(--color-ink);
+  --ink-secondary: var(--color-ink-2);
+  --ink-tertiary: var(--color-grey-600);
+  --ink-inverse: #ffffff;
+  --ink-brand: var(--color-petrolio-scuro);
+  --ink-link: var(--color-petrolio-scuro);
+
+  /* Inchiostri che si ribaltano con la superficie (default = fondo CHIARO).
+     Per il testo usare SEMPRE questi, mai `--color-acqua` / `--accent-*`. */
+  --ink-accent: var(--color-petrolio-scuro);
+  --ink-note: var(--color-grey-600);
+  --ink-body: var(--color-ink-2);
+
+  /* Semantici — Accent: il petrolio, non il rosso */
+  --accent-primary: var(--color-petrolio);
+  --accent-secondary: var(--color-acqua);
+  --accent-hover: var(--color-petrolio-scuro);
+
+  --line-subtle: var(--color-grey-200);
+  --line-default: var(--color-grey-300);
+  --line-strong: var(--color-grey-600);
+
+  --focus-ring: var(--color-petrolio);
+
+  --slide-safe-inset: 80px;
+  --deck-chrome-safe: 168px;
+
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --easing-default: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --easing-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+
+  /* ── Il contratto XD, con i valori di UniCredit ─────────────────────── */
+  --xd-dark-bg: var(--color-night);
+  --xd-dark-bg-2: var(--color-night-2);
+  --xd-dark-ink: #ffffff;
+  --xd-dark-body: #dcebee;
+  --xd-dark-note: #a8c3c9;
+  --xd-dark-accent: var(--color-acqua-chiaro);
+  --xd-dark-surface: rgba(255, 255, 255, 0.07);
+  --xd-dark-surface-2: rgba(255, 255, 255, 0.13);
+  --xd-dark-line: rgba(255, 255, 255, 0.18);
+  --xd-div-pannello: linear-gradient(165deg, #007a91 0%, #04252d 100%);
+  --xd-piano: linear-gradient(160deg, #0d3a45 0%, #04252d 70%, #021a20 100%);
+}
+
+/* Le varianti scure DOPO le chiare: stessa specificità, vince l'ultima. Lo Slide
+   rende la superficie come classe Tailwind, non come data-attribute. Una slide
+   che DICHIARA chiaro ma rende scura per via del backdrop si marca `.ex-on-dark`. */
+[data-slide].bg-\[var\(--surface-inverse\)\],
+.ex-on-dark, .xd-on-dark {
+  --ink-primary: #ffffff;
+  --ink-secondary: #dcebee;
+  --ink-tertiary: #a8c3c9;
+  --ink-accent: var(--color-acqua-chiaro);
+  --ink-note: #a8c3c9;
+  --ink-body: #dcebee;
+}
+/* Componenti chiari dentro una slide scura riprendono gli inchiostri chiari. */
+.ex-on-light,
+.ex-card {
+  --ink-accent: var(--color-accent-deep);
+  --ink-note: var(--color-grey-600);
+  --ink-body: var(--color-ink-2);
+}
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 0.5vw + 0.875rem, 1.125rem);
+    line-height: var(--lineHeight-relaxed);
+    color: var(--ink-primary);
+    background-color: var(--surface-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  body { min-height: 100dvh; font-weight: var(--fontWeight-regular); }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: var(--fontWeight-bold);
+    line-height: var(--lineHeight-tight);
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; max-width: 72ch; }
+  a {
+    color: var(--ink-link);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: color var(--duration-fast) var(--easing-default);
+  }
+  a:hover { color: var(--color-accent); }
+  :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+  img, picture, video, canvas, svg { display: block; max-width: 100%; }
+}
+
+/* i18n — <T en it>: rende entrambe, il CSS mostra l'attiva. */
+html[data-lang="en"] [data-lang-it] { display: none !important; }
+html[data-lang="it"] [data-lang-en] { display: none !important; }
+
+.solution-hidden { display: none !important; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+}
+
+::view-transition-old(root) { animation: 180ms ease-out both fade-out; }
+::view-transition-new(root) { animation: 180ms ease-out both fade-in; }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes fade-in  { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+}
+
+.slide-inner.text-center p { margin-inline: auto; }
+
+/* Occhiello (kicker): ≥ 0.75rem per contratto di leggibilità. */
+.slide-eyebrow {
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-size: clamp(0.76rem, 0.9vw, 0.875rem);
+  color: var(--ink-accent);
+}
+
+/* TV: minimi del tipo */
+[data-slide] .text-xs { font-size: 0.875rem !important; }
+[data-slide] p.text-sm, [data-slide] p.text-xs { font-size: max(0.9375rem, inherit); }
+[data-slide] p { max-width: 60ch; }
+
+[data-admin-only] { display: none !important; }
+[data-deck-progress] { font-variant-numeric: tabular-nums; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   .ex-* — art direction di partenza (neutra). Rinominare il prefisso con due
+   lettere del cliente quando il design system vero entra (es. .sd-* per Poste).
+   Tutti i colori dietro testo in rgba esplicito o token: il parser di contrasto
+   dell'audit non legge oklab()/color-mix().
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Backdrop (solo gradienti: nessuna immagine finché non c'è un asset vero).
+   Quando arriva uno sfondo generato, passare `--bg-src: url(...)` dalla slide e
+   dichiarare `data-made-with` sulla slide (il credito è un fatto). ─────────── */
+.ex-bg-night {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(110% 70% at 10% 0%, rgba(var(--color-accent-rgb), 0.18), transparent 52%),
+    radial-gradient(70% 60% at 50% 50%, rgba(17,19,24,0.72), transparent 80%),
+    linear-gradient(rgba(17,19,24,0.66), rgba(17,19,24,0.86)),
+    var(--bg-src, none) center / cover no-repeat,
+    var(--surface-inverse);
+}
+/* ── Una frase è un blocco, e va a capo intera ──────────────────────────────
+   `text-wrap: balance` bilancia le RIGHE e non sa niente delle frasi: su un
+   testo di due frasi rompe volentieri dentro la prima e lascia una parola più
+   il punto a capo da sola — «…lo sapete / già. Manca il perché.», che in
+   proiezione è il primo difetto che si nota.
+   Uno spazio unificatore non lo risolve: legare la frase intera la rende
+   inseparabile e a questo corpo sborda (il check `c`, che è HARD). Un blocco
+   in linea invece sì: il browser preferisce rompere FRA le frasi, e se una non
+   ci sta la manda a capo intera e la spezza lì dentro, senza mai sbordare.
+   Lo misura la famiglia `F` di `pnpm audit:wrap`. */
+/* `vertical-align: top` non è un dettaglio: allineati alla linea di base, due
+   blocchi in linea su righe consecutive hanno scatole che si sovrappongono di
+   qualche pixel, e il check `e` (testo-su-testo, HARD) lo vede. */
+.ex-frase { display: inline-block; vertical-align: top; }
+/* `<T>` mette DENTRO due <span> di lingua, e quelli restano inline: la loro
+   scatola è alta quanto l'interlinea e centrata sul testo, quindi su righe
+   consecutive si sovrappone di una quindicina di pixel. Il check `e` guarda
+   gli elementi che contengono testo, cioè proprio questi — non il contenitore.
+   Resi blocchi, la scatola torna a essere quella del contenuto.
+   La regola che nasconde la lingua inattiva usa `display: none` e ha
+   specificità maggiore: continua a vincere. */
+.ex-frase > span { display: block; }
+
+.ex-bg-paper {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(100% 70% at 90% 100%, rgba(var(--color-accent-rgb), 0.06), transparent 55%),
+    linear-gradient(rgba(255,255,255,0.72), rgba(255,255,255,0.86)),
+    var(--bg-src, none) center / cover no-repeat,
+    var(--surface-primary);
+}
+
+/* ── Copertina del deck ────────────────────────────────────────────────── */
+.ex-cover { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.05rem; width: 100%; max-width: 62rem; margin-inline: auto; }
+.ex-cover-lockup { margin-bottom: clamp(1.4rem, 3vh, 2.6rem); }
+.ex-cover-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(3rem, 7vw, 6.2rem); line-height: 0.98; letter-spacing: -0.04em; color: #fff; margin: 0; }
+.ex-cover-tag { font-weight: 500; font-size: clamp(1.1rem, 1.6vw, 1.55rem); line-height: 1.35; color: var(--color-accent-soft); max-width: 40ch; margin: 0 auto; display: block; }
+.ex-cover-lead { font-size: clamp(1rem, 1.2vw, 1.15rem); line-height: 1.6; color: var(--color-grey-200); max-width: 66ch; margin: 0 auto; display: block; }
+.ex-cover-note { font-size: 0.76rem; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.7; color: var(--color-grey-400); max-width: 70ch; margin: 0 auto; display: block; }
+
+/* ── Il percorso (home) ────────────────────────────────────────────────── */
+.ex-percorso { width: 100%; max-width: 72rem; margin-inline: auto; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.ex-percorso-title { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 3.2vw, 2.8rem); line-height: 1.06; letter-spacing: -0.03em; color: var(--ink-primary); text-align: center; margin: 1rem auto 0.9rem; max-width: 32ch; display: block; }
+.ex-percorso-lead { font-size: clamp(0.98rem, 1.1vw, 1.08rem); line-height: 1.55; color: var(--ink-body); max-width: 64ch; margin: 0 auto 1.2rem; text-align: center; display: block; }
+.ex-journey { width: 100%; margin-bottom: clamp(1rem, 2vh, 1.3rem); }
+.ex-journey-card {
+  display: flex; flex-direction: column; text-align: left; text-decoration: none; min-width: 0;
+  background: rgba(255,255,255,0.9); border: 1px solid var(--line-subtle); border-radius: 12px;
+  padding: 1rem 1.25rem 0.9rem; color: var(--ink-primary);
+  transition: border-color 200ms ease, background 200ms ease;
+}
+.ex-journey-card:hover { border-color: var(--color-accent); background: #fff; color: var(--ink-primary); }
+.ex-journey-num { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.14em; color: var(--ink-accent); font-variant-numeric: tabular-nums; margin-bottom: 0.45rem; }
+.ex-journey-name { font-family: var(--font-display); font-size: 1.12rem; font-weight: 700; line-height: 1.25; color: var(--ink-primary); }
+.ex-journey-open { margin-top: auto; padding-top: 0.6rem; font-size: 0.86rem; font-weight: 600; color: var(--ink-note); }
+.ex-journey-card:hover .ex-journey-open { color: var(--ink-accent); }
+[data-slide] .ex-journey-card p { max-width: none; margin-inline: 0; }
+
+/* CTA piena: coppia `--color-cta` / `--color-on-cta` calcolata dal generatore (WCAG AA). */
+.ex-cta {
+  display: inline-flex; align-items: center; gap: 0.75rem; padding: 0.7rem 2.1rem; border-radius: 6px;
+  font-size: clamp(1rem, 1.15vw, 1.12rem); font-weight: 600; letter-spacing: 0.02em; text-decoration: none;
+  background: var(--color-cta); color: var(--color-on-cta); transition: background 200ms ease;
+}
+.ex-cta:hover { background: var(--color-accent-deep); color: #ffffff; }
+
+/* ── Cover del capitolo ────────────────────────────────────────────────── */
+.ex-ch { width: 100%; max-width: 66rem; margin-inline: auto; display: flex; flex-direction: column; align-items: center; text-align: center; gap: clamp(1.1rem, 2.6vh, 1.8rem); }
+.ex-ch-num { font-family: var(--font-display); font-weight: 700; font-size: clamp(0.8rem, 0.95vw, 0.95rem); letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-accent); }
+.ex-ch-title { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; font-size: clamp(2.6rem, 5vw, 4.8rem); color: var(--ink-inverse); max-width: 20ch; text-wrap: balance; }
+.ex-ch-lead { font-size: clamp(1.05rem, 1.3vw, 1.3rem); line-height: 1.55; color: var(--color-grey-200); max-width: 56ch; }
+.slide-inner .ex-ch p { margin-inline: auto; }
+/* L'agenda del capitolo: i tre blocchi della slide di contenuto, anticipati. Dà alla
+   cover una base e un respiro reali (check i), non riempitivo. */
+.ex-ch-agenda { margin-top: clamp(0.6rem, 2vh, 1.4rem); padding-top: clamp(1rem, 2.4vh, 1.6rem); border-top: 1px solid rgba(255,255,255,0.18); width: 100%; max-width: 48rem; display: flex; flex-direction: column; align-items: center; gap: 0.9rem; }
+.ex-ch-agenda-k { font-size: 0.76rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; color: var(--ink-note); }
+.ex-ch-agenda ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: center; flex-wrap: wrap; gap: clamp(1.2rem, 3vw, 2.6rem); }
+.ex-ch-agenda li { display: inline-flex; align-items: center; gap: 0.6rem; font-size: 1rem; font-weight: 600; color: var(--ink-inverse); white-space: nowrap; }
+.ex-ch-agenda-n { width: 1.7rem; height: 1.7rem; border-radius: 50%; background: rgba(var(--color-accent-rgb), 0.28); color: var(--color-accent-soft); font-size: 0.82rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+/* ── Slide di contenuto: UNA colonna (max 72rem) per tutto, così i blocchi a
+   bandiera condividono il bordo (check m dell'audit). ─────────────────────── */
+.ex-content { width: 100%; max-width: 72rem; margin-inline: auto; text-align: left; }
+.ex-head { margin-bottom: clamp(1rem, 2.4vh, 1.6rem); }
+.ex-head-title { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.025em; line-height: 1.06; font-size: clamp(1.8rem, 3vw, 2.9rem); color: var(--ink-primary); max-width: 26ch; text-wrap: balance; margin-top: 1rem; }
+.ex-head-lead { font-size: clamp(0.98rem, 1.12vw, 1.12rem); line-height: 1.55; color: var(--ink-body); max-width: 68ch; margin-top: 1rem; }
+
+.ex-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.9rem, 1.8vw, 1.5rem); }
+.ex-card {
+  min-width: 0; background: rgba(255,255,255,0.9); border: 1px solid var(--line-subtle); border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04); padding: 1.25rem 1.3rem 1.2rem; display: flex; flex-direction: column; height: 100%;
+}
+.ex-card-k { font-size: 0.76rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-accent); margin-bottom: 0.55rem; }
+.ex-card-t { font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; line-height: 1.25; color: var(--ink-primary); margin-bottom: 0.5rem; }
+.ex-card-b { color: var(--ink-body); font-size: 0.98rem; line-height: 1.5; }
+.ex-src { margin-top: clamp(0.9rem, 2vh, 1.3rem); font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.6; color: var(--ink-note); text-align: left; }
+.ex-src a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+
+/* Il reset centra ogni <p> (`.slide-inner.text-center p`) e lo cappa a 60ch:
+   dentro i blocchi a bandiera la larghezza la governa il contenitore. */
+.slide-inner .ex-content p { margin-inline: 0; }
+[data-slide] .ex-card p, [data-slide] p.ex-src { max-width: none; }
+[data-slide] p.ex-head-lead { max-width: 68ch; }
+
+/* ── Slide-firma ───────────────────────────────────────────────────────── */
+.ex-sig-line { margin-top: clamp(1.4rem, 3vh, 2.4rem); font-size: clamp(1.05rem, 1.4vw, 1.35rem); line-height: 1.5; color: var(--color-grey-200); text-align: center; max-width: 44ch; display: block; margin-inline: auto; }
+
+/* ── Deck chrome (WCAG AA, rgba esplicito) ─────────────────────────────── */
+/* Inchiostro ESPLICITO, non `--ink-primary`: il bottone si porta uno sfondo bianco
+   suo, e `--ink-primary` segue la dominante dell'experience. In una skin a dominante
+   scura (Trenitalia, Agos, Eni) diventa bianco su bianco: 1,17:1, check h fallito su
+   ogni slide. Dove lo sfondo è esplicito, esplicito dev'essere anche l'inchiostro. */
+[data-deck] .deck-btn { color: #1b1d21; background: rgba(255,255,255,0.92); border-color: var(--color-grey-300); }
+[data-deck] .deck-btn:hover { color: var(--accent-primary); border-color: var(--accent-primary); }
+[data-deck] .deck-progress { color: var(--color-ink-2); }
+/* Sulle slide scure il chrome si ribalta (il deck marca data-on-dark). */
+[data-deck][data-on-dark] .deck-btn { color: #fff; background: rgba(17,19,24,0.9); border-color: var(--color-ink-2); }
+[data-deck][data-on-dark] .deck-progress { color: var(--color-grey-200); }
+
+[data-deck] .slide-backdrop { overflow: clip; }
+
+/* ── Custom slides (Admin Console) — in sync con l'anteprima dell'admin ─── */
+.cs-content { display: flex; flex-direction: column; align-items: center; text-align: center; gap: clamp(1rem, 2.2vh, 2rem); width: 100%; max-width: 68rem; margin-inline: auto; }
+.cs-eyebrow { margin-bottom: 0.25rem; }
+.cs-title { font-family: var(--font-display); font-weight: 700; line-height: 1.04; letter-spacing: -0.02em; font-size: clamp(2rem, 4.4vw, 4rem); }
+.cs-prose { font-size: clamp(1.05rem, 1.5vw, 1.4rem); line-height: 1.6; max-width: 54ch; }
+.cs-prose > * + * { margin-top: 0.9em; }
+.cs-prose h3 { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.4rem, 2.2vw, 2rem); line-height: 1.2; }
+.cs-prose strong { font-weight: 600; }
+.cs-prose a { color: var(--ink-link); text-decoration: underline; }
+.cs-prose ul, .cs-prose ol { text-align: left; padding-left: 1.4em; display: inline-block; }
+.cs-prose ul { list-style: disc; } .cs-prose ol { list-style: decimal; }
+.cs-media { width: 100%; max-width: 56rem; border-radius: 8px; overflow: hidden; aspect-ratio: 16 / 9; background: rgba(17,19,24,0.06); }
+.cs-media img, .cs-media video, .cs-media iframe { width: 100%; height: 100%; object-fit: cover; border: 0; display: block; }
+.cs-caption { font-size: clamp(0.85rem, 1vw, 1rem); color: var(--ink-tertiary); margin-top: 0.5rem; }
+.cs-slide[data-cs-tone="dark"] .cs-title { color: var(--ink-primary); }
+.cs-slide[data-cs-tone="dark"] .cs-prose { color: var(--ink-secondary); }
+.cs-slide[data-cs-tone="light"] .cs-title { color: #fff; }
+.cs-slide[data-cs-tone="light"] .cs-prose { color: var(--color-grey-200); }
+.cs-slide[data-cs-tone="light"] .slide-eyebrow { color: var(--color-accent-soft); }
+
+/* ── Nav: UNA barra (rail + cluster destro), mai a capo ────────────────── */
+/* Fondo bianco esplicito → inchiostri espliciti. In una skin a dominante scura
+   `--ink-primary` è bianco, e il nome del deck sparirebbe su ogni pagina. */
+.ex-nav {
+  background: rgba(255,255,255,0.94); border-bottom: 1px solid var(--line-subtle); backdrop-filter: blur(6px);
+  --ink-primary: var(--color-ink);
+  --ink-secondary: var(--color-ink-2);
+  --ink-accent: var(--color-accent-deep);
+  --ink-note: var(--color-grey-600);
+}
+.ex-nav-link { color: var(--color-ink-2); }
+.ex-nav-link:hover { color: var(--ink-accent); background: var(--color-paper-2); }
+.ex-nav-link--active { color: var(--ink-accent); background: var(--color-paper-2); border: 1px solid rgba(var(--color-accent-rgb), 0.3); }
+.ex-mark { display: inline-flex; width: 1.75rem; height: 1.75rem; flex-shrink: 0; }
+.ex-mark svg { width: 100%; height: 100%; display: block; }
+
+/* ── Compattazione sotto i 900 px di altezza (1280×800, 1440×900): si stringono
+   spazi e contenitori, non il tipo: il corpo resta ≥ 0,95rem. ─────────────── */
+@media (max-height: 900px) {
+  .ex-head { margin-bottom: 0.7rem; }
+  .ex-head-title { font-size: clamp(1.5rem, 2.3vw, 2.1rem); }
+  .ex-head-lead { font-size: 0.95rem; line-height: 1.45; }
+  .ex-cards { gap: 0.8rem; }
+  .ex-card { padding: 0.9rem 1rem; }
+  .ex-card-b { font-size: 0.95rem; line-height: 1.42; }
+  .ex-src { margin-top: 0.6rem; font-size: 0.75rem; line-height: 1.45; }
+  .ex-ch-title { font-size: clamp(2.1rem, 4.2vw, 3.6rem); }
+  .ex-ch-lead { font-size: clamp(1rem, 1.2vw, 1.15rem); }
+  .ex-percorso-title { font-size: clamp(1.6rem, 2.4vw, 2.2rem); margin: 0.8rem auto 0.7rem; }
+  .ex-percorso-lead { margin-bottom: 0.8rem; }
+  .ex-journey-card { padding: 0.75rem 0.95rem 0.7rem; }
+  .ex-journey-num { margin-bottom: 0.3rem; }
+  /* Sotto i 900 px l'affordance «Apri il capitolo» cede lo spazio alla griglia. */
+  .ex-journey-open { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ANCORE — la forma di base di una slide di contenuto
+   Un'ancora è un NOME (≤ 6 parole), non una frase. Sta in pagina perché
+   guida l'attenzione mentre chi presenta parla; la prosa, che invece
+   competerebbe con la voce, vive dietro `<HowItWorks>` in `.ex-dett`.
+   Vedi CLAUDE.md → «Ancore, non prosa».
+   ═══════════════════════════════════════════════════════════════════════ */
+.ex-ancore {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem; width: 100%; max-width: 68rem;
+}
+.ex-ancora {
+  min-width: 0; margin: 0; max-width: none;
+  padding: 2rem 1.6rem; min-height: 7.5rem;
+  display: flex; align-items: center;
+  border-left: 3px solid var(--accent-primary);
+  background: var(--surface-secondary);
+  border-radius: 3px;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  font-weight: 700; line-height: 1.3; color: var(--ink-primary);
+}
+
+/* Il dettaglio dietro «Scopri come».
+   ⚠️ `.hiw-body` del motore NON dichiara un colore: su una slide chiara
+   resterebbe bianco su bianco, e a blocco chiuso nessun gate lo vede. */
+.ex-dett { margin-top: 1.3rem; max-width: 76rem; }
+
+/* Il dettaglio a figure. Qui SOLO il colore: il corpo lo decide il motore, e
+   rimetterlo da qui vorrebbe dire rimettere un corpo fisso che sulla parete
+   non cresce. La struttura del disegno eredita `currentColor`, l'accento se lo
+   prende da `--ink-accent`, che si ribalta col fondo. */
+.ex-dett .dett-ancora > p { color: var(--ink-primary); }
+.ex-dett .dett-riga > p { color: var(--ink-secondary); }
+.ex-dett .dett-nota > p { color: var(--ink-note); }
+.ex-dett .fg { color: var(--ink-tertiary); }
+.ex-dett .dett-fig-box { border-color: var(--line-subtle); }
+/* Su una slide scura gli inchiostri vanno ESPLICITI e pieni: un bianco
+   trasparente su un fondo dichiarato scende sotto soglia, e `audit:ink`
+   misura i pixel. Si sostituiscono con i valori chiari di questa pelle. */
+.ex-dett--scuro .dett-ancora > p { color: var(--ink-inverse); }
+.ex-dett--scuro .dett-riga > p { color: var(--ink-body); }
+.ex-dett--scuro .dett-nota > p { color: var(--ink-note); }
+
+/* La prosa che resta fuori da un Dettaglio: una cautela, una provenienza. */
+.ex-dett .hiw-body > p {
+  font-size: 0.98rem; line-height: 1.6; color: var(--ink-secondary);
+  margin: 0 0 0.7rem; max-width: none;
+}
+.ex-dett .hiw-body > p:last-child { margin-bottom: 0; }
+
+@media (max-width: 900px) { .ex-ancore { grid-template-columns: minmax(0, 1fr); } }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   .uc-* — quello che è di QUESTO deck, sopra la grammatica XD.
+   Registro XD: poche parole, grandi, una cosa per slide. La prosa vive
+   dietro «Scopri come», fatta di figure (src/components/Figura.astro).
+   Tutti i fondi dietro testo in rgba esplicito o token: il parser di
+   contrasto dell'audit non legge oklab()/color-mix().
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── I sotto-passi: entrano uno alla volta sotto le frecce del deck ───────
+   ⚠️ `visibility: hidden` ACCANTO a `opacity: 0`: una fase non ancora entrata
+   è ASSENTE, se no i gate misurano testo invisibile. Con «Riduci movimento» e
+   senza JavaScript è tutto visibile: è lo stato che `audit:deck` misura.
+   Niente `transform` qui: il centraggio delle ancore usa `translate`, e un
+   `transform` in linea lo sovrascriverebbe. */
+.js [data-substep] {
+  opacity: 0; visibility: hidden;
+  transition: opacity 320ms ease-out, visibility 0s linear 320ms;
+}
+.js [data-substep][data-substep-active] {
+  opacity: 1; visibility: visible;
+  transition: opacity 320ms ease-out, visibility 0s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .js [data-substep] { opacity: 1; visibility: visible; transition: none; }
+}
+
+/* Il divisore: l'occhiello sul pannello di petrolio va pieno (il grigio di
+   nota sul petrolio dà 2,8:1). */
+.xd-div-oc { color: #ffffff; }
+[data-slide] .xd-div p { max-width: none; }
+.xd-div-dx { padding-left: clamp(1.4rem, 3vw, 4rem); }
+.xd-div-l { max-width: 22ch; font-size: clamp(1.35rem, 1.6vw, 3rem); line-height: 1.3; }
+
+/* ── La copertina ────────────────────────────────────────────────────── */
+.uc-cop-data { color: var(--xd-dark-body); }
+.xd-cop-t { max-width: none; }
+
+/* ── Il programma: la cifra a sinistra, le tre ancore a destra ──────────── */
+.uc-pod { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(1.5rem, 4vw, 5rem); align-items: center; width: 100%; }
+.uc-pod-cifra { display: grid; gap: 0.4rem; justify-items: start; padding: clamp(1.4rem, 2.4vw, 3rem); border-radius: 14px; background: var(--color-petrolio); color: #ffffff; }
+[data-slide] .uc-pod-cifra p { margin: 0; max-width: none; }
+.uc-pod-n { font-family: var(--font-display); font-weight: 800; font-size: clamp(5.5rem, 11vw, 14rem); line-height: 0.9; letter-spacing: -0.05em; color: #ffffff; }
+.uc-pod-u { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.3rem, 1.7vw, 3rem); line-height: 1.15; color: #ffffff; }
+.uc-pod-d { font-size: clamp(1rem, 0.95vw, 1.9rem); line-height: 1.45; color: #ffffff; max-width: 26ch; }
+.uc-pod-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(0.9rem, 2vh, 1.6rem); }
+.uc-pod-i { display: grid; gap: 0.25rem; padding-left: 1.1rem; border-left: 4px solid var(--color-petrolio); margin-inline: 0; }
+[data-slide] .uc-pod-i p { margin: 0; max-width: none; }
+.uc-pod-a { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.45rem, 1.9vw, 3.4rem); line-height: 1.15; letter-spacing: -0.015em; color: var(--ink-primary); }
+.uc-pod-r { font-size: clamp(1rem, 1vw, 1.95rem); line-height: 1.45; color: var(--ink-secondary); }
+.uc-nota { font-size: clamp(0.82rem, 0.72vw, 1.5rem); line-height: 1.45; color: var(--ink-note); }
+[data-slide] p.uc-nota { max-width: 80ch; margin: 0; }
+
+/* ── La linea del tempo ─────────────────────────────────────────────── */
+.uc-tempo { position: relative; width: 100%; margin-top: clamp(1rem, 3vh, 2.4rem); }
+.uc-tempo-linea { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: 3.2rem; overflow: visible; }
+.uc-tempo-tr { stroke: var(--line-default); stroke-width: 3; stroke-dasharray: 2 10; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.uc-tempo-tr-fatto { stroke: var(--color-petrolio); stroke-width: 4; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.uc-tempo-g { list-style: none; margin: 0; padding: 0; position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 clamp(0.8rem, 2vw, 2.4rem); }
+.uc-tempo-i { display: grid; justify-items: center; align-content: start; grid-template-rows: auto 2.6em auto; text-align: center; gap: 0.45rem; min-width: 0; margin-inline: 0; }
+.uc-tempo-k { align-self: center; }
+[data-slide] .uc-tempo-i p { margin: 0; max-width: 18ch; }
+.uc-tempo-nodo {
+  width: 3.2rem; height: 3.2rem; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 800; font-size: clamp(1.1rem, 1vw, 2rem);
+  background: #ffffff; color: var(--color-petrolio-scuro); border: 3px solid var(--color-petrolio);
+  margin-bottom: 0.5rem;
+}
+.uc-tempo-nodo svg { width: 60%; height: 60%; fill: none; stroke: #ffffff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.uc-tempo-i[data-stato="ora"] .uc-tempo-nodo { background: var(--color-petrolio); color: #ffffff; box-shadow: 0 0 0 8px rgba(0, 122, 145, 0.16); }
+.uc-tempo-i[data-stato="fatta"] .uc-tempo-nodo { background: var(--color-petrolio-scuro); border-color: var(--color-petrolio-scuro); }
+.uc-tempo-i[data-stato="poi"] .uc-tempo-nodo { border-style: dashed; }
+.uc-tempo-k { font-size: clamp(0.82rem, 0.72vw, 1.5rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-accent); }
+.uc-tempo-t { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.15rem, 1.3vw, 2.5rem); line-height: 1.25; color: var(--ink-primary); text-wrap: balance; }
+.uc-tempo-i[data-stato="fatta"] .uc-tempo-t { color: var(--ink-secondary); }
+
+/* ── Il video ──────────────────────────────────────────────────────── */
+.uc-video { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: clamp(1.4rem, 3vw, 4rem); align-items: center; width: 100%; }
+.uc-video-fig { margin: 0; display: grid; gap: 0.6rem; min-width: 0; }
+.uc-video-box { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: var(--color-night); border: 1px solid var(--xd-dark-line); }
+.uc-video-box video { width: 100%; height: 100%; object-fit: contain; background: #000; display: block; }
+.uc-video-attesa { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; gap: 0.8rem; background: linear-gradient(150deg, #0d3a45, #04252d); color: var(--xd-dark-body); }
+.uc-video-attesa svg { width: clamp(3.5rem, 5vw, 8rem); height: auto; }
+.uc-video-attesa p { margin: 0; font-size: clamp(0.95rem, 0.86vw, 1.7rem); color: var(--xd-dark-body); }
+.uc-video-cap { margin: 0; font-size: clamp(0.82rem, 0.72vw, 1.5rem); line-height: 1.4; color: var(--xd-dark-note); }
+[data-slide] .uc-video-cap { max-width: none; }
+.uc-video-dx { display: grid; gap: clamp(1rem, 2.4vh, 2rem); min-width: 0; align-content: center; }
+.uc-ancore-v { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(0.8rem, 2vh, 1.4rem); }
+.uc-ancore-v li { margin-inline: 0; padding-left: 1rem; border-left: 4px solid var(--xd-dark-accent); font-family: var(--font-display); font-weight: 800; font-size: clamp(1.35rem, 1.7vw, 3.1rem); line-height: 1.2; color: var(--xd-dark-ink); }
+
+/* ── Le sei categorie: 3×2 grande ───────────────────────────────────── */
+.uc-cat { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: clamp(0.8rem, 1.4vw, 1.8rem); width: 100%; }
+.uc-cat-i { display: grid; grid-template-rows: auto 1fr; gap: 0.8rem; min-width: 0; margin-inline: 0; padding: clamp(1rem, 1.5vw, 2rem); border-radius: 12px; background: #ffffff; border: 1px solid var(--line-subtle); border-top: 5px solid var(--color-petrolio); }
+[data-slide] .uc-cat-i p { margin: 0; max-width: none; }
+.uc-cat-a { display: flex; align-items: baseline; gap: 0.7rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.25rem, 1.45vw, 2.7rem); line-height: 1.15; color: var(--ink-primary); }
+.uc-cat-n { font-size: 0.72em; font-weight: 800; color: var(--ink-accent); font-variant-numeric: tabular-nums; }
+.uc-prompt { position: relative; align-self: end; padding: 0.75rem 1rem 0.8rem 2.6rem; border-radius: 12px 12px 12px 3px; background: var(--color-paper-2); font-size: clamp(1rem, 0.95vw, 1.85rem); line-height: 1.4; color: var(--ink-secondary); font-style: italic; }
+.uc-prompt svg { position: absolute; left: 0.8rem; top: 0.95rem; width: 1.15rem; height: 1.15rem; fill: none; stroke: var(--color-petrolio); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ── Oggi e con Coworker: righe a tutta larghezza ───────────────────── */
+.uc-confronto { width: 100%; display: grid; gap: clamp(0.6rem, 1.4vh, 1.1rem); }
+.uc-conf-testa, .uc-conf-riga { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr) 2.6rem minmax(0, 1.15fr); gap: 0 clamp(0.8rem, 1.4vw, 1.8rem); align-items: center; }
+.uc-conf-testa p { margin: 0; max-width: none; font-size: clamp(0.82rem, 0.72vw, 1.5rem); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-note); }
+.uc-conf-testa p.uc-conf-cw { color: var(--ink-accent); }
+.uc-conf-riga { padding: clamp(0.9rem, 1.6vh, 1.4rem) 0; border-top: 1px solid var(--line-default); }
+[data-slide] .uc-conf-riga p { margin: 0; max-width: none; }
+.uc-conf-cat { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.2rem, 1.3vw, 2.5rem); line-height: 1.2; color: var(--ink-primary); }
+.uc-conf-oggi { font-size: clamp(1rem, 1vw, 1.95rem); line-height: 1.4; color: var(--ink-secondary); }
+.uc-conf-freccia { width: 2.2rem; height: 1.4rem; fill: none; stroke: var(--color-petrolio); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.uc-conf-con { font-size: clamp(1rem, 1vw, 1.95rem); line-height: 1.4; font-weight: 600; color: var(--ink-primary); padding: 0.7rem 0.95rem; border-radius: 10px; background: #e2f1f4; border-left: 4px solid var(--color-petrolio); }
+
+/* ── Quello che oggi non promettiamo: 2×2 sobrio ────────────────────── */
+.uc-limiti { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: clamp(0.8rem, 1.4vw, 1.6rem); width: 100%; }
+.uc-limite { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: 0.3rem 0.9rem; align-content: start; margin-inline: 0; padding: clamp(1rem, 1.4vw, 1.8rem); border-radius: 12px; border: 1px dashed var(--color-grey-400); background: #ffffff; }
+.uc-limite svg { grid-row: span 2; width: 2.2rem; height: 2.2rem; fill: none; stroke: var(--color-petrolio-scuro); stroke-width: 2; stroke-linecap: round; }
+[data-slide] .uc-limite p { margin: 0; max-width: none; }
+.uc-limite-a { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.15rem, 1.25vw, 2.4rem); line-height: 1.2; color: var(--ink-primary); }
+.uc-limite-r { font-size: clamp(1rem, 0.95vw, 1.85rem); line-height: 1.45; color: var(--ink-secondary); }
+
+/* ── La domanda per voi ─────────────────────────────────────────────── */
+.uc-dom { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 5rem); align-items: center; width: 100%; }
+.uc-dom-sx { display: grid; gap: clamp(0.8rem, 2vh, 1.4rem); min-width: 0; }
+[data-slide] .uc-dom-sx p, [data-slide] .uc-dom-sx h2 { margin: 0; max-width: none; }
+.uc-dom-k { font-size: clamp(0.92rem, 0.82vw, 1.7rem); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-accent); }
+.uc-dom-t { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.4rem, 4vw, 6.4rem); line-height: 1.06; letter-spacing: -0.03em; color: var(--ink-primary); text-wrap: balance; max-width: 16ch; }
+.uc-dom-fig { width: 100%; height: auto; max-height: 52vh; color: var(--xd-dark-note); }
+.uc-dom-fig .s { fill: none; stroke: rgba(255, 255, 255, 0.4); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.uc-dom-fig .a { fill: none; stroke: var(--color-acqua); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.uc-dom-fig .af { fill: var(--color-acqua); }
+.uc-dom-fig .sf { fill: rgba(255, 255, 255, 0.1); }
+
+/* ── I quattro momenti di un test: un percorso a chevron ───────────── */
+.uc-momenti { position: relative; width: 100%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 clamp(0.6rem, 1vw, 1.2rem); }
+.uc-mom { display: grid; grid-template-rows: auto auto auto 1fr; gap: 0.55rem; min-width: 0; margin-inline: 0; }
+[data-slide] .uc-mom p { margin: 0; max-width: none; }
+.uc-mom-chev { width: 100%; height: clamp(3.4rem, 4.6vw, 8rem); display: block; }
+.uc-mom-chev path { fill: var(--color-petrolio); }
+.uc-mom:nth-child(2) .uc-mom-chev path { fill: #006b80; }
+.uc-mom:nth-child(3) .uc-mom-chev path { fill: var(--color-petrolio-scuro); }
+.uc-mom:nth-child(4) .uc-mom-chev path { fill: #0d4a58; }
+.uc-mom-box { position: relative; }
+.uc-mom-num { position: absolute; left: 22%; top: 50%; translate: -50% -50%; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.2rem, 1.3vw, 2.5rem); color: #ffffff; }
+.uc-mom:first-child .uc-mom-num { left: 14%; }
+.uc-mom-a { margin-top: 0.3rem !important; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 1.7vw, 3.2rem); line-height: 1.1; color: var(--ink-primary); }
+.uc-mom-r { font-size: clamp(1rem, 0.95vw, 1.85rem); line-height: 1.42; color: var(--ink-secondary); }
+.uc-mom .uc-prompt { align-self: start; }
+
+/* ── Il giro ─────────────────────────────────────────────────────────── */
+.uc-giro-sl { display: grid; grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr); gap: clamp(1.2rem, 3vw, 4rem); align-items: center; width: 100%; }
+.uc-giro-sx { display: grid; gap: clamp(0.8rem, 2vh, 1.4rem); min-width: 0; }
+[data-slide] .uc-giro-sx p, [data-slide] .uc-giro-sx h2 { margin: 0; max-width: none; }
+.uc-giro { position: relative; width: 100%; aspect-ratio: 1000 / 600; container-type: inline-size; }
+.uc-giro-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.uc-giro-guida { fill: none; stroke: rgba(255, 255, 255, 0.12); stroke-width: 2; stroke-dasharray: 3 9; }
+.uc-giro-arco path { fill: none; stroke: var(--color-acqua); stroke-width: 5; stroke-linecap: round; }
+.uc-giro-nodo circle { fill: #04252d; stroke: var(--color-acqua); stroke-width: 4; }
+.uc-giro-nodo[data-nodo="0"] circle, .uc-giro-nodo[data-nodo="3"] circle { stroke: #ffffff; }
+.uc-giro-ancore { list-style: none; margin: 0; padding: 0; position: absolute; inset: 0; }
+.uc-giro-a { position: absolute; left: var(--x); top: var(--y); width: 0; height: 0; margin: 0; }
+.uc-giro-n { position: absolute; left: 0; top: 0; translate: -50% -50%; width: 2.6rem; height: 2.6rem; display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.05rem, 1vw, 2rem); color: #ffffff; }
+.uc-giro-testo { position: absolute; top: 0; translate: 0 -50%; width: calc(30cqw - 2.8rem); display: grid; gap: 0.2rem; }
+.uc-giro-a[data-lato="dx"] .uc-giro-testo { left: 2.4rem; text-align: left; }
+.uc-giro-a[data-lato="sx"] .uc-giro-testo { right: 2.4rem; text-align: right; }
+.uc-giro-a[data-lato="su"] .uc-giro-testo { top: auto; bottom: 2.1rem; left: 0; width: 36cqw; translate: -50% 0; text-align: center; justify-items: center; }
+.uc-giro-t { font-family: var(--font-display); font-weight: 700; font-size: clamp(1rem, 1.05vw, 2.1rem); line-height: 1.25; color: #ffffff; text-wrap: balance; }
+.uc-giro-p { font-size: clamp(0.8rem, 0.7vw, 1.45rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-acqua-chiaro); }
+/* Le fasi del disegno seguono quelle delle ancore: il nodo n e l'arco che ci
+   porta entrano con il passo n. L'ultimo arco, che chiude l'anello, entra
+   con il quinto passo. */
+.js .uc-giro-nodo:not([data-nodo="0"]), .js .uc-giro-arco { opacity: 0; transition: opacity 360ms ease-out; }
+.js [data-substep-index="1"] :is(.uc-giro-nodo[data-nodo="1"], .uc-giro-arco[data-arco="0"]),
+.js [data-substep-index="2"] :is(.uc-giro-nodo:is([data-nodo="1"], [data-nodo="2"]), .uc-giro-arco:is([data-arco="0"], [data-arco="1"])),
+.js [data-substep-index="3"] :is(.uc-giro-nodo:is([data-nodo="1"], [data-nodo="2"], [data-nodo="3"]), .uc-giro-arco:is([data-arco="0"], [data-arco="1"], [data-arco="2"])),
+.js [data-substep-index="4"] :is(.uc-giro-nodo, .uc-giro-arco) { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .js .uc-giro-nodo, .js .uc-giro-arco { opacity: 1; } }
+
+/* ── Due casi dal campo ──────────────────────────────────────────── */
+.uc-campo-tag { align-self: flex-start; width: fit-content; display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.3rem 0.75rem; border-radius: 999px; border: 1px solid var(--color-petrolio); font-size: clamp(0.8rem, 0.7vw, 1.45rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-accent); }
+[data-slide] p.uc-campo-tag { max-width: none; margin: 0; }
+.uc-casi { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 2.6rem); width: 100%; }
+.uc-caso { display: grid; grid-template-rows: auto auto auto 1fr; align-content: start; gap: 0.7rem; min-width: 0; margin-inline: 0; padding: clamp(1.1rem, 1.6vw, 2.2rem); border-radius: 12px; background: #ffffff; border: 1px solid var(--line-subtle); }
+[data-slide] .uc-caso p { margin: 0; max-width: none; }
+.uc-caso-fig { width: 100%; height: clamp(5rem, 7vw, 11rem); display: block; }
+.uc-caso-fig .s { fill: none; stroke: var(--color-grey-400); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.uc-caso-fig .sf { fill: var(--color-grey-200); }
+.uc-caso-fig .a { fill: none; stroke: var(--color-petrolio); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+.uc-caso-fig .af { fill: var(--color-petrolio); }
+.uc-caso-chi { font-size: clamp(0.82rem, 0.72vw, 1.5rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-accent); }
+.uc-caso-a { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.3rem, 1.5vw, 2.8rem); line-height: 1.2; color: var(--ink-primary); }
+.uc-caso-r { font-size: clamp(1rem, 0.95vw, 1.85rem); line-height: 1.45; color: var(--ink-secondary); }
+
+/* ── Tre cose che ci servono ──────────────────────────────────────── */
+.uc-servono { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 2.6rem); width: 100%; counter-reset: s; }
+.uc-serve { display: grid; grid-template-rows: auto auto 1fr; gap: 0.6rem; min-width: 0; margin-inline: 0; padding-top: 1rem; border-top: 5px solid var(--color-petrolio); }
+[data-slide] .uc-serve p { margin: 0; max-width: none; }
+.uc-serve-n { font-family: var(--font-display); font-weight: 800; font-size: clamp(3rem, 4.4vw, 8rem); line-height: 1; color: var(--color-petrolio); }
+.uc-serve-a { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.5rem, 1.9vw, 3.5rem); line-height: 1.15; letter-spacing: -0.015em; color: var(--ink-primary); text-wrap: balance; }
+.uc-serve-r { font-size: clamp(1rem, 1vw, 1.95rem); line-height: 1.45; color: var(--ink-secondary); }
+
+/* La firma */
+.uc-firma-t { color: #ffffff; }
+
+@media (max-height: 900px) {
+  .uc-tempo-nodo { width: 2.7rem; height: 2.7rem; margin-bottom: 0.3rem; }
+  .uc-tempo-linea { height: 2.7rem; }
+  .uc-pod-n { font-size: clamp(4.5rem, 9vw, 9rem); }
+  .uc-cat-i { padding: 0.8rem 1rem; gap: 0.55rem; }
+  .uc-prompt { padding: 0.55rem 0.8rem 0.6rem 2.4rem; }
+  .uc-conf-riga { padding: 0.55rem 0; }
+  .uc-conf-con { padding: 0.5rem 0.75rem; }
+  .uc-limite { padding: 0.8rem 1rem; }
+  .uc-caso { padding: 0.9rem 1.1rem; gap: 0.5rem; }
+  .uc-caso-fig { height: 4.2rem; }
+  .uc-mom-chev { height: 3rem; }
+  .uc-serve-n { font-size: 3rem; }
+}
+@media (max-width: 900px) {
+  .uc-pod, .uc-video, .uc-dom, .uc-giro-sl, .uc-casi, .uc-servono, .uc-limiti { grid-template-columns: minmax(0, 1fr); }
+  .uc-cat, .uc-momenti { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .uc-tempo-g { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem; }
+  .uc-tempo-linea { display: none; }
+  .uc-conf-testa { display: none; }
+  .uc-conf-riga { grid-template-columns: minmax(0, 1fr); gap: 0.4rem; }
+  .uc-conf-freccia { display: none; }
+}
+
+/* ── Gli a capo: i blocchi brevi si bilanciano ─────────────────────────
+   La coda di frase orfana («…sui casi⏎ che scegliete voi.») non si risolve
+   con uno spazio unificatore: un gruppo legato conta come una parola sola, e
+   sposta la coda invece di toglierla. Si risolve bilanciando le righe dei
+   blocchi brevi; il corpo lungo resta su `pretty`. */
+[data-slide] :is(.xd-sub, .xd-chiusa, .xd-div-l, .xd-cop-l, .uc-pod-d, .uc-pod-r, .uc-nota, .uc-prompt,
+  .uc-conf-oggi, .uc-conf-con, .uc-limite-r, .uc-mom-r, .uc-caso-r, .uc-serve-r, .uc-video-cap, .xd-firma-n,
+  .dett-riga > p, .dett-nota > p, .uc-dom-t, .uc-tempo-t, .uc-giro-t, .uc-cat-a, .uc-serve-a, .uc-caso-a) { text-wrap: balance; }
+
+/* ── Il ritmo della testa: occhiello, titolo e lead a 16px almeno (check g) ── */
+[data-slide] .xd-sl-head { gap: 1rem; }
+[data-slide] .uc-giro-sx, [data-slide] .uc-dom-sx { gap: 1rem; }
+
+/* ── «Scopri come» aperto prende la slide ────────────────────────────────
+   Il dettaglio cresce dentro la slide e il check `exp` la ri-misura da aperta:
+   quello che il dettaglio spiega si ritira, così il blocco aperto sta
+   nell'area sicura senza rimpicciolire il tipo. */
+[data-slide]:has(.ex-dett[data-hiw-on]) :is(.uc-confronto, .uc-momenti, .uc-ancore-v, .uc-giro-marca, .xd-sub, .uc-nota) { display: none; }
+[data-slide]:has(.ex-dett[data-hiw-on]) .uc-video { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
+.uc-giro-sl:has(.ex-dett[data-hiw-on]) { grid-template-columns: minmax(0, 1fr); }
+.uc-giro-sl:has(.ex-dett[data-hiw-on]) .uc-giro { display: none; }
+@media (max-height: 920px) {
+  [data-slide]:has(.ex-dett[data-hiw-on]) :is(.xd-n, .uc-dom-k) { display: none; }
+  [data-slide]:has(.ex-dett[data-hiw-on]) .uc-video-fig { display: none; }
+  [data-slide]:has(.ex-dett[data-hiw-on]) .uc-video { grid-template-columns: minmax(0, 1fr); }
+}
+[data-slide] .xd-cop-sx { gap: 1rem; }
+[data-slide] .uc-mom { gap: 1rem; }
+
+/* Il motivo della copertina di capitolo: sul pannello, in basso, sopra il
+   ::after che dipinge il petrolio (z-index), lontano dalla riga del punto. */
+.uc-motivo { position: absolute; z-index: 1; right: 4%; bottom: 7%; width: min(30vw, 34rem); height: auto; fill: none; stroke: rgba(255, 255, 255, 0.34); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.uc-motivo .p { fill: rgba(79, 203, 227, 0.22); stroke: rgba(79, 203, 227, 0.75); }
+@media (max-height: 900px) { .uc-motivo { width: min(24vw, 26rem); bottom: 5%; } }
+@media (max-width: 900px) { .uc-motivo { display: none; } }

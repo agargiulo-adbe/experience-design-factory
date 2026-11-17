@@ -1,0 +1,145 @@
+---
+/**
+ * 04 · DAL NUMERO AL TEST, E RITORNO — Analytics e Target insieme.
+ *
+ * Il giro si costruisce sotto le frecce: prima Analytics, che il team conosce,
+ * poi un passo alla volta fino al risultato che torna nella stessa
+ * conversazione. Sotto il disegno, la marcatura onesta: ogni passo esiste, il
+ * passaggio fra un passo e l'altro è quello che il programma serve a provare.
+ * ⚠️ Non si scrive che il giro è documentato: non lo è, come giro.
+ *
+ * I due casi sono «dal campo», da fonti interne Adobe, anonimizzati: niente
+ * nomi, niente numeri, niente link.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
+import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
+import Figura from '../components/Figura.astro';
+import Divisore from '../components/Divisore.astro';
+import Motivo from '../components/Motivo.astro';
+import Giro from '../components/Giro.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+
+const SLUG = 'domanda-3';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const EL_AA = 'https://experienceleague.adobe.com/en/docs/coworker/content/chat/use-cases/data-insights/analytics-overview';
+const EL_TGT = 'https://experienceleague.adobe.com/en/docs/target/using/introduction/coworker-skills';
+---
+<BaseLayout title={ch.title}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="secondary" align="left">
+      <div slot="backdrop" class="xd-div-bg" data-senza-foto><Motivo k="anello" /></div>
+      <Divisore num={ch.num} titolo={ch.title} punto={ch.punto} occhiello="Analytics e Target" />
+    </Slide>
+
+    {/* ── Il giro, a fasi ──────────────────────────────────────────────── */}
+    <Slide id="slide-giro" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="uc-giro-sl" data-reveal>
+        <div class="uc-giro-sx">
+          <p class="uc-dom-k">Analytics e Target</p>
+          <h2 class="xd-h2 uc-firma-t">Il giro, in cinque passi</h2>
+          <p class="xd-chiusa uc-giro-marca">Ogni passo esiste oggi. Il passaggio fra l’uno e l’altro, e la lettura del risultato con Analytics for Target dentro Coworker, è quello che il programma serve a provare.</p>
+          <HowItWorks title="Quale skill c’è dietro ogni passo" tone="onDark" class="ex-dett ex-dett--scuro">
+            <Dettaglio>
+              <DettaglioVoce>
+                <Figura k="causa" />
+                <p slot="ancora">1 · Dove si perde</p>
+                <p slot="riga">aa, per funnel e fallout, e aa-root-cause-analysis per la causa.</p>
+              </DettaglioVoce>
+              <DettaglioVoce>
+                <Figura k="calcolo" />
+                <p slot="ancora">2 e 3 · Che cosa e quanto</p>
+                <p slot="riga">Target Strategist propone il test, Target Test Calculator lo dimensiona.</p>
+              </DettaglioVoce>
+              <DettaglioVoce>
+                <Figura k="costruire" />
+                <p slot="ancora">4 · In linea</p>
+                <p slot="riga">Target Design, Target VEC e Target Setup creano e attivano l’attività.</p>
+              </DettaglioVoce>
+              <p slot="nota">Il quinto passo, la lettura con Analytics for Target dentro Coworker, non è documentato: è da provare nel programma.</p>
+            </Dettaglio>
+          </HowItWorks>
+          <p class="xd-fonte">Fonti: <a href={EL_AA} target="_blank" rel="noopener">Coworker su Analytics</a> · <a href={EL_TGT} target="_blank" rel="noopener">le skill di Coworker per Target</a></p>
+        </div>
+        <Giro />
+      </div>
+    </Slide>
+
+    {/* ── Due casi dal campo ──────────────────────────────────────────── */}
+    <Slide id="slide-campo" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="uc-campo-tag">Dal campo · clienti Adobe anonimizzati</p>
+          <h2 class="xd-h2">Due modi di cominciare, visti da altri clienti</h2>
+        </div>
+        <ul class="uc-casi" data-stagger>
+          <li class="uc-caso">
+            {/* Tante righe di KPI per prodotto diventano una sintesi; la spunta è della persona. */}
+            <svg class="uc-caso-fig" viewBox="0 0 320 100" preserveAspectRatio="xMinYMid meet" aria-hidden="true">
+              {[14, 34, 54, 74].map((y, i) => (<rect class="sf" x="8" y={y} width={70 + (i % 2) * 30} height="10" rx="3" />))}
+              <path class="s" d="M128 50 H158 M150 42 L158 50 L150 58" />
+              <rect class="a" x="176" y="12" width="76" height="76" rx="8" />
+              <path class="s" d="M190 32 H238 M190 46 H232 M190 60 H226" />
+              <circle class="af" cx="282" cy="50" r="18" />
+              <path d="M273 50 L280 57 L292 44" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <p class="uc-caso-chi">Un assicuratore europeo</p>
+            <p class="uc-caso-a">La sintesi settimanale dei KPI per prodotto</p>
+            <p class="uc-caso-r"><span class="ex-frase">Al posto del report fatto a mano.</span> <span class="ex-frase">Le persone validano i risultati e scelgono le azioni.</span></p>
+          </li>
+          <li class="uc-caso">
+            {/* Un test A/B: due varianti, Coworker aiuta a pianificare e leggere, la persona approva. */}
+            <svg class="uc-caso-fig" viewBox="0 0 320 100" preserveAspectRatio="xMinYMid meet" aria-hidden="true">
+              <path class="s" d="M8 50 H52" />
+              <path class="s" d="M52 50 C76 50, 76 22, 100 22 H150 M52 50 C76 50, 76 78, 100 78 H150" />
+              <rect class="sf" x="150" y="12" width="56" height="20" rx="4" />
+              <rect class="a" x="150" y="68" width="56" height="20" rx="4" />
+              <path class="s" d="M216 50 H246 M238 42 L246 50 L238 58" />
+              <circle class="af" cx="282" cy="50" r="18" />
+              <path d="M273 50 L280 57 L292 44" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <p class="uc-caso-chi">Un fondo pensione europeo</p>
+            <p class="uc-caso-a">Partire da test A/B controllati</p>
+            <p class="uc-caso-r"><span class="ex-frase">Coworker aiuta a pianificare e leggere.</span> <span class="ex-frase">Le persone approvano.</span></p>
+          </li>
+        </ul>
+        <p class="xd-fonte">Fonte: dal campo, clienti Adobe anonimizzati (fonti interne Adobe).</p>
+      </div>
+    </Slide>
+
+    {/* ── La domanda per voi ──────────────────────────────────────────── */}
+    <Slide id="slide-domanda" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="uc-dom" data-reveal>
+        <div class="uc-dom-sx">
+          <p class="uc-dom-k">La domanda per voi</p>
+          <h2 class="uc-dom-t uc-firma-t">Avete un numero che si è mosso e che vorreste trasformare in un test?</h2>
+        </div>
+        {/* Una serie che cala, e dal punto del calo parte un test. */}
+        <svg class="uc-dom-fig" viewBox="0 0 360 200" aria-hidden="true">
+          <path class="s" d="M10 60 L60 52 L110 64 L150 120" />
+          <circle class="af" cx="150" cy="120" r="7" />
+          <path class="a" d="M150 120 C190 120, 200 70, 240 70 H250 M150 120 C190 120, 200 170, 240 170 H250" />
+          <rect class="s sf" x="250" y="56" width="90" height="28" rx="6" />
+          <rect class="a" x="250" y="156" width="90" height="28" rx="6" />
+        </svg>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

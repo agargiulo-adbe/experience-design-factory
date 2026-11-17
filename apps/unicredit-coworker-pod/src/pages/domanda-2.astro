@@ -1,0 +1,131 @@
+---
+/**
+ * 03 · DOVE SI FERMANO I VOSTRI TEST? — Coworker su Adobe Target.
+ *
+ * Quattro momenti della vita di un test, disegnati come un percorso: entrano
+ * uno alla volta sotto le frecce del deck, così chi presenta si ferma su
+ * quello di cui la sala sta parlando. I nomi delle skill stanno dietro
+ * «Scopri come»: in sala servono i momenti, a chi riceve il deck servono i nomi.
+ *
+ * Fonte: Experience League, «Coworker skills for Adobe Target» (aggiornata al
+ * 27 ott 2026): le skill, gli esempi di prompt, e la tabella dove Coworker NON
+ * crea attività di Automated Personalization.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
+import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
+import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
+import Figura from '../components/Figura.astro';
+import Divisore from '../components/Divisore.astro';
+import Motivo from '../components/Motivo.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { MOMENTI } from '../data/contenuti';
+
+const SLUG = 'domanda-2';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+
+const EL_TGT = 'https://experienceleague.adobe.com/en/docs/target/using/introduction/coworker-skills';
+
+/* I prompt sono quelli d'esempio della pagina di Experience League, resi in
+   italiano; il secondo è quello della spec («+5%» è l'esempio della skill
+   Test Calculator, che parla di «5% lift»). */
+const chev = (i: number) => i === 0
+  ? 'M0 0 H176 L200 30 L176 60 H0 Z'
+  : 'M0 0 H176 L200 30 L176 60 H0 L24 30 Z';
+---
+<BaseLayout title={ch.title}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="secondary" align="left">
+      <div slot="backdrop" class="xd-div-bg" data-senza-foto><Motivo k="frecce" /></div>
+      <Divisore num={ch.num} titolo={ch.title} punto={ch.punto} occhiello="Adobe Target" />
+    </Slide>
+
+    {/* ── Quattro momenti di un test ──────────────────────────────────── */}
+    <Slide id="slide-momenti" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head">
+          <p class="xd-n">Adobe Target</p>
+          <h2 class="xd-h2">Quattro momenti di un test, e Coworker in ognuno</h2>
+        </div>
+        <ol class="uc-momenti" role="list">
+          {MOMENTI.map((m, i) => (
+            <li class="uc-mom" data-substep={i === 0 ? null : ''}>
+              <div class="uc-mom-box">
+                <svg class="uc-mom-chev" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path d={chev(i)} /></svg>
+                <span class="uc-mom-num" aria-hidden="true">{i + 1}</span>
+              </div>
+              <p class="uc-mom-a">{m.a}</p>
+              <p class="uc-mom-r">{m.r}</p>
+              <p class="uc-prompt">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v10H9l-5 4z" /></svg>
+                «{m.p}»
+              </p>
+            </li>
+          ))}
+        </ol>
+        <p class="uc-nota">Coworker non crea attività di Automated Personalization.</p>
+        <HowItWorks title="Le skill, momento per momento" tone="onLight" class="ex-dett">
+          <Dettaglio>
+            <DettaglioVoce>
+              <Figura k="inventario" />
+              <p slot="ancora">Capire</p>
+              <p slot="riga">Target Browse, Target Activity Verdict, Target Portfolio Report.</p>
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="calcolo" />
+              <p slot="ancora">Decidere</p>
+              <p slot="riga">Target Strategist, Target Test Calculator.</p>
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="costruire" />
+              <p slot="ancora">Costruire</p>
+              <p slot="riga">Target Design, Target VEC, Target Setup, Target Audience Composer.</p>
+            </DettaglioVoce>
+            <DettaglioVoce>
+              <Figura k="collisione" />
+              <p slot="ancora">Tenere in ordine</p>
+              <p slot="riga">Target Intelligence, Target Recommendations, Target Recommendations Diagnose.</p>
+            </DettaglioVoce>
+          </Dettaglio>
+        </HowItWorks>
+        <p class="xd-fonte">Fonte: <a href={EL_TGT} target="_blank" rel="noopener">Experience League, le skill di Coworker per Adobe Target</a></p>
+      </div>
+    </Slide>
+
+    {/* ── La domanda per voi ──────────────────────────────────────────── */}
+    <Slide id="slide-domanda" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="uc-dom" data-reveal>
+        <div class="uc-dom-sx">
+          <p class="uc-dom-k">La domanda per voi</p>
+          <h2 class="uc-dom-t uc-firma-t">In quale di questi momenti un test resta fermo più a lungo?</h2>
+        </div>
+        {/* I quattro momenti come quattro frecce: su una, la pausa. */}
+        <svg class="uc-dom-fig" viewBox="0 0 400 140" aria-hidden="true">
+          {[0, 1, 2, 3].map((i) => {
+            const x = 4 + i * 98;
+            const d = i === 0
+              ? `M${x} 30 H${x + 80} L${x + 96} 70 L${x + 80} 110 H${x} Z`
+              : `M${x} 30 H${x + 80} L${x + 96} 70 L${x + 80} 110 H${x} L${x + 16} 70 Z`;
+            return i === 2
+              ? <g><path class="a" d={d} /><path class="a" d={`M${x + 40} 56 V84 M${x + 54} 56 V84`} /></g>
+              : <path class="s sf" d={d} />;
+          })}
+        </svg>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

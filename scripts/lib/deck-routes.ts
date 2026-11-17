@@ -219,6 +219,14 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
     { name: 'punti', route: '/experience-design-factory/trenitalia-ciascuno-conta/punti/' },
     { name: 'idea', route: '/experience-design-factory/trenitalia-ciascuno-conta/idea/' },
   ],
+  'unicredit-coworker-pod': [
+    { name: 'home',       route: '/experience-design-factory/unicredit-coworker-pod/' },
+    { name: 'partenza',   route: '/experience-design-factory/unicredit-coworker-pod/partenza/' },
+    { name: 'domanda-1',  route: '/experience-design-factory/unicredit-coworker-pod/domanda-1/' },
+    { name: 'domanda-2',  route: '/experience-design-factory/unicredit-coworker-pod/domanda-2/' },
+    { name: 'domanda-3',  route: '/experience-design-factory/unicredit-coworker-pod/domanda-3/' },
+    { name: 'casa',       route: '/experience-design-factory/unicredit-coworker-pod/casa/' },
+  ],
 };
 
 /** Il nome dell'app ricavato dalla cartella da cui si lancia il comando. */
@@ -243,4 +251,5 @@ export const CWD_ALIAS: Record<string, string> = {
   'bper-sopra-quello-che-avete': 'bper-sopra-quello-che-avete',
   'bper': 'bper-sopra-quello-che-avete',
   'trenitalia-ciascuno-conta': 'trenitalia-ciascuno-conta',
+  'unicredit-coworker-pod': 'unicredit-coworker-pod',
 };

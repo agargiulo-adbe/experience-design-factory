@@ -414,6 +414,26 @@ export const EXPERIENCES: Experience[] = [
       it: 'Il percorso «Ciascuno conta» per la Direzione Sales di Trenitalia: una prova sui loro dati, poi una giornata di lavoro. Strato interno gated.',
     },
   },
+  {
+    slug: 'unicredit-coworker-pod',
+    name: 'Da dove partiamo',
+    client: 'UniCredit',
+    type: 'playbook',
+    brandLabel: 'UniCredit',
+    url: `${LIVE}/unicredit-coworker-pod/`,
+    shot: 'shots/unicredit-coworker-pod.webp',
+    accent: '#007a91',
+    sections: 5,
+    defaultPublished: false,
+    tag: {
+      en: '5 chapters · IT · scaffold',
+      it: '5 capitoli · IT · scaffold',
+    },
+    desc: {
+      en: 'Generated from the «Playbook» skeleton: 5 chapters, a cover and a signature. Copy and design system still come from the brief.',
+      it: 'Generata dallo scheletro «Playbook»: 5 capitoli, una copertina e una firma. Copy e design system arrivano ancora dal brief.',
+    },
+  },
 ];
 
 /** Le experience mostrate quando lo stato remoto non è leggibile (fail-closed). */

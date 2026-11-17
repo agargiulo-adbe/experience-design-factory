@@ -1,0 +1,43 @@
+---
+/**
+ * LA LINEA DEL TEMPO del programma — quattro tappe, disegnate.
+ *
+ * Una sola fonte per le due slide che la mostrano (capitolo 01, «Come ci
+ * arriviamo», e capitolo 05, «I prossimi passi»): se le tappe vivessero in due
+ * pagine, divergerebbero alla prima correzione.
+ *
+ * `fatte` = quante tappe sono già passate. Nel capitolo 01 è 0 (la prima è
+ * «oggi» e si accende), nel 05 è 1: la prima porta la spunta, e si accende la
+ * seconda. Le tappe entrano una alla volta sotto le frecce del deck
+ * (`data-substep`): chi presenta si ferma su quella di cui sta parlando.
+ *
+ * Date: solo sulla quarta, perché è l'unica con una data detta al cliente
+ * (mail dell'AE del 6 nov 2026). Sulle tappe 2 e 3 una data sarebbe nostra.
+ * ⚠️ Il nome del referente non sta in slide: il deck parla all'organizzazione,
+ * e il repo è pubblico. Chi è «la direzione» lo dice chi presenta.
+ */
+import { TAPPE } from '../data/contenuti';
+interface Props { fatte?: number }
+const { fatte = 0 } = Astro.props;
+---
+<div class="uc-tempo" data-fatte={fatte}>
+  <svg class="uc-tempo-linea" viewBox="0 0 1000 40" preserveAspectRatio="none" aria-hidden="true">
+    <line class="uc-tempo-tr" x1="125" y1="20" x2="875" y2="20" />
+    {fatte > 0 && <line class="uc-tempo-tr-fatto" x1="125" y1="20" x2={125 + 250 * fatte} y2="20" />}
+  </svg>
+  <ol class="uc-tempo-g" role="list">
+  {TAPPE.map((x, i) => (
+    <li class="uc-tempo-i"
+        data-stato={i < fatte ? 'fatta' : i === fatte ? 'ora' : 'poi'}
+        data-substep={i === 0 ? null : ''}>
+      <span class="uc-tempo-nodo" aria-hidden="true">
+        {i < fatte
+          ? <svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" /></svg>
+          : <span>{i + 1}</span>}
+      </span>
+      <p class="uc-tempo-k">{x.k}</p>
+      <p class="uc-tempo-t">{x.t}</p>
+    </li>
+  ))}
+  </ol>
+</div>

@@ -1,0 +1,68 @@
+---
+/**
+ * La copertina della sessione di lavoro del 23 novembre 2026.
+ *
+ * Due mestieri su una pagina (forma XD): dire di che cosa si parla, e dire che
+ * cosa c'è dentro. L'agenda sta qui, una volta, ed è cliccabile: i cinque
+ * capitoli sono le cinque voci.
+ *
+ * Non è una presentazione di prodotto: è una sessione per far dire al team come
+ * lavora oggi e da quali casi d'uso partire. Il titolo lo dice.
+ *
+ * Il lockup `hero` sta sulla PRIMA e sull'ULTIMA slide del percorso (qui e
+ * sulla slide-firma di `casa`): regola del motore, e dove c'è un hero la
+ * firma fissa si spegne da sola.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoBrand from '../components/CoBrand.astro';
+import { href } from '@edf/core/utils/url.js';
+import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
+import { SITE } from '../data/site';
+import { CHAPTERS } from '../data/chapters';
+
+const type = EXPERIENCE_TYPES[SITE.type];
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+const first = CHAPTERS[0];
+const last = CHAPTERS[CHAPTERS.length - 1];
+---
+<BaseLayout title={SITE.name}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/' + first.slug)} prevHref={href(base, '/' + last.slug)}>
+
+    <Slide id="slide-cover" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+
+      <div class="xd-cop" data-reveal>
+        <div class="xd-cop-sx">
+          <CoBrand variant="hero" class="xd-cop-lockup edf-cobrand--on-dark" data-reveal />
+          <p class="xd-cop-occ uc-cop-data" data-reveal data-reveal-delay="0.06">Sessione di lavoro · 23 novembre 2026</p>
+          <h1 class="xd-cop-t" data-reveal data-reveal-delay="0.1">{SITE.name}</h1>
+          <p class="xd-cop-l" data-reveal data-reveal-delay="0.16">Coworker su Adobe Analytics e Adobe Target: le categorie di casi d’uso, per scegliere insieme da quali cominciare.</p>
+          <p class="xd-cop-tipo" data-reveal data-reveal-delay="0.22">{type.coverLine.it}</p>
+        </div>
+
+        <nav class="xd-cop-dx" data-reveal data-reveal-delay="0.2" aria-label="Il percorso">
+          <p class="xd-cop-occ">Il percorso di oggi</p>
+          <ol class="xd-cop-indice" data-stagger>
+            {CHAPTERS.map((c) => (
+              <li>
+                <a href={href(base, '/' + c.slug)} class="xd-cop-cap">
+                  <span class="xd-cop-n">{c.num}</span>
+                  <span class="xd-cop-tit">{c.title}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
