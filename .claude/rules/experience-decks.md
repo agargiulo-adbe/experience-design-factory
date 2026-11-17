@@ -1,0 +1,792 @@
+---
+paths:
+  - "apps/**"
+  - "packages/**"
+  - "templates/**"
+  - "scripts/**"
+  - "skills/**"
+  - "supabase/**"
+  - "e2e/**"
+---
+
+# Experience Design Factory — le regole delle experience
+
+Spostate dal `CLAUDE.md` di root il 12 nov 2026 perché si caricassero solo lavorando su app, motore, template e script: il contenuto è lo stesso, BINDING come prima.
+
+### Lo strato XD — la grammatica visiva, nel motore e non in un'app (31 ott 2026)
+`pnpm new:experience` genera le classi `.ex-*`: copertina, cover di capitolo, ancore, card,
+nav, chrome. Quello che manca è la forma che un deck prende quando il contenuto si fa
+serio — la copertina a due colonne con l'agenda cliccabile, il divisore di capitolo, la
+slide di contenuto con occhiello/titolo/lead/chiusa, l'architettura a strati, le cifre, i
+passi, le referenze. Quella forma era nata dentro `intesa-esperienza-cliente` come `.im-*`,
+e lì sarebbe rimasta: la seconda experience che la vuole la ricopia, e da quel momento le
+due divergono. Ora vive in **`packages/core/src/styles/xd.css`** con un nome, **XD**, e si
+prende con una riga: `@import "…/packages/core/src/styles/xd.css";`.
+- **XD porta geometria, gerarchia e le regole di leggibilità già pagate** (il corpo che non
+  scende sotto il minimo, i blocchi a bandiera che condividono il bordo per il check `m`,
+  gli inchiostri pieni su un fondo dichiarato per `audit:ink`). **Non porta colori di
+  marchio**: quelli arrivano dai token dell'app. Un valore di marchio scritto lì dentro
+  sarebbe la skin di un cliente imposta a tutti gli altri.
+- Il contratto è la famiglia **`--xd-*`** che l'app dichiara: inchiostri e superfici per i
+  pannelli che XD si porta scuri, più `--xd-div-pannello` e `--xd-piano`.
+- **Non è un tema, è una grammatica.** Due experience su XD non condividono i colori:
+  condividono il ritmo — dove sta il titolo, quanto respira un capitolo, come si legge una
+  cifra. La differenza fra due libri della stessa collana e due libri con la stessa copertina.
+- ⚠️ **Intesa non è stata migrata** e continua su `.im-*`: va in sala il 5 novembre, e un
+  refactor del suo CSS a cinque giorni dall'incontro è un rischio senza ritorno. Si migra
+  dopo, e allora `.im-*` diventa quello che resta di suo.
+- **XD e i micro-diagrammi sono DUE REGISTRI, e non si sostituiscono** (BINDING, ogni
+  deck). **XD è quello che si proietta**: immagine, mockup, una cifra, poche parole — una
+  slide che si legge da otto metri in tre secondi. **I micro-diagrammi** (`Figura.astro`
+  di ogni app) **sono quello che si apre**: piccoli, molti, un meccanismo ciascuno, e
+  stanno DENTRO `HowItWorks` → `Dettaglio` → `DettaglioVoce`. Si sceglie **dalla stanza** —
+  la direzione che decide in un'ora vuole XD, chi possiede la piattaforma vuole il
+  meccanismo — e un deck normalmente porta tutti e due. Quello che non può portare è un
+  drill-down spacciato per slide: il segnale è **più di un disegno piccolo sulla stessa
+  slide**. ⚠️ Nessun gate lo misura: `audit:ritmo` conta SE c'è un elemento visivo, non in
+  che registro è. Il 3 nov 2026 un giro ha proposto di costruire le slide di direzione sul
+  vocabolario dei micro-diagrammi chiamandolo XD — ventidue figure buone, strato sbagliato.
+  Dettaglio in `skills/experience-design/references/xd.md`.
+- Prima app su XD: `bper-sopra-quello-che-avete`. Tre difetti che XD ha già insegnato a
+  evitare — un componente con fondo chiaro fisso dentro una slide scura (1,08:1, invisibile
+  a ogni check di layout); una catena di spazi unificatori che rende una frase inseparabile
+  e la fa sbordare (check `c`, HARD); un divisore senza fotografia che lascia un buco invece
+  di un respiro, e per cui esiste la variante `[data-senza-foto]` a due campi.
+
+## Super Admin Console (`apps/console`, `/console/`)
+Multi‑user, real auth. Light "admin" theme.
+- **Auth**: Supabase Auth (email/password + magic link), dependency‑free `fetch` client in `src/lib/supabase.ts`; client‑side guard `src/lib/guard.ts` (login redirect + super‑only gate).
+- **Roles**: global `is_super_admin` flag + per‑experience `user_experience_roles` (`admin`|`viewer`).
+- **Views**: `index` (experiences: status live/draft/archived, **toggle «Pubblica su showcase»**, open Console), `users` (super‑only: invite by email, toggle super admin, suspend, per‑experience access). `[project]/` redirects to that experience's `/admin/`.
+- **Backend** (run once, see `supabase/README.md`): `0001_super_admin.sql` (tables + RLS + signup trigger; bootstraps `agargiulo@adobe.com` as super admin) and `0002_seed_ferrari.sql`. Invites use the `invite-user` Edge Function (service_role lives ONLY there). `experiences` is the registry of record for the dashboard.
+- **Pubblicazione sullo showcase**: `experiences.show_in_showcase` (migrazione `0013`) + policy **anon** che espone SOLO le righe pubblicate. `/showcase/` legge quello stato a runtime (nessun rebuild) ed è **fail-closed**: senza chiavi, senza rete o con risposta vuota resta il set `defaultPublished` di `apps/factory-showcase/src/data/experiences.ts`. Le experience nate da materiale riservato (Eni, MIM, Isybank, Aperture) e l'Atelier partono **spente**: accenderle le rende pubbliche su una pagina senza login.
+- Run remote SQL via `supabase db query --linked` (Management API, needs `supabase link` + the agargiulo‑adbe account login).
+
+## Shared Admin Console engine (config‑driven — CR/evo propagate to ALL)
+`@edf/core/blocks/admin/AdminConsole.astro` is ONE engine; each experience's
+`src/pages/admin.astro` is a **thin wrapper** passing `projectSlug`, `projectName`,
+`pages` (PAGE_REGISTRY), `solutionGroups`, `deckHref`, Supabase env. **Improve the engine
+once → every experience gets it.** Four tabs:
+1. **Sezioni dell'esperienza** — turn Adobe *solutions* on/off.
+2. **Capitoli e slide** — turn *chapters* and single *slides* on/off (see below).
+3. **Media demo per slide** — attach image/video to any slide + shareable link.
+4. **Slide personalizzate** — author new deck‑coherent slides (see below).
+
+### Solution gating
+Each solution controls where it appears. State in `localStorage['edf-solutions-<slug>']`
+(array of active ids) + shareable `?s=id1,id2`. In the deck: `data-solution` on gated
+slides/chips, `data-nav-solution` on nav links; `pageSolutions` per page. The BaseLayout
+runtime hides inactive ones, hides their nav entries, and **rewrites `data-deck-next` to
+skip gated sections** (so arrow nav never lands on a hidden section). Multi‑solution
+section = hidden only when ALL its solutions are off.
+
+### Chapter / slide gating (ogni experience, presente e futura)
+Il tab **Capitoli e slide** legge il `PAGE_REGISTRY` che ogni `admin.astro` già passa: zero
+lavoro per app. Si salvano solo gli **scostamenti** dal "tutto acceso" in
+`localStorage['edf:chapters:<slug>']` (`{v,order,chapters:{<slug>:{on,n,slides:{<id>:bool}}}}`);
+un deck senza configurazione si comporta esattamente come prima. Regola: **capitolo acceso →
+slide accesa salvo eccezione; capitolo spento → slide spenta salvo eccezione** — così
+«spegni Risultati ma tieni la slide di chiusura» è una riga sola. Un capitolo resta nel flusso
+finché ha ≥1 slide visibile; a zero sparisce da frecce e link.
+Il runtime vive in **`DeckContainer.astro`** (non nei BaseLayout): ricava lo slug di progetto
+da `import.meta.env.BASE_URL` — l'ultimo segmento di `base` coincide con `projectSlug` in tutte
+le app — quindi **ogni deck nuovo lo eredita senza wiring**. Nasconde le slide spente togliendo
+`data-slide` (come il gating soluzioni, prima che `initDeck()` conti), nasconde gli `<a>` verso
+capitoli vuoti, riscrive `data-deck-next`/`data-deck-prev-href` scavalcandoli, e redirige in
+avanti se si apre un capitolo rimasto vuoto. Link condivisibile `?c=<base64url>`: si deposita in
+**sessionStorage**, non in localStorage — chi riceve il link non se lo ritrova appiccicato al
+browser. Anteprima dal vivo via BroadcastChannel `edf-console` (`edf:chapters-changed`).
+
+### Media demo slots
+`MediaDemoSlot` inside a `data-demo-flex` slide. Config in
+`localStorage['edf:media-slots:<slug>']`; shared via Supabase `media_configs` (`?cfg=<uuid>`).
+
+### Custom slides authoring
+Admin tab creates slides in any section (formatted text / image / video) with a live
+preview using the real deck tokens. Stored in `localStorage['edf:custom-slides:<slug>']`;
+runtime `window.__edfInjectCustomSlides` builds a `Slide.astro`‑shaped `<section data-slide
+data-edf-custom>` (sanitized), injected before the deck counts slides. Rides shared links
+inside the media config under `__customSlides`. Styling: `.cs-*` classes in each `global.css`.
+
+## Bilingual (i18n)
+`<T en="…" it="…" as="h2" class="…" />` renders BOTH languages; global CSS on
+`html[data-lang]` shows the active one (instant, no reload). `LangToggle` sets + persists
+`localStorage['edf:lang']`; anti‑flash init in `<head>`. Ferrari defaults EN with EN/IT
+toggle; maxmara/unicredit are IT. Ferrari intentionally defaults to EN (international event context); Max Mara and UniCredit default to IT. The lang/data-lang attributes in Ferrari's BaseLayout are 'en' by design — do not change without updating this note.
+
+## Responsive & fullscreen (all experiences)
+The immersive deck **auto‑optimises mobile → desktop → giant TV** from a single source:
+`DeckContainer.astro` `<style is:global>` overrides the safe‑area tokens **scoped to
+`[data-deck]`** by breakpoint (phone ≤640: tight insets + dense slides scroll with
+`overflow-y:auto; justify-content: safe center`; tablet; phone‑landscape; giant TV ≥2200:
+larger insets + controls). No per‑app edits needed. **Fullscreen** targets
+`document.documentElement` and **persists across sections** because cross‑section nav uses
+ClientRouter SPA navigation (`window.__edfNavigate`), not a full reload.
+
+## Quality Bar
+- WCAG 2.2 AA, Lighthouse ≥ 95. **Auto‑responsive mobile → desktop → giant TV** (deck handles safe‑area + scroll); `prefers-reduced-motion` respected.
+- **Legibility is a hard requirement, not just audit‑pass** — every deck slide must follow the **Type & legibility contract** (see Deck visual contract): generous type (body ≥ 0.95rem), readable ink, balanced composition, verified by *reading a 1920 screenshot*, not only by `audit:deck`.
+- Real copy (EN/IT where the experience is bilingual). Adobe revealed progressively; co‑brand discreet.
+- **No wrong‑brand imagery**: Pexels stock has no client cars/logos; NEVER show a non‑client car (e.g. a competitor F1 car) or foreign logo. Use abstract/atmospheric imagery (carbon, asphalt, floodlight bokeh, crowd, podium, telemetry). If official client assets are provided, use those.
+- Config‑driven: every page = ordered slides; solutions/media/custom‑slides toggle at runtime.
+
+### Il deck parla all'organizzazione, non alla persona in sala (BINDING, ogni experience)
+Chi riceve il deck lo gira ai colleghi: la copia che sopravvive al meeting è quella che
+regge **senza** chi l'ha presentata. Quindi niente **seconda persona singolare** nella voce
+del deck — titoli, occhielli, lead, bullet, take, cautele, fonti: si usa il **plurale
+istituzionale** («la vostra istanza», «decidete voi», «cosa vi portate a casa») o
+l'impersonale («si controlla», «la conferma spetta all'Admin»). Nominare il referente per
+nome nel contenuto è anche peggio: il deck diventa suo e muore con lui.
+Due eccezioni, perché sono dialoghi e non voce del deck: il **mock di chat** (la persona
+che digita e l'assistente che le risponde parlano al singolare, se no non è una chat) e i
+**messaggi di interfaccia** rivolti a chi sta operando (login del dossier, console admin).
+Lo scheletro dei tipi in `experienceTypes.ts` segue la stessa regola, così ogni experience
+nuova nasce già al plurale. Memoria: `deck-voice-institutional`.
+
+### Ancore, non prosa (BINDING, ogni experience presente e futura)
+Chi guarda una slide **legge**, e mentre legge non ascolta chi parla. Misurato il 22 ott
+2026 in videoconferenza con una banca: il capitolo costruito per far parlare il cliente ha
+prodotto **2 minuti su 18**, e due colleghi nel debrief hanno detto «in video loro si fissano
+sul leggere le slide — bisogna dargli delle **ancore**» e «tu ti sei spiegato benissimo, **ma
+io non ho capito**».
+
+Lo dice anche l'evidenza, e la corregge nel punto utile. Il **redundancy principle** (Mayer):
+si impara meglio da *grafica + voce* che da *grafica + voce + testo a schermo*, perché due
+fonti verbali simultanee competono e una si perde. Ma la condizione al contorno ribalta il
+«via tutto il testo»: **etichette brevi, messe accanto alla cosa che descrivono, migliorano**
+la comprensione, perché guidano l'attenzione invece di competere con la voce.
+
+Quindi, su ogni slide di contenuto:
+- **un'ancora per concetto — massimo 6 parole.** È un nome, non una frase.
+- **una riga di lead**, il punto della slide, massimo ~15 parole. Il titolo *è* il punto, non
+  l'etichetta del capitolo.
+- **il dettaglio dietro `HowItWorks`** («Scopri come»). Non si butta: il deck viene
+  inoltrato e deve reggere senza chi l'ha presentato — ma sta **a richiesta**, non addosso a
+  chi parla.
+- **e dentro quel blocco vanno FIGURE, non paragrafi.** Un «Scopri come» che si apre su
+  quattro paragrafi è lo stesso muro di testo, soltanto nascosto — la regola risolta a metà.
+  In sala quel blocco si apre per **rispondere a una domanda**, e in quel momento nessuno
+  legge quattro paragrafi davanti a un cliente che aspetta. La forma è
+  **`Dettaglio` + `DettaglioVoce`** del motore: per ogni voce un micro-diagramma che si
+  muove, l'**ancora** che lo nomina, e **una riga** col fatto che deve sopravvivere
+  all'inoltro. Venti parole: se non ci stanno, la voce porta due cose e va divisa in due.
+  I disegni vivono nell'app (`src/components/Figura.astro`, solo geometria); **spessore del
+  tratto, regola dell'accento e curva dell'animazione stanno nel motore**, se no due deck
+  disegnano con due mani diverse. Niente parole dentro l'SVG: un testo in un disegno non
+  cresce con la radice e sulla parete sparisce.
+  Il movimento non ha JavaScript: il motore marca `[data-hiw][data-hiw-on]` all'apertura e le
+  animazioni si agganciano lì — il giro riparte ogni volta, e lo stato **base** è quello
+  finale e informativo, così con «Riduci movimento» non parte niente e la figura si legge.
+- **dove si spiega un meccanismo, si DISEGNA.** Un diagramma con le ancore attaccate ai nodi
+  batte tre card di testo, sempre. E un'architettura che **nasce a fasi** sotto le frecce del
+  deck dice «ci appoggiamo sopra» con la forma, invece di scriverlo.
+
+**Il template lo impone, non lo ricorda:** `templates/experience/src/pages/_chapter.astro.tpl`
+genera ancore (`.ex-ancore`) e un `HowItWorks` che contiene un **`Dettaglio` a tre figure**,
+con un vocabolario di partenza in `templates/experience/src/components/Figura.astro` (cinque
+meccanismi che tornano in quasi ogni blueprint). Porta la regola nel commento al punto d'uso. Chi scrive tre paragrafi dentro tre card sta rifacendo l'errore che quella forma
+esiste per impedire. Dettaglio e casi:
+`skills/experience-design/references/ancore-non-prosa.md`.
+
+**Il gate è la famiglia `P` di `copy-audit`:** conta i blocchi di prosa (>25 parole) resi in
+pagina e **fuori** da una disclosure, normalizzati per slide; sopra 2 per slide segnala.
+È **SOFT e non HARD** per una ragione dichiarata: i deck nati prima la sforano quasi tutti, e
+un gate che fallisce ovunque il primo giorno viene spento. Diventa HARD quando sono passati.
+⚠️ Limite noto: non conta la prosa che vive in `src/data/*.ts` e arriva in pagina per import.
+Quella si vede a occhio.
+
+**E il check `i` di `audit:deck` non è il giudice qui.** Misura la **massa di testo**, ed è
+tarato su deck di prosa: un deck ad ancore lo fallisce per costruzione (su Intesa è passato da
+7 a 44 rilievi mentre le slide miglioravano). Un `i` che sale mentre il testo scende non è un
+peggioramento: è il gate che guarda la cosa sbagliata. Non si compensa gonfiando le slide.
+Memoria: `in-video-le-slide-si-leggono`.
+
+### Un deck è una partitura, non un formato (BINDING)
+La forma giusta per una slide non si decide una volta e si ripete. Misurato il 24 ott 2026:
+un deck nuovo è uscito con **tre strutture ripetute sette volte**, zero immagini e tutti i gate
+verdi — mentre nel motore c'erano **undici scene di meccanismo e trenta blocchi** mai aperti.
+- **Si apre il catalogo prima di comporre: `pnpm deck:catalogo`.** È la stessa regola dei
+  `.pptx`, dove 58 layout su 166 portano un'immagine o una citazione e un deck «muro di testo»
+  quasi sempre ha usato solo quelli a colonne. Per l'HTML quel catalogo non esisteva.
+- **Le scene non si riscrivono**: sono dichiarative (`data-count-up`, `data-personalize`,
+  `data-datalake`, `data-stack-assemble`, `data-converse`, `data-lifecycle`…), già
+  `prefers-reduced-motion`, e **hanno due implementazioni** — `initX` per il formato a
+  scorrimento e `playSlide` per il deck. Nel deck basta l'attributo.
+- **Mai due slide di contenuto consecutive dello stesso tipo**, e mai quattro di fila senza un
+  elemento visivo. Lo misura `pnpm audit:ritmo`. ⚠️ Il **tipo** dipende dai selettori che il
+  gate conosce: un deck con una pelle tutta sua cade in «testo» anche dove è vario. Il numero
+  di cui fidarsi è **slide con un elemento visivo**, che conta `svg`/`img`/`video` veri.
+  Misurato il 24 ott 2026 su nove deck del monorepo: **26 slide su 213, il 12%**. Non era un
+  difetto di un deck: era l'assenza del gate.
+- **Una scena marca lo STATO, la pelle decide il contrasto.** La scena `personalize` attenuava
+  gli scartati con `opacity: 0.2`: ma quelle tessere portano testo, e attenuare con l'opacità
+  un inchiostro già grigio dà 1,5:1. Ora scrive `data-scartato` e la pelle lo veste.
+- **Una fase non ancora entrata è ASSENTE, non trasparente.** `visibility: hidden` accanto a
+  `opacity: 0`, se no i gate misurano testo invisibile (e i lettori di schermo lo leggono).
+- **Ogni slide si legge su una parete di sala riunioni, e si misura.** Il contratto di
+  leggibilità è tarato su 1920; la scala da muro alza la radice a 28px sopra i 3200, ma **non
+  basta**: misurato il 24 ott 2026, a 3840 il corpo più piccolo di una figura scendeva allo
+  **0,97% dell'altezza** contro l'1,3% che ha a 1920. Su una parete, che si guarda da più
+  lontano, quel rapporto deve salire, non scendere. Il testo dentro una figura si lega al
+  viewport — `clamp(<minimo in rem>, <x>vw, <tetto>)` — **mai alla sola radice**. Lo misura
+  **`pnpm audit:ritmo --app <alias> --sala`** (famiglia `S`, a 3840×2160): corpo più piccolo
+  sotto l'1,1% dell'altezza = rilievo. E `wallScale` si accende **dopo** `audit:deck -- --tv`
+  a 0 HARD, mai prima.
+
+### `audit:deck` — leggere davvero l'esito, non solo la riga finale
+Il gate serve solo se fallisce quando deve. Due trappole viste sul campo, entrambe
+silenziose:
+- **`DECK_URL` è l'ORIGIN, non il path.** Le rotte nel route set sono già percorsi
+  completi: `DECK_URL=http://localhost:4399`, non `…/unicredit-engagement`. Con il path
+  doppio ogni pagina è un 404 e l'audit va in timeout (che almeno si vede).
+- **Un giro che non audita niente non è un PASS.** `--only a,b` finiva in un secondo
+  filtro posizionale che lo trattava come il nome di rotta `"a,b"`: zero rotte auditate e
+  «PASS — all decks clean» stampato lo stesso. Corretto in `scripts/deck-audit.ts` (il
+  valore dei flag non è più un filtro posizionale) e ora zero rotte esce con codice 2.
+  Se un PASS arriva sospettosamente in fretta, contare le rotte stampate.
+- Nessun deck del monorepo è a zero fallimenti: il residuo fisiologico è tutto **soft**
+  (`a` banda di lettura, `i` uso dello spazio). Quello che deve restare a zero è l'insieme
+  **HARD** — e va verificato grepando le colonne, non leggendo il totale.
+
+### `audit:ink` — il contrasto del TESTO, che nessun altro check guarda (BINDING)
+Il check `h` di `audit:deck` misura **bottoni e CTA**: è nato per quelli. Il testo delle
+slide non lo misura nessuno, e in una skin a **dominante ribaltata** è esattamente lì che si
+rompe — un titolo che eredita `--ink-inverse` su una superficie diventata scura esce ardesia
+su ardesia, **passa tutti e undici i check** e in sala non si legge. Successo sulla
+Prospettiva Trenitalia: copertina di capitolo illeggibile con `audit:deck` a 0 HARD.
+- **`DECK_URL=<origin> pnpm audit:ink --app <alias>`** (`--only <rotta>` per una pagina).
+  **Apre ogni «Scopri come» prima di misurare** (dal 24 ott 2026): a blocco chiuso quel testo
+  non lo guardava nessun gate, ed è esattamente lì che si rompe — `.hiw-body` del motore non
+  dichiara un colore. Su Intesa i blocchi misurati sono passati da 194 a 241.
+  Non legge il CSS: ritaglia il rettangolo di ogni blocco di testo dallo screenshot e guarda
+  i **pixel** — fondo = colore modale, inchiostro = pixel più lontano dal fondo. Così
+  gradienti, scrim e backdrop sono già dentro la misura. Soglie AA: 4,5:1, e 3:1 sul testo
+  grande (≥24px, o ≥18,66px se grassetto). **Deve uscire PULITO.**
+- **Le tre trappole che ha trovato**, tutte invisibili agli altri gate: un componente con
+  **superficie chiara propria** dentro una slide scura (`.ex-card` ha un fondo bianco al 90%)
+  eredita gli inchiostri del fondo scuro → va elencato nel blocco dei ribaltamenti; un
+  **selettore di superficie sbagliato** (`bg="brand"` rende `bg-[var(--accent-primary)]`, NON
+  `--surface-brand`) fa sì che la regola non si applichi e nessuno se ne accorga; e un
+  inchiostro **bianco trasparente** su fondo di marchio (`rgba(255,255,255,0.92)`) scende
+  sotto soglia — su uno sfondo esplicito l'inchiostro va esplicito e pieno.
+
+### Le fonti pubbliche portano il link, e il link risponde (BINDING, ogni experience)
+Una slide che cita una fonte pubblica **senza link** chiede di fidarsi; con il link si
+verifica in dieci secondi — e un deck viene quasi sempre letto da chi non era in sala, che
+quel controllo lo fa davvero. Vale per le fonti del cliente (comunicati, stampa, pagine
+ufficiali) **e per i prodotti Adobe nominati**, che rimandano alla pagina pubblica su
+Experience League o alla descrizione di prodotto su helpx. **Non** vale per ciò che è nostro
+e non pubblico — una misura fatta da noi, un documento di lavoro, una fonte interna: quelli
+si citano senza link, dicendo che cosa sono.
+- **Un link rotto è peggio di nessun link:** è una fonte che cade proprio mentre qualcuno la
+  controlla. Si verifica che risponda prima di metterlo in slide, e poi lo tiene d'occhio il
+  gate: **`DECK_URL=<origin> pnpm audit:fonti --app <alias>`** — **HARD** sui link che non
+  rispondono (2xx/3xx attesi), **SOFT** sulle righe di fonte prive di link, che sono legittime
+  quando rimandano a un documento interno.
+- Il gate verifica che il link **risponda**, non che sia **quello giusto** per quella frase:
+  una pagina che dà 200 può parlare d'altro. Quello resta un controllo umano, da fare una
+  volta per fonte quando la si cita.
+- **403 non vuol dire rotto.** Molti siti (Gartner, parecchi editori) rispondono 401/403/429
+  a qualunque accesso automatico, compreso un Chromium headless con user-agent da browser,
+  mentre per una persona la pagina si apre benissimo. Il gate li mette in una lista a parte
+  — «da aprire a mano» — invece di chiamarli errori: un gate che grida al lupo viene
+  ignorato, ed è il contrario del suo scopo. Quei link si aprono una volta in un browser
+  vero e si tira una riga.
+- **Stile sobrio:** una fonte non è una CTA. Eredita l'inchiostro del testo che la ospita e si
+  distingue per la sottolineatura, che si accende d'accento al passaggio — così il contrasto
+  resta quello del testo e `audit:ink` continua a passare.
+
+### Umanizzazione: `copy-audit` si LANCIA, non si ricorda (BINDING)
+La rubrica de-AI e la voce al plurale istituzionale sono regole che un `grep` sa controllare,
+e `scripts/copy-audit.ts` le controlla: **`pnpm --silent exec tsx scripts/copy-audit.ts --app
+<alias>`** → **0 HARD**. Scriverle rispettandole non basta: finché non gira, dipende da quanto
+bene se le ricorda chi scrive. Il gate trova i segni, non giudica il tono.
+
+**Il gate conta le stringhe che misura, e il numero si guarda.** Per mesi ha letto solo gli
+attributi `it=`/`en=` di `<T>`: sulle experience in **una lingua sola** — dove la copia sta nei
+campi dei dati e nel markup — ne vedeva una ventina su qualche centinaio, e stampava PASS.
+Dal 13 ott 2026 legge anche quelle (e salta le note non rese, `cosaDice`, e la console admin):
+l'intestazione dice **quante stringhe ha misurato**, e segnala le app dove ne misura zero.
+Un PASS senza il conto delle stringhe non è un PASS.
+
+### Umanizzare è un giro MISURATO: spostare un marcatore non è toglierlo (BINDING)
+Un intervento che fa scendere un contatore può aver spostato il segno invece di
+rimuoverlo, e il gate non se ne accorge. Misurato su `intesa-esperienza-cliente` il 30 ott 2026:
+`copy-audit` segnalava **8 trattini-perno** (`D1`); la correzione ovvia — i due punti al
+posto del trattino — li avrebbe azzerati, ma il deck aveva già **49 stringhe con i due
+punti come perno retorico**. Sei volte tanto. Tutti i gate verdi, e il testo peggiore.
+- **Prima di toccare si misura anche quello che il gate non guarda: `pnpm lenti --app
+  <alias>`**, e alla fine si riconfronta. Esito reale: trattini 8 → 0, due punti 49 → 48.
+- **Il gate si rilancia finché non esce 0, non una volta.** La seconda passata trova i
+  marcatori creati dalla prima: riscrivendo una doppia relativa ne è uscita un'altra,
+  spostata di tre parole. Su quel deck sono servite tre passate.
+- **Quattro giri, in quest'ordine, e il primo decide che cosa dice la slide — non come suona.**
+  Il **messaggio** (**Giro 0**: si riscrive il titolo che funzionerebbe per qualunque cliente, la
+  formula a contrasto, la frase da rileggere due volte, l'affermazione che la slide non dimostra.
+  Qui **non vale il ±10%**: serve il testo giusto, non uno della stessa lunghezza, e se non entra
+  si taglia, si cambia composizione o si divide la slide — mai si rimpicciolisce il tipo. Ciò che
+  cambia una tesi, una promessa o l'ask non si applica da soli: va a chi possiede il contenuto,
+  con la riscrittura pronta) · i **segni** (la rubrica, riga per riga) · la **misura**
+  (stilometria per PAGINA — una media per app nasconde il capitolo pesante — più la
+  **concentrazione dei telai** di frase, e si **guardano** gli screenshot a 1920) ·
+  l'**orecchio** (l'altra lingua, dove si sente meno; i fatti attribuiti a terzi; il tono).
+  **Il ±10% vale dai Giri 1-3**, misurato sul testo uscito dal Giro 0, e il Giro 0 si committa
+  a parte dagli altri tre. Il giro completo sta in **`/umanizza`**.
+- **La concentrazione è il segnale, non il totale.** Su quel deck 33 stringhe su 513
+  giravano sulla negazione, e lette una per una erano quasi tutte guadagnate — l'argomento
+  del deck *è* «quello che date per fatto non succede». Cinque telai identici dentro lo
+  stesso componente invece erano un tic: si toglie quella, non le altre.
+- **Si sostituisce con parole che il deck già usa**, non con parole nostre.
+- **Le eccezioni si dichiarano sulla riga** con `copy-audit-ignore` **e il motivo accanto**:
+  un'eccezione senza motivo è un gate spento di nascosto.
+- **Due sonde provate e scartate**, perché segnalano il corretto: il **tricolon** (un elenco
+  di tre cose vere ha la stessa forma di una terzina retorica) e l'**eco IT/EN** (uno
+  scheletro di punteggiatura identico è quello che produce una traduzione fedele). Restano
+  lenti da puntare a mano, mai gate.
+Dettaglio, tipi di intervento col prima/dopo vero e i due buchi di gate trovati:
+`skills/experience-design/references/umanizzazione.md`. Memoria: `umanizzare-e-misurato`.
+
+### La linearità si misura: una frase si ascolta una volta sola (BINDING, `copy-audit` famiglia `L`)
+Un dirigente legge la slide **mentre qualcuno parla**: una frase che va capita due volte è persa,
+e la semplicità non è un gusto, è la condizione perché l'argomento arrivi. Quattro segni, SOFT,
+che un conteggio sa vedere e che l'occhio perdona sempre:
+- **`L1` frase oltre le ~28 parole** — si taglia in due, non si accorcia il tipo;
+- **`L2` tre o più subordinate** nella stessa frase — una idea per frase;
+- **`L3` doppia relativa** («che … che …») — si riscrive con un punto o un sostantivo;
+- **`L4` apre con una subordinata** e la principale arriva dopo la rincorsa — prima il soggetto.
+Successo che ha generato la regola: sulla Prospettiva Trenitalia la **domanda chiave del deck**
+stava in terza riga, dietro due subordinate e una doppia relativa («Il prezzo lavora già al
+massimo, e verso l'alto il listino è fermo. Dove si perdono le vendite che il prezzo non
+recupera?»). La premessa è contesto: è andata **nell'occhiello**, e la domanda è rimasta sola e
+grande. Il giro completo ha portato il deck da 20 frasi sopra soglia a 0 — e la slide, che
+falliva il check `i`, ora passa tutti e dodici.
+Le eccezioni vere si **dichiarano sulla riga** con `copy-audit-ignore` (una citazione verbatim,
+un ritmo voluto che il panel ha messo fra le cose da non toccare), mai silenziando la famiglia.
+
+
+### Audit discipline — hard vs soft; never shrink type to pass
+`audit:deck` is not "0‑or‑bust" — separate the checks and act accordingly:
+- **HARD (real rendering bugs — must be 0 at 1920/1440/1280):** `b` chrome collision · `c` overflow / box past `--slide-safe-inset` · `d` text over faces · `e` text‑on‑text · `h` contrast · `j` clipping outside viewport · `k` hidden scroll · `m` blocchi a bandiera fuori riga · `exp` ogni disclosure ri‑misurata da aperta.
+- **SOFT (aspirational):** `a` reading band 30–70% · `i` space usage ≥45% · `g` vertical rhythm. Acceptable on intentionally airy/dense slides; it is **FORBIDDEN to make them pass by shrinking type** below the Type & legibility minimums. If a soft check bothers you: **cut copy or split the slide**, never shrink.
+- The parser does not count visual mocks (a terminal/image beside a split slide) as text mass → an `i`/`comX` imbalance on a visually balanced split slide is a **known parser limit, not a defect**.
+- Recurring meaning‑preserving fixes for HARD: keep `absolute` decorations inside the box (`-right-2`→`right-1` + `overflow-hidden`); add `min-w-0` on flex/grid children; reduce gap/padding/density to fit at 1440/1280; wrap oversized display numerals (`break-words`, `leading-tight`).
+
+### Inchiostri che si ribaltano con la superficie (UniCredit, e da riusare)
+Un colore di accento non è un inchiostro: lo stesso ruolo ha bisogno di **due valori**, uno
+per le superfici chiare e uno per quelle scure (il ciano regge sul petrolio notte e sparisce
+sul bianco; il rosso pieno fa il contrario). In `apps/unicredit-engagement/global.css` ci sono
+`--ink-accent`, `--ink-brand-text`, `--ink-note`: default = versione per fondo CHIARO, ribaltati
+da `[data-slide].bg-[var(--surface-inverse)]`, `.uc-mock--dark`, `.uc-shot--dark`, `.uc-on-dark`,
+e **ripresi** dai componenti che si portano una superficie chiara dentro una slide scura
+(`.uc-panel`, `.uc-card`, `.uc-mock`, `.motore-layer`, `.cnv-channel`, `.uc-on-light`).
+Per il testo usare SEMPRE questi, mai `--color-ciano` / `--color-rosso` / `--accent-*`.
+Le varianti scure vanno **dopo** quelle chiare nel file: stessa specificità, vince l'ultima.
+Una slide che *dichiara* `bg="secondary"` ma rende scura per via del backdrop va marcata a
+mano con `.uc-on-dark`. Verificare misurando i pixel, non leggendo il CSS.
+
+### Il design system del cliente si LEGGE, non si ricorda (BINDING, ogni experience)
+Una experience è una skin sopra il motore: se la skin non è quella vera del cliente,
+niente altro conta. E il modo sbagliato di ricavarla è andare a memoria — è già costato
+due volte: «UniCredit è rossa» (il colore di sistema è il **petrolio #007A91**; il rosso
+#E2001A è solo il marchio) e «Agos è blu e rosso» (è **petrolio e acqua**).
+- **Primo comando di ogni nuova experience:** `pnpm brand:tokens <url-del-cliente>`.
+  Scarica il CSS di produzione e conta: i colori più frequenti **sono** il design system,
+  qualunque cosa dica un brand book. Separa i default di framework (Bootstrap/Tailwind),
+  mostra le custom property che il sito espone (se ci sono, vincono su tutto) e i caratteri
+  dichiarati. Sul caso UniCredit stampa petrolio **271 occorrenze** contro rosso **13**:
+  la gerarchia si vede da sola.
+- **Il più frequente è il colore di SISTEMA** (link, stati, tab, focus), non il marchio.
+  Il marchio è spesso raro e inconfondibile. Confonderli è l'errore tipico.
+- Lo script porta **evidenza, non decisioni**: la mappatura sui token semantici
+  (`--surface-*`, `--ink-*`, `--accent-*`) resta una scelta di design e va fatta guardando
+  **dove** ogni colore è usato sul sito. Tenere primary/secondary chiari e inverse scuro,
+  se no i blocchi condivisi si rompono.
+- **Caratteri:** quello proprietario del cliente quasi mai è distribuibile (UniCredit ha
+  `unicredit-regular/medium/bold`). Si sceglie la sostituta più vicina e si scrive **nel
+  `global.css` perché** è stata scelta, così nessuno la cambia per gusto.
+- Niente headless per questo: diversi siti bancari lo bloccano ma servono il CSS a una GET
+  semplice. Lo script usa `fetch` apposta.
+- Il `global.css` di ogni experience deve poter citare la fonte: valori verificati sul CSS
+  di produzione, non a memoria. Se un valore non viene da lì, va detto perché.
+
+### Firma co‑brand «Adobe × Brand» (BINDING, ogni experience presente e futura)
+Il co‑brand non è una decorazione per slide: è **una regola sola**, nel motore.
+`@edf/core/blocks/CoBrand.astro` + il runtime in `DeckContainer.astro` la portano; ogni
+app ha solo un **wrapper sottile** `src/components/CoBrand.astro` che dichiara nome del
+brand e marchio (vedi `apps/unicredit-engagement/`). Quattro punti:
+1. **L'ordine è sempre Adobe × Brand**, mai Brand × Adobe. Non esiste una prop per
+   invertirlo: l'ordine è scritto nel markup del componente condiviso.
+2. **`variant="chrome"` sta su OGNI slide di OGNI capitolo** — una riga nel `BaseLayout`,
+   fuori dal flusso della slide (fixed, in basso a sinistra, dentro la safe‑area), quindi
+   non entra nel conteggio slide né nelle misure dell'audit. Su telefono sparisce.
+3. **`variant="hero"` sulla PRIMA e sull'ULTIMA slide del percorso**: i due marchi grandi
+   e centrati, **al posto dell'occhiello di testo «Adobe × Brand»**. Lì il lockup è
+   contenuto, non chrome: porta `role="img"` + `aria-label`.
+4. **Dove c'è un `hero`, la firma fissa si spegne da sola.** Il runtime in `DeckContainer`
+   guarda la slide attiva (`deck:change`) e marca `html[data-cobrand-off]` — **nessun
+   attributo da mettere a mano, nessun wiring per app**: ogni deck nuovo lo eredita.
+
+**L'ultima slide del percorso è una slide‑firma a sé.** La chiusura tipica è già densa
+(bande, numeri, CTA) e il lockup grande la fa sbordare: per contratto si divide, non si
+comprime. La slide‑firma è il lockup + una riga breve presa dal deck + la CTA di ritorno
+(`.edf-sig-cta`, definita nel motore). Fallisce il check **soft `i`** (copre poco: il
+lockup è un SVG, il parser non lo conta come massa di testo): è la classica slide
+volutamente ariosa, e **non si aggiusta rimpicciolendo il tipo**. Va registrata nel
+`PAGE_REGISTRY` dell'admin come ogni slide nuova.
+
+**Inchiostro — attenzione alla dominante.** `--ink-X` è l'inchiostro che sta su
+`--surface-X`, e questa coppia vale ovunque; quale delle due sia scura invece **cambia**:
+nelle experience a dominante scura (Agos, Eni, Isybank, Trenitalia) `--surface-inverse` è
+la superficie **chiara**. Quindi: il lockup `hero`, che vive dentro la slide, prende
+l'inchiostro dalla **superficie dichiarata dalla slide**; la firma `chrome`, che vive
+fuori, usa **valori espliciti** chiaro/scuro pilotati da `data-on-dark`. E la slide‑firma
+va messa sul fondo scuro *di quella* experience: `bg="primary"` dove la dominante è scura,
+`bg="inverse"` dove è chiara. Su una slide `bg="brand"` satura il marchio Adobe passa in
+monocromo da solo (rosso su rosso sparirebbe).
+
+Il marchio del cliente va nello slot `brand`: **solo l'SVG ufficiale** che il cliente
+distribuisce, a `currentColor`. Senza asset ufficiale si usa il **ripiego automatico** —
+il nome in carattere display — mai un logo ricostruito a mano o preso da fonte non
+ufficiale (è esattamente la wrong‑brand imagery che la Quality Bar vieta).
+Inchiostro: il lockup si ribalta con la superficie via `data-on-dark`; una slide che
+*dichiara* chiaro ma rende scura va marcata `class="edf-cobrand--on-dark"` (vedi
+Inchiostri che si ribaltano). **Experience senza brand cliente** (Atelier = la Factory
+stessa, Aperture = ricerca vendor‑neutral) sono **fuori regola**: non c'è una × da fare.
+
+### Credito «creato con» — con che cosa è fatta la slide (BINDING, ogni experience)
+Ogni slide dichiara i **prodotti Adobe usati per creare i suoi asset** — lo sfondo
+generato, la clip, il ritocco. Non è la lista dei prodotti che l'experience *propone*
+al cliente: quella vive nel contenuto della slide.
+- `@edf/core/blocks/MadeWith.astro`, montato **una volta** nel BaseLayout, sta in basso
+  a destra, speculare alla firma co‑brand a sinistra. È chrome: fuori dal flusso della
+  slide, quindi fuori dal conteggio e dalle misure dell'audit.
+- La slide dichiara `data-made-with="Firefly"` (+ `data-made-with-for="clip|sfondo"`).
+  Senza dichiarazione vale il `fallback` del deck, così una experience dove tutti gli
+  sfondi vengono dallo stesso strumento lo dice in una riga. Il runtime vive in
+  `DeckContainer` (come il co‑brand): **ogni deck nuovo lo eredita senza wiring**.
+- **Il credito è un fatto, non una decorazione.** Si dichiara solo ciò che è stato
+  davvero usato, verificabile nei `provenance.json` degli asset. Un'experience con
+  asset misti (UniCredit: Firefly + stock) **non mette un fallback**: marca le singole
+  slide. Mettere «Adobe Firefly» su una slide con una foto stock è una dichiarazione
+  falsa, non una scorciatoia grafica.
+- Marchio **corporate Adobe + nome prodotto per esteso** («Adobe Firefly»), come Adobe
+  scrive i suoi prodotti. Le icone dei singoli prodotti **non si ricostruiscono**:
+  sarebbe la wrong‑brand imagery che la Quality Bar vieta.
+- Forma del credito: `▲ Adobe Firefly · sfondo`. **Senza verbo**: «clip creato con» non
+  accorda, e un credito non è una frase.
+
+### Un credito sta dove sta il fatto, non nella nav (BINDING)
+La navigazione è per andare da qualche parte: ogni voce è una destinazione. Un credito
+infilato lì è fuori posto, vago («Visual · Adobe Firefly»: visual *che cosa*?), e sparisce
+ai viewport dove la nav si stringe — un credito che si nasconde non è un credito. Il posto
+giusto sono due: la **nota di copertina** (una volta, con le Content Credentials) e il
+**credito per slide** qui sopra, che è preciso perché sa di quale asset parla.
+
+### Blocchi a bandiera: stesso bordo (BINDING, check `m` dell'audit)
+Una composizione **centrata** è legittima: blocchi di larghezze diverse sullo stesso asse.
+Ma due blocchi che allineano il **testo a sinistra** e partono da ascisse diverse sono un
+difetto che si vede subito e che a occhio sfugge.
+- La trappola tipica: il reset di base cappa la larghezza dei `<p>` dentro una slide
+  (`[data-slide] p { max-width: … }`); si libera un blocco con `max-width: none` per farlo
+  respirare e quello **si allarga a tutta la safe‑area** mentre i suoi fratelli restano
+  nella colonna. Successo su isybank: le fonti partivano 197px più a sinistra dei numeri.
+  «Liberare» non è «togliere il limite»: si rimette **la stessa** `max-width` della colonna.
+- Lo verifica il check **`m`** di `audit:deck`: misura il bordo sinistro di tutti i blocchi
+  di primo livello con `text-align: left|start` e fallisce se non condividono l'ascissa
+  (tolleranza 4px). È un check **HARD**: non è questione di gusto, è una riga storta.
+
+### Clip in loop — il giro non si deve vedere (BINDING, ogni experience)
+Una clip generata (Firefly o altro) finisce su un fotogramma che con il frame 0 non
+c'entra niente: il `loop` nativo la riavvolge e **si vede lo stacco**. È un difetto del
+**contenuto**, non della riproduzione — si risolve sull'asset, non con JavaScript.
+- Ogni clip di sfondo passa da **`pnpm loop:seamless <clip.mp4> --poster`**: dissolve la
+  coda di 0,75 s sulla testa (ffmpeg xfade), scrive `<clip>.loop.mp4` **e il poster come
+  primo fotogramma della clip ricucita**, e stampa la misura prima/dopo.
+- La misura è un numero, non un'impressione: **PSNR ultimo→primo fotogramma** confrontato
+  col PSNR di due fotogrammi adiacenti. Se il giro sta entro 6 dB dal riferimento, passa.
+  `pnpm loop:seamless --check <clip.mp4>` verifica una clip esistente ed esce ≠0 se salta.
+- In pagina si usa **`@edf/core/blocks/immersive/LoopVideo.astro`** nello slot `backdrop`
+  (poster + clip `loop` + `preload="auto"` + scrim di brand). `preload="auto"` serve: così
+  la clip è tutta in buffer prima del wrap e il giro non aspetta la rete.
+- Sul Release `media` si carica la **clip ricucita** con un nome nuovo (`*.loop.mp4`),
+  lasciando l'originale come sorgente; `provenance.video.json` registra il rimontaggio.
+- Residuo noto e accettato: il `loop` nativo costa **un tick di compositor (~17 ms, un
+  fotogramma)** sul giro. È il restart del decoder, non un salto di contenuto.
+
+### Il guscio sensoriale: marchio, movimento, suono, scala (BINDING, ogni experience)
+Quattro cose si vedono prima che si legga una riga, e **nessun check le fa fallire**.
+Dettaglio, comandi e trappole in `skills/experience-design/references/sensory-shell.md`.
+- **Marchio.** Ogni experience ha il suo `public/favicon.svg`: una forma **geometrica**
+  presa dal disegno che regge il deck, mai una lettera (a 16px un glifo sembra un
+  carattere non caricato) e mai il logo del cliente (quello vive nel co-brand).
+  `pnpm brand:icons` rende le icone **dal favicon**. L'anteprima del link invece **non**
+  viene da lì: la fa `pnpm og`, e ha una regola sua qui sotto.
+- **Movimento.** La clip in loop sta su **copertina e chiusura**, dove non si parla; in
+  mezzo ruba lo sguardo. Prompt con camera bloccata e `pan, tilt, zoom, dolly` nel
+  negative, se no il modello dà una carrellata. Se la clip deriva, `--boomerang`. Una
+  clip generata è quasi sempre più luminosa dell'immagine ferma che sostituisce: **lo
+  scrim va ricalibrato guardando lo screenshot col titolo sopra**.
+- **Suono.** `@edf/core/blocks/DeckAudio.astro`: traccia **Adobe Stock licenziata**
+  (niente API che genera musica; licenziare consuma una licenza → **si chiede prima**),
+  ricucita sul giro, sul Release `media`, con `provenance.audio.json`. Parte **spenta**
+  con il comando in vista — il browser pretende comunque un gesto, quindi «acceso di
+  default» non esiste, esiste «acceso al primo clic», che per chi apre il link è musica a
+  sorpresa. Sale su `data-audio="loud"` (copertina e chiusura), velo altrove;
+  dissolvenze mai salti; tace a scheda nascosta; sopravvive agli swap SPA. Il
+  comando sta **nella barra del deck** accanto agli altri, e il cursore è un
+  **guadagno generale** (moltiplica i livelli per slide, non li sostituisce).
+- **Scala.** Il tetto `clamp(…, 1.125rem)` della radice è già raggiunto a 1600px: oltre,
+  **il tipo non cresceva più** (misurato: a 3840 il corpo restava a 18,4px e il contenuto
+  copriva il 34% della larghezza). `DeckContainer` scala la **radice** a 20/24/28px sopra
+  2000/2560/3200 — così crescono insieme tipo e `max-w-*` in rem — e **parte sopra i
+  1920**, per non invalidare i viewport già verificati. È **opt-in per app**
+  (`<DeckContainer wallScale>`): accesa su tutti i deck insieme, un'altra experience
+  usciva con dieci collisioni testo-su-testo ai soli viewport da muro. Si accende dopo
+  `audit:deck -- --tv` a **0 HARD**, mai prima.
+- **Quello che l'audit non vede.** Il check `b` guarda i comandi del deck: **non** la nav
+  dell'app, **non** la firma co-brand, **non** il credito «creato con», **non** il comando
+  audio. Con un blocco aperto su schermo basso ci finiscono sopra. La regola che chiude il
+  caso: `HowItWorks` marca `html[data-hiw-open]` e **la pelle fa arretrare il contorno**.
+- **Griglia prima dell'elenco.** Quattro voci brevi in colonna si disallineano da sole (il
+  reset centra i paragrafi con `max-width`, e `m` non lo coglie perché guarda solo i figli
+  diretti): vanno in **griglia 2×2 a blocchi pari**, e ogni blocco a bandiera dentro un
+  componente si difende con `margin-inline: 0` a specificità sufficiente.
+
+### `prefers-reduced-motion` si rispetta, non decide al posto di chi guarda (BINDING)
+`LoopVideo` nascondeva la clip con un `display: none` sotto la preferenza di sistema.
+Tecnicamente corretto, in pratica un difetto silenzioso: su macOS «Riduci movimento» è
+attivo su moltissime macchine — spesso per la nausea da parallasse, non per togliere una
+clip ambient — e chi apriva il deck vedeva **una copertina ferma senza sapere che ci fosse
+un video**. Nessun check lo coglieva, e chi lavorava al deck nemmeno: un browser di prova
+non ha quella preferenza.
+- La regola è **niente autoplay** (la preferenza vale: nessun movimento a sorpresa) **più
+  un comando** nella barra del deck per accenderlo. La scelta si ricorda in
+  `localStorage['edf:motion']`, vale per tutte le clip del percorso e sopravvive agli swap
+  SPA; senza quella preferenza il comando non compare nemmeno. Sta nel motore
+  (`LoopVideo.astro`): ogni deck lo eredita senza wiring.
+- **Pillola, non cerchio.** Gli altri comandi sono tondi perché portano una sola icona; qui
+  serve una parola, perché un «play» in mezzo ai comandi di una presentazione si legge come
+  «avvia le slide». Su telefono resta la sola icona (bersaglio 44×44) e il senso vive in
+  `aria-label`.
+
+### Misurare nelle condizioni di chi guarda, non in quelle del browser di prova (BINDING)
+Tre giri per trovare quel difetto, perché ogni volta misuravo con Playwright **senza** le
+preferenze dell'utente, e ogni volta il movimento c'era. Una misura fatta in condizioni che
+nessuno ha non prova niente. Quando qualcuno dice «non lo vedo» e lo strumento dice che
+c'è, **la differenza è nelle condizioni**: si riproducono prima di cercare altrove.
+- Le condizioni che cambiano la resa e si impostano in Playwright: `reducedMotion`,
+  `colorScheme`, `forcedColors`, `locale`, `timezoneId`, zoom e `deviceScaleFactor`,
+  connessione lenta, risparmio energetico.
+- **Si misura la produzione, non solo il preview locale**: un CSS non ancora deployato o un
+  asset che in locale arriva dal disco e in rete da un Release cambiano l'esito.
+- Vale anche al contrario: prima di dichiarare risolto, si verifica **nella condizione che
+  mostrava il difetto**, non in quella comoda.
+Memoria: `misurare-nelle-condizioni-utente`.
+
+### Gli a capo si misurano: nessuna parola di servizio appesa (BINDING, `audit:wrap`)
+`text-wrap: balance` e `pretty` risolvono le righe finali squilibrate e la parola sola a
+fine paragrafo. **Non** risolvono quello che in proiezione si nota di più: la preposizione
+appesa a fine riga, lontana dal suo complemento — «…alla scala della Banca dei Territori.
+**In** / cinque pagine.». Nessun check di layout la vede: le scatole sono a posto, il
+contrasto è a posto, è il testo che si rompe nel punto sbagliato.
+- Il gate è **`pnpm audit:wrap`** (`scripts/wrap-audit.ts`): apre le rotte del deck ai tre
+  viewport di proiezione (`--tv` aggiunge quelli da muro), ricava con la Range API le righe
+  **realmente rese** e segnala l'ultima parola di ogni riga quando è una preposizione, un
+  articolo o una congiunzione. Gira contro il **preview statico**, come `audit:deck`.
+- **Guarda il testo che si prende intero**: quello grande (oltre il 15% del corpo di base)
+  **oppure** il blocco che rende in **≤2 righe** — un lead di due righe a corpo base si legge
+  come un titolo. Il criterio era la sola dimensione del carattere fino al 30 ott 2026, e in
+  quella fessura cadeva il caso più frequente: tre preposizioni appese trovate guardando gli
+  screenshot mentre il gate taceva. Si alza con `WRAP_RIGHE`; `WRAP_RIGHE=0` torna al vecchio.
+- Nel dettaglio il testo grande è: titoli, occhielli,
+  lead, la frase che chiude. Lì le righe sono poche e l'occhio le prende intere. Dentro un
+  paragrafo di corpo la stessa rottura non la nota nessuno, e legarla tutta riempirebbe il
+  testo di vincoli che poi sbordano sui viewport stretti (`--tutto` li mostra, come
+  indicazione e non come difetto). La soglia è **relativa**, non assoluta: a dimensione muro
+  la radice sale a 24-28px e un «≥18px» promuoverebbe a titolo ogni paragrafo.
+- **Si risolve legando, non riscrivendo**: uno spazio unificatore (`\u00a0`) fra la parola di
+  servizio e la sua. Si lega **la coppia che serve**, non la frase intera, se no la riga non
+  può più andare a capo da nessuna parte. Fanno eccezione i **nomi propri composti** («Banca
+  dei Territori»), che non si spezzano mai e si legano per intero.
+- Mai risolvere un a capo storto **rimpicciolendo il tipo**: vale il contratto di leggibilità.
+- Legare sposta il punto di rottura, quindi dopo si **rilancia `audit:wrap` e poi
+  `audit:deck`** — una stringa che non va più a capo può sbordare, ed è un HARD.
+Memoria: `a-capo-parole-appese`.
+
+### Un taglio corto non è una copia: è la stessa fonte, più corta (BINDING)
+Molti deck hanno due percorsi — quello intero e il «taglio da N minuti» per chi non ha
+l'ora. Finché i due tengono **due copie a mano** degli stessi blocchi, divergono: non è
+una possibilità, è una certezza, e diverge sempre il taglio corto, perché le correzioni
+arrivano sul lungo. Su Intesa è successo nello stesso giro in cui era scritto nei commenti
+«se divergono comanda il lungo»: il titolo di uno strato e una riga che diceva il falso su
+Analytics erano stati corretti solo nel percorso intero.
+- I blocchi condivisi vivono in **`src/data/<nome>.ts`**, definiti **una volta**, bilingui.
+- Dove il taglio corto ha bisogno di meno parole, la versione corta è **un campo accanto**
+  a quella lunga (`sBreve`, `bBreve`), mai un'altra voce: titoli, numeri, ordine e
+  etichette restano **fisicamente lo stesso oggetto**. Si può accorciare una descrizione,
+  non cambiare che cosa dice la slide.
+- Una funzione sola serve le due forme (`strati('lungo' | 'breve')`), e le differenze che
+  dipendono dal percorso — per esempio i link alle slide di dettaglio, che nel taglio
+  corto non esistono — le decide lei, non la pagina.
+- **L'ask sta in un posto solo.** Due versioni della richiesta sono il modo più rapido di
+  sembrare confusi davanti a un cliente.
+- Un taglio corto è una versione **breve**, non una versione **spenta**: stesse clip, stessa
+  firma co-brand, stesso guscio sensoriale.
+Una regola affidata alla memoria di chi modifica non è una regola, ed è per questo che ora c'è
+un comando: **`DECK_URL=<origin> pnpm audit:taglio --app <alias>`** — HARD su `c1` copia a mano
+(un testo che sta nella fonte unica ed è riscritto nella pagina del taglio, o lo stesso testo a
+mano in due pagine e in nessuna fonte), `c2` numeri che solo il taglio afferma, `c3` fonti che
+solo il taglio porta; SOFT sulla lunghezza. L'app si dichiara in `scripts/lib/cut-routes.ts`.
+**La forma si chiama «In dieci minuti», la rotta è `/dieci-minuti/`** (Intesa usa `/exec/`:
+nata prima della convenzione, link già condiviso), e vale per ogni experience rivolta a un
+executive: cinque o sei slide con l'ask dentro, perché un'ora concessa diventa venti minuti più
+spesso di quanto si ammetta — ed è anche la versione che l'interlocutore gira al suo capo.
+Che cosa entra, convenzioni e ordine dei gate:
+`skills/experience-design/references/taglio-dieci-minuti.md`. Memoria:
+`taglio-corto-stessa-fonte`.
+
+### Ogni link porta la sua anteprima (BINDING, ogni artefatto presente e futuro)
+Un link della Factory finisce in **chat**, non in un motore di ricerca: lo si manda a un
+collega su Teams, lo si gira per posta. Lì il riquadro di anteprima è la prima cosa che si
+vede — prima del titolo — e senza immagine resta il rettangolo grigio con l'icona del
+documento generico: il link sembra una cosa qualunque, e un dossier preparato in due giorni
+si presenta come un allegato anonimo. Vale **a maggior ragione** per i deck `noindex`:
+nessun crawler li indicizza, ma l'anteprima in chat si costruisce lo stesso.
+- **Si genera: `pnpm og`** (`--app <alias>` per una sola, `--list` per vedere senza fare).
+  Compone **la firma Adobe × Cliente** nell'ordine non invertibile del co-brand, **la sigla
+  del tipo** e il titolo. La sigla è una proprietà del tipo (`EXPERIENCE_TYPES[t].mark`),
+  non una convenzione sparsa: **Pr** Prospettiva · **S** Storia · **B** Blueprint ·
+  **Pb** Playbook · **I** interno · **D** dossier. Due lettere dove una sarebbe ambigua —
+  Prospettiva e Playbook iniziano entrambe per P, e nel riquadro di una chat non c'è spazio
+  per una legenda.
+- **Il marchio del cliente è l'SVG ufficiale o il ripiego wordmark**, come nel co-brand:
+  mai un logo ricostruito a mano. Su venti artefatti **uno solo** ha l'SVG vero (Intesa):
+  per tutti gli altri l'anteprima porta il nome in carattere display, ed è corretto così.
+- **L'URL dev'essere ASSOLUTO.** I crawler che costruiscono l'anteprima non risolvono i
+  percorsi relativi: `/og.png` non arriva da nessuna parte, e il difetto è invisibile dalla
+  pagina. I meta li emette **il motore** — `@edf/core/blocks/SocialMeta.astro`, una riga nel
+  `<head>` del layout — e non si riscrivono per app.
+- **Il gate è `pnpm audit:og`** (dopo `pnpm build`, perché misura il `dist/`): file presente
+  e **1200×630**, `og:image` su **ogni** pagina, URL assoluto, file davvero nel dist,
+  `og:title` e `twitter:card`, e nessun meta duplicato. **Deve uscire PASS.**
+- **I due difetti che questa regola esiste per impedire**, misurati il 16 ott 2026 prima di
+  scriverla: su diciannove app **quattro** avevano un'immagine e su venti layout **tre** la
+  dichiaravano; e `trenitalia-prospettiva-sales` aveva il file generato e **mai dichiarato**
+  — l'immagine c'era, e nessuno l'ha mai vista. Il secondo è il peggiore, perché la pagina
+  è a posto e il difetto si vede solo incollando il link da qualche parte.
+- **Anche i rimandi ce l'hanno.** Le pagine di redirect (i vecchi link di Max Mara sull'hub,
+  i capitoli spostati di FS) portano l'anteprima della destinazione: un vecchio link
+  incollato in chat è proprio il caso in cui il riquadro grigio fa sembrare rotto un link
+  che funziona. Nessuna esenzione nel gate: una lista di eccezioni è il primo passo verso un
+  gate che non misura più niente.
+- **Un accento non è un inchiostro, nemmeno qui.** Il generatore misura il contrasto e
+  schiarisce l'accento finché non regge sul fondo: il blu di marchio del MEF sul suo fondo
+  notte dà **1,7:1** e l'occhiello sarebbe illeggibile. Vale la stessa regola degli
+  inchiostri che si ribaltano con la superficie.
+
+### Il marchio in pagina non lo aggiorna `brand:icons` (BINDING)
+`pnpm brand:icons` rende `icon-192`, `apple-touch-icon` e `og.png` **dal `favicon.svg`**.
+Il marchio che si vede *dentro* l'app — quello nella nav — è un **SVG inline** in un
+componente, e lo script non lo tocca: un favicon nuovo lascia la barra alla versione
+vecchia, e chi guarda la pagina conclude, correttamente, che il logo non è cambiato.
+Quando cambia il favicon si cambiano **entrambi**, e si verifica guardando la pagina, non
+la scheda del browser.
+
+### Un velo si calibra sulla misura, non sulla presenza del video (BINDING)
+«La clip c'è» non vuol dire «la clip si vede». Su Intesa la copertina aveva il `<video>`
+in pagina, in riproduzione, con il `loop` giusto — e un'opacità di 0,42 sotto uno scrim
+radiale a 0,84 lasciava passare il 6%: la differenza fra due fotogrammi a 2,5 s di
+distanza era **0,046 livelli su 255**, sotto qualunque soglia percettiva. Si misura:
+- **movimento** = differenza media fra due screenshot a qualche secondo di distanza (sotto
+  ~0,1 su 255 non si vede; la stessa misura sulla clip nuda dice quanto margine c'è);
+- **contrasto nel caso peggiore**, non in media: si nasconde il testo, si fotografa il
+  fondo su 8-10 istanti del giro e si prende il punto **più chiaro** sotto ogni riga —
+  titolo grande ≥3:1, testo normale ≥4,5:1. Una cresta luminosa che passa dietro al lead
+  una volta per giro basta a bocciare la slide, e la media non la vede.
+Dove le due misure confliggono, si rinforza il velo **solo al centro**, dove sta il testo,
+lasciando leggeri i bordi: il movimento resta visibile dove non c'è niente da leggere.
+
+### Home roadmap — equal‑size blocks in a balanced grid (BINDING, every experience)
+The home "il percorso"/chapter roadmap cards MUST be **equal‑size blocks** (equal width AND height) in a **balanced grid**: 6 chapters → **2 righe da 3**; other counts → the balanced equivalent (8 → 2×4). Implement with `auto-rows-fr` on the grid + `h-full` on each card so rows never differ in height, and cap columns so you never get a lopsided last row (e.g. NOT `md:grid-cols-4` for 6 → 4+2). Bespoke non‑card paradigms are exempt (maxmara's numbered stepper timeline, trenitalia's connected‑node timeline) — but a plain card roadmap always follows this rule.
+
+### Document `<title>` — no self‑duplication (BINDING, every experience)
+Each `BaseLayout.astro` builds `<title>{title} | <SiteName></title>`. The **home** page passes `title` = the site name, which renders "SiteName | SiteName" (also poisons link‑preview scrapers, which read `<title>`). Guard it: `<title>{title === '<SiteName>' ? title : \`${title} | <SiteName>\`}</title>`. Applies to every experience layout + showcase.
+
+⚠️ **E il doppione può stare DENTRO `SITE_NAME`, dove quella guardia non lo
+vede.** Parecchi layout compongono `SITE_NAME = \`${SITE.name} · Adobe ×
+${SITE.client}\``, che è giusto finché il nome è quello del racconto («Lo stesso
+mutuo, dai due lati»). Quando il documento prende per nome la **firma co‑brand**
+— succede ai documenti unici d'incontro, che si chiamano «Adobe × Cliente» — il
+suffisso raddoppia e **ogni** pagina esce `Adobe × Cliente · Adobe × Cliente`,
+home compresa. Si aggiunge solo quando serve:
+`const SITE_NAME = SITE.name.includes(FIRMA) ? SITE.name : \`${SITE.name} · ${FIRMA}\`;`
+Trovato il 30 ott 2026 su `intesa-esperienza-cliente`, **mentre si pubblicava**:
+dalla pagina non si vede, si vede incollando l'URL in una chat.
+
+## Deck visual contract
+Some pages are **keynote decks** (full‑screen slides, projected at **1920×1080**, but now
+also auto‑responsive down to mobile and up to giant TV). Claude can *see* its output: the
+**playwright MCP** (browser_* tools) for interactive inspection, and `scripts/deck-audit.ts`
+(`pnpm --filter unicredit-engagement audit:deck`) as the deterministic DOM gate at
+projection sizes. Measure bounding boxes → pass/fail; screenshots only confirm failures.
+
+### Component API (deck)
+I componenti del deck stanno in `packages/core/src/blocks/` (`immersive/*`, `HowItWorks`, `CoBrand`, `MadeWith`, `DeckAudio`, `i18n/*`, `admin/AdminConsole`): props e slot si leggono dal sorgente. Le regole d'uso sono nelle sezioni di questo file.
+- `blocks/doc/DossierPage.astro` — il **motore unico dei dossier interni gated**: gate (Supabase `restricted_docs`, login o `?t=`), renderer dei 14 blocchi, indice con scroll‑spy, barra di avanzamento, bilingue, stampa su carta bianca. Ogni app ha solo un **wrapper sottile** che passa `docSlug` e mappa la propria palette sul contratto `--dw-*`. **Mai copiare il renderer dentro un'app**: è così che sono nate sei copie divergenti. Barra di qualità e metodo di ricerca: skill `skills/dossier/`.
+
+### Gli 11 check che ogni slide deve passare — a 1920×1080, 1440×900 E 1280×800 (`audit:deck`)
+> Nel codice i check sono `a b c d e g h i j k m` + `exp` (nessun `f`, nessun `l`).
+> `audit:deck` runs all three projection viewports (mobile is handled separately by the
+> responsive tokens, where dense slides may scroll). A **display hero** (giant metric numeral)
+> is tagged `data-display` and excluded from the prose band check (a).
+1. **(a) text not too high** — significant text centre in the central band (30%–70%).
+2. **(b) no chrome collision** — no content text intersects the deck controls.
+3. **(c) margins / no overflow** — no box past `--slide-safe-inset`; no horizontal overflow.
+4. **(d) no text over faces** — no text over an image's `[data-no-text]` zone; text over an image needs a `[data-scrim]`.
+5. **(e) no text-on-text** — no two (non‑nested) text blocks overlap.
+7. **(g) vertical rhythm** — adjacent stacked text blocks (outside cards) have ≥ 16px gap.
+8. **(h) button contrast** — every button/CTA meets WCAG AA (4.5:1; 3:1 large/icon).
+9. **(i) space usage** — content covers ≥ 45% of usable height, centre of mass in the central band.
+10. **(j) nothing clipped** — every significant element lies fully inside `[0,0,1920,1080]` (±1px).
+11. **(m) allineamento** — i blocchi di primo livello con testo a bandiera condividono il bordo sinistro (±4px). Le composizioni centrate sono esenti.
+12. **(k) no hidden scroll** — no container has `scrollHeight > clientHeight` at projection sizes (a keynote never scrolls there: shorten or split).
+
+Contract details:
+- **Safe‑area tokens** in `global.css` (px): `--slide-safe-inset`, `--deck-chrome-safe`. `Slide`
+  centres on the VIEWPORT centre with a symmetric chrome reserve; `DeckContainer` overrides
+  these per breakpoint scoped to `[data-deck]`.
+- **Layering:** the base reset MUST be in `@layer base` — an unlayered `*{margin:0}` / `a{color}` beats Tailwind utilities.
+- **Custom‑slide styling:** `.cs-*` classes in `global.css` are shared by the deck injection AND the admin live preview → keep them in sync per experience.
+- **`data-no-text="t,l,w,h"`** (% face/subject zone), **`data-scrim`** behind text‑over‑image.
+
+### Type & legibility contract (BINDING — every slide, every experience, present & future)
+> **`audit:deck` PASS ≠ legible.** The audit only measures text **≥16px** for the band/coverage checks and WCAG contrast — it does NOT enforce generous type or balanced composition. A slide can pass all 11 checks and still be unreadable when projected. These rules are separate, mandatory, and apply to **every** experience going forward. (Learned the hard way on Trenitalia: a prior pass shrank body copy to 0.5–0.75rem to satisfy the audit → illegible in the boardroom.)
+
+**Minimum type @1920 projection** (root font ≈18px at these viewports, so 1rem ≈ 18px):
+- Body / description / bullet text: **≥ 0.95rem** (aim ~1rem), `line-height` **≥ 1.5**.
+- List lead‑in (bold) & card/column titles: **≥ 1rem**; entity/product names: **≥ 1.05rem**.
+- Kicker / in‑card eyebrow / status label: **≥ 0.75rem**. Footnotes / source lines: **≥ 0.75rem**.
+
+**Ink (readability, not just contrast):**
+- Body text uses the experience's **readable** secondary ink (grigio/slate‑**200/300** tier), never a faint tier.
+- **No opacity‑dimming of already‑grey inks** for body/notes — `text-[var(--ink-x)]/40|/50`, `/35` reads as invisible on dark. Use a full‑strength readable grey.
+- The audit's contrast parser **cannot read `oklab()` / `color-mix()`** (treats them as white → false PASS on check h). For deck chrome, buttons and tinted cards use **explicit `rgba()`** so contrast is real and measured.
+
+**Composition (balanced fill, not floating):**
+- The content block (eyebrow → title → body/cards) fills the **central ~55–70% of usable height, vertically centred** — never tiny content pinned low with a huge empty top.
+- **Use the width**: containers up to **~72rem** (`max-w-6xl/7xl`) so type can grow without adding height. **≤ 2 columns** for comparative/dense content; card padding **≥ 1.25rem**.
+- For "inventory/status" slides, **stacked full‑width rows** (category label left · item card(s) right) read better than cramped multi‑column grids.
+
+**When generous type doesn't fit the height bound → in priority order:**
+1. **Cut copy** — tighten to essentials, meaning preserved.
+2. **Split the slide** into two (register the new `<Slide id>` in the experience's admin `PAGE_REGISTRY`, keep nav flow).
+3. **NEVER** shrink type below the minimums above.
+
+**Mandatory verification (BOTH, in this order — the audit alone is insufficient):**
+1. `pnpm --filter <app> audit:deck` against a **static PREVIEW** (dev server's HMR keeps a socket open → the audit's `waitUntil:'networkidle'` hangs). Loop: `build` → `preview --port N` → `DECK_URL=http://localhost:N pnpm --filter <app> audit:deck`. Target **0 failures**.
+2. **Screenshot every changed slide at 1920 and READ it** (Playwright against the preview, or the playwright MCP). Confirm generous type + balanced fill with your eyes — the audit will not catch small/faint type.
+
+**Cross‑section navigation (UX parity — uniform on all decks):** every deck page sets **both** `nextHref` and `prevHref` on `<DeckContainer>` (forward past the last slide → next section; back before the first slide → previous section's last slide). The solution‑gating runtime rewrites **both** `data-deck-next` and `data-deck-prev-href` to skip disabled sections (`nextEnabledAfter()` / `prevEnabledBefore()`). All four decks comply; new experiences MUST too.
+
+### Aesthetic per experience
+La palette e i caratteri di ogni experience stanno nel suo `global.css`, con la fonte dei valori (regola «Il design system del cliente si LEGGE»): si leggono da lì. Le trappole già pagate: UniCredit è **petrolio `#007A91`**, il rosso è solo il marchio, niente oro né serif · Agos è **petrolio e acqua**, non blu e rosso · Unipol usa **Manrope**, il carattere vero del cliente, da non «correggere» · Poste: il giallo `#eedc00` solo dove Coworker risponde · Aperture: niente prodotti Adobe, nessun dato personale.
