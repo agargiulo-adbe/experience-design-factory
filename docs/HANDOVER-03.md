@@ -5,6 +5,9 @@
 
 ## 11. Change log recente
 
+### 2026-11-17 · Storia di Intesa: fili di Journey Optimizer, bottoni sempre cliccabili, «In breve» spento · `HowItWorks` nel motore · regole dei deck fuori da CLAUDE.md
+`7440366` fili da bordo a bordo e ramificazione simmetrica nei flussi di JO; `3a1d494` i bottoni del bordo della mappa si accorciano invece di sparire (`bordo()`); `d90a27b` in `HowItWorks` la freccia segue l'ultima parola (delta su 81 bottoni di otto experience: un solo cambiamento); `6020d8c` «In breve» spento. §42.20 (Parte 24). Da altre sessioni, committati qui: `f09a2fe` le regole delle experience passano da `CLAUDE.md` a `.claude/rules/experience-decks.md` (si caricano sui file di `apps/`, `packages/`…); `8f80b58` «Ciascuno conta», le frecce si fermano ai capi del deck e il secondo tasto chiude l'apertura.
+
 ### 2026-11-16 sera · Storia di Intesa: le due call interne
 `236ec7e`, `0ef369b`, `d3fa399`: codice pratica e NDG come ipotesi dichiarata; look-alike via RTA; Sankey; «Come funziona» unico in overlay dal bottone sulla mappa; modalità presentatore (G); «In breve»; marchio Adobe nei mockup; pillole in volo leggibili; margini. §42.19 (Parte 24).
 
@@ -378,93 +381,3 @@ stato corretto lo slug morto `intesa-mutuo` → `intesa-esperienza-cliente`.
 
 ⚠️ **I commit sono locali su indicazione dell'owner: niente push.** Dopo questo giro di handover
 `main` è **avanti di due** su `origin/main`.
-
-### Change log — Trenitalia Direzione Sales: tutto il deck passa al registro XD, e un giro di revisione prima della sessione (2026-11-04) → §37.13 (Parte 16)
-
-**Tre commit** (`63ab31c`, `2a86721`, `05bf555`), tutti su `apps/trenitalia-prospettiva-sales`.
-Il 3 novembre lo strato XD era entrato su **sei slide su trentaquattro** — copertina, apertura e
-le quattro idee — e il resto era la pelle vecchia. Il 4 la domanda dell'owner è stata: «è tutto in
-modalità visual XD?». La risposta misurata era **no**, e da lì è partita la conversione.
-
-**Il quadro prima di toccare**, perché l'intervento è nato da una misura e non da un'impressione:
-XD su **6/34** slide · `audit:ritmo` **4 slide su 41** con un elemento visivo · **cinque slide
-oltre le 150 parole VISIBILI** (il testo dietro «Scopri come» non conta: quello è profondità, ed è
-lì che deve stare), la peggiore a **207**.
-
-**Le sette copertine di capitolo diventano divisori XD** — titolo grande, fotografia, pannello di
-colore con il punto del capitolo e l'agenda generata dal registro delle slide. Ogni capitolo ha
-ora **la sua** immagine: erano tutti e sette la stessa, e sette divisori identici non sono un
-ritmo. ⚠️ XD compone il divisore per una dominante **chiara** e il titolo prende `--color-ink`:
-qui sarebbe uscito ardesia su ardesia — invisibile, e nessun check di layout lo vede. La pelle lo
-ribalta, ed è la regola degli inchiostri che si ribaltano con la superficie applicata a un
-componente del motore.
-
-**La grammatica XD su tutte le slide di contenuto**: **106 classi** `.ex-*` → `.xd-*`. Non è un
-rinomino estetico — porta le regole di leggibilità già pagate — e ha **scoperchiato due difetti
-veri che la pelle vecchia nascondeva**: su una slide di **marchio** l'occhiello e la riga di fonte
-davano **2,31:1** e **2,58:1**, rosa su rosso. Su una superficie dichiarata l'inchiostro va
-esplicito.
-
-**La mappa dei quattro punti** — la spina dorsale del deck — era quattro card di prosa: 207 parole,
-la slide più pesante, e proprio quella su cui chi parla deve essere ascoltato. Ora è **un filo con
-quattro fermate**, un'ancora ciascuna, e i paragrafi dietro «Scopri come» **in forma di figure**:
-quattro paragrafi dentro un drill-down sono lo stesso muro, soltanto nascosto.
-
-**Due blocchi tolti** perché ripetevano la slide che li ospitava e aperti facevano sforare la
-safe-area a 1280×800: il drill-down dell'aritmetica (il suo primo fatto è già nel titolo, il
-secondo nella slide dell'idea) e una chiusa sul referto. Fra una frase e il campione verificabile
-vince il campione.
-
-**`data-stretto` su sei slide**, non su tutte: applicare il respiro stretto ovunque faceva risalire
-il check `g` da **9 a 27** rilievi — SOFT, ma è un peggioramento vero del ritmo pagato per un
-problema che hanno sei slide su trentaquattro.
-
-**Esito:** slide con un elemento visivo **da 4/41 a 16/41**; **nessuna** slide sopra le 150 parole
-visibili.
-
-⚠️ **LA CI È ANDATA ROSSA SUL PRIMO PUSH** (`2a86721` la chiude). Un campo nuovo, `bRiga`, era stato
-aggiunto alle quattro voci dei dati ma **non all'interfaccia** — che è dichiarata su una riga sola,
-e l'inserimento automatico è finito nei letterali. L'errore a monte è il controllo sbagliato: la
-verifica era stata fatta con `npx tsc --noEmit`, **che sui file `.astro` non guarda niente**. Il
-controllo di questo repo è `pnpm typecheck`, cioè `astro check`. È la seconda volta che la CI va
-rossa su `main` per un gate non lanciato in locale (la prima è nel change log del 9 ottobre).
-
-**Il giro di revisione del pomeriggio** (`05bf555`), chiesto dall'owner slide per slide:
-
-- **Mai più «le sue parole».** Cinque punti attribuivano le frasi alla persona — «la parola che ha
-  usato lui», «con le sue parole, non ancora esplorato», «Le sue parole al TTG», «i mercati che ha
-  indicato», e il punto del capitolo 01 con «li avete detti, annunciati o decisi voi». In sala
-  suona come un dito puntato. **Ora si cita la fonte e basta**: la citazione dall'intervista
-  pubblica resta, la cornice che la indica no.
-- **Due fatti che non reggevano.** «La leva lavora da anni» era **falso**: il prezzo dinamico sulle
-  Frecce è partito il **1º gennaio 2026** — dieci mesi — e vale **solo sull'alta velocità**, mentre
-  in quella stanza si vendono tre prodotti; la data la conoscono meglio di noi
-  (Altroconsumo, gennaio 2026). E due **affermazioni di assenza sul cliente** — «non sapete chi
-  vende che cosa», «chi compone un viaggio è indistinguibile» — che si verificano sulle sue pagine
-  prima di scriverle: di che cosa vedano della rete non esiste fonte. Ora la slide dice quello che
-  si osserva sul percorso pubblico, e la domanda la fa il capitolo che chiude.
-- **La riga sui perimetri resta, la mappa delle direzioni no.** Il panel l'aveva chiesta da tre
-  poltrone diverse — dichiarare noi che non tutto si decide lì vale molto — ma elencare quale
-  direzione tiene che cosa, citando i documenti sindacali del 30 marzo, è spiegare a un direttore
-  che cosa non è suo **con in mano le carte interne della sua azienda**, e invita un «chi ve l'ha
-  detto?». È lo stesso errore già corretto su PICO il 15 ottobre. Resta la rassicurazione; i
-  confini li traccia lui. Via anche la fonte, che serviva solo alla mappa.
-- **Due elementi grafici nuovi.** Le sei date erano in prosa nel lead: ora sono una **cronologia**,
-  nella stessa grammatica della mappa dei quattro punti, e si vede che cadono tutte nei prossimi
-  diciotto mesi («adesso» è l'unica tappa accesa). La slide dell'internazionalizzazione aveva solo
-  testo accanto a una slide con una figura: ora porta il **ventaglio dei mercati** nominati al TTG,
-  da un'origine sola.
-- **Copertina**: via la riga sui trenta minuti e la nota sulla misura (si dice dopo); «L'ora, come
-  la spendiamo» diventa **«Agenda»**. Il ponte sull'internazionalizzazione è riscritto e la frase
-  bocciata dall'owner sparisce anche dalla slide dell'idea.
-- **Le ancore dei drill-down smettono di ripetere il titolo della card** che le ospita: su otto
-  voci, aperto, il blocco diceva due volte la stessa riga e sembrava ridondante.
-
-**Gate a fine giornata:** `audit:deck` **0 HARD** su 9 rotte × 3 viewport (residuo SOFT `a` 17 ·
-`g` 12 · `i` 40, il profilo di un deck ad ancore) · `audit:ink` **PULITO** su 567 blocchi, 13
-«Scopri come» aperti e misurati · `copy-audit` **0 HARD** su 401 stringhe · `audit:taglio`
-ALLINEATO · `audit:fonti` nessun link rotto · `typecheck` 0 errori, 0 warning · build di tutte le
-app verde. CI e Deploy verdi, nove rotte su nove a 200.
-
-⚠️ **Il verdetto del panel resta quello del 12 ottobre** e da allora il deck è stato riscritto tre
-volte: resta la voce **P0** in §10.

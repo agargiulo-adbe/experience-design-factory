@@ -125,3 +125,28 @@ Tre commit su `main`, tutti pubblicati: `236ec7e` (call delle 12:20), `0ef369b` 
 - `audit:deck`: invariato rispetto al pre-esistente (messa-a-terra 21, momenti 25, coworker 6; famiglie `a` e `i`).
 
 ⚠️ **Panel non rifatto su questo stato** (P0 nella Parte 2).
+
+## 42.20 Storia di Intesa · il 17 novembre, i fili di Journey Optimizer, i bottoni sempre cliccabili, «In breve» spento
+
+Quattro richieste dell'owner, in `/impeccable`, tutte pubblicate (`7440366`, `3a1d494`, `d90a27b`, `6020d8c`).
+
+**I flussi di Journey Optimizer nei mockup dei momenti** (`components/MockAdobe.astro`, blocco in fondo a `styles/global.css`, `7440366`).
+- I fili andavano da centro a centro dell'icona e ci passavano **sopra**; ora vanno da bordo a bordo (icona 2.5rem: `right: calc(50% + 1.25rem)`).
+- Nel momento 05 i tre canali erano impilati sotto «Email», senza filo. Ora da «Ha ripreso?» parte un **tronco** verticale, ogni canale ha il suo ramo, e **il canale di mezzo sta sulla linea del flusso**: simmetria misurata a 1280, 1440, 1920 e 2560 (centri a ±74 px a 1440).
+- Come si regge: con `:has(> .im-aj-rami)` le etichette del flusso principale pendono in `absolute` sotto l'icona, così il centro del nodo È il centro dell'icona e `align-items: center` allinea il flusso al centro dei rami (righe `1fr`). Il filo verso il tronco è il `::after` **dei rami**, che va a sinistra: un `::after` che esce a destra dal nodo faceva salire `audit:deck` momenti da 25 a 28 (check `c`, `scrollWidth`).
+- La costruzione passo per passo continua: filo, tronco che si apre dal centro (`im-aj-tronco`), rami. «Attesa 12&nbsp;ore» legato.
+- ⚠️ L'owner ha visto «lo stesso problema» sul flusso del momento 06 dopo la correzione: era la versione non ancora pubblicata. La regola vale per ogni `.im-aj-tela`.
+
+**I bottoni sul bordo della mappa** (`slide-innesto`, `3a1d494`). Richiesta: «tutti i bottoni, Adobe Experience Platform e Come entrano i dati compresi, cliccabili in qualunque momento».
+- Prima, aprendo i servizi comuni, «Come entrano i dati» e «Come funziona» andavano in `visibility: hidden`; aprendo «Come entrano i dati», «Come funziona» poteva sparire (`data-funziona-via`). Erano regole scritte apposta, ora tolte.
+- Sul bordo i tre pezzi interi non stanno a nessuna finestra (a 1440: 1378 px su 1267). Quindi `bordo()` in `messa-a-terra.astro` **misura** e accorcia chi non è aperto, un passo alla volta: sottotitolo di «Come funziona» → icone di «Come entrano i dati» → intestazione «Servizi comuni» → «Come funziona» col solo ▶ (nome per screen reader). La fascia si ferma 14 px prima di «Come funziona» (`--svc-fine`). Si ricalcola al resize.
+- Verifica: cliccati davvero a 1280×720, 1280×800, 1440, 1920 e 2560, in cinque stati. Le carte non ancora comparse e le pillole sul retro di una carta chiusa restano non cliccabili, ed è voluto.
+
+**`HowItWorks` nel motore** (`packages/core/src/blocks/HowItWorks.astro`, `d90a27b`). Il bottone era un `inline-flex`: andando a capo il testo prendeva tutta la riga e la freccia restava sola sul bordo destro («Come possono evolvere le iniziative» a 1280). Ora è testo che scorre, con l'ultima parola legata alla freccia, e un articolo o una preposizione di tre lettere al massimo viaggia con lei. **Delta misurato**: 81 bottoni di otto experience, vecchio contro nuovo, a tre finestre; unica differenza il link di Intesa a 1280 (freccia da +138 a +9 px).
+- Una sonda di code staccate su tutto il deck Intesa ha trovato altri sei casi, tutti voluti: il › della barra «Simula la rata», l'icona «rispondi» dell'email, le frecce di collegamento delle carte.
+
+**«In breve» spento** (`6020d8c`, owner: «depubblica il bottone In breve; lo rivediamo dopo»). `IN_BREVE = false` in `Navigation.astro`. La pagina `/dieci-minuti/` resta, dal link diretto e dal Piano B della modalità presentatore.
+
+**Gate**: typecheck 0 errori; `audit:wrap` PULITO; `audit:taglio` ALLINEATO; `audit:deck` messa-a-terra 21 e momenti 25, come prima; approfondimenti 52, tutti `a` e `i`, senza un conteggio di partenza con cui confrontarlo.
+
+⚠️ **Panel non rifatto su questo stato** (P0 nella Parte 2).
