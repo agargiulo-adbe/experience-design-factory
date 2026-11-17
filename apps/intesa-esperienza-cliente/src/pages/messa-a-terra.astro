@@ -752,12 +752,12 @@ const RITORNO = [
 </script>
 
 <script>
+  import { suOgniPagina } from '../scripts/avvio';
   /* LE CARTE DELL'INNESTO (owner, 13 nov 2026). Un clic gira una carta e
      abbassa il resto; le frecce della carta si accendono con l'etichetta.
      Un altro clic, Esc, un clic fuori o l'uscita dalla slide la rigirano. Il
      clic sulla carta non deve far avanzare il deck: si ferma in cattura. */
-  const inn = document.querySelector<HTMLElement>('#slide-innesto .im-inn');
-  if (inn) {
+  suOgniPagina('#slide-innesto .im-inn', (inn, { signal, mo, ro: osservaMisure }) => {
     const slideI = document.getElementById('slide-innesto')!;
     const posa = (k: string | null) => {
       inn.querySelectorAll<HTMLElement>('.im-carta').forEach((c) => {
@@ -814,7 +814,7 @@ const RITORNO = [
       for (const [a, v] of passi) { if (ok()) return; inn.setAttribute(a, v); }
       ok();
     };
-    addEventListener('resize', () => bordo());
+    addEventListener('resize', () => bordo(), { signal });
     const servizi = (apri?: boolean) => {
       const b = inn.querySelector<HTMLButtonElement>('[data-svc]');
       const p = document.getElementById('im-svc');
@@ -835,7 +835,7 @@ const RITORNO = [
       const c = t.closest<HTMLElement>('.im-carta');
       if (c && inn.contains(c)) { e.stopPropagation(); e.preventDefault(); gira(c); return; }
       if (inn.dataset.carta) { e.stopPropagation(); posa(null); }
-    }, true);
+    }, { capture: true, signal });
     document.addEventListener('keydown', (e) => {
       const t = e.target as HTMLElement;
       if (t?.classList?.contains('im-carta') && (e.key === 'Enter' || e.key === ' ')) {
@@ -844,8 +844,8 @@ const RITORNO = [
         return;
       }
       if (e.key === 'Escape' && inn.dataset.carta && !document.querySelector('dialog.pp[open]')) posa(null);
-    }, true);
-    new MutationObserver(() => { if (slideI.getAttribute('aria-hidden') === 'true') { posa(null); servizi(false); ingresso(false); } })
+    }, { capture: true, signal });
+    mo(() => { if (slideI.getAttribute('aria-hidden') === 'true') { posa(null); servizi(false); ingresso(false); } })
       .observe(slideI, { attributes: true, attributeFilter: ['aria-hidden'] });
 
     /* La freccia bianca entra sotto la pillola «programmate»: la posizione si
@@ -893,22 +893,22 @@ const RITORNO = [
       fb.style.setProperty('--nbe-y', `${(y - fb.getBoundingClientRect().top) / sc}px`);
       su.style.setProperty('--nbe-y', `${(y - su.getBoundingClientRect().top) / sc}px`);
     };
-    const ro = new ResizeObserver(() => { allinea(); nomi(); });
+    const ro = osservaMisure(() => { allinea(); nomi(); });
     inn.querySelectorAll('.im-inn-f--clienti, .im-inn-tipo[data-match]').forEach((el) => ro.observe(el));
     inn.querySelectorAll('.im-inn-cornice').forEach((el) => ro.observe(el));
     const tutto = () => { allinea(); nomi(); };
     document.fonts?.ready.then(tutto);
-    new MutationObserver(tutto).observe(document.documentElement, { attributes: true, attributeFilter: ['lang', 'data-lang'] });
+    mo(tutto).observe(document.documentElement, { attributes: true, attributeFilter: ['lang', 'data-lang'] });
     tutto();
-  }
+  });
 </script>
 
 <script>
+  import { suOgniPagina } from '../scripts/avvio';
   /* La colonna del momento di Giulia: una pillola la apre, la stessa la
      richiude, un'altra la cambia. Si chiude anche con la ×, con Esc e quando
      si lascia la slide (il deck mette aria-hidden su quella che esce). */
-  const col = document.getElementById('im-gm');
-  if (col) {
+  suOgniPagina('#im-gm', (col, { signal, mo }) => {
     const pills = () => document.querySelectorAll<HTMLButtonElement>('#slide-innesto .im-inn-m[data-mom]');
     const chiudi = () => {
       col.hidden = true;
@@ -929,25 +929,26 @@ const RITORNO = [
         return;
       }
       if (t.closest('[data-mom-chiudi]')) { e.stopPropagation(); chiudi(); }
-    }, true);
+    }, { capture: true, signal });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && !col.hidden && !document.querySelector('dialog.pp[open]')) chiudi();
-    });
+    }, { signal });
     const slide = document.getElementById('slide-innesto');
-    if (slide) new MutationObserver(() => { if (slide.getAttribute('aria-hidden') === 'true') chiudi(); })
+    if (slide) mo(() => { if (slide.getAttribute('aria-hidden') === 'true') chiudi(); })
       .observe(slide, { attributes: true, attributeFilter: ['aria-hidden'] });
-  }
+  });
 </script>
 
 <script>
+  import { suOgniPagina } from '../scripts/avvio';
   /* Il selettore del modello sul pannello di attribuzione. I due passi della
      slide lo muovono da soli: il primo mostra l'ultimo clic, il secondo
      l'algoritmico. Al clic si gira a mano, in qualunque momento; quando la
      slide cambia passo, torna a seguire il passo. Il bottone perde il fuoco
      dopo il clic, così le frecce restano al deck. */
-  const slide = document.getElementById('slide-attribuzione');
-  const pan = slide?.querySelector<HTMLElement>('[data-cjp]');
-  if (slide && pan) {
+  suOgniPagina('#slide-attribuzione', (slide, { mo: osserva }) => {
+    const pan = slide.querySelector<HTMLElement>('[data-cjp]');
+    if (!pan) return;
     const bottoni = pan.querySelectorAll<HTMLButtonElement>('.im-cjp-mod button');
     const metti = (m: string) => {
       pan.dataset.modello = m;
@@ -967,18 +968,18 @@ const RITORNO = [
       b.blur();
     }));
     const passi = slide.querySelectorAll('.im-cjp-passo');
-    const mo = new MutationObserver(() => { pan.removeAttribute('data-mano'); segui(); });
+    const mo = osserva(() => { pan.removeAttribute('data-mano'); segui(); });
     passi.forEach((p) => mo.observe(p, { attributes: true, attributeFilter: ['data-substep-active'] }));
-    new MutationObserver(() => { if (slide.getAttribute('aria-hidden') === 'true') { pan.removeAttribute('data-mano'); segui(); } })
+    osserva(() => { if (slide.getAttribute('aria-hidden') === 'true') { pan.removeAttribute('data-mano'); segui(); } })
       .observe(slide, { attributes: true, attributeFilter: ['aria-hidden'] });
     segui();
-  }
+  });
 </script>
 
 <script>
+  import { suOgniPagina } from '../scripts/avvio';
   /* Il Sankey: con il mouse su un'etichetta restano accesi solo i suoi nastri. */
-  const flu = document.querySelector<HTMLElement>('#slide-flusso [data-flu]');
-  if (flu) {
+  suOgniPagina('#slide-flusso [data-flu]', (flu, { signal, mo }) => {
     const nastri = [...flu.querySelectorAll<SVGPathElement>('.im-flu-svg path')];
     flu.querySelectorAll<HTMLElement>('.im-flu-l[data-n]').forEach((l) => {
       l.addEventListener('mouseenter', () => {
@@ -1136,19 +1137,21 @@ const RITORNO = [
       demo.finished.then(() => { stopDemo(); vai('prodotto', true, 1600); }).catch(() => {});
     };
     if (p3) {
-      new MutationObserver(() => {
+      mo(() => {
         if (p3.hasAttribute('data-substep-active')) { stopDemo(); timer = window.setTimeout(dimostra, 450); }
         else if (vista !== 'interazione') { stopDemo(); vai('interazione'); }
         else stopDemo();
       }).observe(p3, { attributes: true, attributeFilter: ['data-substep-active'] });
     }
-    new MutationObserver(() => {
+    mo(() => {
       if (slide.getAttribute('aria-hidden') === 'true') { stopDemo(); vai('interazione', false); }
     }).observe(slide, { attributes: true, attributeFilter: ['aria-hidden'] });
-  }
+    signal.addEventListener('abort', () => { stopDemo(); cancelAnimationFrame(raf); clearTimeout(attesa); });
+  });
 </script>
 
 <script>
+  import { suOgniPagina } from '../scripts/avvio';
   /* LA MAPPA ENTRA NELLO SCHERMO (16 nov 2026). Con una finestra bassa (un
      portatile col browser non a tutto schermo, sotto i ~700px) la slide
      dell'innesto era più alta dello schermo: Customer Journey Analytics finiva
@@ -1157,9 +1160,9 @@ const RITORNO = [
      basta per stare nel contenitore, sopra i comandi. Con `scale` e non con
      `zoom`: i clic seguono quello che si vede, e i pop-in, che si aprono nel top
      layer, restano a grandezza piena. Alle misure del gate non scatta. */
-  const slideF = document.getElementById('slide-innesto');
-  const capF = slideF?.querySelector<HTMLElement>('.im-ado-cap');
-  if (slideF && capF) {
+  suOgniPagina('#slide-innesto', (slideF, { signal, mo }) => {
+    const capF = slideF.querySelector<HTMLElement>('.im-ado-cap');
+    if (!capF) return;
     const adatta = () => {
       /* La proprietà `scale`, non `transform`: l'animazione d'ingresso usa
          `transform` in linea, e le due non si devono pestare. */
@@ -1188,11 +1191,11 @@ const RITORNO = [
     };
     let t = 0;
     const presto = () => { cancelAnimationFrame(t); t = requestAnimationFrame(adatta); };
-    addEventListener('resize', presto);
+    addEventListener('resize', presto, { signal });
     document.fonts?.ready.then(presto);
-    new MutationObserver(presto).observe(slideF, { attributes: true, attributeFilter: ['aria-hidden'] });
-    new MutationObserver(presto).observe(document.documentElement, { attributes: true, attributeFilter: ['lang', 'data-lang'] });
+    mo(presto).observe(slideF, { attributes: true, attributeFilter: ['aria-hidden'] });
+    mo(presto).observe(document.documentElement, { attributes: true, attributeFilter: ['lang', 'data-lang'] });
     presto();
-  }
+  });
 </script>
 

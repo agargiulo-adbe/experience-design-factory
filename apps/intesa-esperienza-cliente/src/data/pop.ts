@@ -73,7 +73,7 @@ export const SCENE: Record<ScenaId, Scena> = {
     cosa: 'Analisi omnicanale: legge insieme il comportamento digitale e le fonti offline, sulla stessa persona.',
     passi: [
       'Oggi il digitale si legge in un posto, filiale e Filiale Digitale in un altro.',
-      'Customer Journey Analytics raccoglie il comportamento su sito e app.',
+      'Customer Journey Analytics legge i dati di sito e app che già raccogliete con Adobe Analytics.',
       'Entrano il CRM di filiale e la Filiale Digitale, una fonte alla volta.',
       'I segmenti e gli score del motore di targeting entrano come attributi del profilo.',
       'Il codice pratica, poi l’NDG alla firma, legano simulazione online, contatti e firma in un unico percorso.',
@@ -124,7 +124,7 @@ export const SCENE: Record<ScenaId, Scena> = {
       'Simula la rata ed entra in tempo reale nel segmento «mutuo prima casa».',
       'Quando torna, il sito le propone di riprendere la simulazione.',
       'Lascia email e consenso. Le visite fatte prima di lasciare il nome si uniscono al suo profilo.',
-      'Ora il profilo ha un nome: oltre a personalizzare il sito, Journey Optimizer può scriverle. Quando prende appuntamento, il lead arriva nel CRM di filiale.',
+      'Ora il profilo ha un nome: oltre a personalizzare il sito, Journey Optimizer può scriverle. Quando prende appuntamento, il lead arriva nel CRM di filiale, via API o connettori nativi.',
     ],
     // Panel 16 nov: «Real-Time Activation» resta (scelta dell'owner del 13 nov) ma si dice di
     // quale prodotto è; il passaggio al CRM è da definire, non un fatto.
@@ -135,7 +135,7 @@ export const SCENE: Record<ScenaId, Scena> = {
         null,
         'Se torna entro un giorno, il sito le propone di riprendere la simulazione.',
         'Lascia l’email e il consenso marketing. Le visite fatte prima di lasciare il nome si uniscono al suo profilo.',
-        'Con l’email e il consenso marketing, Journey Optimizer può scriverle. Se prenota, l’appuntamento arriva al CRM di filiale: con quale integrazione si decide con voi.',
+        'Con l’email e il consenso marketing, Journey Optimizer può scriverle. Se prenota, l’appuntamento arriva al CRM di filiale, via API o connettori nativi.',
       ],
     },
     nota: '',

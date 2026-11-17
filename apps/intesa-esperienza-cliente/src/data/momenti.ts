@@ -303,8 +303,8 @@ export const MOMENTI: Momento[] = [
       prodotto: 'filiale', scena: 'lavoro-06-filiale-back',
       titolo: { it: 'Le informazioni di Giulia vengono passate al CRM della filiale e al gestore', en: 'Giulia’s information is passed to the branch CRM and to the adviser' },
       corpo: {
-        it: 'Il percorso scrive nel CRM di filiale il lead, la data e la simulazione appena lei accetta l’appuntamento, via API e dentro i consensi. Chi la riceve lavora nel CRM che usa già. La stessa azione vale per un’audience intera: ogni persona arriva in filiale come lead da lavorare. Il collegamento con il vostro CRM si disegna con voi.',
-        en: 'When she accepts the appointment, the journey writes the lead, the date and the simulation into the branch CRM, over API and within consent. Whoever receives her works in the CRM they already use. The same action works for a whole audience: each person reaches the branch as a lead to work. The link with your CRM gets designed with you.',
+        it: 'Il percorso scrive nel CRM di filiale il lead, la data e la simulazione appena lei accetta l’appuntamento, via API o connettori nativi e dentro i consensi. Chi la riceve lavora nel CRM che usa già. La stessa azione vale per un’audience intera: ogni persona arriva in filiale come lead da lavorare. Il collegamento con il vostro CRM si disegna con voi.',
+        en: 'When she accepts the appointment, the journey writes the lead, the date and the simulation into the branch CRM, over API or native connectors and within consent. Whoever receives her works in the CRM they already use. The same action works for a whole audience: each person reaches the branch as a lead to work. The link with your CRM gets designed with you.',
       },
     },
   },

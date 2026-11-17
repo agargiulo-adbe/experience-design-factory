@@ -371,32 +371,36 @@ const INSIEME = [
 
 <script>
   /* L'ORDINE DEI TEMI, deciso in sala: ogni tocco assegna il numero successivo,
-     un secondo tocco lo toglie e fa scalare gli altri. Il bottone perde il fuoco
-     dopo il clic, così le frecce restano al deck. */
-  const tavola = document.querySelector<HTMLElement>('#slide-insieme .im-ins-gruppi');
-  if (tavola) {
-    const bottoni = [...tavola.querySelectorAll<HTMLButtonElement>('.im-ins-tb')];
-    let ordine: HTMLButtonElement[] = [];
-    const scrivi = () => bottoni.forEach((b) => {
-      const i = ordine.indexOf(b);
-      b.setAttribute('aria-pressed', String(i >= 0));
-      b.closest('li')!.toggleAttribute('data-scelto', i >= 0);
-      b.querySelector('.im-ins-ord')!.textContent = i >= 0 ? String(i + 1) : '';
-    });
-    bottoni.forEach((b) => b.addEventListener('click', (e) => {
-      e.stopPropagation();
-      ordine = ordine.includes(b) ? ordine.filter((x) => x !== b) : [...ordine, b];
-      scrivi(); b.blur();
-    }));
-  }
-  /* I MODI si scelgono e basta: niente ordine, un tocco accende e uno spegne. */
-  document.querySelectorAll<HTMLButtonElement>('#slide-insieme .im-ins-ib').forEach((b) => {
-    b.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const acceso = b.getAttribute('aria-pressed') !== 'true';
-      b.setAttribute('aria-pressed', String(acceso));
-      b.closest('li')!.toggleAttribute('data-scelto', acceso);
-      b.blur();
+     un secondo tocco lo toglie e fa scalare gli altri. I MODI si scelgono e
+     basta: un tocco accende e uno spegne. Il bottone perde il fuoco dopo il
+     clic, così le frecce restano al deck. Si ricollega a ogni pagina
+     (`suOgniPagina`): rientrando nel capitolo dal menu i bottoni sono nuovi. */
+  import { suOgniPagina } from '../scripts/avvio';
+  suOgniPagina('#slide-insieme', (slide) => {
+    const tavola = slide.querySelector<HTMLElement>('.im-ins-gruppi');
+    if (tavola) {
+      const bottoni = [...tavola.querySelectorAll<HTMLButtonElement>('.im-ins-tb')];
+      let ordine: HTMLButtonElement[] = [];
+      const scrivi = () => bottoni.forEach((b) => {
+        const i = ordine.indexOf(b);
+        b.setAttribute('aria-pressed', String(i >= 0));
+        b.closest('li')!.toggleAttribute('data-scelto', i >= 0);
+        b.querySelector('.im-ins-ord')!.textContent = i >= 0 ? String(i + 1) : '';
+      });
+      bottoni.forEach((b) => b.addEventListener('click', (e) => {
+        e.stopPropagation();
+        ordine = ordine.includes(b) ? ordine.filter((x) => x !== b) : [...ordine, b];
+        scrivi(); b.blur();
+      }));
+    }
+    slide.querySelectorAll<HTMLButtonElement>('.im-ins-ib').forEach((b) => {
+      b.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const acceso = b.getAttribute('aria-pressed') !== 'true';
+        b.setAttribute('aria-pressed', String(acceso));
+        b.closest('li')!.toggleAttribute('data-scelto', acceso);
+        b.blur();
+      });
     });
   });
 </script>
