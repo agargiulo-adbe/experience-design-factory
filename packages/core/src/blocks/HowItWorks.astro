@@ -45,18 +45,27 @@ interface Props {
 }
 const { label = 'Scopri come', title, tone = 'onLight', class: className, gruppo } = Astro.props;
 const regionId = 'hiw-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+/* La freccia segue l'ultima parola (17 nov 2026). Il bottone era un inline-flex: andando
+   a capo, il testo prendeva tutta la larghezza e la freccia restava sola sul bordo destro
+   («Come possono evolvere le iniziative» a 1280, Intesa). Ora il testo scorre come testo e
+   l'ultima parola viaggia legata alla freccia: su una riga non cambia niente. */
+const parole = label.trim().split(/\s+/);
+let coda = parole.pop() ?? '';
+/* E un articolo o una preposizione corta non resta appeso a fine riga: «le», «di», «the»
+   viaggiano con l'ultima parola (la regola di `audit:wrap`). */
+if (parole.length > 1 && parole[parole.length - 1].length <= 3) coda = `${parole.pop()}\u00a0${coda}`;
+const testa = parole.join(' ');
 const triggerColor = tone === 'onDark' ? 'text-[var(--ink-inverse)]' : 'text-[var(--ink-secondary)]';
 ---
 <div class:list={["hiw", className]} data-hiw data-hiw-gruppo={gruppo}>
   <button
     type="button"
-    class:list={["hiw-trigger inline-flex items-center gap-2 text-[clamp(0.95rem,1.1vw,1.15rem)] font-medium tracking-wide underline underline-offset-4 decoration-1 hover:opacity-80 transition-opacity focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)] focus-visible:outline-offset-4", triggerColor]}
+    class:list={["hiw-trigger inline-block text-left text-[clamp(0.95rem,1.1vw,1.15rem)] font-medium tracking-wide underline underline-offset-4 decoration-1 hover:opacity-80 transition-opacity focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)] focus-visible:outline-offset-4", triggerColor]}
     aria-expanded="false"
     aria-controls={regionId}
     data-hiw-open
   >
-    {label}
-    <svg class="hiw-arrow transition-transform duration-300" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    {testa && `${testa} `}<span class="hiw-coda whitespace-nowrap">{coda}<svg class="hiw-arrow inline-block ml-2 align-[-0.12em] transition-transform duration-300" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
   </button>
 
   <div id={regionId} class="hiw-region overflow-hidden" style="height: 0; opacity: 0;" data-hiw-region aria-hidden="true">
