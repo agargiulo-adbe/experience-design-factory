@@ -101,6 +101,8 @@ const SLUGS = PAGE_REGISTRY.map((p) => p.slug);
     else if (m.type === 'vai') vai(m);
   });
 
+  function apri() { window.open(base + 'presentatore/', 'edf-presentatore', 'popup,width=1440,height=900'); }
+
   /* P apre la finestra presentatore, accanto al deck. */
   window.addEventListener('keydown', function (e) {
     if (e.key !== 'p' && e.key !== 'P') return;
@@ -109,8 +111,36 @@ const SLUGS = PAGE_REGISTRY.map((p) => p.slug);
     if (t && t.matches && t.matches('input, textarea, select, [contenteditable]')) return;
     if (document.querySelector('dialog[open]')) return;
     e.preventDefault();
-    window.open(base + 'presentatore/', 'edf-presentatore', 'popup,width=1440,height=900');
+    apri();
   });
+
+  /* IL PULSANTE NELLA BOTTONIERA (owner, 18 nov 2026), prima dello schermo intero.
+     La bottoniera è del motore (DeckContainer) e non ha uno slot: toccarla nel core
+     cambierebbe ogni experience. Si inserisce qui, a ogni pagina, e prende gli
+     attributi `data-astro-cid-*` del pulsante accanto, così eredita lo stile scoped
+     di `.deck-btn` (dimensione, colore, fuoco) senza copiarlo. */
+  function pulsante() {
+    var c = document.querySelector('[data-deck-controls]');
+    if (!c || c.querySelector('[data-pv-apri]')) return;
+    var fs = c.querySelector('[data-deck-fs]');
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'deck-btn';
+    b.setAttribute('data-pv-apri', '');
+    b.setAttribute('aria-label', 'Apri la finestra presentatore (P)');
+    b.title = 'Finestra presentatore (P)';
+    if (fs) for (var i = 0; i < fs.attributes.length; i++) {
+      var a = fs.attributes[i];
+      if (a.name.indexOf('data-astro-cid') === 0) b.setAttribute(a.name, a.value);
+    }
+    b.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">' +
+      '<rect x="3" y="4" width="13" height="10" rx="1.5"/><path d="M7 18h5M9.5 14v4" stroke-linecap="round"/>' +
+      '<path d="M19 8v8M21.5 10v4" stroke-linecap="round"/></svg>';
+    b.addEventListener('click', function (e) { e.stopPropagation(); apri(); });
+    if (fs) c.insertBefore(b, fs); else c.appendChild(b);
+  }
+  pulsante();
+  document.addEventListener('astro:page-load', pulsante);
 
   window.__edfPonte = { stato: stato, manda: function () { manda(true); } };
 })();
