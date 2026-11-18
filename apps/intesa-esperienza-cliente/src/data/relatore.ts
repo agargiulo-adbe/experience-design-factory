@@ -21,7 +21,7 @@ export const NOTE: Record<string, Record<string, Nota>> = {
   adobe: {
     'slide-cover': { dire: 'Chi siamo, in pochi minuti: il tema dell’incontro viene dopo.' },
     'slide-team': { dire: 'Si presentano le persone, con il ruolo di ciascuno.' },
-    'slide-fsi': { dire: 'Chi è Adobe in numeri: i numeri sono nostri, il giudizio è di Forrester. Passando il mouse su un quadrante, si ingrandisce.' },
+    'slide-fsi': { dire: 'Chi è Adobe in numeri: i numeri sono nostri, il giudizio è di Forrester. Passando il mouse su un quadrante, si ingrandisce.', seChiedono: '«Prima industry» è un dato interno, non pubblicato: se chiedono la fonte, non citare un numero. Si dice che i servizi finanziari sono il settore su cui Adobe investe di più, e che i quattro Wave in slide lo misurano dall’esterno.' },
     'slide-chi': { dire: 'La piattaforma in quattro funzioni: comprendere, decidere, creare, attivare. È la stessa per qualunque banca.', seChiedono: 'Al Summit 2026 Adobe ha presentato CX Enterprise; le applicazioni che conoscono sono le stesse. Il comunicato non parla di un cambio di nome: non dirlo come fatto.' },
     'slide-cx': { dire: 'Gli stessi prodotti della slide prima, visti dai bisogni della banca. Con la freccia giù un blocco alla volta: tre bisogni, una sola misura e, sotto, il lavoro chiesto a parole.', seChiedono: 'AI decisioning è la capacità di decisione di Journey Optimizer: in documentazione si chiama Decisioning, nei casi pubblici Offer Decisioning. GenStudio for Performance Marketing controlla le varianti contro le linee guida di marchio e di canale; le informative restano nell’iter di approvazione legale.' },
   },
