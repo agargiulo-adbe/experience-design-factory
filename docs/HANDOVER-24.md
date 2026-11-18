@@ -213,7 +213,21 @@ Tre commit, tutti su `main` e pubblicati: `759e2f4`, `0fa99fa`, `ae59189`.
 
 **Gate**: `astro check` 0 errori; `audit:deck` messa-a-terra 21, momenti 25, approfondimenti 52, coworker 6, prossimi-passi 7, tutti `a`/`i`; `audit:wrap` PULITO; `audit:taglio` ALLINEATO; fotogrammi a 1440×900 e 1280×720; regressione di rientro verde.
 
-⚠️ **Resta**: ai passi 10-11 il piede evidenzia «Misura · CJA» mentre lavorano RTA e JO; «audience da CJA» va a capo su due righe sulla mappa; panel non rifatto su questo stato.
+⚠️ **Resta**: ~~il piede ai passi 10-11~~ (fatto in §42.24); «audience da CJA» va a capo su due righe sulla mappa; panel non rifatto su questo stato.
+
+### 42.24 Il piede al passo 10, la finestra presentatore con le miniature, e lo script riallineato alle slide (18 nov, mattina)
+
+**Il piede** (`25f66f7`). Nel «Come funziona» i capitoli del piede si accendevano per intervalli fissi (1-3, 4-6, 7-11), quindi al passo 10 restava acceso «Misura · Customer Journey Analytics» mentre in scena lavorano Real-Time Activation (il look-alike) e Journey Optimizer (la proposta si chiude). Ora ogni capitolo in `data/pop.ts` porta `anche`/`salta`, e `InnestoPop.astro` emette `data-cap-passi` con la lista esplicita: al passo 10 si accendono e lampeggiano Riconosce e Sceglie e orchestra. Verificato 7-11: `001 · 001 · 001 · 110 · 001`. ⚠️ Stessa incoerenza al **passo 7** (filiale: RTA e CRM in scena, piede su Misura): non toccato, si chiude in una riga con la stessa lista.
+
+**La finestra presentatore** (`d2e2a3e`, typecheck in `459728c`), chiesta dall'owner «come per l'ultima SMAC»: quel sorgente non è su questa macchina, il modello è la vista di `apps/mim-alfabeti` (`/presenter/` + `PresenterBridge`, stesso protocollo BroadcastChannel). Tre pezzi:
+- `src/components/PresenterBridge.astro`, nel BaseLayout dopo `ModoRelatore`: manda lo stato (pagina, slide, sotto-passo, e il passo del pop-in aperto, confrontato due volte al secondo perché il pop-in non emette eventi del deck); riceve **tasti sintetici** — così dentro `dialog.pp` le frecce muovono il racconto come un telecomando, perché il pop-in ascolta in cattura sul documento — e `vai` (stessa pagina: `goTo`; altra pagina o riserva: caricamento vero con l'ancora, come «Vai a…»). **P** sul deck apre la finestra. Lo schermo intero non si comanda da remoto (il browser vuole un gesto vero): F sul deck.
+- `src/pages/presentatore.astro` (`/presentatore/`, noindex, fuori registro): slide corrente e successiva in miniatura, note da `data/relatore.ts` (per i momenti, `momenti.ts`), il passo del racconto col suo testo da `SCENE`, cronometro totale e per capitolo, ora, comandi, e **le 51 slide in miniatura per capitolo**, riserve comprese, cliccabili.
+- `scripts/miniature.ts`: una foto per slide del registro a sotto-passi aperti, `public/miniature/<pagina>--<slide>.jpg` 640×360 (1,4 MB). **Si rifà quando cambia una slide**, a preview accesa; una miniatura mancante mostra l'etichetta.
+Verificato con deck e presentatore nello stesso browser: collegamento, ← → ↑ ↓, salto nella pagina e fra pagine, «come si legge, riga 1 di 4» → «passo 2 di 11», zero errori in console.
+
+**Lo script per chi presenta, riallineato** (PDF git-ignorato in `docs/Intesa Sanpaolo/`, sorgente HTML nello scratchpad della sessione). L'owner ha trovato «Copertina "Dal dato alla decisione"», che non esiste: veniva dal **registro** (`data/slides.ts`), rimasto vecchio — corretto lì e nel docblock di `scenario.astro`. Confronto riga per riga col testo reso a racconto aperto: mancava la copertina di Giulia; il giro ha **tre ↓** (blu, rosa, poi 03→07 da soli), non sette, e l'esito sta **a sinistra in basso**; ogni momento ha **due ↓** (Giulia, poi «In Intesa Sanpaolo») che lo script non segnava; nomi dei momenti presi dal giro; annuncio, CRM al 03 («nessuna posizione», il lead arriva al 06), promemoria del 05 (12 ore, email + banner + re-targeting), frase del 07 («dove si perdono i non‑clienti»); innesto «in alto il perimetro», non «a sinistra», e il ciclo parte **dopo il terzo ↓**. Ogni blocco porta ora «In slide:» col titolo esatto.
+
+⚠️ **Resta**: la lezione — **le etichette del registro non sono il testo della slide**: uno script si scrive dal testo reso, non da `slides.ts`. Altre etichette del registro divergono dai titoli (es. `slide-segnale`), innocue finché nessuno le legge come copia.
 
 ## 44. InSalute Servizi «Dalla parte dell'assicurato» (Prospettiva, 24 novembre) · e il motore che replica un deck HTML in PowerPoint
 

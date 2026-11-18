@@ -5,6 +5,9 @@
 
 ## 11. Change log recente
 
+### 2026-11-18 mattina · Storia di Intesa: il piede al passo 10 e la finestra presentatore
+`25f66f7` il piede del «Come funziona» accende i capitoli per lista di passi (`anche`/`salta`): al 10 Riconosce e Sceglie e orchestra. `d2e2a3e` + `459728c` `/presentatore/` (tasto P) con `PresenterBridge` sul modello di mim-alfabeti: corrente e successiva, note, passo del pop-in, cronometro, comandi a tasti sintetici, 51 miniature cliccabili da `scripts/miniature.ts`; registro della copertina 02 corretto. Script PDF riallineato al testo reso (§42.24, Parte 24).
+
 ### 2026-11-18 · Storia di Intesa: script che si ricollegano a ogni pagina, CRM «via API o connettori nativi», la firma dal core
 `759e2f4` `suOgniPagina()` in `src/scripts/avvio.ts` (col ClientRouter gli script restavano legati alla prima visita: attribuzione, flusso dei dati, temi e modi morti al rientro); CJA «legge i dati che già raccogliete con Adobe Analytics» (niente Web SDK sul sito); CRM «via API o connettori nativi» ovunque. `0fa99fa` Executive workshop «Ambizione e priorità». `ae59189` passo 10: «richiesta firmata» dall'NDG alla riga EVENTO di JO, le due proposte del mutuo chiuse, freccia «audience da CJA». §42.23 (Parte 24). Da altre sessioni: `ad16c78` tredici regole di wording nel Giro 0 di `/umanizza`; `9ff5dfb` `unicredit-coworker-pod` riordinato (quadro, Analytics, Analytics + Target, video su Dynamic Media).
 
