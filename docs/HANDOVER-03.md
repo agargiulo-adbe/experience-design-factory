@@ -5,6 +5,9 @@
 
 ## 11. Change log recente
 
+### 2026-11-18 pomeriggio · Storia di Intesa: CJA ovunque, il «Come funziona» allineato ai sette momenti, la scaletta dei relatori nel presentatore
+`7cfa6b7` nota della copertina 02 che dice quale dato. `3686325` «CX Analytics» → Customer Journey Analytics in tutto il deck. `8bfd7f5` la fine del «Come funziona» porta sempre alle «Quattro domande» (`goTo` + `replaceState`). `7fb9fad` note del presentatore = script (`data/script.ts`, generato dal sorgente del PDF) anche nel «Come funziona». `6e13042` scaletta di tutti i relatori con conto alla rovescia (`data/scaletta.ts`). `0911ce3` via le date di verifica dalle fonti. `c998fd1` Crédit Agricole senza «soprattutto». `ab68627` app dopo la firma, banner al 04, email al 05, «Digitali / Con gestore», 07 «Il giorno della firma», TSB ridetto. §42.25 (Parte 24).
+
 ### 2026-11-18 mattina · Storia di Intesa: il piede al passo 10 e la finestra presentatore
 `25f66f7` il piede del «Come funziona» accende i capitoli per lista di passi (`anche`/`salta`): al 10 Riconosce e Sceglie e orchestra. `d2e2a3e` + `459728c` `/presentatore/` (tasto P) con `PresenterBridge` sul modello di mim-alfabeti, e `e0b7b8f` il suo pulsante nella bottoniera: corrente e successiva, note, passo del pop-in, cronometro, comandi a tasti sintetici, 51 miniature cliccabili da `scripts/miniature.ts`; registro della copertina 02 corretto. Script PDF riallineato al testo reso (§42.24, Parte 24).
 

@@ -229,6 +229,20 @@ Verificato con deck e presentatore nello stesso browser: collegamento, ← → �
 
 ⚠️ **Resta**: la lezione — **le etichette del registro non sono il testo della slide**: uno script si scrive dal testo reso, non da `slides.ts`. Altre etichette del registro divergono dai titoli (es. `slide-segnale`), innocue finché nessuno le legge come copia.
 
+### 42.25 CJA ovunque, il «Come funziona» rifatto sui sette momenti, la scaletta nel presentatore (18 nov, pomeriggio)
+
+Otto commit, tutti su `main` e pubblicati, CI e deploy verdi: `7cfa6b7` → `ab68627`.
+- **Nomi.** «CX Analytics» → **Customer Journey Analytics** ovunque (`3686325`, decisione del team). Canali dell'innesto **«Digitali / Con gestore»**: la Filiale Digitale di Intesa è filiale a distanza con un gestore, non «offline» (`ab68627`). La regola dell'owner «una riga per voce» regge a ≥1440; sotto i 1360 px la carta va a capo.
+- **Il «Come funziona» contro i momenti, e2e** (l'owner: «non supporre»): a «Diventa cliente» il box diceva ancora «Riprendi la simulazione». Ora c'è il box **app dopo la firma** (`.mc-e-app`), il banner al 04, l'email «la tua simulazione ti aspetta» al 05, la rata al passo 2, i cookie al passo 1. `app` sta fuori da `tutte` in `meccanismi.ts`: con `autoAlpha` restava a 0,3 tornando da 8 a 7. La fine porta sempre alle «Quattro domande» (`8bfd7f5`: con l'hash già impostato `location.hash` non emetteva l'evento).
+- **Lo script.** `data/script.ts` si genera dal sorgente HTML del PDF (script nello scratchpad della sessione): il presentatore e `/relatore/` mostrano le frasi dello scheletro e il blocco «Come funziona». 64 frasi del PDF verificate presenti.
+- **La scaletta** (`6e13042`, `data/scaletta.ts`, dalla chat Teams del team del 17 nov): sette blocchi su 55′, chi parla, conto alla rovescia del blocco, scarto sul totale che conta anche lo sforamento del blocco in corso. Il blocco si ricava dalla slide in onda; il capitolo 03 è diviso fra innesto/«Come funziona» e le quattro domande.
+- **Copia.** Il 07 è «Il giorno della firma» (niente durata). Il promemoria del 05 parte dopo dodici ore, solo col consenso, e esclude i già clienti. TSB +39% diventa «clienti già di TSB che scelgono un suo prodotto dopo un'interazione personalizzata»: via «base non pubblicata» e la frase-ponte «Da voi il mutuo si chiude in filiale». Crédit Agricole è «al primo acquisto, sulle offerte self-service». Le fonti escono senza «verificato il…» (`0911ce3`).
+- **FSI**: «prima industry di Adobe», «8.400 clienti» e «dieci maggiori banche USA» non hanno fonte. Il deck BPER le porta senza fonte, e anche il suo «+11% ricavi ricorrenti FSI». Restano fuori (backlog, Parte 2).
+
+**Gate**: `astro check` 0; `audit:deck` alla baseline (solo `a`/`i`); `audit:wrap` PULITO; `audit:taglio` ALLINEATO; miniature e PDF rifatti.
+
+⚠️ **Resta**: il piede al passo 7; «audience da CJA» su due righe; il panel su questo stato.
+
 ## 44. InSalute Servizi «Dalla parte dell'assicurato» (Prospettiva, 24 novembre) · e il motore che replica un deck HTML in PowerPoint
 
 Nata il **17 nov 2026** dal dossier gated su InSalute Servizi (§11, voce del 15 nov), per il primo incontro con il gestore delle prestazioni sanitarie della Divisione Insurance di Intesa Sanpaolo: **martedì 24 nov**, un'ora. Check interno **lunedì 23**. Il team Adobe ha chiesto la PPT **prima di venerdì 20**, per lavorarci sopra in condiviso. ⚠️ **Niente è committato** al momento di questa voce.
