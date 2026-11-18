@@ -80,6 +80,11 @@ def _inline(t):
 def componi(sorgente, font=None, larghezze=None):
     stile = CORPO + (f";font-family:{font}" if font else "")
     out, righe_tab = [], []
+    # L'intestazione la decide il markdown, non la posizione: senza la riga
+    # `|---|` dopo la prima, la prima è una riga come le altre. Il 18 nov 2026
+    # una tabella a due colonne senza intestazione usciva con la prima riga
+    # di DATI in blu e sottolineata, come se fosse il nome delle colonne.
+    intest = {"si": False}
 
     def chiudi_tabella():
         """Tabella leggibile anche nel motore di Word.
@@ -110,8 +115,9 @@ def componi(sorgente, font=None, larghezze=None):
                    'style="border:none;border-collapse:collapse;'
                    'table-layout:fixed;width:100%">')
         for n, celle in enumerate(righe_tab):
-            intestazione = (n == 0)
-            fondo = "" if intestazione or n % 2 else "background-color:#F6F8FA;"
+            intestazione = (n == 0 and intest["si"])
+            k = n if intest["si"] else n + 1
+            fondo = "" if intestazione or k % 2 else "background-color:#F6F8FA;"
             out.append("<tr>")
             for i, c in enumerate(celle):
                 destra = "0" if i == ncol - 1 else "22px"
@@ -127,12 +133,15 @@ def componi(sorgente, font=None, larghezze=None):
         out.append("</table>")
         out.append(f'<p style="{stile}">&nbsp;</p>')
         righe_tab.clear()
+        intest["si"] = False
 
     for riga in sorgente.splitlines():
         r = riga.rstrip()
         if r.startswith("|"):
             celle = [_inline(c.strip()) for c in r.strip("|").split("|")]
             if all(set(c) <= set("-: ") for c in celle):
+                if len(righe_tab) == 1:       # separatore subito dopo la prima
+                    intest["si"] = True
                 continue                      # riga di separazione markdown
             righe_tab.append(celle)
             continue
