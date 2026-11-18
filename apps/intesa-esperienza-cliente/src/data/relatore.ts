@@ -26,7 +26,7 @@ export const NOTE: Record<string, Record<string, Nota>> = {
     'slide-cx': { dire: 'Gli stessi prodotti della slide prima, visti dai bisogni della banca. Con la freccia giù un blocco alla volta: tre bisogni, una sola misura e, sotto, il lavoro chiesto a parole.', seChiedono: 'AI decisioning è la capacità di decisione di Journey Optimizer: in documentazione si chiama Decisioning, nei casi pubblici Offer Decisioning. GenStudio for Performance Marketing controlla le varianti contro le linee guida di marchio e di canale; le informative restano nell’iter di approvazione legale.' },
   },
   scenario: {
-    'slide-cover': { dire: 'Si parte dal dato che c’è, e spesso riguarda chi è cliente di un’altra banca.' },
+    'slide-cover': { dire: 'Chi cerca un mutuo oggi comincia online, e spesso non è ancora vostro cliente: il primo segnale arriva prima che vi lasci il nome.' },
     'slide-segnale': { dire: 'Prima il dato, poi il passaggio (freccia giù): il primo segnale arriva prima dell’email, quando di lei c’è solo uno pseudonimo. Prima la banca la raggiunge con assistenti AI, annunci e sito; dopo email e consenso la contatta direttamente, con email, filiale e app. Sono i sette momenti che seguono. Poi si chiede: quanto tempo passa oggi fra quel gesto e una risposta?', attenzione: 'Il dato è di mercato (Nomisma e MutuiSupermarket.it, maggio 2026), non è loro. Il 45% «vuole» simulare la rata: non dire che la simula. E Nomisma non dice quale segnale pesa di più: non dire «il più forte».' },
   },
   persona: {
