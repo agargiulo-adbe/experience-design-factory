@@ -440,7 +440,18 @@ const base3d = p3 ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p
     if (p < Number(d.dataset.tot)) { vai(d, p + 1); return; }
     d.close();
     // Il racconto unico finisce su CJA: il deck prosegue dalle sue «Quattro domande».
-    if (d.hasAttribute('data-e2e') && document.getElementById('slide-cja-banca')) location.hash = 'slide-cja-banca';
+    // ⚠️ Non con `location.hash` (owner, 18 nov 2026): se l'indirizzo porta GIÀ
+    // `#slide-cja-banca` (un giro precedente, un link con l'ancora) la stessa ancora
+    // non genera `hashchange` e il deck restava sull'innesto. Si va con il deck, e
+    // l'ancora si allinea senza eventi.
+    if (d.hasAttribute('data-e2e')) {
+      const deck = (window as unknown as { __edfDeck?: { slides: HTMLElement[]; goTo(i: number): void } }).__edfDeck;
+      const i = deck ? deck.slides.findIndex((s) => s.id === 'slide-cja-banca') : -1;
+      if (deck && i >= 0) {
+        deck.goTo(i);
+        history.replaceState(history.state, '', '#slide-cja-banca');
+      }
+    }
   }
 
   function indietro(d: HTMLDialogElement) {
