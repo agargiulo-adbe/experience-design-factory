@@ -199,8 +199,10 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     /* IL RACCONTO UNICO. Il gesto in più rispetto alle tre scene è il FUOCO: ogni passo
        accende le colonne in gioco e abbassa le altre, così l'occhio sa dove guardare
        mentre la fascia di Giulia, sopra, dice in che punto del suo percorso siamo. */
-    const [rta, ajo, canaliT, sito, mail, cja, motore, iniz, crm, fd] =
-      qq('rta', 'ajo', 'canali-t', 'sito', 'mail', 'cja', 'motore', 'iniz', 'crm', 'fd');
+    const [rta, ajo, canaliT, sito, mail, cja, motore, iniz, crm, fd, app] =
+      qq('rta', 'ajo', 'canali-t', 'sito', 'mail', 'cja', 'motore', 'iniz', 'crm', 'fd', 'app');
+    // L'app NON sta in `tutte`: la sua comparsa è un autoAlpha, e una dissolvenza di
+    // fuoco sulla stessa opacità, andando indietro, la riaccendeva a 0,3 sopra il sito.
     const tutte = [rta, ajo, canaliT, sito, cja, motore, iniz, crm, fd];
     const fuoco = (on: HTMLElement[], at: string) =>
       T.to(tutte, { opacity: (_i: number, el: HTMLElement) => (on.includes(el) ? 1 : .3), duration: .55, ease: MUOVE }, at);
@@ -237,7 +239,7 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     const [vEmail, vProp, vApp, vRit, vIniz] = qq('v-email', 'v-prop', 'v-app', 'v-ritorno', 'v-iniz');
     const ranghi = [o0, o1].map((o) => o.querySelector<HTMLElement>('.mc-rango')!);
 
-    gsap.set([foto, st1, st2, sessT1, banner, mail, percorso, barre, ctrl, motorePoi, crmPoi, vEmail, vProp, vApp, vRit, vIniz, regola, segSim, evFirma], { autoAlpha: 0 });
+    gsap.set([foto, st1, st2, sessT1, banner, mail, app, rata, percorso, barre, ctrl, motorePoi, crmPoi, vEmail, vProp, vApp, vRit, vIniz, regola, segSim, evFirma], { autoAlpha: 0 });
     gsap.set([o0, o1, o2, o3], { autoAlpha: 0 });
     gsap.set(ranghi, { autoAlpha: 0, scale: .4 });
 
@@ -251,8 +253,10 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
 
     passo('p2');
     tappa(1, 'p2');
-    pulsa(rata, 'p2', '250,150,0');
-    vola(sim, rata, 'p2+=.3');
+    // La rata compare quando simula, non prima (owner, 18 nov 2026).
+    appare(rata, 'p2', { duration: .4 });
+    pulsa(rata, 'p2+=.3', '250,150,0');
+    vola(sim, rata, 'p2+=.6');
     vola(seg, sim, 'p2+=1.2', .8);
     pulsa(seg, '>');
 
@@ -292,18 +296,21 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
      .set(regola, { y: 0 }, '>')
      .to(ranghi[0], { autoAlpha: 1, scale: 1, duration: .45, ease: 'back.out(2)' }, 'p5+=2.9')
      .to(ranghi[1], { autoAlpha: 1, scale: 1, duration: .45, ease: 'back.out(2)' }, 'p5+=3.05');
+    // Il promemoria compare SUL SITO la sera stessa, come nella slide 04 («Sul sito,
+    // adesso»); l'email arriva il mattino dopo, al passo 6 (owner, 18 nov 2026).
+    stato(o0, 'mc-vince', 'p5+=3.3');
+    stato(o1, 'mc-seconda', 'p5+=3.3');
+    T.to(o1, { opacity: .55, duration: .4 }, 'p5+=3.3');
+    fuoco([ajo, sito, canaliT], 'p5+=3.4');
+    viaggia(vProp, o0, spazio, 'p5+=3.5');
+    T.to(banner, { autoAlpha: 1, duration: .45 }, '>-.1');
 
     // Il passo 6 è sul NON cliente: le Iniziative commerciali lavorano sui clienti
     // (slide dell'innesto) e qui restano spente (owner, 17 nov 2026).
     passo('p6');
     fuoco([ajo, sito, canaliT], 'p6');
     tappa(3, 'p6');
-    stato(o0, 'mc-vince', 'p6');
-    stato(o1, 'mc-seconda', 'p6');
-    T.to(o1, { opacity: .55, duration: .4 }, 'p6');
-    viaggia(vProp, o0, spazio, 'p6+=.3');
-    T.to(banner, { autoAlpha: 1, duration: .45 }, '>-.1');
-    T.fromTo(mail, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: .7, immediateRender: false }, '>+.2');
+    T.fromTo(mail, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: .7, immediateRender: false }, 'p6+=.3');
 
     // ── Misura ──
     passo('p7');
@@ -317,7 +324,10 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     pulsa(pratica, '>+.2');
 
     passo('p8');
-    fuoco([cja, sito, canaliT, crm, fd], 'p8');
+    fuoco([cja, canaliT, crm, fd], 'p8');
+    // Firmato il mutuo, Giulia non vede più il promemoria: vede la sua pratica nell'app.
+    T.to([sito, mail], { autoAlpha: 0, duration: .35 }, 'p8')
+     .fromTo(app, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: .5, immediateRender: false }, 'p8+=.25');
     spegne(crm, 'p8');
     tappa(5, 'p8');
     T.to(st1, { autoAlpha: 0, duration: .3 }, 'p8').to(st2, { autoAlpha: 1, duration: .4 }, '<.1');
@@ -325,7 +335,7 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     vola(ndg, tappe[5], 'p8+=.2', 1);
     pulsa(ndg, '>');
     gsap.set(fonti, { autoAlpha: 0 });
-    vola(fonti[0], sito, 'p8+=.3');
+    vola(fonti[0], canaliT, 'p8+=.3');
     vola(fonti[1], tappe[5], 'p8+=.55');
     vola(fonti[2], crm, 'p8+=.8');
     vola(fonti[3], fd, 'p8+=1.05');
@@ -334,6 +344,7 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
 
     passo('p9');
     fuoco([cja], 'p9');
+    T.to(app, { opacity: .3, duration: .55 }, 'p9');
     appare(barre, 'p9', { duration: .4 });
     T.fromTo(qq('b0', 'b1', 'b2', 'b3'), { scaleX: 0 }, { scaleX: 1, duration: 1, stagger: .18, immediateRender: false }, 'p9+=.3');
     appare(ctrl, 'p9+=1.5');
@@ -379,7 +390,7 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
       classi(inizProg, p === 11 ? 'mc-acceso' : '');
       classi(crm, p === 7 ? 'mc-attivo' : '');
       classi(o2, p >= 5 ? 'mc-fuori' : ''); classi(o3, p >= 5 ? 'mc-fuori' : '');
-      classi(o0, p >= 10 ? 'mc-chiuso' : p >= 6 ? 'mc-vince' : ''); classi(o1, p >= 10 ? 'mc-chiuso' : p >= 6 ? 'mc-seconda' : '');
+      classi(o0, p >= 10 ? 'mc-chiuso' : p >= 5 ? 'mc-vince' : ''); classi(o1, p >= 10 ? 'mc-chiuso' : p >= 5 ? 'mc-seconda' : '');
     };
   }
 

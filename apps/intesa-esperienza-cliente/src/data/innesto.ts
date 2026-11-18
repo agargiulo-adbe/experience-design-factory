@@ -60,8 +60,8 @@ export const OGGI: { t: Testo; s?: Testo; d: Testo; lega?: Testo; forte?: boolea
     lega: { it: 'Per i non‑clienti, Journey Optimizer arriva su sito, app ed email', en: 'For non-customers, Journey Optimizer reaches the site, app and email' },
     d: { it: 'filiale, Filiale Digitale, app, sito, aree self-service, media a pagamento', en: 'branch, Filiale Digitale, app, site, self-service areas, paid media' },
     canali: [
-      { k: 'online', t: { it: 'Online', en: 'Online' }, d: { it: 'sito, app, annunci', en: 'site, app, ads' } },
-      { k: 'offline', t: { it: 'Offline', en: 'Offline' }, d: { it: 'filiale, Filiale Digitale', en: 'branch, Filiale Digitale' } },
+      { k: 'online', t: { it: 'Digitali', en: 'Digital' }, d: { it: 'sito, app, annunci', en: 'site, app, ads' } },
+      { k: 'offline', t: { it: 'Con gestore', en: 'With an adviser' }, d: { it: 'filiale, Filiale Digitale', en: 'branch, Filiale Digitale' } },
     ] },
 ];
 
@@ -151,7 +151,7 @@ export const MOMENTO_SCHEMA: Record<'03' | '04-06' | '07', {
     cambia: { it: 'In filiale il gestore ha già aperta la sua simulazione.', en: 'In the branch the adviser already has her simulation open.' },
   },
   '07': {
-    quando: { it: 'Tre settimane dopo', en: 'Three weeks later' },
+    quando: { it: 'Il giorno della firma', en: 'On signing day' },
     attivi: [6],
     lei: { it: 'Firma e apre il conto: da quel giorno la pratica è nell’app.', en: 'She signs and opens an account: from that day the file is in the app.' },
     banca: { it: 'Legge sulla stessa persona sito, app e filiale, dal primo clic alla firma.', en: 'It reads site, app and branch on the same person, from the first click to the signature.' },

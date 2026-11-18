@@ -273,8 +273,8 @@ export const MOMENTI: Momento[] = [
       prodotto: 'percorso', scena: 'lavoro-05-orchestrazione',
       titolo: { it: 'Se lascia la richiesta a metà, la banca gliela ricorda per email, sul sito e con un annuncio', en: 'If she leaves the application half-done, the bank reminds her by email, on the website and with an ad' },
       corpo: {
-        it: 'L’audience si definisce una volta, con le regole, e il percorso parte dall’evento. Aspetta dodici ore, prova la mail con la proposta di appuntamento e, se il clic non arriva, riprova con la variante giusta.',
-        en: 'The audience is defined once, with rules, and the journey starts from the event. It waits twelve hours, tries email with the proposed appointment and, if the click does not come, tries again with the right variant.',
+        it: 'L’audience si definisce una volta, con le regole, e il percorso parte dall’evento. Aspetta dodici ore e, se non ha ripreso, gliela ricorda per email, con un banner sul sito e con gli annunci di re-targeting: solo con il consenso, e i già clienti sono esclusi.',
+        en: 'The audience is defined once, with rules, and the journey starts from the event. It waits twelve hours and, if she has not resumed, reminds her by email, with a banner on the site and with re-targeting ads: only with consent, and existing customers are excluded.',
       },
     },
   },
@@ -314,7 +314,7 @@ export const MOMENTI: Momento[] = [
     /* ⚠️ Tre settimane dal mercoledì 18 novembre: mercoledì 9 dicembre.
        NON martedì 8, che è l'Immacolata e le filiali sono chiuse; e non
        più sabato 5 alle 18:40, che il panel dell'11 nov 2026 ha visto. */
-    ora: { it: 'Tre settimane dopo', en: 'Three weeks later' },
+    ora: { it: 'Il giorno della firma', en: 'On signing day' },
     /* «In filiale» ripeteva il 06 e diceva metà del momento: firma allo
        sportello, poi la pratica vive nell'app (owner, 16 nov 2026). */
     dove: { it: 'Apre l’app della banca', en: 'Opens the bank’s app' },

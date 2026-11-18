@@ -42,10 +42,11 @@ export const CIFRE_TSB = [
   { n: '9 giorni → <24 ore', l: { it: 'latenza del dato', en: 'data latency' } },
   /* ⚠️ Il +39% è su CLIENTI ESISTENTI, in app: non è una prova
      sull'acquisizione, e va detto (panel, 30 ott 2026). La pagina dice
-     «This year, we’ve seen 39% more customers…» senza base: «base non
-     pubblicata» sta accanto alla cifra, anche nel taglio corto (panel,
-     11 nov 2026). */
-  { n: '+39%', l: { it: 'clienti in più che scelgono un prodotto TSB dopo un’interazione personalizzata · base non pubblicata', en: 'more customers choosing a TSB product following a personalized interaction · baseline not published' },  },
+     «This year, we’ve seen 39% more customers…» senza base. Dal 18 nov
+     (owner) «base non pubblicata» è tolto: in slide suonava da revisore e
+     non diceva la cosa che conta; il perimetro sta nell'etichetta, «clienti
+     già di TSB», e vale anche nel taglio corto. */
+  { n: '+39%', l: { it: 'clienti già di TSB che scelgono un suo prodotto dopo un’interazione personalizzata', en: 'existing TSB customers choosing one of its products after a personalized interaction' }  },
   { n: '1.000+', l: { it: 'casi d’uso in produzione: erano 250 tre anni fa', en: 'use cases live: 250 three years ago' },
     lBreve: { it: 'casi d’uso in produzione', en: 'use cases live' } },
   { n: '91%', l: { it: 'dei prodotti, oggi, si compra sui canali digitali', en: 'of products are bought digitally today' },
@@ -104,7 +105,7 @@ export interface Caso {
 
 /* ⚠️ L'ORDINE IN PAGINA (11 nov 2026, owner): Santander, Crédit Agricole,
    TSB, Unipol. La cornice «nessuno di questi è un caso come il vostro» sta
-   sul PRIMO caso, Santander; TSB tiene il ponte sulla filiale. */
+   sul PRIMO caso, Santander. */
 export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Caso> = {
   tsb: {
     slug: 'tsb', nome: 'TSB',
@@ -122,8 +123,10 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Cas
       testo: { it: 'Una pratica di mutuo lasciata a metà in app, ripresa in tempo reale', en: 'A mortgage application left half-done in the app, resumed in real time' },
       icona: 'riprende',
     },
-    ponte: { it: 'Da voi il mutuo si chiude in filiale: per questo la misura conta anche gli appuntamenti.', en: 'At your bank the mortgage closes in branch: that is why the measurement also counts appointments.' },
-    ponteBreve: { it: 'Da voi il mutuo si chiude in filiale: la misura conta anche gli appuntamenti.', en: 'At your bank the mortgage closes in branch: the measurement also counts appointments.' },
+    /* Il «ponte» sulla filiale di Intesa («Da voi il mutuo si chiude in
+       filiale…») è tolto (owner, 18 nov 2026): una referenza dice che cosa ha
+       fatto un'altra banca, non afferma fatti sulla vostra; la filiale nella
+       misura la dicono il momento 07 e l'attribuzione. */
     fonte: { url: FONTI.tsb, nome: 'business.adobe.com · TSB' },
   },
   santander: {
