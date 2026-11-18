@@ -191,6 +191,30 @@ Un commit solo, `0726a52`, pushato su `main`. Nasce da tre richieste dell'owner:
 
 ⚠️ **Resta**: «fase 0» ancora in tre punti del percorso principale (tetto di contatti e convivenza delle licenze in `innesto.ts`, una riga della slide sul passaggio a Web Analytics); panel non rifatto su questo stato.
 
+## 42.23 Storia di Intesa · il 17-18 novembre, gli script che si ricollegano a ogni pagina, il CRM «via API o connettori nativi», e la firma che arriva dal core
+
+Tre commit, tutti su `main` e pubblicati: `759e2f4`, `0fa99fa`, `ae59189`.
+
+**Il guasto «a volte funziona, a volte no»** (`759e2f4`, segnalato dal team in Teams il 17 nov). Attribuzione ferma, «Come entrano i dati» senza animazione, temi e modi di Prossimi passi non più cliccabili. **Causa**: il deck naviga col ClientRouter di Astro, e uno `<script>` di pagina è un modulo che gira **una volta per documento**; gli script si legavano agli elementi della prima visita, e rientrando nel capitolo gli elementi erano nuovi. Riprodotto sul sito pubblico (prima visita ok, rientro morto). **Fix**: `src/scripts/avvio.ts`, `suOgniPagina(sel, fn)` richiama `fn` su ogni elemento nuovo a ogni `astro:page-load`, spegne il giro precedente con un `AbortController` (listener con `signal`, observer creati con `mo()`/`ro()` che si scollegano da soli). Cinque blocchi in `messa-a-terra.astro` e quello di `prossimi-passi.astro`. Verificato dopo il deploy: rientro funzionante, listener non duplicati.
+
+**Fact-check su Fluffy della messa a terra** (17 nov, sola lettura, poi due decisioni dell'owner).
+- CJA «raccoglie» → **«legge i dati di sito e app che già raccogliete con Adobe Analytics»**: il sito di Intesa monta AppMeasurement 2.22.0 via Tealium, **niente Web SDK** (verificato sul front-end).
+- Il CRM: dalle trascrizioni risulta Salesforce Marketing Cloud per le campagne, il CRM di filiale **non confermato** (sembra custom, con SAS sopra per il targeting, di seconda mano). Ovunque l'integrazione si dice **«via API o connettori nativi»**, e chi sceglie è Group Technology (`Meccanismo.astro`, `MockAdobe.astro`, `momenti.ts` IT/EN, `approfondimenti.astro`, `pop.ts`, `relatore.ts`). Chiude il P0 delle due frasi smentite dal panel del 16.
+- Executive workshop: «con chi decide» → **«Ambizione e priorità»** (`0fa99fa`, richiesta del team: la parola offendeva il referente).
+
+**Passo 10 del «Come funziona» rifatto** (`ae59189`, dopo una critica chiesta dall'owner: «chi ha firmato» poteva essere fuorviante). Tre difetti: la pillola partiva da CJA (ore di latenza) per un evento che nasce nel core; copriva la carta del promemoria; si chiudeva solo la prima proposta, e la seconda sembrava subentrare.
+- **«richiesta firmata»** parte dall'NDG in Real-Time Activation e si posa nella riga EVENTO di Journey Optimizer, al posto di «pratica lasciata a metà» (`.mc-ev-pila`, due pillole sovrapposte in griglia).
+- Le due proposte del mutuo si chiudono barrate con **«chiusa: è cliente»** (`.mc-chiuso`); Polizza casa dice **«esclusa: offerta per i clienti»** e torna al passo 11.
+- Testo: «Firma: Giulia esce dalla proposta del mutuo, e nessuno le riscrive per una pratica chiusa. Da chi ha firmato, Real-Time Activation costruisce un'audience look-alike».
+- Sulla mappa dell'innesto la freccia CJA → RTA dice **«audience da CJA»**, non più «audience look-alike». La nota del relatore è riallineata.
+- `allinea()` ripristina `mc-vince`/`mc-seconda` e la pillola dell'evento tornando da 11 a 9 (provato).
+
+**Lo script dell'intervento** dell'owner per la registrazione del 18 nov: PDF di 7 pagine in `docs/Intesa Sanpaolo/` (git-ignorato), con frasi àncora, tempi per slide e passi 1-11 già alla versione nuova del passo 10.
+
+**Gate**: `astro check` 0 errori; `audit:deck` messa-a-terra 21, momenti 25, approfondimenti 52, coworker 6, prossimi-passi 7, tutti `a`/`i`; `audit:wrap` PULITO; `audit:taglio` ALLINEATO; fotogrammi a 1440×900 e 1280×720; regressione di rientro verde.
+
+⚠️ **Resta**: ai passi 10-11 il piede evidenzia «Misura · CJA» mentre lavorano RTA e JO; «audience da CJA» va a capo su due righe sulla mappa; panel non rifatto su questo stato.
+
 ## 44. InSalute Servizi «Dalla parte dell'assicurato» (Prospettiva, 24 novembre) · e il motore che replica un deck HTML in PowerPoint
 
 Nata il **17 nov 2026** dal dossier gated su InSalute Servizi (§11, voce del 15 nov), per il primo incontro con il gestore delle prestazioni sanitarie della Divisione Insurance di Intesa Sanpaolo: **martedì 24 nov**, un'ora. Check interno **lunedì 23**. Il team Adobe ha chiesto la PPT **prima di venerdì 20**, per lavorarci sopra in condiviso. ⚠️ **Niente è committato** al momento di questa voce.
