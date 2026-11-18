@@ -15,7 +15,7 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-cx',        label: 'Per Intesa Sanpaolo: tre bisogni, la stessa piattaforma' },
   ]},
   { slug: 'scenario', label: 'Giulia: un mutuo, sette momenti · Il segnale (02)', slides: [
-    { id: 'slide-cover',      label: 'Cover: Dal dato alla decisione' },
+    { id: 'slide-cover',      label: 'Cover del capitolo 02: Giulia, un mutuo, sette momenti' },
     { id: 'slide-segnale',    label: 'Il segnale c’è già: l’imbuto' },
   ]},
   { slug: 'persona', label: 'Giulia: un mutuo, sette momenti · La persona (02)', slides: [

@@ -1,0 +1,117 @@
+---
+/**
+ * IL PONTE VERSO LA FINESTRA PRESENTATORE (owner, 18 nov 2026).
+ *
+ * Metà lato deck della vista `/presentatore/`, portata da `apps/mim-alfabeti`
+ * (stesso protocollo, BroadcastChannel). Sta nel BaseLayout, una volta.
+ *
+ *  deck → presentatore  { type:'state', slug, id, index, total, substep, substeps,
+ *                         pop: { scena, passo, tot } | null }
+ *                       a ogni cambio (slide, sotto-passo, passo del «Come funziona»).
+ *  presentatore → deck  { type:'hello' }                  → rimanda lo stato
+ *                       { type:'key', key }               → tasto sintetico
+ *                       { type:'vai', slug, id, href }    → salta a quella slide
+ *
+ * PERCHÉ TASTI E NON METODI: a racconto aperto (dialog.pp) le frecce le prende il
+ * pop-in, in cattura sul documento, e il deck non le sente. Un tasto sintetico
+ * segue la stessa strada di un telecomando: avanza la slide o il passo del
+ * racconto, secondo che cosa è aperto. Lo schermo intero non si può comandare da
+ * qui (il browser lo concede solo a un gesto vero): F si preme sul deck.
+ *
+ * Il tasto P, sul deck, apre la finestra presentatore.
+ */
+import { SITE } from '../data/site';
+import { PAGE_REGISTRY } from '../data/slides';
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const CANALE = `edf-presentatore:${SITE.slug}`;
+const SLUGS = PAGE_REGISTRY.map((p) => p.slug);
+---
+<script is:inline define:vars={{ CANALE, base, SLUGS }}>
+(function () {
+  if (window.__edfPonte) return;
+  var bc = null;
+  try { bc = new BroadcastChannel(CANALE); } catch (e) { bc = null; }
+
+  function slug() {
+    var parti = location.pathname.replace(/\/+$/, '').split('/');
+    var s = parti[parti.length - 1] || 'index';
+    return SLUGS.indexOf(s) !== -1 ? s : 'index';
+  }
+  function radice() { return document.querySelector('[data-deck]'); }
+  function deck() {
+    var d = window.__edfDeck || null, r = radice();
+    return d && r && d.root === r ? d : null;
+  }
+  function pop() {
+    var d = document.querySelector('dialog.pp[open]');
+    if (!d) return null;
+    return { scena: d.dataset.scena || '', passo: Number(d.dataset.passo || 0), tot: Number(d.dataset.tot || 0), leggi: d.dataset.leggi ? Number(d.dataset.leggi) : 0 };
+  }
+  function stato() {
+    var d = deck();
+    var s = d && d.slides ? d.slides[d.index] : null;
+    var passi = s ? s.querySelectorAll('[data-substep]') : [];
+    var visti = 0;
+    for (var i = 0; i < passi.length; i++) if (passi[i].hasAttribute('data-substep-active')) visti++;
+    return {
+      type: 'state', slug: slug(), id: s ? s.id : '',
+      index: d ? d.index : 0, total: d && d.slides ? d.slides.length : 0,
+      substep: visti, substeps: passi.length, pop: pop(),
+    };
+  }
+  var ultimo = '';
+  function manda(forza) {
+    if (!bc || !radice() || !deck()) return;
+    var st = stato(), k = JSON.stringify(st);
+    if (!forza && k === ultimo) return;
+    ultimo = k;
+    try { bc.postMessage(st); } catch (e) {}
+  }
+  ['deck:change', 'deck:substep', 'astro:page-load'].forEach(function (ev) {
+    document.addEventListener(ev, function () { setTimeout(function () { manda(false); }, 0); });
+  });
+  /* I passi del «Come funziona» non emettono eventi del deck: si confronta lo stato
+     due volte al secondo e si manda solo se è cambiato. */
+  setInterval(function () { manda(false); }, 500);
+
+  function tasto(k) {
+    var t = document.activeElement && document.activeElement !== document.body ? document.activeElement : document;
+    try { t.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true })); } catch (e) {}
+  }
+  function vai(m) {
+    var aperto = document.querySelector('dialog.pp[open]');
+    if (aperto) aperto.close();
+    var d = deck();
+    if (d && m.slug === slug()) {
+      for (var i = 0; i < d.slides.length; i++) if (d.slides[i].id === m.id) { d.goTo(i); return; }
+    }
+    // Fuori pagina, o una riserva fuori percorso: un caricamento vero con l'ancora
+    // (la riserva si accende e il motore la conta), come il pannello «Vai a…».
+    if (typeof m.href !== 'string' || m.href.charAt(0) !== '/') return;
+    var url = new URL(m.href, location.href);
+    if (url.pathname === location.pathname) { location.hash = url.hash; location.reload(); }
+    else location.assign(url.href);
+  }
+  if (bc) bc.addEventListener('message', function (e) {
+    var m = e && e.data;
+    if (!m || !m.type || !radice()) return;
+    if (m.type === 'hello') manda(true);
+    else if (m.type === 'key' && typeof m.key === 'string') tasto(m.key);
+    else if (m.type === 'vai') vai(m);
+  });
+
+  /* P apre la finestra presentatore, accanto al deck. */
+  window.addEventListener('keydown', function (e) {
+    if (e.key !== 'p' && e.key !== 'P') return;
+    if (e.metaKey || e.ctrlKey || e.altKey || !radice()) return;
+    var t = e.target;
+    if (t && t.matches && t.matches('input, textarea, select, [contenteditable]')) return;
+    if (document.querySelector('dialog[open]')) return;
+    e.preventDefault();
+    window.open(base + 'presentatore/', 'edf-presentatore', 'popup,width=1440,height=900');
+  });
+
+  window.__edfPonte = { stato: stato, manda: function () { manda(true); } };
+})();
+</script>
