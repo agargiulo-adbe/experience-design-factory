@@ -32,6 +32,7 @@ import { NOTE, TRE_COSE } from '../data/relatore';
 import { MOMENTI } from '../data/momenti';
 import { SCENE } from '../data/pop';
 import { SCRIPT, COME_FUNZIONA } from '../data/script';
+import { SCALETTA, DURATA_MIN } from '../data/scaletta';
 
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const CANALE = `edf-presentatore:${SITE.slug}`;
@@ -96,15 +97,32 @@ const totale = sezioni.reduce((n, s) => n + s.slides.length, 0);
           <figure class="pv-fig" data-pv-dopo-fig><span class="pv-fig-t" data-pv-dopo-t>—</span></figure>
         </section>
 
+        {/* IL CONTO ALLA ROVESCIA (owner, 18 nov 2026): il tempo del relatore di turno
+            secondo la scaletta del team (data/scaletta.ts), non solo il cronometro. Parte
+            con Avvia (T): il minuto 0 è quando si comincia a parlare, non le 11:00. */}
         <section class="pv-card pv-tempo" aria-label="Tempo" data-pv-tempo>
+          <p class="pv-k">Di turno <span class="pv-chi" data-pv-chi>—</span></p>
+          <p class="pv-blocco" data-pv-blocco>Il blocco si accende con la slide in onda</p>
+          <p class="pv-orologio pv-resta" data-pv-resta>—</p>
+          <p class="pv-resta-k" data-pv-resta-k>resta nel blocco</p>
           <div class="pv-tempi">
-            <div><p class="pv-k">Totale</p><p class="pv-orologio" data-pv-tot>0:00</p></div>
-            <div><p class="pv-k">Questo capitolo</p><p class="pv-orologio pv-orologio--s" data-pv-sez>0:00</p></div>
+            <div><p class="pv-k">Totale</p><p class="pv-orologio pv-orologio--s" data-pv-tot>0:00</p></div>
+            <div><p class="pv-k">Ai {DURATA_MIN}′ mancano</p><p class="pv-orologio pv-orologio--s" data-pv-fine>{DURATA_MIN}:00</p></div>
           </div>
+          <p class="pv-scarto" data-pv-scarto>In linea con la scaletta</p>
           <div class="pv-riga">
             <button type="button" class="pv-b pv-b--primo" data-pv-via>Avvia <kbd>T</kbd></button>
             <button type="button" class="pv-b" data-pv-azzera>Azzera</button>
           </div>
+          <ol class="pv-scaletta">
+            {SCALETTA.map((b) => (
+              <li data-pv-b={b.id}>
+                <span class="pv-sc-m">{b.da}–{b.a}′</span>
+                <span class="pv-sc-t"><b>{b.n}</b> {b.titolo}<small>{b.chi}</small></span>
+                <span class="pv-sc-u" data-pv-usato={b.id}>—</span>
+              </li>
+            ))}
+          </ol>
         </section>
 
         <section class="pv-card" aria-label="Comandi">
@@ -193,6 +211,21 @@ const totale = sezioni.reduce((n, s) => n + s.slides.length, 0);
   .pv-orologio { margin: 0; font: 700 2.4rem/1 var(--font-display); font-variant-numeric: tabular-nums; color: #fff; }
   .pv-orologio--s { font-size: 1.8rem; }
   .pv-tempo[data-va="1"] .pv-orologio { color: #b9e6a3; }
+  .pv-chi { text-transform: none; letter-spacing: 0; font: 700 1.15rem/1.2 var(--font-display); color: #fff; }
+  .pv-blocco { margin: 0 0 0.4rem; font-size: 0.85rem; color: #c9d8c4; }
+  .pv .pv-resta { font-size: 3.4rem; }
+  .pv-resta-k { margin: 0.1rem 0 0.7rem; font-size: 0.8rem; color: #c9d8c4; }
+  .pv-tempo[data-stato="ultimo"] .pv-resta { color: #ffc46b; }
+  .pv-tempo[data-stato="oltre"] .pv-resta, .pv .over { color: #ff8a7a !important; }
+  .pv-scarto { margin: 0.6rem 0 0; font-size: 0.85rem; font-weight: 700; color: #c9d8c4; }
+  .pv-scarto[data-verso="ritardo"] { color: #ff8a7a; }
+  .pv-scarto[data-verso="anticipo"] { color: #b9e6a3; }
+  .pv-scaletta { list-style: none; margin: 0.8rem 0 0; padding: 0.6rem 0 0; border-top: 1px solid rgba(185, 230, 163, 0.2); display: grid; gap: 0.3rem; }
+  .pv-scaletta li { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr) 3rem; gap: 0.5rem; align-items: baseline; padding: 0.25rem 0.35rem; border-radius: 6px; font-size: 0.82rem; color: #c9d8c4; }
+  .pv-scaletta li[data-qui] { background: rgba(79, 194, 31, 0.18); color: #fff; }
+  .pv-sc-m, .pv-sc-u { font-variant-numeric: tabular-nums; }
+  .pv-sc-u { text-align: right; }
+  .pv-sc-t small { display: block; color: #9fd68a; }
   .pv-riga { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
   .pv-comandi { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
   .pv-b { display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; min-height: 2.75rem; padding: 0.45rem 0.8rem; border: 1.5px solid rgba(185, 230, 163, 0.4); border-radius: 8px; background: none; color: #fff; font: 600 0.95rem/1 var(--font-body); cursor: pointer; }
@@ -222,6 +255,7 @@ const totale = sezioni.reduce((n, s) => n + s.slides.length, 0);
 </style>
 
 <script>
+  import { SCALETTA, DURATA_MIN, bloccoDi } from '../data/scaletta';
   interface Riga { k: string; t: string; tono?: 'at' | 'se' | 'anc' | 'q' }
   interface PSlide { id: string; label: string; riserva: boolean; thumb: string; righe: Riga[] }
   interface PSez { slug: string; label: string; url: string; slides: PSlide[] }
@@ -252,14 +286,16 @@ const totale = sezioni.reduce((n, s) => n + s.slides.length, 0);
       return s ? { s, x: s.slides.find((z) => z.id === id) ?? null } : null;
     };
 
-    // ── Tempo ──
+    // ── Tempo: la scaletta del team, un blocco per relatore ──
+    // Il blocco di turno si ricava dalla slide in onda (bloccoDi); una slide fuori
+    // scaletta (approfondimenti) lascia il tempo sul blocco che l'ha aperta.
     let va = false, prima = 0, da = 0, sezCorr = '', sezDa = 0;
     const perSez: Record<string, number> = {};
     const ora = () => Date.now();
     const totMs = () => prima + (va ? ora() - da : 0);
     const sezMs = (s: string) => (perSez[s] ?? 0) + (va && sezCorr === s ? ora() - sezDa : 0);
-    const entra = (s: string) => { if (s === sezCorr) return; if (va && sezCorr) perSez[sezCorr] = sezMs(sezCorr); sezCorr = s; sezDa = ora(); };
-    const fmt = (ms: number) => { const s = Math.floor(ms / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+    const entra = (s: string) => { if (!s || s === sezCorr) return; if (va && sezCorr) perSez[sezCorr] = sezMs(sezCorr); sezCorr = s; sezDa = ora(); };
+    const fmt = (ms: number) => { const s = Math.floor(Math.abs(ms) / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
     const commuta = () => {
       if (va) { prima = totMs(); if (sezCorr) perSez[sezCorr] = sezMs(sezCorr); va = false; }
       else { da = ora(); sezDa = ora(); va = true; }
@@ -267,9 +303,39 @@ const totale = sezioni.reduce((n, s) => n + s.slides.length, 0);
     };
     const azzera = () => { va = false; prima = 0; Object.keys(perSez).forEach((k) => delete perSez[k]); sezDa = ora(); tempo(); };
     function tempo() {
-      $('[data-pv-tempo]').dataset.va = va ? '1' : '0';
+      const box = $('[data-pv-tempo]');
+      box.dataset.va = va ? '1' : '0';
       $('[data-pv-tot]').textContent = fmt(totMs());
-      $('[data-pv-sez]').textContent = fmt(sezCorr ? sezMs(sezCorr) : 0);
+      const fine = DURATA_MIN * 60000 - totMs();
+      $('[data-pv-fine]').textContent = (fine < 0 ? '+' : '') + fmt(fine);
+      $('[data-pv-fine]').classList.toggle('over', fine < 0);
+      const b = SCALETTA.find((x) => x.id === sezCorr) ?? null;
+      $('[data-pv-chi]').textContent = b ? b.chi : '—';
+      $('[data-pv-blocco]').textContent = b ? `${b.n} · ${b.titolo} · ${b.da}–${b.a}′` : 'Il blocco si accende con la slide in onda';
+      if (b) {
+        const resta = (b.a - b.da) * 60000 - sezMs(b.id);
+        const el = $('[data-pv-resta]');
+        el.textContent = (resta < 0 ? '+' : '') + fmt(resta);
+        box.dataset.stato = resta < 0 ? 'oltre' : resta < 60000 ? 'ultimo' : '';
+        $('[data-pv-resta-k]').textContent = resta < 0 ? 'oltre il tempo del blocco' : 'resta nel blocco';
+        // Anticipo o ritardo: dove dovrebbe essere il totale, secondo la scaletta, a
+        // questo punto del blocco.
+        // Lo sforamento del blocco in corso è già ritardo: il tempo del blocco conta
+        // fino alla sua durata, oltre va tutto in scarto.
+        const scarto = totMs() - (b.da * 60000 + Math.min(sezMs(b.id), (b.a - b.da) * 60000));
+        const s = $('[data-pv-scarto]');
+        s.textContent = Math.abs(scarto) < 30000 ? 'In linea con la scaletta' : `${scarto > 0 ? 'In ritardo' : 'In anticipo'} di ${fmt(scarto)} sulla scaletta`;
+        s.dataset.verso = Math.abs(scarto) < 30000 ? '' : scarto > 0 ? 'ritardo' : 'anticipo';
+      } else { $('[data-pv-resta]').textContent = '—'; box.dataset.stato = ''; }
+      root.querySelectorAll<HTMLElement>('[data-pv-b]').forEach((li) => {
+        const id = li.dataset.pvB!;
+        const x = SCALETTA.find((y) => y.id === id)!;
+        const usato = sezMs(id);
+        li.toggleAttribute('data-qui', id === sezCorr);
+        const u = li.querySelector<HTMLElement>('[data-pv-usato]')!;
+        u.textContent = usato ? fmt(usato) : '—';
+        u.classList.toggle('over', usato > (x.a - x.da) * 60000);
+      });
       $('[data-pv-via]').innerHTML = `${va ? 'Pausa' : 'Avvia'} <kbd>T</kbd>`;
     }
 
@@ -364,7 +430,7 @@ const totale = sezioni.reduce((n, s) => n + s.slides.length, 0);
       visto = ora();
       const k = JSON.stringify(m);
       if (st && JSON.stringify(st) === k) return;
-      st = m; entra(m.slug); disegna();
+      st = m; entra(bloccoDi(m.slug, m.id)?.id ?? ''); disegna();
     });
     manda({ type: 'hello' });
     disegna();
