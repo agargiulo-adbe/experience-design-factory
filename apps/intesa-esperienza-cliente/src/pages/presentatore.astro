@@ -215,9 +215,11 @@ const totale = sezioni.reduce((n, s) => n + s.slides.length, 0);
   interface Stato { type: 'state'; slug: string; id: string; index: number; total: number; substep: number; substeps: number; pop: { scena: string; passo: number; tot: number; leggi: number } | null }
 
   function avvia() {
-    const root = document.querySelector<HTMLElement>('[data-pv]');
+    const trovato = document.querySelector<HTMLElement>('[data-pv]');
     const el = document.getElementById('pv-dati');
-    if (!root || !el || root.hasAttribute('data-pronto')) return;
+    if (!trovato || !el || trovato.hasAttribute('data-pronto')) return;
+    // Una const non nulla: le funzioni dichiarate qui sotto non ereditano il restringimento.
+    const root: HTMLElement = trovato;
     root.setAttribute('data-pronto', '');
     const dati = JSON.parse(el.textContent || '{}') as Dati;
     const $ = <T extends HTMLElement = HTMLElement>(s: string) => root.querySelector<T>(s)!;
