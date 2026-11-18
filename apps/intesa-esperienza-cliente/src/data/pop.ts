@@ -23,7 +23,7 @@ export interface Scena { prodotto: string; cosa: string; passi: string[]; nota: 
   /** La riga sopra il titolo del pop-in; manca = «Componente Adobe». */
   occhiello?: string;
   /** Il racconto unico: i capitoli si cliccano nel piede e aprono al loro primo passo. */
-  capitoli?: { t: string; da: number; a: number }[]; }
+  capitoli?: { t: string; da: number; a: number; anche?: number[]; salta?: number[] }[]; }
 const EL = 'https://experienceleague.adobe.com/en/docs';
 export const SCENE: Record<ScenaId, Scena> = {
   /* IL RACCONTO UNICO (owner, 16 nov 2026), solo dietro `?pop3d=1`: i tre «Come funziona»
@@ -48,9 +48,12 @@ export const SCENE: Record<ScenaId, Scena> = {
     prodotto: 'Dall’annuncio alla firma',
     cosa: '',
     capitoli: [
-      { t: 'Riconosce · Real-Time Activation', da: 1, a: 3 },
-      { t: 'Sceglie e orchestra · Journey Optimizer', da: 4, a: 6 },
-      { t: 'Misura · Customer Journey Analytics', da: 7, a: 11 },
+      // Al passo 10 lavorano Real-Time Activation (il look-alike da chi ha firmato) e
+      // Journey Optimizer (la proposta si chiude): il piede accende quelle due, non CJA
+      // (18 nov 2026). `anche`/`salta` correggono l'intervallo senza spezzare il tratto.
+      { t: 'Riconosce · Real-Time Activation', da: 1, a: 3, anche: [10] },
+      { t: 'Sceglie e orchestra · Journey Optimizer', da: 4, a: 6, anche: [10] },
+      { t: 'Misura · Customer Journey Analytics', da: 7, a: 11, salta: [10] },
     ],
     passi: [
       'Giulia arriva dall’annuncio e accetta i cookie di profilazione. Il sistema registra quello che fa, ma non sa ancora chi è.',

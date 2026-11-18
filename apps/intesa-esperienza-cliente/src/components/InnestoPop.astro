@@ -136,7 +136,8 @@ const base3d = p3 ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p
         <nav class="pp-capitoli" aria-label="Capitoli">
           {s.capitoli.map((c) => {
             const [verbo, chi] = c.t.split(' · ');
-            return <button type="button" class="pp-cap" data-pp-vai={c.da} data-da-cap={c.da} data-a-cap={c.a}><b>{verbo}</b><span>{chi}</span></button>;
+            const passi = [...Array.from({ length: c.a - c.da + 1 }, (_, k) => c.da + k), ...(c.anche ?? [])].filter((n) => !(c.salta ?? []).includes(n));
+            return <button type="button" class="pp-cap" data-pp-vai={c.da} data-da-cap={c.da} data-cap-passi={passi.join(',')}><b>{verbo}</b><span>{chi}</span></button>;
           })}
         </nav>
       )}
@@ -412,7 +413,7 @@ const base3d = p3 ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p
       el.classList.toggle('pp-on', Number(el.dataset.passoT) === p);
     });
     d.querySelectorAll<HTMLElement>('[data-da-cap]').forEach((el) => {
-      const on = p >= Number(el.dataset.daCap) && p <= Number(el.dataset.aCap);
+      const on = (el.dataset.capPassi ?? '').split(',').map(Number).includes(p);
       if (on && !el.classList.contains('pp-on')) {
         el.classList.remove('pp-flash'); void el.offsetWidth; el.classList.add('pp-flash');
         el.addEventListener('animationend', () => el.classList.remove('pp-flash'), { once: true });
