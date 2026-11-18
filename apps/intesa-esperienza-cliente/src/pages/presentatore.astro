@@ -31,13 +31,14 @@ import { PAGE_REGISTRY } from '../data/slides';
 import { NOTE, TRE_COSE } from '../data/relatore';
 import { MOMENTI } from '../data/momenti';
 import { SCENE } from '../data/pop';
+import { SCRIPT, COME_FUNZIONA } from '../data/script';
 
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const CANALE = `edf-presentatore:${SITE.slug}`;
 const ordine = ['index', ...CHAPTERS.map((c) => c.slug), 'approfondimenti'];
 const DIR = resolve(process.cwd(), 'public/miniature');
 
-type Riga = { k: string; t: string; tono?: 'at' | 'se' };
+type Riga = { k: string; t: string; tono?: 'at' | 'se' | 'anc' | 'q' };
 const sezioni = ordine
   .map((s) => PAGE_REGISTRY.find((p) => p.slug === s))
   .filter((p): p is NonNullable<typeof p> => Boolean(p))
@@ -49,7 +50,17 @@ const sezioni = ordine
       const file = `${p.slug}--${x.id}.jpg`;
       const n = NOTE[p.slug]?.[x.id];
       const m = p.slug === 'momenti' ? MOMENTI.find((mm) => `slide-m-${mm.n}` === x.id) : undefined;
-      const righe: Riga[] = m
+      const sc = SCRIPT[p.slug]?.[x.id];
+      const righe: Riga[] = sc
+        ? [
+            { k: `⏱ ${sc.quando}`, t: sc.inSlide ? `In slide: ${sc.inSlide}` : '', tono: 'q' as const },
+            ...(sc.ancora ? [{ k: '', t: sc.ancora, tono: 'anc' as const }] : []),
+            ...sc.testo.map((t) => ({ k: '', t })),
+            ...(sc.no ? [{ k: 'Da non dire', t: sc.no, tono: 'at' as const }] : []),
+            ...(sc.ponte ? [{ k: 'Ponte', t: sc.ponte }] : []),
+            ...(n?.seChiedono ? [{ k: 'Se chiedono', t: n.seChiedono, tono: 'se' as const }] : []),
+          ]
+        : m
         ? [{ k: 'Giulia', t: m.cliente.corpo.it }, { k: 'In banca', t: m.interno.corpo.it }, { k: 'Da chiedere', t: m.verifica.it, tono: 'se' }]
         : n
           ? [{ k: 'Da dire', t: n.dire }, ...(n.attenzione ? [{ k: 'Attenzione', t: n.attenzione, tono: 'at' as const }] : []), ...(n.seChiedono ? [{ k: 'Se chiedono', t: n.seChiedono, tono: 'se' as const }] : [])]
@@ -58,7 +69,7 @@ const sezioni = ordine
     }),
   }));
 const scene = Object.fromEntries(Object.entries(SCENE).map(([k, s]) => [k, { prodotto: s.prodotto, passi: s.passi.map(String) }]));
-const data = { canale: CANALE, sezioni, scene, deck: base };
+const data = { canale: CANALE, sezioni, scene, deck: base, cf: COME_FUNZIONA };
 const conMiniatura = sezioni.reduce((n, s) => n + s.slides.filter((x) => x.thumb).length, 0);
 const totale = sezioni.reduce((n, s) => n + s.slides.length, 0);
 ---
@@ -170,6 +181,9 @@ const totale = sezioni.reduce((n, s) => n + s.slides.length, 0);
   .pv-note b { color: #fff; }
   .pv-note .at { color: #ffc27a; }
   .pv-note .se { color: #c9d8c4; font-size: 0.92em; }
+  .pv-note .anc { display: inline-block; padding: 0.15rem 0.5rem; border-left: 4px solid #4fc21f; background: rgba(79, 194, 31, 0.16); color: #fff; font-weight: 700; }
+  .pv-note p.anc { display: block; }
+  .pv-note .q { color: #9fd68a; font-size: 0.85em; }
   .pv-note .pop { padding: 0.6rem 0.8rem; border-left: 4px solid #4fc21f; background: rgba(79, 194, 31, 0.12); color: #fff; }
   .pv-vuoto { color: #c9d8c4; }
 
@@ -208,10 +222,11 @@ const totale = sezioni.reduce((n, s) => n + s.slides.length, 0);
 </style>
 
 <script>
-  interface Riga { k: string; t: string; tono?: 'at' | 'se' }
+  interface Riga { k: string; t: string; tono?: 'at' | 'se' | 'anc' | 'q' }
   interface PSlide { id: string; label: string; riserva: boolean; thumb: string; righe: Riga[] }
   interface PSez { slug: string; label: string; url: string; slides: PSlide[] }
-  interface Dati { canale: string; sezioni: PSez[]; scene: Record<string, { prodotto: string; passi: string[] }>; deck: string }
+  interface Dati { canale: string; sezioni: PSez[]; scene: Record<string, { prodotto: string; passi: string[] }>; deck: string;
+    cf: { leggi: { quando: string; ancora: string; righe: string[] }; passi: { quando: string; come: string; righe: string[]; no: string }; passaggio: { quando: string; ancora: string; come: string } } }
   interface Stato { type: 'state'; slug: string; id: string; index: number; total: number; substep: number; substeps: number; pop: { scena: string; passo: number; tot: number; leggi: number } | null }
 
   function avvia() {
@@ -293,10 +308,21 @@ const totale = sezioni.reduce((n, s) => n + s.slides.length, 0);
       } else { p.hidden = true; p.textContent = ''; }
 
       const note = $('[data-pv-note]');
-      const testoPop = pop && pop.passo && !pop.leggi ? dati.scene[pop.scena]?.passi[pop.passo - 1] : '';
-      const righe = x?.righe ?? [];
-      note.innerHTML = (testoPop ? `<p class="pop">${esc(testoPop)}</p>` : '') +
-        (righe.length ? righe.map((r) => `<p class="${r.tono ?? ''}"><b>${esc(r.k)}.</b> ${esc(r.t)}</p>`).join('')
+      // Nel racconto unico parla lo SCRIPT (data/script.ts), non la didascalia del passo:
+      // la riga di «come si legge», o la frase del passo; all'ultimo, il passaggio.
+      const cf = dati.cf;
+      let testoPop = '';
+      if (pop && pop.scena === 'e2e') {
+        if (pop.leggi) testoPop = `${pop.leggi === 1 ? `<span class="anc">${esc(cf.leggi.ancora)}</span><br>` : ''}${esc(cf.leggi.righe[pop.leggi - 1] ?? '')}`;
+        else if (pop.passo) testoPop = `<b>Passo ${pop.passo}.</b> ${esc(cf.passi.righe[pop.passo - 1] ?? '')}` +
+          (pop.passo === pop.tot ? `<br><span class="anc">${esc(cf.passaggio.ancora)}</span> <small>${esc(cf.passaggio.come)}</small>` : '');
+      } else if (pop && pop.passo && !pop.leggi) testoPop = esc(dati.scene[pop.scena]?.passi[pop.passo - 1] ?? '');
+      const righe = pop && pop.scena === 'e2e' ? [{ k: 'Da non dire', t: cf.passi.no, tono: 'at' as const }] : (x?.righe ?? []);
+      const riga = (r: Riga) => r.tono === 'anc' ? `<p class="anc">${esc(r.t)}</p>`
+        : r.tono === 'q' ? `<p class="q"><b>${esc(r.k)}</b>${r.t ? ` · ${esc(r.t)}` : ''}</p>`
+        : `<p class="${r.tono ?? ''}">${r.k ? `<b>${esc(r.k)}.</b> ` : ''}${esc(r.t)}</p>`;
+      note.innerHTML = (testoPop ? `<p class="pop">${testoPop}</p>` : '') +
+        (righe.length ? righe.map(riga).join('')
           : `<p class="pv-vuoto">${st ? 'Nessuna nota per questa slide.' : 'Collega il deck: aprilo in un’altra finestra, o premi P sul deck.'}</p>`);
 
       root.querySelectorAll<HTMLElement>('[data-pv-vai]').forEach((b) => {

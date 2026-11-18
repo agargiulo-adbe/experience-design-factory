@@ -12,6 +12,7 @@ import { PAGE_REGISTRY } from '../data/slides';
 import { NOTE, TRE_COSE, DAVANTI } from '../data/relatore';
 import { href } from '@edf/core/utils/url.js';
 import { MOMENTI } from '../data/momenti';
+import { SCRIPT, COME_FUNZIONA } from '../data/script';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -57,10 +58,20 @@ const momento = (id: string) => MOMENTI.find((m) => `slide-m-${m.n}` === id);
         {s.slides.map((x) => {
           const n = NOTE[s.slug]?.[x.id];
           const m = s.slug === 'momenti' ? momento(x.id) : undefined;
-          return (
+          const sc = SCRIPT[s.slug]?.[x.id];
+          return (<>
             <article class="rel-v">
-              <h3 class="rel-t">{x.label}</h3>
-              {m ? (
+              <h3 class="rel-t">{x.label}{sc && <span class="rel-q"> · ⏱ {sc.quando}</span>}</h3>
+              {sc ? (
+                <>
+                  {sc.inSlide && <p class="rel-sl">In slide: {sc.inSlide}</p>}
+                  {sc.ancora && <p class="rel-anc">{sc.ancora}</p>}
+                  {sc.testo.map((t) => <p>{t}</p>)}
+                  {sc.no && <p class="rel-at"><strong>Da non dire.</strong> {sc.no}</p>}
+                  {sc.ponte && <p><strong>Ponte.</strong> {sc.ponte}</p>}
+                  {n?.seChiedono && <p class="rel-se"><strong>Se chiedono.</strong> {n.seChiedono}</p>}
+                </>
+              ) : m ? (
                 <>
                   <p><strong>Giulia.</strong> {m.cliente.corpo.it}</p>
                   <p><strong>In banca.</strong> {m.interno.corpo.it}</p>
@@ -74,7 +85,21 @@ const momento = (id: string) => MOMENTI.find((m) => `slide-m-${m.n}` === id);
                 </>
               ) : <p class="rel-manca">Nota da scrivere</p>}
             </article>
-          );
+            {s.slug === 'messa-a-terra' && x.id === 'slide-innesto' && (
+              <article class="rel-v rel-cf">
+                <h3 class="rel-t">Come funziona · come si legge<span class="rel-q"> · ⏱ {COME_FUNZIONA.leggi.quando}</span></h3>
+                <p class="rel-anc">{COME_FUNZIONA.leggi.ancora}</p>
+                <ol>{COME_FUNZIONA.leggi.righe.map((t) => <li>{t}</li>)}</ol>
+                <h3 class="rel-t">Come funziona · undici passi<span class="rel-q"> · ⏱ {COME_FUNZIONA.passi.quando}</span></h3>
+                <p class="rel-sl">{COME_FUNZIONA.passi.come}</p>
+                <ol>{COME_FUNZIONA.passi.righe.map((t) => <li>{t}</li>)}</ol>
+                <p class="rel-at"><strong>Da non dire.</strong> {COME_FUNZIONA.passi.no}</p>
+                <h3 class="rel-t">Passaggio<span class="rel-q"> · ⏱ {COME_FUNZIONA.passaggio.quando}</span></h3>
+                <p class="rel-sl">{COME_FUNZIONA.passaggio.come}</p>
+                <p class="rel-anc">{COME_FUNZIONA.passaggio.ancora}</p>
+              </article>
+            )}
+          </>);
         })}
       </section>
     ))}
@@ -95,6 +120,10 @@ const momento = (id: string) => MOMENTI.find((m) => `slide-m-${m.n}` === id);
   .rel-v p { margin: 0.2rem 0; max-width: none; text-align: left; }
   .rel-at { color: #ffc27a; }
   .rel-se { color: #dfeadb; }
+  .rel-anc { padding: 0.35rem 0.6rem; border-left: 4px solid #4fc21f; background: rgba(79, 194, 31, 0.14); color: #ffffff; font-weight: 700; }
+  .rel-sl { color: #b9d4ae; font-style: italic; font-size: 0.92em; }
+  .rel-q { color: #c9d8c4; font-weight: 600; font-size: 0.9em; }
+  .rel-cf ol { margin: 0.3rem 0 0.6rem; padding-left: 1.4rem; }
   .rel-manca { color: #ff9a8f; font-weight: 700; }
   .rel-davanti { margin-top: 1rem; }
   .rel-davanti a { color: #ffffff; font-weight: 700; }
