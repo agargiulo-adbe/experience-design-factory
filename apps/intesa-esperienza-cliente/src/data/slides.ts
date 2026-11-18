@@ -10,7 +10,7 @@ export const PAGE_REGISTRY: PageEntry[] = [
   { slug: 'adobe', label: 'Adobe, chi siamo (01)', slides: [
     { id: 'slide-cover',     label: 'Cover: Adobe per Intesa Sanpaolo' },
     { id: 'slide-team',      label: 'Il team Adobe che partecipa' },
-    { id: 'slide-fsi',       label: 'Chi è Adobe: i numeri e i quattro Forrester Wave' },
+    { id: 'slide-fsi',       label: 'Servizi finanziari, la prima industry di Adobe: banche e Forrester Wave' },
     { id: 'slide-chi',       label: 'Dati, contenuti e decisioni nello stesso sistema: le quattro funzioni' },
     { id: 'slide-cx',        label: 'Per Intesa Sanpaolo: tre bisogni, la stessa piattaforma' },
   ]},
