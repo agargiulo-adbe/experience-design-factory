@@ -310,7 +310,7 @@ export const MOMENTI: Momento[] = [
   },
   {
     n: '07', of: '07',
-    blocco: { it: 'CX Analytics', en: 'CX analytics' },
+    blocco: { it: 'Customer Journey Analytics', en: 'Customer Journey Analytics' },
     /* ⚠️ Tre settimane dal mercoledì 18 novembre: mercoledì 9 dicembre.
        NON martedì 8, che è l'Immacolata e le filiali sono chiuse; e non
        più sabato 5 alle 18:40, che il panel dell'11 nov 2026 ha visto. */

@@ -26,7 +26,7 @@ export const TRE: Cosa[] = [
     riga: { it: 'Quale proposta mostrare a chi non è ancora cliente, sul canale che il consenso permette.', en: 'Which offer to show someone not yet a customer, on the channel consent allows.' },
   },
   {
-    n: '3', gruppo: 'piattaforma', prodotto: 'Adobe CX Analytics',
+    n: '3', gruppo: 'piattaforma', prodotto: 'Adobe Customer Journey Analytics',
     t: { it: 'Misurare in un posto solo', en: 'Measuring in one place' },
     riga: { it: 'Filiale, Filiale Digitale, app e sito nello stesso report, fino alla firma.', en: 'Branch, Filiale Digitale, app and site in the same report, up to the signature.' },
   },

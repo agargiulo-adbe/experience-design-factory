@@ -29,7 +29,7 @@ export const PAGE_REGISTRY: PageEntry[] = [
     { id: 'slide-m-04', label: '04 Engagement: quattro candidate, una parte' },
     { id: 'slide-m-05', label: '05 Engagement: il percorso parte dall’evento' },
     { id: 'slide-m-06', label: '06 Ingaggio clienti e non clienti: il percorso attiva la filiale' },
-    { id: 'slide-m-07', label: '07 CX Analytics: quanto è costato acquisirla' },
+    { id: 'slide-m-07', label: '07 Customer Journey Analytics: quanto è costato acquisirla' },
   ]},
   { slug: 'messa-a-terra', label: 'Dove si collega Adobe e che cosa si misura (03)', slides: [
     { id: 'slide-cover', label: 'Cover: Dove si collega Adobe e che cosa si misura' },
