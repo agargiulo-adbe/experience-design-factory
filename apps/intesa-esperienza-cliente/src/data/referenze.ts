@@ -156,7 +156,7 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Cas
     hero: {
       occ: { it: 'Le offerte attivate dal comportamento in tempo reale', en: 'Offers triggered by real-time behaviour' },
       oggi: { k: { it: 'Conversioni', en: 'Conversions' }, n: { it: '+15%', en: '+15%' } },
-      l: { it: 'al primo acquisto, soprattutto sulle offerte self-service', en: 'on first purchase, particularly on self-service offers' },
+      l: { it: 'al primo acquisto, sulle offerte self-service', en: 'on first purchase, on self-service offers' },
     },
     metrica: { n: '+20%', l: { it: 'efficacia delle iniziative di cross-sell', en: 'cross-sell initiative effectiveness' } },
     nota: { it: 'Base e periodo non pubblicati.', en: 'Baseline and period not published.' },
