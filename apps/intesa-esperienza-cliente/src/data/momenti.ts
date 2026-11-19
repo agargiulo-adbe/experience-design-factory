@@ -232,7 +232,7 @@ export const MOMENTI: Momento[] = [
     canale: { it: 'Sito', en: 'Website' },
     gruppo: 'engagement',
     verifica: { it: 'Oggi la politica di contatto si valuta quando si sceglie, o si applica all’invio?', en: 'Today, is the contact policy weighed when choosing, or applied at send time?' },
-    prodotto: 'Journey Optimizer · AI Decisioning',
+    prodotto: 'Journey Optimizer · Decisioning',
     messa: { it: 'La proposta arriva via API; il componente è vostro', en: 'The offer arrives over API; the component is yours' },
     cliente: {
       chrome: 'sito', scena: 'scena-04-documenti',
@@ -244,7 +244,7 @@ export const MOMENTI: Momento[] = [
     },
     interno: {
       prodotto: 'decisione', scena: 'lavoro-04-decisione',
-      titolo: { it: 'AI Decisioning le propone un appuntamento, prima sul sito e poi per email', en: 'AI Decisioning offers her an appointment, first on the site and then by email' },
+      titolo: { it: 'Decisioning le propone un appuntamento, prima sul sito e poi per email', en: 'Decisioning offers her an appointment, first on the site and then by email' },
       corpo: {
         it: 'Il profilo è sottile: due sessioni, una simulazione, un consenso. Se avete già un punteggio sui non‑clienti, entra come attributo; altrimenti valgono la priorità dell’offerta e le regole che fissate voi. La regola di contatto resta vostra.',
         en: 'The profile is thin: two sessions, one simulation, one consent. If you already have a score on non-customers, it comes in as an attribute; otherwise the offer’s priority and the rules you set apply. The contact rule stays yours.',

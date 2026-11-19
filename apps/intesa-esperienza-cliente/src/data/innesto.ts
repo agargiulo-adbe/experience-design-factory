@@ -85,7 +85,7 @@ export const EVOLUZIONE: { segno: string; k: Testo; t: Testo; d: Testo; ora?: bo
     d: { it: 'Percorsi e iniziative sui clienti gestiti in Journey Optimizer.', en: 'Journeys and initiatives for customers managed in Journey Optimizer.' } },
 ];
 
-/** AI Decisioning sulle iniziative di oggi, sui clienti (13 nov 2026).
+/** Decisioning sulle iniziative di oggi, sui clienti (13 nov 2026).
     Verificato su Experience League («Batch decisioning in direct mail»,
     batch export use case: le decisioni esportate per un CRM o un email
     service provider) e sul canale Slack del prodotto: un'API da chiamare al
@@ -93,8 +93,8 @@ export const EVOLUZIONE: { segno: string; k: Testo; t: Testo; d: Testo; ora?: bo
     uno SLA. Il dato dei clienti rientra in ore (descrizione del partner del
     cliente, call del 16 ott): su evento si valuta con loro. */
 export const AFFIANCA: { t: Testo; d: Testo } = {
-  t: { it: 'AI Decisioning accanto al vostro strumento di campagna', en: 'AI Decisioning alongside your campaign tool' },
-  d: { it: 'Sulle iniziative programmate sui clienti AI Decisioning esporta le proposte, e il vostro strumento le invia. Su quelle su evento si valuta insieme: oggi il dato dei clienti arriva in ore, non in minuti.', en: 'On scheduled initiatives to customers, AI Decisioning exports the offers and your tool sends them. Event-based ones are assessed together: customer data arrives in hours today, not minutes.' },
+  t: { it: 'Decisioning accanto al vostro strumento di campagna', en: 'Decisioning alongside your campaign tool' },
+  d: { it: 'Sulle iniziative programmate sui clienti Decisioning esporta le proposte, e il vostro strumento le invia. Su quelle su evento si valuta insieme: oggi il dato dei clienti arriva in ore, non in minuti.', en: 'On scheduled initiatives to customers, Decisioning exports the offers and your tool sends them. Event-based ones are assessed together: customer data arrives in hours today, not minutes.' },
 };
 
 /** Una cosa da decidere SUBITO, qualunque tappa si scelga: non è una tappa. */

@@ -1,10 +1,10 @@
 /**
- * I DUE MOCKUP A PASSI: come funzionano Customer Journey Analytics e AI Decisioning
+ * I DUE MOCKUP A PASSI: come funzionano Customer Journey Analytics e Decisioning
  * nel contesto di Intesa Sanpaolo, con il motore di targeting a monte. Ogni freccia giù scopre un pezzo.
  *
  * FONTI LETTE il 10 nov 2026 (Experience League e Field Readiness, via Fluffy):
  * · CJA collega online e offline se l'identificativo della persona è lo stesso (FAQ).
- * · Ranking formula di AI Decisioning: combina punteggi di modelli AI, attributi del
+ * · Ranking formula di Decisioning: combina punteggi di modelli AI, attributi del
  *   profilo, attributi dell'offerta e contesto.
  * · Finché convivono, Analytics e CJA si licenziano entrambi (pagina di upgrade).
  * · Il nome del motore di targeting NON è confermato dal cliente (decisione dell'11
@@ -60,7 +60,7 @@ export const SCENE: Record<ScenaId, Scena> = {
       'Simula la rata ed entra in tempo reale nel segmento «mutuo prima casa».',
       'Lascia l’email e il consenso marketing, e nasce il codice pratica. Le visite fatte prima di lasciare il nome si uniscono al suo profilo.',
       'Si ferma perché le mancano le buste paga. Journey Optimizer lo sa subito; gli score del vostro motore, se esistono sul non cliente, arrivano come attributi.',
-      'AI Decisioning mette in fila quattro proposte. Regole e consenso ne escludono due; vince il promemoria con appuntamento, che compare subito sul sito.',
+      'Decisioning mette in fila quattro proposte. Regole e consenso ne escludono due; vince il promemoria con appuntamento, che compare subito sul sito.',
       'Il mattino dopo la proposta arriva per email, e Giulia riprende la pratica.',
       'In filiale apre la pratica: è la stessa della simulazione, e il grafo la lega all’email, al telefono e alle visite di prima.',
       'Firma: il core emette l’NDG e lo lega al codice pratica (ipotesi di lavoro). Customer Journey Analytics legge sito, app, CRM e Filiale Digitale in un percorso solo.',
@@ -91,11 +91,11 @@ export const SCENE: Record<ScenaId, Scena> = {
     },
   },
   decisioning: {
-    prodotto: 'AI Decisioning',
+    prodotto: 'Decisioning',
     cosa: 'Sceglie quale proposta mostrare, usando gli score del motore di targeting e le regole della banca.',
     passi: [
       'Il motore di targeting continua a calcolare target e propensione; l’eleggibilità creditizia arriva dal core banking.',
-      'Arrivano ad AI Decisioning come attributi del profilo. Eleggibilità: attributo precalcolato nel profilo, oppure passata dal vostro sistema nella richiesta di decisione.',
+      'Arrivano a Decisioning come attributi del profilo. Eleggibilità: attributo precalcolato nel profilo, oppure passata dal vostro sistema nella richiesta di decisione.',
       'Per la stessa persona ci sono quattro proposte candidate.',
       'Regole, consenso e politica di contatto escludono quelle non ammesse.',
       'Se avete già un punteggio sui non‑clienti, entra come attributo; altrimenti valgono la priorità dell’offerta e le regole che fissate voi.',
@@ -110,7 +110,7 @@ export const SCENE: Record<ScenaId, Scena> = {
       cosa: 'Sceglie quale proposta mostrare con le regole della banca e, se ci sono, gli score del vostro motore.',
       passi: [
         'Il motore di targeting continua a calcolare target e propensione sui clienti. Da quale sistema arrivi l’eleggibilità è da confermare con voi.',
-        'Sul non cliente, solo se esistono: arrivano ad AI Decisioning come attributi del profilo. L’eleggibilità può stare nel profilo o arrivare dal vostro sistema nella richiesta di decisione.',
+        'Sul non cliente, solo se esistono: arrivano a Decisioning come attributi del profilo. L’eleggibilità può stare nel profilo o arrivare dal vostro sistema nella richiesta di decisione.',
         'Per Giulia ci sono quattro proposte possibili. Se risulta già cliente, decide il vostro motore; chi decide su chi non ha fatto login si stabilisce insieme.',
         null,
         null,

@@ -33,7 +33,7 @@ export const POP3D: Partial<Record<ScenaId, Pop3d>> = {
   },
   decisioning: {
     clip: 'decisioning',
-    nomi: { motore: 'Motore di targeting', core: 'Core banking', profilo: 'Profilo', attributi: 'Score ed eleggibilità', arbitro: 'AI Decisioning',
+    nomi: { motore: 'Motore di targeting', core: 'Core banking', profilo: 'Profilo', attributi: 'Score ed eleggibilità', arbitro: 'Decisioning',
             proposta0: 'Promemoria\ncon appuntamento', proposta1: 'Promemoria', proposta2: 'Contatto\nFiliale Digitale', proposta3: 'Polizza casa',
             regole: 'Regole e consenso', canale: 'Sito', cja: 'Customer Journey Analytics' },
     escluse: { proposta2: 4, proposta3: 4, proposta1: 6 },

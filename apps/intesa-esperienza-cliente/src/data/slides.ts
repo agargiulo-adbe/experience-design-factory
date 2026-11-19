@@ -33,7 +33,7 @@ export const PAGE_REGISTRY: PageEntry[] = [
   ]},
   { slug: 'messa-a-terra', label: 'Dove si collega Adobe e che cosa si misura (03)', slides: [
     { id: 'slide-cover', label: 'Cover: Dove si collega Adobe e che cosa si misura' },
-    { id: 'slide-innesto', label: 'L’innesto: Adobe si aggiunge, si parte dai percorsi nuovi, Real-Time Activation, Journey Optimizer · AI Decisioning e CJA' },
+    { id: 'slide-innesto', label: 'L’innesto: Adobe si aggiunge, si parte dai percorsi nuovi, Real-Time Activation, Journey Optimizer · Decisioning e CJA' },
     { id: 'slide-cja-banca', label: 'Quattro risposte che una banca ottiene da CJA' },
     { id: 'slide-chiave', label: 'Più identificativi, una persona sola: la storia da non‑cliente a cliente' },
     { id: 'slide-flusso', label: 'Dalla email allo sportello: il flusso fra i punti di contatto (Sankey)' },
