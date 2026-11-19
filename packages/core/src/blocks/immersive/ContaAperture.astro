@@ -1,0 +1,22 @@
+---
+/**
+ * Il contatore delle aperture dell'edizione da distribuire: un solo POST a
+ * Supabase con progetto e pagina. Niente cookie, niente sessionStorage o
+ * localStorage, nessun identificativo; il giorno lo mette il database. Con
+ * Global Privacy Control attivo non parte nulla. Gli errori si ignorano: un
+ * contatore non deve mai rompere la pagina.
+ */
+import { rigaApertura, type PaginaContata } from '../../utils/aperture';
+interface Props { progetto: string; pagina: PaginaContata }
+const { progetto, pagina } = Astro.props;
+const URL_DB = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+const codice = `(function(){try{
+  var riga=(${rigaApertura.toString()})(${JSON.stringify(progetto)},${JSON.stringify(pagina)},navigator.globalPrivacyControl===true);
+  if(!riga)return;
+  fetch(${JSON.stringify(URL_DB + '/rest/v1/aperture')},{method:'POST',keepalive:true,credentials:'omit',
+    headers:{'apikey':${JSON.stringify(CHIAVE)},'Authorization':'Bearer '+${JSON.stringify(CHIAVE)},'Content-Type':'application/json','Prefer':'return=minimal'},
+    body:JSON.stringify(riga)}).catch(function(){});
+}catch(e){}})();`;
+---
+{URL_DB && CHIAVE && <script is:inline set:html={codice}></script>}

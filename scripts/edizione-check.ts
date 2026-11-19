@@ -94,7 +94,44 @@ export async function checkTelefono(b: Browser) {
   }
 }
 
-const CHECKS: Record<string, (b: Browser) => Promise<void>> = { autoreveal: checkAutoreveal, parliamone: checkParliamone, telefono: checkTelefono };
+const ROTTE = ['', 'adobe/', 'scenario/', 'persona/', 'momenti/', 'messa-a-terra/', 'approfondimenti/', 'coworker/', 'risultati/', 'parliamone/'];
+const AMMESSI = /^(localhost|127\.0\.0\.1|agargiulo-adbe\.github\.io|github\.com|objects\.githubusercontent\.com|release-assets\.githubusercontent\.com|fonts\.googleapis\.com|fonts\.gstatic\.com|[a-z0-9-]+\.scene7\.com|[a-z0-9-]+\.supabase\.co)$/;
+
+async function giro(b: Browser, opts: { mobile: boolean; gpc: boolean }) {
+  const c = await b.newContext(opts.mobile ? telefono(390, 844) : { viewport: { width: 1512, height: 860 } });
+  // Come stringa: tsx avvolge le funzioni con `__name`, che nel browser non esiste.
+  if (opts.gpc) await c.addInitScript({ content: "Object.defineProperty(navigator, 'globalPrivacyControl', { get: function () { return true; } });" });
+  const richieste: { url: string; metodo: string; corpo: string | null; pagina: string }[] = [];
+  let pagina = '';
+  c.on('request', (r) => richieste.push({ url: r.url(), metodo: r.method(), corpo: r.postData(), pagina }));
+  const p = await c.newPage();
+  for (const r of opts.mobile ? ['breve/'] : ROTTE) {
+    pagina = r || 'copertina';
+    await p.goto(LETTURA + r, { waitUntil: 'load' }); await p.waitForTimeout(1500);
+  }
+  await c.close();
+  return richieste;
+}
+
+export async function checkRete(b: Browser) {
+  for (const mobile of [false, true]) {
+    const r = await giro(b, { mobile, gpc: false });
+    const estranei = [...new Set(r.map((x) => new URL(x.url).hostname).filter((h) => !AMMESSI.test(h)))];
+    ok(`rete ${mobile ? 'telefono' : 'computer'}: solo domini ammessi`, estranei.length === 0, estranei.join(' '));
+    const db = r.filter((x) => x.url.includes('.supabase.co'));
+    const attesa = mobile ? ['breve'] : ['copertina'];
+    ok(`rete ${mobile ? 'telefono' : 'computer'}: verso Supabase solo il contatore`,
+      db.length === attesa.length && db.every((x) => x.metodo === 'POST' && x.url.endsWith('/rest/v1/aperture')),
+      db.map((x) => `${x.metodo} ${x.url} @${x.pagina}`).join(' | '));
+    ok(`rete ${mobile ? 'telefono' : 'computer'}: il corpo dice solo progetto e pagina`,
+      db.every((x) => { const o = JSON.parse(x.corpo ?? '{}'); return Object.keys(o).sort().join() === 'pagina,progetto'; }),
+      db.map((x) => x.corpo).join(' | '));
+    const g = await giro(b, { mobile, gpc: true });
+    ok(`rete ${mobile ? 'telefono' : 'computer'}: con GPC nessuna chiamata a Supabase`, !g.some((x) => x.url.includes('.supabase.co')), g.filter((x) => x.url.includes('.supabase.co')).map((x) => `${x.metodo} ${x.url} @${x.pagina}`).join(' | '));
+  }
+}
+
+const CHECKS: Record<string, (b: Browser) => Promise<void>> = { autoreveal: checkAutoreveal, parliamone: checkParliamone, telefono: checkTelefono, rete: checkRete };
 
 const scelti = process.argv.slice(2);
 const b = await chromium.launch();
