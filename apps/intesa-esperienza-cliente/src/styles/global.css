@@ -1627,6 +1627,14 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
    ⚠️ Si tocca SOLO sulle slide dei momenti, non nel motore: un cambio di
    token condiviso propaga a nove deck e va misurato slide per slide. */
 [data-slide]:has(.im-due) { --deck-chrome-safe: 120px; }
+/* La sicura: se una slide doppia è più alta dell'area utile, sborda in BASSO
+   (dove il check `b` la vede) e mai in alto, sotto la barra, dove nessun gate
+   la vede e la testata sparisce. `safe` riporta l'allineamento all'inizio
+   solo quando il contenuto non ci sta. Vale sotto i 1040px: a 1080 (la
+   proiezione) lo sforo è di pochi px e centrato resta meglio. */
+@media (max-height: 1040px) {
+  [data-slide]:has(.im-due) .slide-inner { justify-content: safe center; }
+}
 
 /* ── Il fondo: colore a sinistra, fotografia in alto a destra ───────── */
 /* ⚠️ PERCHÉ UNA SOLA FOTO E NON DUE FASCE, che era la prima idea.
@@ -1907,8 +1915,15 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
    il punto della slide), le due viste si AFFIANCANO: a sinistra Giulia,
    a destra chi prepara, ognuna con il suo mockup sopra e il suo testo
    sotto. Le etichette restano, quindi il contratto di lettura regge.
-   Il circolo esce: è un ausilio, e vive intero nel capitolo 04. */
-@media (max-height: 940px) {
+   Il circolo esce: è un ausilio, e vive intero nel capitolo 04.
+   ⚠️ LA SOGLIA È 1040, NON 940 (19 nov 2026, MacBook a schermo intero,
+   1512×982: la testata «Ingaggio clienti» finiva SOTTO la barra). Impilate,
+   le due bande del momento 03 chiedono 868px e fra le due riserve da 120px
+   ce n'erano 742: il blocco, centrato, sbordava di 63px per lato, e sopra
+   c'è la barra. Le bande impilate ci stanno da ~1110px in su; a 1080 (la
+   proiezione) sforano di 29px VERSO IL BASSO e restano il disegno di
+   riferimento. Misurato su 1512×945/982, 1600×1000, 1920×1080. */
+@media (max-height: 1040px) {
   .im-due {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: auto minmax(0, 1fr);
@@ -1966,6 +1981,15 @@ html:not(.js) .im-cli-esito[data-side] { transform: none; }
   .im-cli--compatto .im-cli-post-txt { padding: 0.36rem 0.6rem 0.3rem; }
   .im-cli--compatto .im-cli-post-cta { margin: 0.26rem 0 0.22rem; }
   .im-due-mock > * { border-radius: 11px; }
+}
+/* La scheda «Prodotto Adobe» ripete il nome che la testata del mockup porta
+   già, col logo: costa ~100px, ed è la differenza fra il momento 04 dentro lo
+   schermo e la sua ultima riga sotto i comandi (1280×800 e 1440×900, misurati
+   il 19 nov 2026). Si toglie la ripetizione, non il corpo del tipo. Sopra i
+   940px la scheda resta: a 1512×982 tutto entra anche con lei.
+   Il selettore vince su `.im-due-tess:has(.im-due-adobe)`, più sotto. */
+@media (max-height: 940px) {
+  .im-due .im-due-pro.im-due-tess { display: none; }
 }
 
 /* Dentro i mockup nessun blocco deve poter spingere il suo contenitore:
