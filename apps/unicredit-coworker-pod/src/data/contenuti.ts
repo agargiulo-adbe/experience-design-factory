@@ -51,8 +51,9 @@ export const PASSI = [
 
 /** Capitoli 01 e 04 — le cinque tappe. Due date sole, e nessuna è un giorno:
     «circa tre settimane dopo» il kickoff per Target (accordo interno Adobe del
-    17 nov 2026) e «fine gennaio, inizio febbraio» per il primo punto con la
-    direzione (mail dell'AE del 6 nov 2026). Le date esatte le conferma il team
+    17 nov 2026) e «fine gennaio, inizio febbraio» per il primo punto della
+    situazione (mail dell'AE del 6 nov 2026; dal 19 nov senza nominare chi
+    partecipa, su richiesta dell'owner). Le date esatte le conferma il team
     Adobe. Il referente non si nomina: il deck parla all'organizzazione e il
     repo è pubblico. */
 export const TAPPE = [
@@ -60,7 +61,7 @@ export const TAPPE = [
   { k: 'Dopo la sessione', t: 'Il contesto passa a chi guiderà il programma per Adobe' },
   { k: 'Poi', t: 'Il kickoff su Analytics' },
   { k: 'Circa tre settimane dopo', t: 'Entra Target' },
-  { k: 'Fine gennaio, inizio febbraio', t: 'Il primo incontro con la direzione' },
+  { k: 'Fine gennaio, inizio febbraio', t: 'Il primo punto della situazione, insieme' },
 ];
 
 /** Capitolo 04 — le tre risposte che servono dal team per partire. `chi` dice
