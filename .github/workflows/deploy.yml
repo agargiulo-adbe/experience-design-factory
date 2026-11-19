@@ -31,6 +31,11 @@ jobs:
         env:
           PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
           PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
+      # L'edizione da distribuire di Intesa: stesso sorgente, build lettura (spec 2026-11-19).
+      - run: pnpm --filter intesa-esperienza-cliente build:lettura
+        env:
+          PUBLIC_SUPABASE_URL: ${{ secrets.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.PUBLIC_SUPABASE_ANON_KEY }}
       - name: Merge app dists into a single artifact
         run: |
           mkdir -p pages
@@ -82,6 +87,8 @@ jobs:
           cp -r apps/intesa-innesto/dist/. pages/intesa-innesto/
           mkdir -p pages/intesa-esperienza-cliente
           cp -r apps/intesa-esperienza-cliente/dist/. pages/intesa-esperienza-cliente/
+          mkdir -p pages/intesa-storia
+          cp -r apps/intesa-esperienza-cliente/dist-lettura/. pages/intesa-storia/
           mkdir -p pages/unipol-cinque-domande
           cp -r apps/unipol-cinque-domande/dist/. pages/unipol-cinque-domande/
           mkdir -p pages/bper-sopra-quello-che-avete
@@ -93,7 +100,7 @@ jobs:
       - name: Verify artifact structure
         run: |
           fail=0
-          for f in pages/index.html pages/generazioni-maxmara/index.html pages/unicredit-engagement/index.html pages/ferrari-racing/index.html pages/console/index.html pages/showcase/index.html pages/trenitalia-connessioni/index.html pages/agos-trait-dunion/index.html pages/atelier/index.html pages/eni-orbita/index.html pages/mim-alfabeti/index.html pages/aperture-email/index.html pages/isybank-momento/index.html pages/poste-sei-domande/index.html pages/intesa-scala-umana/dossier/index.html pages/intesa-dopo-la-firma/dossier/index.html pages/acquisizione/index.html pages/trenitalia-prospettiva-sales/index.html pages/tim-contenuti-su-scala/index.html pages/mef-giustizia-tributaria/dossier/index.html pages/intesa-innesto/index.html pages/intesa-esperienza-cliente/index.html pages/intesa-mutuo/index.html pages/unipol-cinque-domande/index.html pages/bper-sopra-quello-che-avete/index.html pages/trenitalia-ciascuno-conta/index.html pages/unicredit-coworker-pod/index.html; do
+          for f in pages/index.html pages/generazioni-maxmara/index.html pages/unicredit-engagement/index.html pages/ferrari-racing/index.html pages/console/index.html pages/showcase/index.html pages/trenitalia-connessioni/index.html pages/agos-trait-dunion/index.html pages/atelier/index.html pages/eni-orbita/index.html pages/mim-alfabeti/index.html pages/aperture-email/index.html pages/isybank-momento/index.html pages/poste-sei-domande/index.html pages/intesa-scala-umana/dossier/index.html pages/intesa-dopo-la-firma/dossier/index.html pages/acquisizione/index.html pages/trenitalia-prospettiva-sales/index.html pages/tim-contenuti-su-scala/index.html pages/mef-giustizia-tributaria/dossier/index.html pages/intesa-innesto/index.html pages/intesa-esperienza-cliente/index.html pages/intesa-storia/index.html pages/intesa-mutuo/index.html pages/unipol-cinque-domande/index.html pages/bper-sopra-quello-che-avete/index.html pages/trenitalia-ciascuno-conta/index.html pages/unicredit-coworker-pod/index.html; do
             if [ ! -f "$f" ]; then echo "MISSING: $f"; fail=1; fi
           done
           if [ $fail -ne 0 ]; then echo "Artifact structure check failed" && exit 1; fi

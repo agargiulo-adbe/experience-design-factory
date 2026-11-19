@@ -184,6 +184,20 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
     { name: 'prossimi-passi', route: '/experience-design-factory/intesa-esperienza-cliente/prossimi-passi/' },
     { name: 'dieci-minuti', route: '/experience-design-factory/intesa-esperienza-cliente/dieci-minuti/' },
   ],
+  /* L'edizione da distribuire di Intesa (build lettura, spec 2026-11-19): stesso
+     sorgente di intesa-esperienza-cliente, senza le pagine di chi presenta. */
+  'intesa-storia': [
+    { name: 'home', route: '/experience-design-factory/intesa-storia/' },
+    { name: 'adobe', route: '/experience-design-factory/intesa-storia/adobe/' },
+    { name: 'scenario', route: '/experience-design-factory/intesa-storia/scenario/' },
+    { name: 'persona', route: '/experience-design-factory/intesa-storia/persona/' },
+    { name: 'momenti', route: '/experience-design-factory/intesa-storia/momenti/' },
+    { name: 'messa-a-terra', route: '/experience-design-factory/intesa-storia/messa-a-terra/' },
+    { name: 'approfondimenti', route: '/experience-design-factory/intesa-storia/approfondimenti/' },
+    { name: 'coworker', route: '/experience-design-factory/intesa-storia/coworker/' },
+    { name: 'risultati', route: '/experience-design-factory/intesa-storia/risultati/' },
+    { name: 'parliamone', route: '/experience-design-factory/intesa-storia/parliamone/' },
+  ],
   'unipol-cinque-domande': [
     { name: 'home',      route: '/experience-design-factory/unipol-cinque-domande/' },
     { name: 'partenza',  route: '/experience-design-factory/unipol-cinque-domande/partenza/' },

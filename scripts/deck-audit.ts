@@ -60,8 +60,13 @@ const TV_VIEWPORTS: Array<[number, number]> = [[2560, 1440], [3840, 2160]];
    sopra e sotto, perché il tipo in `vw` cresce con la larghezza e l'altezza
    no. Nessuno dei viewport 16:9 lo poteva vedere. */
 const ULTRAWIDE_VIEWPORTS: Array<[number, number]> = [[2560, 1080], [3440, 1440], [3840, 1620]];
+/* `--portatili` aggiunge i portatili con il BROWSER APERTO (19 nov 2026): chi
+   riceve il link di un'edizione da distribuire non è a schermo intero in sala,
+   e un 1366×768 o un 1512 con la barra del browser ha molta meno altezza. */
+const PORTATILI_VIEWPORTS: Array<[number, number]> = [[1366, 768], [1512, 860]];
 const VIEWPORTS: Array<[number, number]> = [
   [1920, 1080], [1440, 900], [1280, 800],
+  ...(process.argv.includes('--portatili') ? PORTATILI_VIEWPORTS : []),
   ...(process.argv.includes('--tv') ? TV_VIEWPORTS : []),
   ...(process.argv.includes('--ultrawide') ? ULTRAWIDE_VIEWPORTS : []),
 ];
