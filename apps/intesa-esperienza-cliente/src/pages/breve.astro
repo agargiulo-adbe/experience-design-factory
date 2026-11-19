@@ -92,7 +92,7 @@ const CAPACITA: Record<string, string> = {
         <section class="br-pg br-m" id={`m-${m.n}`} data-momento={m.n} aria-label={`Momento ${m.n}: ${m.ora.it}`}>
           <div class="br-scena">
             {foto && <Image class="br-scena-foto" src={foto} widths={[480, 800]} sizes="100vw" alt="" loading="lazy" />}
-            <p class="br-ff"><span class="adb-tile" role="img" aria-label="Adobe"></span>Firefly</p>
+            <p class="br-ff">Generata con Adobe Firefly</p>
             <p class="br-m-n" aria-hidden="true">{m.n}</p>
             <div class="br-scena-t">
               <p class="br-m-ora">{m.ora.it}</p>
@@ -114,12 +114,12 @@ const CAPACITA: Record<string, string> = {
       );
     })}
 
-    {/* LA VERSIONE INTERA: si mostra, non si descrive. Tre schermate vere a ventaglio. */}
+    {/* LA VERSIONE INTERA: si mostra, non si descrive. Una sola immagine calma, la sua
+        copertina dentro un portatile: tre schermate a ventaglio dicevano «complicato». */}
     <section class="br-pg br-pc" aria-labelledby="br-pc-t">
-      <div class="br-ventaglio" aria-hidden="true">
-        <img src={`${base}miniature/lettura/d-attribuzione.jpg`} alt="" loading="lazy" decoding="async" />
-        <img src={`${base}miniature/lettura/d-flusso.jpg`} alt="" loading="lazy" decoding="async" />
-        <img src={`${base}miniature/lettura/d-innesto.jpg`} alt="" loading="lazy" decoding="async" />
+      <div class="br-pc-pc" aria-hidden="true">
+        <div class="br-pc-schermo"><img src={`${base}miniature/lettura/d-copertina.jpg`} alt="" loading="lazy" decoding="async" /></div>
+        <div class="br-pc-base"></div>
       </div>
       <div class="br-pc-testo">
         <h2 class="br-h" id="br-pc-t">Questo è solo il riassunto</h2>
@@ -135,7 +135,7 @@ const CAPACITA: Record<string, string> = {
     <section class="br-pg br-m br-parl" aria-labelledby="br-parl-t">
       <div class="br-scena br-scena--parl">
         <Image class="br-scena-foto" src={finestra} widths={[480, 800]} sizes="100vw" alt="" loading="lazy" />
-        <p class="br-ff"><span class="adb-tile" role="img" aria-label="Adobe"></span>Firefly</p>
+        <p class="br-ff">Generata con Adobe Firefly</p>
         <div class="br-scena-t">
           <h2 class="br-m-ora" id="br-parl-t">Parliamone</h2>
           <p class="br-m-dove">Bastano due righe, su un momento di Giulia, su un prodotto o su come si collega ai sistemi della banca.</p>
@@ -203,14 +203,20 @@ const CAPACITA: Record<string, string> = {
   :global(html:has(.br)) { scroll-snap-type: y mandatory; background: var(--color-night); }
   .br { color: var(--color-paper); font-family: var(--font-body); font-size: 1rem; line-height: 1.5; background: var(--color-night); }
   .br ::selection { background: var(--color-verde-chiaro); color: var(--color-night); }
+  /* LO SCORCIO DELLA PAGINA DOPO (owner, 19 nov 2026): su Safari, scorrendo in giù la
+     barra si ritira e lo schermo cresce da `svh` a `lvh`. Pagine alte `svh` lasciavano
+     vedere l'inizio della successiva; in su la barra tornava e la copriva. Ora ogni pagina
+     è alta `lvh` (lo schermo senza barra) e il contenuto sta nei primi `svh`: lo spazio in
+     più è fondo della pagina stessa. Su desktop svh = lvh e non cambia niente. */
   .br-pg {
-    position: relative; min-height: 100svh; scroll-snap-align: start;
-    padding: max(1.6rem, env(safe-area-inset-top)) 1.25rem max(1.6rem, env(safe-area-inset-bottom));
+    --br-barra: calc(100lvh - 100svh);
+    position: relative; min-height: 100svh; min-height: 100lvh; scroll-snap-align: start;
+    padding: max(1.6rem, env(safe-area-inset-top)) 1.25rem calc(max(1.6rem, env(safe-area-inset-bottom)) + var(--br-barra, 0px));
     display: flex; flex-direction: column;
   }
 
   /* ── La copertina ───────────────────────────────────────────── */
-  .br-cop { padding: 0; overflow: hidden; }
+  .br-cop { padding: 0 0 var(--br-barra, 0px); overflow: hidden; }
   .br-cop-foto { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; }
   .br-cop::after {
     content: ''; position: absolute; inset: 0;
@@ -257,7 +263,7 @@ const CAPACITA: Record<string, string> = {
   .br-indice a:focus-visible { outline: 2px solid var(--color-verde-chiaro); outline-offset: 2px; }
 
   /* ── La scena (momenti e «Parliamone») ──────────────────────── */
-  .br-m { padding: 0 0 max(1.2rem, env(safe-area-inset-bottom)); }
+  .br-m { padding: 0 0 calc(max(1.2rem, env(safe-area-inset-bottom)) + var(--br-barra, 0px)); }
   .br-scena { position: relative; flex: none; height: 30svh; min-height: 11rem; overflow: hidden; }
   .br-scena-foto { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; }
   .br-scena::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(13 41 1 / 0.4) 0%, rgb(13 41 1 / 0) 32%, rgb(13 41 1 / 0.72) 76%, var(--color-night) 100%); }
@@ -269,14 +275,14 @@ const CAPACITA: Record<string, string> = {
     font-family: var(--font-display); font-weight: 700; font-size: 4.6rem; line-height: 1; letter-spacing: -0.04em;
     color: transparent; -webkit-text-stroke: 1.5px rgb(255 255 255 / 0.85); font-variant-numeric: tabular-nums;
   }
-  /* La firma di Firefly sulla scena: piccola, a sinistra sotto il filo, mai sul soggetto. */
+  /* LA FILIGRANA DI FIREFLY (owner, 19 nov 2026): la pillola col marchio sembrava un
+     prodotto della storia. Qui è solo testo, piccolo e trasparente, nell'angolo libero
+     della scena, in alto a sinistra (il numero sta a destra, il titolo in basso). */
   .br-ff {
-    position: absolute; z-index: 1; left: 0.9rem; top: max(1.1rem, calc(env(safe-area-inset-top) + 0.6rem)); margin: 0;
-    display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.18rem 0.55rem 0.18rem 0.3rem; border-radius: 999px;
-    background: rgb(10 22 4 / 0.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; color: rgb(255 255 255 / 0.9);
+    position: absolute; z-index: 1; left: 1.25rem; top: max(1.25rem, calc(env(safe-area-inset-top) + 0.8rem)); margin: 0;
+    font-size: 0.6rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap;
+    color: rgb(255 255 255 / 0.45); text-shadow: 0 1px 6px rgb(0 0 0 / 0.4); pointer-events: none;
   }
-  .br-ff .adb-tile { font-size: 0.78rem; }
 
   /* Il mockup sale sulla scena; alto al massimo il 30% dello schermo, così la riga del
      prodotto resta dentro anche su un telefono vero con le barre del browser. */
@@ -310,15 +316,15 @@ const CAPACITA: Record<string, string> = {
   .br-filo li[data-fatto] { background: var(--color-paper); }
 
   /* ── La versione intera: tre schermate a ventaglio, poi il testo ── */
-  .br-pc { justify-content: center; gap: 2rem; background: radial-gradient(120% 70% at 50% 18%, var(--color-night-2) 0%, var(--color-night) 70%); }
-  .br-ventaglio { position: relative; width: 100%; max-width: 30rem; margin: 0 auto; aspect-ratio: 16 / 11; }
-  .br-ventaglio img {
-    position: absolute; left: 50%; top: 50%; width: 82%; height: auto; border-radius: 8px;
-    box-shadow: 0 1rem 2.4rem -0.8rem rgb(0 0 0 / 0.8), 0 0 0 1px rgb(255 255 255 / 0.14);
+  .br-pc { justify-content: center; gap: 2.2rem; background: radial-gradient(120% 70% at 50% 18%, var(--color-night-2) 0%, var(--color-night) 70%); }
+  /* Il portatile: due forme, nessun dettaglio. Lo schermo porta la copertina. */
+  .br-pc-pc { width: 100%; max-width: 21rem; margin: 0 auto; }
+  .br-pc-schermo {
+    padding: 0.45rem; border-radius: 12px 12px 4px 4px; background: #0a1404;
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.16), 0 1.6rem 3rem -1.4rem rgb(0 0 0 / 0.85);
   }
-  .br-ventaglio img:nth-child(1) { transform: translate(-60%, -66%) rotate(-7deg); opacity: 0.6; }
-  .br-ventaglio img:nth-child(2) { transform: translate(-40%, -56%) rotate(5deg); opacity: 0.8; }
-  .br-ventaglio img:nth-child(3) { transform: translate(-50%, -36%) rotate(-1deg); }
+  .br-pc-schermo img { display: block; width: 100%; height: auto; border-radius: 6px; }
+  .br-pc-base { height: 0.55rem; margin: 0 -1.4rem; border-radius: 0 0 14px 14px; background: linear-gradient(180deg, #2c3a24 0%, #1a2414 100%); box-shadow: 0 0 0 1px rgb(255 255 255 / 0.1); }
   .br-pc-testo { width: 100%; max-width: 32rem; margin: 0 auto; }
   .br-h { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; line-height: 1.18; text-wrap: balance; }
   .br-l { margin: 0.7rem 0 0; font-size: 1.05rem; color: rgb(255 255 255 / 0.88); text-wrap: pretty; }

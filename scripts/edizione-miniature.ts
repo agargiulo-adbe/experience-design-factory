@@ -22,13 +22,12 @@ for (let i = 1; i <= 7; i++) {
   await mock.screenshot({ path: `${OUT}/m-0${i}.jpg`, type: 'jpeg', quality: 82 });
   console.log('ok', id);
 }
-// Le schermate della versione intera, per la pagina «Questo è solo il riassunto»: la
-// slide a passi aperti, senza la barra in alto e senza i comandi in basso.
-const dp = await b.newPage({ viewport: { width: 1512, height: 860 }, deviceScaleFactor: 1.5 });
-for (const [pagina, id, nome, attesa] of [['messa-a-terra', 'slide-innesto', 'd-innesto', 9000], ['messa-a-terra', 'slide-flusso', 'd-flusso', 11000], ['messa-a-terra', 'slide-attribuzione', 'd-attribuzione', 8000]] as const) {
-  await dp.goto(`${L}${pagina}/#${id}`, { waitUntil: 'load' });
-  await dp.waitForTimeout(attesa);
-  await dp.screenshot({ path: `${OUT}/${nome}.jpg`, type: 'jpeg', quality: 80, clip: { x: 0, y: 62, width: 1512, height: 690 } });
-  console.log('ok', nome);
-}
+// La copertina della versione completa, per «Questo è solo il riassunto»: una sola
+// immagine calma dentro un portatile (owner, 19 nov 2026: tre schermate a ventaglio
+// davano un'idea di complessità, l'opposto di quello che si vuole dire).
+const dp = await b.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1.5 });
+await dp.goto(L, { waitUntil: 'load' });
+await dp.waitForTimeout(3000);
+await dp.screenshot({ path: `${OUT}/d-copertina.jpg`, type: 'jpeg', quality: 82 });
+console.log('ok d-copertina');
 await b.close();
