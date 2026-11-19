@@ -211,3 +211,10 @@ conferma. Chiudi chiedendo che cosa si fa. Per scrivere c'è **`/account-close`*
 - **Non committare** niente da `docs/<Account>/`: è materiale riservato in un repo pubblico,
   ed è ignorato da git per questo.
 - **Nomi di persone solo nel `ACCOUNT.md`**, mai in un file tracciato.
+- **Se il prossimo passo chiede di far vedere il prodotto** («mandagli un video di Coworker»,
+  «fagli vedere come risponde su Target»), il video si gira da qui, senza Claude in Chrome:
+  Playwright MCP apre un Chromium suo, la persona fa il login una volta, Claude scrive i
+  prompt e cattura i fotogrammi, `scripts/video-demo/rendi.sh` monta. Metodo, regole del
+  montaggio e trappole in `skills/experience-design/references/video-demo-dal-vivo.md`:
+  si legge **prima** di aprire il browser. Si gira sempre nell'**org demo**, e i fotogrammi
+  si guardano prima di montare, perché l'org è condivisa e può mostrare altri clienti.

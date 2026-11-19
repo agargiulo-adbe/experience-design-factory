@@ -144,6 +144,12 @@ di verità; qui bastano le tre regole che non si deducono:
 ⚠️ **Le divergenze con Teams non le risolve lo script**: le stampa. Quale delle due copie
 valga lo decide una persona, perché la più recente non è sempre quella giusta.
 
+**Se nella sessione si è girato un video demo** (`video-demo-dal-vivo.md`): il `.mp4` finale va
+in `output/` e nella cartella Teams; la cartella `.playwright-mcp/` con migliaia di fotogrammi
+si **propone** di cancellarla, mostrandone il peso. Non si cancella da sé: una scena da
+rimontare si rifà da lì, e girarla di nuovo costa dodici minuti e un login. Nel log entra una
+riga sola: quale video, su quale prodotto, a chi è andato.
+
 ## 8 — Chiudi
 Stampa il percorso del file e le righe aggiunte. Se hai toccato file **fuori** da `docs/`,
 dillo e lascia decidere: da qui non si committa.

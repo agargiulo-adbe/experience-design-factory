@@ -478,6 +478,21 @@ fallisce con −1701.
 storica, centinaia di messaggi. Non ci si cicla sopra per cancellare, nemmeno filtrando per
 oggetto.
 
+## Un video del prodotto dal vivo si gira da qui (19 nov 2026)
+
+Quando un account chiede di **vedere** il prodotto rispondere («mandagli un video di Coworker
+su Target»), il video non si chiede a un collega: si gira nella sessione d'account, **senza
+Claude in Chrome**. Il server Playwright MCP apre un Chromium suo (per questo sembra una
+finestra ospite), la persona fa il login una volta, Claude scrive i prompt, cattura i
+fotogrammi e monta con `scripts/video-demo/rendi.sh`. Il metodo intero, con le regole del
+montaggio e le trappole già pagate, sta in
+**`skills/experience-design/references/video-demo-dal-vivo.md`** e si legge prima di aprire
+il browser. Tre cose valgono anche qui:
+- si gira nell'**org demo**, mai in quella del cliente;
+- i fotogrammi si **guardano** prima di montare: l'org demo è condivisa e Coworker può
+  mostrare attività e nomi di altri clienti;
+- il video **si mostra alla persona** prima che parta, come una bozza di mail.
+
 ## Cosa non fare, qui
 
 - **Non inviare posta**: si preparano bozze, l'invio è un gesto umano.

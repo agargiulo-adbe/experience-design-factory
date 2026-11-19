@@ -97,6 +97,18 @@ Comandi, trappole e checklist in `references/sensory-shell.md`. Lì stanno anche
 collisioni che l'audit NON vede (nav, co-brand, credito, comando audio) e la regola che
 le chiude: mentre si legge un blocco aperto, il contorno arretra.
 
+## Step 0-quater — Il prodotto dal vivo, in video (Storia e Playbook)
+Quando una slide deve mostrare il software che risponde davvero (Coworker su Analytics, su
+Target, su CJA; ogni app di Experience Cloud), il video **si gira, non si chiede a nessuno**,
+e **senza Claude in Chrome**: Playwright MCP apre un Chromium suo, la persona fa il login
+(SSO + MFA) una volta, Claude scrive i prompt e cattura i fotogrammi con
+`scripts/video-demo/riprendi.js`, poi `bash scripts/video-demo/rendi.sh <spec> <out> <nome>`
+monta: attese tagliate, risposta a 4x, cartello con la domanda e con la risposta, nota
+«attese accelerate» in fascia per tutto il video. Si gira **nell'org demo**, i fotogrammi si
+guardano prima di montare (l'org è condivisa e mostra altri clienti), e il video si mostra
+alla persona prima di posarlo nel deck. Metodo e trappole in
+`references/video-demo-dal-vivo.md`, da leggere prima di aprire il browser.
+
 ## Regola di metodo che precede tutto
 **Quello che il committente dice è un'ipotesi da verificare, non un fatto da
 trascrivere** — nomi di prodotto, perimetri di persone, numeri, competitor,
