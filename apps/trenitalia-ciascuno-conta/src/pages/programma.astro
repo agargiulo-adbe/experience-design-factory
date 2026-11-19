@@ -11,13 +11,14 @@ import Sequenza from '../components/Sequenza.astro';
 import Folla from '../components/Folla.astro';
 import Direttrici from '../components/Direttrici.astro';
 import Dettaglio from '../components/Dettaglio.astro';
-import { ATTI, SEQUENZA, FOLLA } from '../data/contenuti';
+import { ATTI, SEQUENZA, FOLLA, CERCHI, MARZO } from '../data/contenuti';
 
 /**
- * Capitolo 01 della presentazione — L'iniziativa. Flusso a 11 slide (17 nov 2026):
- * niente divisore. I tre verbi, la timeline in quattro momenti, com'è organizzato
- * l'MVP (riservata) e la condizione della riconciliazione. Il circuito dei dati sta
- * nell'annex (Scegliere e misurare).
+ * Capitolo 01 della presentazione — L'iniziativa. Niente divisore. I tre verbi, la
+ * timeline in quattro momenti, i prodotti a cerchi, com'è organizzato l'MVP (riservata),
+ * la condizione della riconciliazione e la giornata di marzo in una pagina. I cerchi e
+ * la giornata entrano il 18 nov 2026: dopo la sessione del 17 il leadership team non
+ * capiva che cosa fosse il lab. Il dettaglio resta nell'annex.
  */
 const SLUG = 'programma';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -55,6 +56,32 @@ const currentPath = Astro.url.pathname;
       <Dettaglio to="scegliere#slide-scegliere" />
     </Slide>
 
+    <Slide id="slide-cerchi" bg="primary" align="left" data-tono="scuro">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--fig" data-reveal>
+        <div class="xd-sl-head"><h2 class="xd-h2">{CERCHI.titolo}</h2></div>
+        <div class="cc-corpo">
+          <div class="cc-cerchi">
+            <div class="cc-cerchi-nucleo">
+              <div class="cc-cerchi-cuore">
+                <p class="cc-cerchi-k">{CERCHI.cuore.k}</p>
+                <p class="cc-cerchi-t">{CERCHI.cuore.t}</p>
+              </div>
+              <p class="cc-cerchi-b">{CERCHI.cuore.b}</p>
+            </div>
+            <div class="cc-cerchi-attorno">
+              <p class="cc-cerchi-k">{CERCHI.attorno.k}</p>
+              <ul class="cc-cerchi-gruppi" data-stagger>
+                {CERCHI.attorno.gruppi.map((g) => (<li><p class="cc-cerchi-t">{g.t}</p><p class="cc-cerchi-b">{g.b}</p></li>))}
+              </ul>
+            </div>
+          </div>
+          <p class="cc-dirs-chiusa">{CERCHI.chiusa}</p>
+        </div>
+      </div>
+      <Dettaglio to="numeri#r-attorno" />
+    </Slide>
+
     <Guscio id="r-mvp" dettaglio="giornata#slide-postazioni" />
 
     <Slide id="slide-sequenza" bg="primary" align="left" data-tono="scuro">
@@ -66,6 +93,22 @@ const currentPath = Astro.url.pathname;
         <div class="cc-corpo"><Sequenza /><p class="cc-noi" data-r="noi-sequenza"></p></div>
       </div>
       <Dettaglio to="scegliere#slide-misurare" />
+    </Slide>
+
+    <Slide id="slide-marzo" bg="primary" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl" data-reveal>
+        <div class="xd-sl-head"><h2 class="xd-h2">{MARZO.titolo}</h2></div>
+        <div class="cc-corpo">
+          <ol class="cc-tappe cc-tappe--linea" style="--cols:4" data-stagger>
+            {MARZO.passi.map((p) => (
+              <li data-forte={p.forte ? '' : undefined}><p class="cc-tappe-q">{p.q}</p><p class="cc-tappe-l">{p.l}</p><p class="cc-tappe-d">{p.d}</p></li>
+            ))}
+          </ol>
+          <p class="cc-noi" data-r="noi-marzo"></p>
+        </div>
+      </div>
+      <Dettaglio to="giornata#slide-scaletta" />
     </Slide>
 
   </DeckContainer>

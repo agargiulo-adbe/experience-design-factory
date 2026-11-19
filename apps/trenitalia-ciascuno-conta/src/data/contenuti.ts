@@ -60,7 +60,7 @@ export const ATTI = {
     { n: '2', v: 'L’MVP', q: 'dic – feb · in produzione', serve: ['misurare', 'conoscere', 'personalizzare'], da: 0.5, a: 3,
       esce: 'Casi d’uso in produzione, misurati sul venduto' },
     { n: '3', v: 'Decidere', q: 'marzo · la giornata', serve: ['consenso'], da: 3, a: 4,
-      esce: 'Dai risultati dell’MVP alla visione completa, a cerchi concentrici' },
+      esce: 'I risultati dell’MVP, poi le mani sugli strumenti' },
     { n: '4', v: 'Portare a contratto', q: 'apr – giu', serve: ['consenso'], da: 4, a: 7,
       esce: 'La proposta dai risultati, la firma a giugno' },
   ],
@@ -169,7 +169,7 @@ export const SCALETTA = {
   voci: [
     { o: '09:30', t: 'Apertura', d: 'La Direzione Sales accoglie la sala', dir: true },
     { o: '10:00', t: 'I risultati', d: 'Dove si perde la vendita, il test, le domande', dir: true },
-    { o: '11:30', t: 'Le mani sugli strumenti', d: 'Tre postazioni a rotazione' },
+    { o: '11:30', t: 'Le mani sugli strumenti', d: 'Quattro postazioni a rotazione' },
     { o: '14:30', t: 'Chi l’ha già fatto', d: 'Un’azienda di viaggio e il suo modello' },
     { o: '15:15', t: 'Le priorità', d: 'Dieci casi d’uso, ne restano tre' },
     { o: '16:00', t: 'La squadra', d: 'I servizi Adobe e Accenture: chi fa che cosa dopo la firma' },
@@ -179,14 +179,43 @@ export const SCALETTA = {
 };
 
 /** Le mani sugli strumenti: sui dati veri solo quello che l'MVP ha costruito, tutto
- *  il resto in ambiente demo, e lo si dice prima (decisione del 16–17 nov 2026). */
+ *  il resto in ambiente demo, e lo si dice prima (decisione del 16–17 nov 2026). Dal
+ *  18 nov le salette sono quattro: l'offerta Creativity & Productivity ha la sua
+ *  (decisione dell'owner dopo la sessione con il leadership team del 17 nov). */
 export const POSTAZIONI = {
-  titolo: 'Due ore, tre salette: una sui vostri dati, due in demo',
-  sub: 'Sei o sette persone per gruppo, un cambio ogni quaranta minuti.',
+  titolo: 'Due ore, quattro salette: una sui vostri dati, tre in demo',
+  sub: 'Cinque persone per gruppo, un cambio ogni mezz’ora.',
   stanze: [
     { k: 'Sui vostri dati', t: 'CJA e Target', b: 'I percorsi e l’attività che l’MVP ha messo in produzione' },
     { k: 'In demo', t: 'Analisi e decisione', b: 'Coworker su CJA, Content Analytics, Decisioning di Journey Optimizer' },
-    { k: 'In demo', t: 'Contenuti e visibilità', b: 'GenStudio for Performance Marketing, Brand Visibility, Brand Concierge' },
+    { k: 'In demo', t: 'Contenuti su scala', b: 'GenStudio for Performance Marketing, Firefly Services, Express su AEM Assets' },
+    { k: 'In demo', t: 'Visibilità nelle risposte', b: 'Brand Visibility e Brand Concierge' },
+  ],
+};
+
+/** I prodotti nel percorso principale (18 nov 2026): il leadership team non capiva
+ *  «a cerchi concentrici». Il cuore va sui dati del cliente; attorno, tutto in demo
+ *  alla giornata, e si sceglie dopo la firma. */
+export const CERCHI = {
+  titolo: 'Il cuore sui vostri dati, il resto in demo',
+  cuore: { k: 'Il cuore · nell’MVP', t: 'CJA e Adobe Target', b: 'Real\u2011Time CDP solo per portare i pubblici da CJA a Target' },
+  attorno: { k: 'Attorno · alla giornata, in demo', gruppi: [
+    { t: 'Contenuti su scala', b: 'GenStudio for Performance Marketing, Firefly Services, Express su AEM Assets' },
+    { t: 'Analisi e decisione', b: 'Coworker su CJA, Content Analytics, Decisioning di Journey Optimizer' },
+    { t: 'Visibilità nelle risposte', b: 'Brand Visibility e Brand Concierge' },
+  ] },
+  chiusa: 'Personalizzare vuol dire anche produrre le varianti. Il resto si sceglie dopo la firma.',
+};
+
+/** La giornata in una pagina, nel percorso principale (18 nov 2026): il dettaglio
+ *  ora per ora resta nell'annex. */
+export const MARZO = {
+  titolo: 'A marzo, prima i risultati e poi le mani sugli strumenti',
+  passi: [
+    { q: 'La mattina', l: 'I risultati dell’MVP', d: 'Dove si perde la vendita e che cosa ha detto il test, davanti alla Direzione' },
+    { q: 'Due ore', l: 'Le mani sugli strumenti', d: 'CJA e Target sui vostri dati, il resto in demo in tre salette', forte: true },
+    { q: 'Il pomeriggio', l: 'Chi l’ha già fatto', d: 'Un’azienda di viaggio racconta il suo modello; dieci casi d’uso, ne restano tre' },
+    { q: 'La chiusura', l: 'Squadra e rotta', d: 'Chi fa che cosa dopo la firma, e le tappe a 3, 6 e 9 mesi' },
   ],
 };
 

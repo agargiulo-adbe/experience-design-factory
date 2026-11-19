@@ -4,8 +4,8 @@
  *
  * UN DOCUMENTO INTERNO, IN DUE PARTI (13 novembre 2026, per il leadership team Adobe
  * Italia, 45 minuti):
- * - **presentazione** (`parte: 'presentazione'`): undici slide in fila, senza divisori
- *   (17 nov 2026) — copertina e tesi, L'iniziativa, Quanto vale e quanto costa, Rischi e
+ * - **presentazione** (`parte: 'presentazione'`): tredici slide in fila, senza divisori
+ *   (17 nov 2026; i cerchi dei prodotti e la giornata in una pagina dal 18) — copertina e tesi, L'iniziativa, Quanto vale e quanto costa, Rischi e
  *   prossime date, firma. Dalla firma → si ferma;
  * - **annex** (`parte: 'annex'`): un sommario e sei parti di dettaglio, con le sue
  *   frecce: dalla prima slide ← non torna nella presentazione.
