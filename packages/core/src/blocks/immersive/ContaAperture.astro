@@ -5,6 +5,11 @@
  * localStorage, nessun identificativo; il giorno lo mette il database. Con
  * Global Privacy Control attivo non parte nulla. Gli errori si ignorano: un
  * contatore non deve mai rompere la pagina.
+ * ⚠️ `rigaApertura` viene iniettata col suo sorgente (toString): deve restare
+ * AUTOSUFFICIENTE, senza costanti o funzioni di modulo, o nel browser fallisce
+ * in silenzio. Lo stesso vale per `deveRinviare` in RinvioTelefono.
+ * La frase in pagina dice «non registriamo»: la tabella non ha IP né ora, ma
+ * i log di GitHub Pages e del gateway Supabase vedono l'IP come per ogni sito.
  */
 import { rigaApertura, type PaginaContata } from '../../utils/aperture';
 interface Props { progetto: string; pagina: PaginaContata }
@@ -14,7 +19,7 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 const codice = `(function(){try{
   var riga=(${rigaApertura.toString()})(${JSON.stringify(progetto)},${JSON.stringify(pagina)},navigator.globalPrivacyControl===true);
   if(!riga)return;
-  fetch(${JSON.stringify(URL_DB + '/rest/v1/aperture')},{method:'POST',keepalive:true,credentials:'omit',
+  fetch(${JSON.stringify(URL_DB + '/rest/v1/aperture')},{method:'POST',keepalive:true,credentials:'omit',referrerPolicy:'no-referrer',
     headers:{'apikey':${JSON.stringify(CHIAVE)},'Authorization':'Bearer '+${JSON.stringify(CHIAVE)},'Content-Type':'application/json','Prefer':'return=minimal'},
     body:JSON.stringify(riga)}).catch(function(){});
 }catch(e){}})();`;

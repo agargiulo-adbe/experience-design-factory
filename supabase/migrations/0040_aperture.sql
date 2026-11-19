@@ -23,7 +23,10 @@ drop policy if exists aperture_anon_insert on public.aperture;
 create policy aperture_anon_insert on public.aperture
   for insert to anon
   with check (
-    char_length(progetto) between 1 and 40
+    -- Solo i progetti che hanno un'edizione da distribuire: con la chiave anon
+    -- pubblica, un nome libero permetterebbe a chiunque di riempire la tabella.
+    -- Si aggiunge un nome qui quando nasce una nuova edizione.
+    progetto in ('intesa-storia')
     and giorno = current_date
   );
 

@@ -131,7 +131,20 @@ export async function checkRete(b: Browser) {
   }
 }
 
-const CHECKS: Record<string, (b: Browser) => Promise<void>> = { autoreveal: checkAutoreveal, parliamone: checkParliamone, telefono: checkTelefono, rete: checkRete };
+export async function checkSala(b: Browser) {
+  // Niente strumenti di chi presenta nella lettura: né il pulsante né il tasto P.
+  const p = await b.newPage({ viewport: { width: 1512, height: 860 } });
+  await p.goto(LETTURA + 'momenti/', { waitUntil: 'load' }); await p.waitForTimeout(1200);
+  ok('lettura: nessun pulsante presentatore', (await p.locator('[data-pv-apri]').count()) === 0, 'trovato [data-pv-apri]');
+  const popup = p.waitForEvent('popup', { timeout: 1500 }).then(() => true).catch(() => false);
+  await p.keyboard.press('p');
+  ok('lettura: il tasto P non apre niente', !(await popup), 'si è aperta una finestra');
+  const nota = await p.goto(LETTURA, { waitUntil: 'load' }).then(() => p.textContent('body'));
+  ok('lettura: la frase sul contatore dice «Non registriamo chi la apre»', (nota ?? '').includes('Non registriamo chi la apre'), '');
+  await p.close();
+}
+
+const CHECKS: Record<string, (b: Browser) => Promise<void>> = { autoreveal: checkAutoreveal, parliamone: checkParliamone, telefono: checkTelefono, rete: checkRete, sala: checkSala };
 
 const scelti = process.argv.slice(2);
 const b = await chromium.launch();
