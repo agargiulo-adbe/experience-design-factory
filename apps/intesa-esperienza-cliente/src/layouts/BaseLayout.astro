@@ -1,4 +1,5 @@
 ---
+import { EDIZIONE } from '@edf/core/utils/edizione';
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 import CoBrand from '../components/CoBrand.astro';
@@ -51,14 +52,16 @@ const PROJECT_SLUG = SITE.slug;
 const LANGS = SITE.langs;
 const DEFAULT_LANG = SITE.defaultLang;
 const SECTION_FLOW = CHAPTERS.map((c) => ({ slug: c.slug, gate: null as string[] | null }));
-const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
-const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+// In lettura il seme `?cfg=` (configurazioni dell'Admin) non parte: chi legge
+// il link non deve generare richieste verso di noi oltre al contatore.
+const SUPABASE_URL = EDIZIONE === 'lettura' ? '' : (import.meta.env.PUBLIC_SUPABASE_URL ?? '');
+const SUPABASE_ANON_KEY = EDIZIONE === 'lettura' ? '' : (import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '');
 const isHome = Astro.url.pathname.replace(/\/+$/, '') === base.replace(/\/+$/, '');
 // Niente «Nome | Nome» in home: il titolo del documento è anche quello che leggono gli scraper.
 const docTitle = (isHome || title === SITE_NAME || title === SITE.name) ? SITE_NAME : `${title} | ${SITE_NAME}`;
 ---
 <!doctype html>
-<html lang={DEFAULT_LANG} data-lang={DEFAULT_LANG}>
+<html lang={DEFAULT_LANG} data-lang={DEFAULT_LANG} data-edizione={EDIZIONE}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
