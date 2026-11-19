@@ -1,0 +1,128 @@
+---
+/**
+ * Il riquadro di una demo registrata, a sinistra, e il suo racconto a destra.
+ *
+ * 18-19 nov 2026: le demo sono due (Coworker su Analytics, capitolo 02; da
+ * Analytics a Target, capitolo 03), ognuna sotto i due minuti, rimontate dopo
+ * il ritorno di un collega («molto lento, anche a 1,5x», «andrebbe
+ * contestualizzato»). Ognuna va proiettata dove il capitolo ha appena mostrato
+ * le domande che il video fa.
+ *
+ * IL VIDEO sta su Adobe Dynamic Media, come su Intesa: il player montato in
+ * pagina con `isLetterBoxed: true`, e l'iframe di `/play` come ripiego. Su un
+ * asset appena caricato il manifest di streaming non c'è ancora: allora si
+ * proietta l'originale col player nativo. Senza URL (`play = ''`) si cerca il
+ * `.mp4` locale in `public/` (git-ignorato); senza nemmeno quello, il
+ * segnaposto. Niente autoplay: si avvia da chi presenta.
+ */
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+
+interface Props {
+  /** id del riquadro, unico nella pagina */
+  id: string;
+  /** `https://delivery-…/adobe/assets/urn:aaid:aem:<id>/play`, o '' */
+  play: string;
+  /** ripiego locale sotto `public/`, se c'è */
+  locale?: string;
+  /** testo per i lettori di schermo */
+  etichetta: string;
+  /** riga sotto il video; per legare le frasi, lo slot `didascalia` */
+  didascalia?: string;
+}
+const { id, play, locale, etichetta, didascalia } = Astro.props;
+const asset = play.replace(/\/play$/, '');
+const b = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const conLocale = !!locale && existsSync(join(process.cwd(), 'public', locale));
+---
+<div class="uc-video">
+  <figure class="uc-video-fig">
+    {play ? (
+      <div class="uc-video-box uc-video-dm" id={id} data-asset={asset} data-play={play}
+           role="region" aria-label={etichetta}></div>
+    ) : (
+      <div class="uc-video-box">
+        {conLocale ? (
+          <video controls preload="metadata" playsinline aria-label={etichetta}>
+            <source src={`${b}${locale}`} type="video/mp4" />
+          </video>
+        ) : (
+          <div class="uc-video-attesa">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <circle cx="32" cy="32" r="29" fill="none" stroke="currentColor" stroke-width="2.5" />
+              <path d="M26 20 L46 32 L26 44 Z" fill="currentColor" />
+            </svg>
+            <p>La demo si proietta da qui</p>
+          </div>
+        )}
+      </div>
+    )}
+    <figcaption class="uc-video-cap">{didascalia}<slot name="didascalia" /></figcaption>
+  </figure>
+  <div class="uc-video-dx">
+    <slot />
+  </div>
+</div>
+
+<script>
+  /* Il player di Dynamic Media montato nella pagina: CSS e script dagli
+     indirizzi Adobe, poi init con il video intero (`isLetterBoxed: true`, se no
+     a schermo intero su un 16:10 il video si taglia). Si avvia quando la sua
+     slide diventa attiva; se il player non arriva (rete), l'iframe di `/play`. */
+  type DmWin = Window & { dmViewers?: { VideoPlayer?: { init(id: string, o: object): Promise<{ setupPlayer(c: unknown): void }> }; CorePlayer?: unknown } };
+  const w = window as DmWin;
+  const carica = (src: string) => new Promise<void>((ok, ko) => {
+    if (document.querySelector(`script[src="${src}"]`)) { ok(); return; }
+    const sc = Object.assign(document.createElement('script'), { src, async: false });
+    sc.onload = () => ok(); sc.onerror = () => ko(new Error(src));
+    document.head.appendChild(sc);
+  });
+  function ripiego(box: HTMLElement) {
+    if (box.querySelector('iframe')) return;
+    box.replaceChildren(Object.assign(document.createElement('iframe'), {
+      src: box.dataset.play!, title: box.getAttribute('aria-label') || 'Video', allow: 'autoplay; fullscreen; picture-in-picture; encrypted-media',
+    }));
+  }
+  function originale(box: HTMLElement) {
+    const asset = box.dataset.asset!;
+    box.replaceChildren(Object.assign(document.createElement('video'), {
+      src: asset + '/original/as/video.mp4', poster: asset + '/as/thumbnail.jpeg?width=1280&height=720',
+      controls: true, preload: 'metadata', playsInline: true,
+    }));
+  }
+  async function avvia(box: HTMLElement) {
+    if (box.dataset.pronto) return;
+    box.dataset.pronto = '1';
+    const asset = box.dataset.asset!;
+    const urn = 'urn:aaid:aem:';
+    const dm = asset.slice(0, asset.indexOf(urn) + urn.length);
+    if (!document.querySelector('link[data-dm-css]')) {
+      const l = Object.assign(document.createElement('link'), { rel: 'stylesheet', href: dm + 'dmviewers-html5-css/as/core-player.css' });
+      l.dataset.dmCss = '';
+      document.head.appendChild(l);
+    }
+    const pronto = await fetch(asset + '/manifest.m3u8', { method: 'HEAD' }).then((r) => r.ok).catch(() => false);
+    if (!pronto) { originale(box); return; }
+    try {
+      await carica(dm + 'dmviewers-html5/as/VideoPlayer.js');
+      const p = w.dmViewers!.VideoPlayer!.init(box.id, {
+        sources: { DASH: asset + '/manifest.mpd', HLS: asset + '/manifest.m3u8' },
+        posterImage: asset + '/as/thumbnail.jpeg?width=1280&height=720',
+        solution: 'polaris', autoplay: false, controls: true, isLetterBoxed: true,
+      });
+      await carica(dm + 'dmviewers-html5/as/CorePlayer.js');
+      (await p).setupPlayer(w.dmViewers!.CorePlayer);
+    } catch { ripiego(box); }
+  }
+  function prepara() {
+    document.querySelectorAll<HTMLElement>('.uc-video-dm').forEach((box) => {
+      const slide = box.closest<HTMLElement>('[data-slide]');
+      const via = () => { if (!slide || slide.getAttribute('aria-hidden') !== 'true') void avvia(box); };
+      via();
+      if (slide) new MutationObserver(via).observe(slide, { attributes: true, attributeFilter: ['aria-hidden'] });
+      setTimeout(() => { if (box.dataset.pronto && !box.querySelector('video, iframe')) ripiego(box); }, 9000);
+    });
+  }
+  prepara();
+  document.addEventListener('astro:page-load', prepara);
+</script>

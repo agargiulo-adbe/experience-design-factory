@@ -27,15 +27,15 @@ export interface Chapter {
 export const CHAPTERS: Chapter[] = [
   {
     slug: 'partenza', num: '01', title: 'Il quadro', breve: 'Il quadro',
-    punto: 'Novanta giorni sui vostri casi: si parte da Analytics, e Target si aggancia circa tre settimane dopo.',
+    punto: 'Novanta giorni con il team di prodotto Adobe, sui casi che si scelgono insieme a partire da oggi.',
   },
   {
     slug: 'domanda-1', num: '02', title: 'Analytics', breve: 'Analytics',
-    punto: 'Le domande che oggi chiedono un progetto in Workspace, in chat partono da una frase.',
+    punto: 'In chat ogni domanda parte da una frase. Quanto vi costa oggi lo sapete voi.',
   },
   {
     slug: 'domanda-3', num: '03', title: 'Analytics e Target', breve: 'Analytics e Target',
-    punto: 'Dal calo trovato in Analytics al test in Target: i passi esistono uno per uno, il filo che li lega si prova nel programma.',
+    punto: 'Ogni passo dal calo in Analytics al test in Target esiste già. Il collegamento fra i passi si prova nel programma.',
   },
   {
     slug: 'casa', num: '04', title: 'Da dove si comincia', breve: 'Da dove si comincia',

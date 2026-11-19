@@ -754,7 +754,7 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
    Il dettaglio cresce dentro la slide e il check `exp` la ri-misura da aperta:
    quello che il dettaglio spiega si ritira, così il blocco aperto sta
    nell'area sicura senza rimpicciolire il tipo. */
-[data-slide]:has(.ex-dett[data-hiw-on]) :is(.uc-confronto, .uc-col3, .uc-diverso, .uc-giro-appr-r, .uc-momenti, .uc-ancore-v, .uc-giro-marca, .xd-sub, .uc-nota) { display: none; }
+[data-slide]:has(.ex-dett[data-hiw-on]) :is(.uc-confronto, .uc-conv3, .uc-diverso, .uc-giro-appr-r, .uc-momenti, .uc-ancore-v, .uc-giro-marca, .xd-sub, .uc-nota) { display: none; }
 [data-slide]:has(.ex-dett[data-hiw-on]) .uc-video { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
 .uc-giro-sl:has(.ex-dett[data-hiw-on]) { grid-template-columns: minmax(0, 1fr); }
 .uc-giro-sl:has(.ex-dett[data-hiw-on]) .uc-giro { display: none; }
@@ -824,6 +824,12 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
   font-family: var(--font-display); font-weight: 700; font-size: clamp(1.1rem, 1.15vw, 2.2rem); line-height: 1.2; text-wrap: balance;
   box-shadow: 0 10px 24px -14px rgba(0, 0, 0, 0.6); transition: outline-color 300ms ease-out; outline: 3px solid transparent; outline-offset: 3px; }
 .uc-m-bolla::after { content: ''; position: absolute; left: 0; bottom: -0.55em; width: 0.9em; height: 0.6em; background: #ffffff; clip-path: polygon(0 0, 100% 0, 0 100%); }
+/* Chi riceve le domande: nella corsia, a destra, con la stessa coda delle bolle
+   girata dall'altra parte. Entra con le bolle. */
+.uc-m-chi { grid-area: aa; justify-self: end; align-self: center; position: relative; z-index: 1; margin-right: 1.3rem !important;
+  display: inline-flex; align-items: center; gap: 0.55rem; padding-bottom: 0.9rem;
+  font-family: var(--font-display); font-weight: 700; font-size: clamp(1rem, 1vw, 1.95rem); color: #ffffff; }
+.uc-m-chi svg { width: 1.25em; height: 1.25em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; }
 
 /* Fase 1 — la corsia di Analytics, piena, da un capo all'altro. */
 .uc-m-corsia { display: flex; align-items: center; gap: 1.1rem; min-height: clamp(4rem, 7.6vh, 7rem); padding: 0 1.3rem; border-radius: 0.8rem; }
@@ -892,18 +898,23 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
   font-family: var(--font-display); font-weight: 700; font-size: clamp(1.25rem, 1.45vw, 2.8rem); line-height: 1.3; text-wrap: balance;
   box-shadow: 0 14px 28px -18px rgba(0, 74, 88, 0.7); }
 
-/* ── Oggi e con Coworker, la seconda: tre colonne sul fondo scuro ─────── */
-.uc-col3 { margin: clamp(0.4rem, 1.4vh, 1.2rem) 0 0; width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.uc-col { display: grid; grid-template-rows: auto auto auto auto auto 1fr; align-content: start; gap: 0.5rem; min-width: 0;
-  padding: 0 clamp(1rem, 2vw, 2.6rem); border-left: 1px solid var(--xd-dark-line); }
-.uc-col:first-child { padding-left: 0; border-left: 0; }
-[data-slide] .uc-col p { margin: 0; max-width: none; }
-.uc-col-cat { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.4rem, 1.6vw, 3rem); line-height: 1.15; color: #ffffff; margin-bottom: 0.6rem !important; }
-.uc-col-k { font-size: clamp(0.85rem, 0.76vw, 1.55rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--xd-dark-note); }
-.uc-col-k--cw { color: var(--xd-dark-accent); }
-.uc-col-oggi { font-size: clamp(1.05rem, 1.05vw, 2rem); line-height: 1.45; color: var(--xd-dark-body); }
-.uc-col-freccia { width: 2.2rem; height: 2.2rem; margin: 0.2rem 0; fill: none; stroke: var(--color-acqua); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-.uc-col-con { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.2rem, 1.3vw, 2.5rem); line-height: 1.3; color: #ffffff; }
+/* ── Oggi e con Coworker, la seconda: tre conversazioni sul fondo scuro ──
+   Si legge dall'alto come una chat: la domanda inviata (petrolio, a destra),
+   la risposta di Coworker (bianca, a sinistra), poi «oggi», piccolo, in fondo
+   e allineato fra le tre colonne. */
+.uc-conv3 { margin: clamp(0.6rem, 2vh, 1.6rem) 0 0; width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: clamp(1.6rem, 3vw, 4.5rem); }
+.uc-conv { display: flex; flex-direction: column; gap: clamp(0.6rem, 1.3vh, 1.1rem); min-width: 0; }
+[data-slide] .uc-conv p { margin: 0; max-width: none; }
+.uc-conv-voi { align-self: flex-end; margin-left: 10% !important; padding: 0.7em 1em 0.75em; border-radius: 1.1em 1.1em 0.25em 1.1em;
+  background: #007a91; color: #ffffff; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.2rem, 1.35vw, 2.6rem); line-height: 1.3; text-wrap: balance;
+  box-shadow: 0 14px 28px -18px rgba(0, 0, 0, 0.8); }
+.uc-conv-cw { align-self: flex-start; margin-right: 10% !important; padding: 0.7em 1em 0.8em; border-radius: 1.1em 1.1em 1.1em 0.25em;
+  background: #ffffff; color: #1f2a30; font-size: clamp(1.1rem, 1.2vw, 2.3rem); font-weight: 600; line-height: 1.35; text-wrap: pretty;
+  box-shadow: 0 14px 28px -18px rgba(0, 0, 0, 0.8); }
+.uc-conv-chi { display: block; margin-bottom: 0.25em; font-family: var(--font-display); font-size: 0.78em; font-weight: 800; color: #006375; }
+.uc-conv-oggi { margin-top: auto !important; padding-top: clamp(0.6rem, 1.3vh, 1rem); border-top: 1px solid var(--xd-dark-line);
+  font-size: clamp(1rem, 0.95vw, 1.85rem); line-height: 1.4; color: var(--xd-dark-body); }
+.uc-conv-k { display: block; font-size: 0.82em; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--xd-dark-note); }
 
 /* ── La domanda di Target, dentro la slide dei momenti ───────────────── */
 .uc-chiusa-dom { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.25rem, 1.4vw, 2.6rem); line-height: 1.25; }
@@ -940,9 +951,8 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 @media (max-width: 900px) {
   .uc-pod { grid-template-columns: minmax(0, 1fr); gap: 1.4rem; }
   .uc-pod-n { font-size: clamp(5rem, 26vw, 8rem); }
-  .uc-chat-g, .uc-col3 { grid-template-columns: minmax(0, 1fr); }
-  .uc-col { padding: 1rem 0; border-left: 0; border-top: 1px solid var(--xd-dark-line); }
-  .uc-col:first-child { border-top: 0; }
+  .uc-chat-g, .uc-conv3 { grid-template-columns: minmax(0, 1fr); }
+  .uc-conv3 { row-gap: 1.6rem; }
   .uc-tempo-g { grid-template-columns: minmax(0, 1fr); }
   /* La mappa su telefono: le corsie a tutta larghezza, una sotto l'altra. */
   .uc-mappa { grid-template-columns: minmax(0, 1fr); grid-template-areas: "asse" "fam" "aa" "passo" "tgt" "leg"; grid-template-rows: auto auto auto auto auto auto; }

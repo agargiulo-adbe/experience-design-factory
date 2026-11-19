@@ -5,7 +5,7 @@
  * Sei famiglie di domande, scritte come messaggi in chat: è la voce del
  * cliente, e si vede (giro del 17 nov 2026: non più sei card uguali). Poi le
  * stesse sei «oggi» e «con Coworker», in due slide di forma diversa — tre
- * righe su carta, tre colonne sul fondo scuro — perché due slide uguali di
+ * righe su carta, tre conversazioni sul fondo scuro — perché due slide uguali di
  * fila sono un formato, non una partitura. Poi dove Coworker su Analytics oggi
  * si ferma, e dove va la cosa. Si chiude su una domanda alla sala.
  *
@@ -30,6 +30,7 @@ import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
 import Figura from '../components/Figura.astro';
 import Divisore from '../components/Divisore.astro';
 import Motivo from '../components/Motivo.astro';
+import VideoDemo from '../components/VideoDemo.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import { CATEGORIE } from '../data/contenuti';
@@ -42,6 +43,10 @@ const currentPath = Astro.url.pathname;
 const EL_AA = 'https://experienceleague.adobe.com/en/docs/coworker/content/chat/use-cases/data-insights/analytics-overview';
 const EL_UI = 'https://experienceleague.adobe.com/en/docs/coworker/content/chat/ui-guide';
 const EL_WF = 'https://experienceleague.adobe.com/en/docs/coworker/content/chat/use-cases/workflows';
+
+/* La demo su Dynamic Media (`https://delivery-…/adobe/assets/urn:aaid:aem:<id>/play`).
+   Vuota, si proietta il `.mp4` locale git-ignorato in `public/media/`. */
+const VIDEO_AA = '';
 
 /* Le sei categorie: un nome e un prompt. Il prompt è al singolare perché è
    una chat (eccezione dichiarata alla voce istituzionale). */
@@ -66,7 +71,8 @@ const SECONDA = CATEGORIE.slice(3);
       <div class="xd-sl uc-sl-largo" data-reveal>
         <div class="xd-sl-head">
           <p class="xd-n">Adobe Analytics</p>
-          <h2 class="xd-h2">Le domande che fate già, scritte come in chat</h2>
+          <h2 class="xd-h2">Domande tipiche su Analytics, scritte come le farebbe il business</h2>
+          <p class="xd-sub">Quali vi arrivano davvero, e quali mancano?</p>
         </div>
         <figure class="uc-chat">
           <ol class="uc-chat-g" role="list" data-stagger>
@@ -90,7 +96,7 @@ const SECONDA = CATEGORIE.slice(3);
       <div class="xd-sl" data-reveal>
         <div class="xd-sl-head">
           <p class="xd-n">Oggi e con Coworker</p>
-          <h2 class="xd-h2">Tre domande che oggi chiedono un progetto Workspace, e in chat una frase</h2>
+          <h2 class="xd-h2">In chat, la ripartizione, il funnel e la causa di un calo partono da una frase</h2>
           <p class="xd-sub">La colonna «oggi» è una nostra ipotesi, da correggere con voi.</p>
         </div>
         <div class="uc-confronto">
@@ -130,28 +136,30 @@ const SECONDA = CATEGORIE.slice(3);
       </div>
     </Slide>
 
-    {/* ── Oggi e con Coworker, le altre tre: colonne sul fondo scuro ─────── */}
+    {/* ── Oggi e con Coworker, le altre tre: tre conversazioni ─────────────
+        18 nov 2026: erano tre colonne a sei livelli (categoria, «oggi», testo,
+        freccia, «con Coworker», risposta) più due righe di lead e una nota, e
+        «quasi impossibile da seguire». Ora ogni colonna si legge dall'alto come
+        una chat: la vostra domanda, la risposta di Coworker, e in fondo, piccolo,
+        com'è oggi. La frase promessa dal titolo è in pagina. */}
     <Slide id="slide-oggi-2" bg="inverse" align="left">
       <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-sl xd-sl--dark uc-sl-largo" data-reveal>
         <div class="xd-sl-head">
           <p class="xd-n">Oggi e con Coworker</p>
           <h2 class="xd-h2 uc-firma-t">Anche il confronto, la previsione e la sintesi partono da una frase</h2>
-          <p class="xd-sub"><span class="ex-frase">Ogni visualizzazione si riapre in Analysis Workspace, per lavorarla a mano.</span> <span class="ex-frase">La colonna «oggi» è una nostra ipotesi, da correggere con voi.</span></p>
+          <p class="xd-sub">La riga «oggi» è una nostra ipotesi, da correggere con voi.</p>
         </div>
-        <figure class="uc-col3">
+        <figure class="uc-conv3">
           {SECONDA.map((c) => (
-            <div class="uc-col" data-substep>
-              <p class="uc-col-cat">{c.a}</p>
-              <p class="uc-col-k">Oggi</p>
-              <p class="uc-col-oggi">{c.oggi}</p>
-              <svg class="uc-col-freccia" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4v30M11 25l9 9 9-9" /></svg>
-              <p class="uc-col-k uc-col-k--cw">Con Coworker</p>
-              <p class="uc-col-con">{c.con}</p>
+            <div class="uc-conv" data-substep>
+              <p class="uc-conv-voi">{c.p}</p>
+              <p class="uc-conv-cw"><span class="uc-conv-chi">Coworker</span>{c.con}</p>
+              <p class="uc-conv-oggi"><span class="uc-conv-k">Oggi</span>{c.oggi}</p>
             </div>
           ))}
         </figure>
-        <p class="uc-nota">Prima che una sintesi vada in direzione, l’analista riapre le visualizzazioni in Workspace e controlla i numeri.</p>
+        <p class="uc-nota">Ogni visualizzazione si riapre in Analysis Workspace, dove l’analista controlla i numeri prima che una sintesi vada in direzione.</p>
         <HowItWorks title="Le skill dietro queste tre risposte" tone="onDark" class="ex-dett ex-dett--scuro">
           <Dettaglio>
             <DettaglioVoce>
@@ -172,6 +180,43 @@ const SECONDA = CATEGORIE.slice(3);
           </Dettaglio>
         </HowItWorks>
         <p class="xd-fonte">Fonte: <a href={EL_AA} target="_blank" rel="noopener">Experience League, analisi dei dati con Coworker Chat</a></p>
+      </div>
+    </Slide>
+
+    {/* ── La demo, sulle stesse domande ─────────────────────────────────
+        19 nov 2026: era nel capitolo 01, tre minuti e quaranta, prima che la
+        sala avesse detto qualcosa. Ora viene dopo le sei domande, e il video
+        ne fa quattro: un minuto e mezzo, con un cartello per domanda e uno per
+        risposta, le attese di Coworker accelerate e dichiarate. */}
+    <Slide id="slide-video" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="xd-sl xd-sl--dark uc-sl-largo" data-reveal>
+        <VideoDemo id="uc-video-aa" play={VIDEO_AA} locale="media/coworker-analytics.mp4"
+                   etichetta="Demo di Coworker su Adobe Analytics, ambiente dimostrativo"
+                   didascalia="Ambiente dimostrativo Adobe Analytics, dati di una banca fittizia, attese accelerate. La report suite di prova ha «CJA» nel nome: la skill e il pulsante sono quelli di Analytics.">
+          <p class="xd-n">Coworker su Analytics</p>
+          <h2 class="xd-h2 uc-firma-t">Le stesse domande, fatte in chat su una banca fittizia</h2>
+          <ul class="uc-ancore-v" data-stagger>
+            <li>Si chiede in italiano</li>
+            <li>Risponde sui dati Analytics</li>
+            <li>Con i permessi che avete già</li>
+          </ul>
+          <HowItWorks title="Che cosa vuol dire, una per una" tone="onDark" class="ex-dett ex-dett--scuro">
+            <Dettaglio>
+              <DettaglioVoce>
+                <Figura k="permessi" />
+                <p slot="ancora">Gli stessi permessi di Workspace</p>
+                <p slot="riga">Coworker eredita i permessi di Analytics: vede solo le report suite, le metriche e i segmenti che l’utente vede già.</p>
+              </DettaglioVoce>
+              <DettaglioVoce>
+                <Figura k="riapri" />
+                <p slot="ancora">Si riapre in Workspace</p>
+                <p slot="riga">Ogni visualizzazione creata in chat si apre in Analysis Workspace, per lavorarla a mano.</p>
+              </DettaglioVoce>
+            </Dettaglio>
+          </HowItWorks>
+          <p class="xd-fonte">Fonte: <a href={EL_AA} target="_blank" rel="noopener">Experience League, analisi dei dati con Coworker Chat</a></p>
+        </VideoDemo>
       </div>
     </Slide>
 
@@ -205,7 +250,7 @@ const SECONDA = CATEGORIE.slice(3);
             <p class="uc-limite-r">La sintesi si chiede in chat; la skill dedicata e il salvataggio di un’analisi come skill oggi stanno su Customer Journey Analytics.</p>
           </li>
         </ul>
-        <p class="xd-chiusa">Nel programma possiamo portarle come richieste al prodotto, e provarle con il team di sviluppo Adobe.</p>
+        <p class="xd-chiusa">Quali di questi limiti vi pesano? Nel programma diventano richieste al prodotto Adobe.</p>
         <p class="xd-fonte">Fonte: <a href={EL_AA} target="_blank" rel="noopener">Experience League, skill e limiti di Coworker su Analytics</a> · <a href={EL_WF} target="_blank" rel="noopener">i workflow di Coworker</a> · <a href={EL_UI} target="_blank" rel="noopener">dove è disponibile Coworker (Analytics, nel prodotto: «Coming soon»)</a> · accensione per gruppi e Contribution Analysis: fonti interne Adobe, novembre 2026</p>
       </div>
     </Slide>
