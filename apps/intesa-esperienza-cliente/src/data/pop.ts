@@ -59,7 +59,7 @@ export const SCENE: Record<ScenaId, Scena> = {
       'Giulia arriva dall’annuncio. I cookie di profilazione li ha accettati alla prima visita: il sistema registra quello che fa, ma non sa ancora chi è.',
       'Simula la rata ed entra in tempo reale nel segmento «mutuo prima casa».',
       'Lascia l’email e il consenso marketing, e nasce il codice pratica. Le visite fatte prima di lasciare il nome si uniscono al suo profilo.',
-      'Si ferma perché le manca un documento. Journey Optimizer lo sa subito; gli score del vostro motore, se esistono sul non cliente, arrivano come attributi.',
+      'Si ferma perché le mancano le buste paga. Journey Optimizer lo sa subito; gli score del vostro motore, se esistono sul non cliente, arrivano come attributi.',
       'AI Decisioning mette in fila quattro proposte. Regole e consenso ne escludono due; vince il promemoria con appuntamento, che compare subito sul sito.',
       'Il mattino dopo la proposta arriva per email, e Giulia riprende la pratica.',
       'In filiale apre la pratica: è la stessa della simulazione, e il grafo la lega all’email, al telefono e alle visite di prima.',

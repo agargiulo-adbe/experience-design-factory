@@ -18,7 +18,10 @@
  *     contraddiceva fra «niente arriva al CRM» e «appuntamento al CRM»);
  *   - non ha uno storico, quindi il profilo è sottile e va costruito
  *     mentre lei naviga;
- *   - e sta parlando anche con altre due banche.
+ *   - e sta confrontando le offerte delle tre banche che le ha indicato
+ *     l'assistente al momento 01 (19 nov 2026: era «la stessa domanda ad
+ *     altre due banche», che in banca si legge «domanda di mutuo», e «una
+ *     di loro le scrive domani», drammatizzazione senza fonte).
  *
  * Il segno più forte lo porta il CHROME, non la copia: **l'app compare
  * solo al momento 07**, quando ha firmato. Prima non aveva motivo di
@@ -233,10 +236,10 @@ export const MOMENTI: Momento[] = [
     messa: { it: 'La proposta arriva via API; il componente è vostro', en: 'The offer arrives over API; the component is yours' },
     cliente: {
       chrome: 'sito', scena: 'scena-04-documenti',
-      titolo: { it: 'Si ferma perché le manca un documento', en: 'She stops because a document is missing' },
+      titolo: { it: 'Si ferma perché le mancano le buste paga', en: 'She stops because her payslips are missing' },
       corpo: {
-        it: 'Le serve un documento che non ha sottomano. Chiude, e si dice che ci pensa nel weekend. Intanto la stessa domanda l’ha fatta ad altre due banche, e una di loro le scrive domani.',
-        en: 'She needs a document she does not have to hand. She closes the tab, telling herself she will deal with it at the weekend. Meanwhile she asked two other banks the same question, and one writes to her tomorrow.',
+        it: 'Le servono le buste paga, che non ha sottomano. Chiude, e si dice che ci pensa nel weekend. Intanto sta ancora confrontando le offerte delle tre banche che le ha indicato l’assistente.',
+        en: 'She needs her payslips, which she does not have to hand. She closes the tab, telling herself she will deal with it at the weekend. Meanwhile she is still comparing the offers from the three banks the assistant pointed her to.',
       },
     },
     interno: {
@@ -265,8 +268,8 @@ export const MOMENTI: Momento[] = [
       chrome: 'posta', scena: 'scena-05-colazione',
       titolo: { it: 'Riceve un’email e completa la richiesta', en: 'She gets an email and completes the application' },
       corpo: {
-        it: 'Ha lasciato un indirizzo email, ed è l’unico modo per scriverle. Arriva la sua simulazione, con il link per riprenderla e una proposta di appuntamento. Carica il documento mentre fa colazione, e accetta la data.',
-        en: 'She left an email address, and that is the only way to write to her. Her simulation arrives, with the link to resume it and a proposed appointment. She uploads the document over breakfast, and accepts the date.',
+        it: 'Ha lasciato un indirizzo email, ed è l’unico modo per scriverle. Arriva la sua simulazione, con il link per riprenderla e una proposta di appuntamento. Carica i documenti mentre fa colazione, e accetta la data.',
+        en: 'She left an email address, and that is the only way to write to her. Her simulation arrives, with the link to resume it and a proposed appointment. She uploads the documents over breakfast, and accepts the date.',
       },
     },
     interno: {
