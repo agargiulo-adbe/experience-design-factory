@@ -32,8 +32,10 @@ import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
 import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
 import Figura from '../components/Figura.astro';
 import Divisore from '../components/Divisore.astro';
-import Motivo from '../components/Motivo.astro';
+import fotoDiv from '../assets/generated/bg/div-analytics.webp';
 import VideoDemo from '../components/VideoDemo.astro';
+import Schermo from '../components/Schermo.astro';
+import schermoAA from '../assets/schermi/aa-funnel.webp';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import { CATEGORIE } from '../data/contenuti';
@@ -50,6 +52,10 @@ const EL_WF = 'https://experienceleague.adobe.com/en/docs/coworker/content/chat/
 /* La demo su Dynamic Media (`https://delivery-…/adobe/assets/urn:aaid:aem:<id>/play`).
    Vuota, si proietta il `.mp4` locale git-ignorato in `public/media/`. */
 const VIDEO_AA = '';
+/* La prima registrazione, 3:40 a tempo reale (Dynamic Media, 17 nov 2026): fuori
+   dal percorso proiettato (ritorno di un collega: «molto lento»), resta come
+   riserva nel drill-down per chi riceve il deck inoltrato. */
+const VIDEO_INTEGRALE = 'https://delivery-p97303-e890303.adobeaemcloud.com/adobe/assets/urn:aaid:aem:c78cf9a8-0020-43b7-adf1-252d32fb76d6/play';
 
 /* Le sei categorie: un nome e un prompt. Il prompt è al singolare perché è
    una chat (eccezione dichiarata alla voce istituzionale). */
@@ -63,9 +69,9 @@ const SECONDA = CATEGORIE.slice(3);
 
   <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
 
-    <Slide id="slide-cover" bg="secondary" align="left">
-      <div slot="backdrop" class="xd-div-bg" data-senza-foto><Motivo k="chat" /></div>
-      <Divisore num={ch.num} titolo={ch.title} punto={ch.punto} occhiello="Adobe Analytics" />
+    <Slide id="slide-cover" bg="secondary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="xd-div-bg" style={`--foto: url('${fotoDiv.src}')`}></div>
+      <Divisore num={ch.num} conFoto titolo={ch.title} punto={ch.punto} occhiello="Adobe Analytics" />
     </Slide>
 
     {/* ── Le sei famiglie, come domande in chat: la voce del cliente ─────── */}
@@ -90,6 +96,27 @@ const SECONDA = CATEGORIE.slice(3);
             ))}
           </ol>
         </figure>
+      </div>
+    </Slide>
+
+    {/* ── La risposta, com'è sullo schermo (19 nov 2026) ─────────────────
+        Una schermata vera, dalla registrazione del video introduttivo: la
+        seconda domanda della tavola, con il grafico già fatto e il pulsante
+        che la riapre in Workspace. */}
+    <Slide id="slide-schermo" bg="primary" align="left">
+      <div slot="backdrop" class="ex-bg-paper"></div>
+      <div class="uc-prova" data-reveal>
+        <Schermo src={schermoAA} alt="Coworker risponde a «Dove perdiamo le persone nel percorso di richiesta?» con un grafico a barre del funnel diviso tra sito e mobile web, e il pulsante Analyze in Analytics Workspace"
+                 didascalia="Schermata reale di Coworker, novembre 2026. Ambiente dimostrativo Adobe Analytics, dati di una banca fittizia." />
+        <div class="uc-prova-dx">
+          <p class="xd-n">«Dove perdiamo le richieste?»</p>
+          <h2 class="xd-h2">La risposta arriva già come grafico</h2>
+          <ul class="uc-ancore-v uc-ancore-v--chiaro" data-stagger>
+            <li>Il funnel, diviso per canale</li>
+            <li>I numeri anche in tabella</li>
+            <li>Si riapre in Workspace</li>
+          </ul>
+        </div>
       </div>
     </Slide>
 
@@ -217,6 +244,7 @@ const SECONDA = CATEGORIE.slice(3);
                 <p slot="riga">Ogni visualizzazione creata in chat si apre in Analysis Workspace, per lavorarla a mano.</p>
               </DettaglioVoce>
             </Dettaglio>
+            <p class="uc-integrale"><a href={VIDEO_INTEGRALE} target="_blank" rel="noopener">La registrazione integrale, a tempo reale (3:40)</a></p>
           </HowItWorks>
           <p class="xd-fonte">Fonte: <a href={EL_AA} target="_blank" rel="noopener">Experience League, analisi dei dati con Coworker Chat</a></p>
         </VideoDemo>
@@ -254,9 +282,9 @@ const SECONDA = CATEGORIE.slice(3);
     </Slide>
 
     {/* ── La domanda per voi: due alternative concrete, mai sì o no ─────── */}
-    <Slide id="slide-domanda" bg="inverse" align="left">
-      <div slot="backdrop" class="xd-bg-piano"></div>
-      <div class="uc-dom" data-reveal>
+    <Slide id="slide-domanda" bg="brand" align="left">
+      <div slot="backdrop" class="uc-bg-petrolio"></div>
+      <div class="uc-dom uc-dom--petrolio uc-on-brand" data-reveal>
         <div class="uc-dom-sx">
           <p class="uc-dom-k">La domanda per voi</p>
           <h2 class="uc-dom-t uc-firma-t">Oggi quanto tempo passa il vostro team a preparare report, e quanto a capire i numeri?</h2>
