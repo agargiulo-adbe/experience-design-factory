@@ -32,4 +32,9 @@ Nata il **19 nov** perché la Parte 24 è a 1,2 KB dal tetto.
 - **Lo script del relatore ha un sorgente**: `docs/Factory/script-intervento-intesa/` (git-ignorato) con `script.html` → `genera-script-ts.py` (rigenera `src/data/script.ts`, che va confrontato con `git diff` prima) e `pdf.mjs` (rigenera `docs/Intesa Sanpaolo/SCRIPT-INTERVENTO-ANTONIO-2026-11-19.pdf`). Una frase si cambia lì, mai solo nel `.ts`.
 - Gate: `wrap-audit` PULITO (un «le» appeso nel taglio corto, legato); `audit:deck` momenti 25 e dieci-minuti solo `a`, uguali alla baseline; `copy-audit` 6 HARD preesistenti, nessuno nei file toccati. `cut-audit` **non girato**: scade in `networkidle` su `/dieci-minuti/` (da guardare).
 
+### La testata dei momenti sotto la barra (`f2f38c9`, 19 nov)
+- **Il difetto:** sul MacBook a schermo intero (1512×982) «Ingaggio clienti e non clienti» finiva sotto la barra. Le due bande impilate chiedevano 868 px su 742 utili, e il blocco, centrato, sbordava di 63 px per lato. Lo stesso succedeva a 1280×800 sul momento 04 (−9 px) e nessun gate lo vedeva: `audit:deck` misura a 1280/1440/1920 e il check `b` guarda i comandi, non la barra.
+- **Il fix:** le viste si affiancano fino a **1040 px** di altezza (era 940); sotto, `justify-content: safe center` (se non ci sta, sborda in basso e mai sotto la barra); sotto i 940 px esce la scheda «Prodotto Adobe», che ripete la testata del mockup. A 1080 il layout di proiezione non cambia.
+- **Come si misura:** slide **attiva**, con i sotto-passi aperti via `window.__edfDeck.revealSubstep()` (la tastiera simulata li azzera, e le slide nascoste danno geometrie false). Testata ≥66 px sotto la barra ovunque; `audit:deck` momenti da 25 a 19, nessuno nuovo. Resta: a 1280×800 la coda del 04 passa dietro i comandi (−92 px, era −109).
+
 ⚠️ **Panel:** lo stato del 18 sera **non** è coperto da nessun giro; resta il P0 Intesa in Parte 2.
