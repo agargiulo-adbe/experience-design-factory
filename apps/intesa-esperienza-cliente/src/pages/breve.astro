@@ -21,48 +21,57 @@ import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const intero = new URL(base, Astro.site).href;
 const tipo = EXPERIENCE_TYPES[SITE.type];
-const mandami = `mailto:?subject=${encodeURIComponent('Adobe × Intesa Sanpaolo · la storia da leggere al computer')}&body=${encodeURIComponent(intero)}`;
+const mandami = `mailto:?subject=${encodeURIComponent('Adobe × Intesa Sanpaolo · la storia intera')}&body=${encodeURIComponent(intero)}`;
 ---
 <BaseLayout title="In breve">
   <main class="br">
-    <header class="br-testa">
+    {/* PRIMA SCHERMATA: chi siamo, che cosa si legge, e chi è Giulia — un personaggio
+        inventato, detto subito, perché chi apre il link non era in sala. */}
+    <header class="br-pg br-testa">
       <CoBrand variant="hero" class="br-lockup edf-cobrand--on-dark" />
       <h1 class="br-t">{TITOLO_INCONTRO.t.it}</h1>
       <p class="br-s">{TITOLO_INCONTRO.s.it}</p>
+      <div class="br-intro">
+        <p>Giulia è un personaggio inventato per raccontare il percorso: 34&nbsp;anni, cerca il primo mutuo e non è ancora cliente di Intesa Sanpaolo.</p>
+        <p>In sette momenti, dalla prima domanda a un assistente AI fino alla firma, si vede che cosa fa lei e che cosa fa la banca con le soluzioni Adobe.</p>
+      </div>
       <p class="br-tipo">{tipo.coverLine.it}</p>
+      <p class="br-giu" aria-hidden="true">{TITOLO_GIRO.it} <span>↓</span></p>
     </header>
 
-    <section class="br-giro" aria-labelledby="br-giro-t">
-      <h2 class="br-h" id="br-giro-t">{TITOLO_GIRO.it}</h2>
-      <ol class="br-mom">
-        {MOMENTI.map((m, i) => (
-          <li class="br-m">
-            <p class="br-m-k"><span class="br-m-n">{m.n}</span> {m.ora.it} · {m.dove.it}</p>
+    {/* UN MOMENTO PER SCHERMATA, come gli anni del diario de «L'ora in più»: la pagina
+        si aggancia all'inizio di ogni momento (scroll-snap) e la testata resta in alto
+        mentre lo si legge, finché il momento dopo non la spinge via (sticky). */}
+    <ol class="br-mom" aria-label={TITOLO_GIRO.it}>
+      {MOMENTI.map((m, i) => (
+        <li class="br-pg br-m">
+          <p class="br-m-k"><span class="br-m-n">{m.n}</span><span class="br-m-q">{m.ora.it} · {m.dove.it}</span></p>
+          <div class="br-m-corpo">
             <img class="br-m-img" src={`${base}miniature/lettura/m-0${i + 1}.jpg`} alt="" loading="lazy" decoding="async" />
             <p class="br-m-chi">Giulia</p>
             <p class="br-m-r">{m.cliente.titolo.it}</p>
             <p class="br-m-chi">La banca</p>
             <p class="br-m-r">{m.interno.titolo.it}</p>
-          </li>
-        ))}
-      </ol>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <section class="br-pg br-pc" aria-labelledby="br-pc-t">
+      <h2 class="br-h" id="br-pc-t">La storia intera, con le schermate dei prodotti</h2>
+      <p class="br-l">Momento per momento, con quello che succede nei sistemi della banca. Dà il meglio su uno schermo grande: mandatevi il link e riapritelo con calma.</p>
+      <div class="br-az">
+        <a class="br-btn br-btn--pieno" href={mandami}>Mandate il link alla vostra email</a>
+        <a class="br-btn" href={base} data-apri-comunque>Apri qui la versione intera</a>
+      </div>
     </section>
 
-    <section class="br-parl" aria-labelledby="br-parl-t">
+    <section class="br-pg br-parl" aria-labelledby="br-parl-t">
       <h2 class="br-h" id="br-parl-t">Parliamone</h2>
       <p class="br-l">Una domanda su un momento di Giulia, su un prodotto, su come si innesta nei vostri sistemi: scriveteci, anche solo una riga.</p>
       <Contatti class="br-cont" />
+      <p class="br-nota">Contiamo quante volte questa pagina viene aperta, giorno per giorno. Non registriamo chi la apre.</p>
     </section>
-
-    <section class="br-pc" aria-labelledby="br-pc-t">
-      <h2 class="br-h" id="br-pc-t">La storia completa si legge meglio su un computer</h2>
-      <p class="br-l">Ci sono le schermate dei prodotti, momento per momento, e come si innestano nei vostri sistemi.</p>
-      <div class="br-az">
-        <a class="br-btn br-btn--pieno" href={mandami}>Mandate il link alla vostra email</a>
-        <a class="br-btn" href={base} data-apri-comunque>Apri comunque qui</a>
-      </div>
-    </section>
-    <p class="br-nota">Contiamo quante volte questa pagina viene aperta, giorno per giorno. Non registriamo chi la apre.</p>
   </main>
   <ContaAperture progetto="intesa-storia" pagina="breve" />
 </BaseLayout>
@@ -76,35 +85,64 @@ const mandami = `mailto:?subject=${encodeURIComponent('Adobe × Intesa Sanpaolo 
 </script>
 
 <style>
+  /* Lo sfoglio: la pagina si aggancia all'inizio di ogni schermata. `mandatory`
+     regge perché OGNI blocco è un punto d'aggancio; un blocco più alto dello
+     schermo (i contatti) si scorre lo stesso al suo interno. */
+  :global(html:has(.br)) { scroll-snap-type: y mandatory; background: var(--color-night); }
   .br {
-    min-height: 100dvh; padding: 2.2rem 1.15rem 3rem;
-    background: linear-gradient(180deg, var(--color-night-2) 0%, var(--color-night) 60%);
     color: var(--color-paper); font-family: var(--font-body); font-size: 1rem; line-height: 1.5;
+    background: linear-gradient(180deg, var(--color-night-2) 0%, var(--color-night) 40%);
   }
-  .br > * { max-width: 34rem; margin-inline: auto; }
-  .br-testa { padding-bottom: 2rem; border-bottom: 1px solid rgba(255, 255, 255, 0.16); }
-  .br-lockup { justify-content: flex-start; margin-bottom: 1.6rem; }
+  .br-pg {
+    min-height: 100svh; scroll-snap-align: start;
+    padding: max(2rem, env(safe-area-inset-top)) 1.15rem max(2rem, env(safe-area-inset-bottom));
+    display: flex; flex-direction: column;
+  }
+  .br-pg > * , .br-m-corpo { width: 100%; max-width: 34rem; margin-inline: auto; }
+  .br-testa { justify-content: center; }
+  .br-lockup { justify-content: flex-start; margin-bottom: 1.5rem; }
   .br-t { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 1.95rem; line-height: 1.12; letter-spacing: -0.01em; text-wrap: balance; }
   .br-s { margin: 0.5rem 0 0; font-size: 1.15rem; color: var(--color-verde-chiaro); }
-  .br-tipo { margin: 1rem 0 0; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255, 255, 255, 0.72); }
-  .br-h { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 1.4rem; line-height: 1.2; text-wrap: balance; }
-  .br-l { margin: 0.6rem 0 0; color: rgba(255, 255, 255, 0.86); }
-  .br-giro, .br-parl, .br-pc { padding-top: 2.2rem; }
-  .br-mom { list-style: none; margin: 1.2rem 0 0; padding: 0; display: grid; gap: 1.6rem; }
-  .br-m { padding: 1rem; border-radius: 10px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
-  .br-m-k { margin: 0 0 0.75rem; font-size: 1rem; color: rgba(255, 255, 255, 0.78); }
-  .br-m-n { display: inline-block; min-width: 1.9rem; font-weight: 700; color: var(--color-verde-chiaro); }
-  .br-m-img { display: block; width: 100%; height: auto; border-radius: 8px; margin-bottom: 0.9rem; }
-  .br-m-chi { margin: 0.7rem 0 0; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-verde-chiaro); }
-  .br-m-r { margin: 0.15rem 0 0; font-size: 1.05rem; font-weight: 600; line-height: 1.35; }
+  .br-intro { margin-top: 1.6rem; padding-top: 1.3rem; border-top: 1px solid rgba(255, 255, 255, 0.18); }
+  .br-intro p { margin: 0; font-size: 1.05rem; line-height: 1.55; color: rgba(255, 255, 255, 0.92); text-wrap: pretty; }
+  .br-intro p + p { margin-top: 0.7rem; }
+  .br-tipo { margin: 1.4rem 0 0; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255, 255, 255, 0.66); }
+  .br-giu { margin-top: auto; padding-top: 2rem; font-size: 1rem; font-weight: 600; color: var(--color-verde-chiaro); }
+  .br-giu span { display: inline-block; margin-left: 0.3rem; }
+  @media (prefers-reduced-motion: no-preference) {
+    .br-giu span { animation: br-giu 1.8s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+  }
+  @keyframes br-giu { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(5px); } }
+
+  .br-mom { list-style: none; margin: 0; padding: 0; }
+  /* Il momento: alto quanto lo schermo, la testata ferma in alto mentre lo si legge. */
+  .br-m { position: relative; padding-top: 0; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+  .br-m-k {
+    position: sticky; top: 0; z-index: 2;
+    display: flex; align-items: baseline; gap: 0.75rem;
+    margin: 0 -1.15rem 1rem; padding: max(0.9rem, env(safe-area-inset-top)) 1.15rem 0.8rem;
+    background: var(--color-night); border-bottom: 2px solid var(--color-verde-chiaro);
+    max-width: none; width: auto;
+  }
+  .br-m-n { font-family: var(--font-display); font-weight: 700; font-size: 2.1rem; line-height: 0.9; color: var(--color-verde-chiaro); font-variant-numeric: tabular-nums; }
+  .br-m-q { font-size: 1rem; line-height: 1.3; color: rgba(255, 255, 255, 0.86); }
+  .br-m-corpo { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .br-m-img { display: block; width: 100%; height: auto; border-radius: 10px; margin-bottom: 1rem; box-shadow: 0 0.8rem 2rem -0.9rem rgba(0, 0, 0, 0.7); }
+  .br-m-chi { margin: 0.8rem 0 0; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-verde-chiaro); }
+  .br-m-r { margin: 0.15rem 0 0; font-size: 1.1rem; font-weight: 600; line-height: 1.35; text-wrap: pretty; }
+
+  .br-pc, .br-parl { justify-content: center; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+  .br-h { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 1.5rem; line-height: 1.2; text-wrap: balance; }
+  .br-l { margin: 0.7rem 0 0; color: rgba(255, 255, 255, 0.88); text-wrap: pretty; }
   .br-cont { margin-top: 1.4rem; }
-  .br-az { display: grid; gap: 0.75rem; margin-top: 1.2rem; }
+  .br-az { display: grid; gap: 0.75rem; margin-top: 1.4rem; }
   .br-btn {
     display: flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 1.2rem;
     border-radius: 999px; border: 1.5px solid rgba(255, 255, 255, 0.6);
-    color: var(--color-paper); font-weight: 600; text-decoration: none;
+    color: var(--color-paper); font-weight: 600; text-decoration: none; text-align: center;
   }
   .br-btn--pieno { background: var(--color-cta); border-color: var(--color-cta); color: var(--color-on-cta); }
-  .br-nota { margin-top: 2.4rem; padding-top: 1.2rem; border-top: 1px solid rgba(255, 255, 255, 0.16); font-size: 1rem; color: rgba(255, 255, 255, 0.7); }
   .br-btn:focus-visible { outline: 2px solid var(--color-verde-chiaro); outline-offset: 3px; }
+  .br-nota { margin-top: 2.2rem; padding-top: 1.1rem; border-top: 1px solid rgba(255, 255, 255, 0.16); font-size: 1rem; color: rgba(255, 255, 255, 0.7); }
+  .br ::selection { background: var(--color-verde-chiaro); color: var(--color-night); }
 </style>
