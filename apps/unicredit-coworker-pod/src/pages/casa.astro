@@ -21,7 +21,7 @@ import Motivo from '../components/Motivo.astro';
 import LineaTempo from '../components/LineaTempo.astro';
 import { href } from '@edf/core/utils/url.js';
 import { CHAPTERS, prevSlug } from '../data/chapters';
-import { SERVONO, SERVONO_2 } from '../data/contenuti';
+import { SERVONO, SERVONO_2, CATEGORIE, TEMI_TARGET } from '../data/contenuti';
 
 const SLUG = 'casa';
 const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
@@ -38,6 +38,44 @@ const currentPath = Astro.url.pathname;
     <Slide id="slide-cover" bg="secondary" align="left">
       <div slot="backdrop" class="xd-div-bg" data-senza-foto><Motivo k="spunte" /></div>
       <Divisore num={ch.num} titolo={ch.title} punto={ch.punto} />
+    </Slide>
+
+    {/* ── Da dove vi piacerebbe partire? (19 nov 2026) ──────────────────
+        Le priorità si raccolgono in sala, sullo stesso meccanismo della slide
+        di Intesa: un tocco su una domanda le dà il numero successivo, un
+        secondo tocco lo toglie e fa scalare le altre. Due gruppi per prodotto,
+        con il rimando al capitolo dove se n'è parlato. */}
+    <Slide id="slide-priorita" bg="inverse" align="left">
+      <div slot="backdrop" class="xd-bg-piano"></div>
+      <div class="uc-pri" data-reveal>
+        <div class="uc-pri-testa">
+          <h2 class="uc-pri-t">Da dove vi piacerebbe partire?</h2>
+          <p class="uc-pri-l">Qui ritrovate le domande di oggi. Mettiamole in ordine insieme, partendo da quella che vi serve di più.</p>
+        </div>
+        {[
+          { k: 'Su Analytics', url: '/domanda-1', dove: 'Capitolo 02', g: 'aa', temi: CATEGORIE.map((c) => ({ a: c.a, q: c.chiedi })) },
+          { k: 'Da Analytics a Target', url: '/domanda-3', dove: 'Capitolo 03', g: 'tgt', temi: TEMI_TARGET },
+        ].map((gr) => (
+          <section class="uc-pri-gr" data-g={gr.g} aria-label={gr.k}>
+            <div class="uc-pri-riga">
+              <h3 class="uc-pri-k">{gr.k}</h3>
+              <a class="uc-pri-dove" href={href(base, gr.url)}>Rivedi il {gr.dove.toLowerCase()}</a>
+            </div>
+            <ol class="uc-pri-tg" role="list" style={`--n:${gr.temi.length}`}>
+              {gr.temi.map((x) => (
+                <li class="uc-pri-tema">
+                  <button type="button" class="uc-pri-b" aria-pressed="false">
+                    <span class="uc-pri-ord" aria-hidden="true"></span>
+                    <span class="uc-pri-a">{x.a}</span>
+                    <span class="uc-pri-q">{x.q}</span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </section>
+        ))}
+        <p class="uc-pri-aiuto">Un tocco per dare il numero, un secondo per toglierlo.</p>
+      </div>
     </Slide>
 
     {/* ── Per partire, tre risposte dal vostro team ─────────────────────── */}
@@ -90,7 +128,7 @@ const currentPath = Astro.url.pathname;
       <div slot="backdrop" class="ex-bg-paper"></div>
       <div class="xd-sl uc-sl-largo" data-reveal>
         <div class="xd-sl-head">
-          <p class="xd-n">I prossimi passi</p>
+          <p class="xd-n">I prossimi step</p>
           <h2 class="xd-h2">Dopo questa sessione, il kickoff su Analytics e poi Target</h2>
         </div>
         <LineaTempo fatte={1} figura={false} />
@@ -103,10 +141,38 @@ const currentPath = Astro.url.pathname;
       <div slot="backdrop" class="xd-bg-piano"></div>
       <div class="xd-firma" data-reveal>
         <CoBrand variant="hero" class="edf-cobrand--on-dark" />
-        <p class="xd-firma-l" data-reveal data-reveal-delay="0.1">Da dove partiamo lo decidete voi.</p>
-        <p class="xd-firma-n" data-reveal data-reveal-delay="0.16">Coworker su Adobe Analytics e Adobe Target, nel Customer POD proposto.</p>
+        <p class="xd-firma-l" data-reveal data-reveal-delay="0.1">Il programma parte dalle priorità che scegliete voi.</p>
+        <p class="xd-firma-n" data-reveal data-reveal-delay="0.16">Il Customer POD di Coworker su Adobe Analytics e Adobe Target.</p>
         <a href={href(base, '/')} class="edf-sig-cta" data-reveal data-reveal-delay="0.22">Torna all’inizio</a>
       </div>
     </Slide>
   </DeckContainer>
 </BaseLayout>
+
+<script>
+  /* L'ORDINE, deciso in sala: ogni tocco dà il numero successivo, un secondo
+     tocco lo toglie e fa scalare gli altri. Un solo ordine per tutta la
+     tavola, Analytics e Target insieme. Il clic non arriva al deck (che
+     altrimenti cambierebbe slide) e il bottone perde il fuoco, così le frecce
+     restano al deck. Si ricollega a ogni pagina. */
+  function prepara() {
+    const slide = document.getElementById('slide-priorita');
+    if (!slide || slide.dataset.pronta) return;
+    slide.dataset.pronta = '1';
+    const bottoni = [...slide.querySelectorAll<HTMLButtonElement>('.uc-pri-b')];
+    let ordine: HTMLButtonElement[] = [];
+    const scrivi = () => bottoni.forEach((b) => {
+      const i = ordine.indexOf(b);
+      b.setAttribute('aria-pressed', String(i >= 0));
+      b.closest('li')!.toggleAttribute('data-scelto', i >= 0);
+      b.querySelector('.uc-pri-ord')!.textContent = i >= 0 ? String(i + 1) : '';
+    });
+    bottoni.forEach((b) => b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      ordine = ordine.includes(b) ? ordine.filter((x) => x !== b) : [...ordine, b];
+      scrivi(); b.blur();
+    }));
+  }
+  prepara();
+  document.addEventListener('astro:page-load', prepara);
+</script>

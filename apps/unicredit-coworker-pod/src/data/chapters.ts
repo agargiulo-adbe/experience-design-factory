@@ -31,11 +31,11 @@ export const CHAPTERS: Chapter[] = [
   },
   {
     slug: 'domanda-1', num: '02', title: 'Analytics', breve: 'Analytics',
-    punto: 'In chat ogni domanda parte da una frase. Quanto vi costa oggi lo sapete voi.',
+    punto: 'Si chiede in italiano, e Coworker risponde sui vostri dati di Analytics.',
   },
   {
     slug: 'domanda-3', num: '03', title: 'Analytics e Target', breve: 'Analytics e Target',
-    punto: 'Ogni passo dal calo in Analytics al test in Target esiste già. Il collegamento fra i passi si prova nel programma.',
+    punto: 'Ogni step, dal calo in Analytics al test in Target, oggi esiste da solo. Farli lavorare in fila nella stessa chat è quello che si prova nel programma.',
   },
   {
     slug: 'casa', num: '04', title: 'Da dove si comincia', breve: 'Da dove si comincia',
