@@ -1,7 +1,7 @@
 # Handover — Parte 25 di 25
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
-## 42.26 Storia di Intesa · il 18 sera e il 19 novembre, la slide Forrester sul messaggio, la copia offline, il video di Coworker che «non parte»
+## 42.26 Storia di Intesa · il 18 sera e il 19 novembre, la slide Forrester, la copia offline, il video di Coworker, il momento 04
 
 Nata il **19 nov** perché la Parte 24 è a 1,2 KB dal tetto.
 
@@ -24,5 +24,12 @@ Nata il **19 nov** perché la Parte 24 è a 1,2 KB dal tetto.
 - **In muto scorre; con l'audio si ferma.** Sul Mac l'uscita audio predefinita erano le cuffie Bluetooth Bose QC Ultra, collegate: la causa più probabile è la loro pausa automatica quando non si indossano, che Chrome esegue. Non verificata cambiando l'uscita. In sala (audio su HDMI o altoparlanti) non si presenta.
 - **Metodo da tenere:** quando «non parte» si prova nel browser vero dell'utente, si separa muto da audio, e si intercettano `HTMLMediaElement.prototype.pause` + l'evento `pause`: se c'è l'evento e non la chiamata, la pausa viene da fuori della pagina.
 - Difetto minore trovato strada facendo (P2): il ripiego a 9 s in `coworker.astro` (`setTimeout(… ripiego …, 9000)`) scatta anche se la slide del video è ancora nascosta; quando la slide si apre il player vero lo sostituisce, quindi non blocca.
+
+### Il momento 04, la mattina del 19 (`c97cd99`)
+- **«La stessa domanda ad altre due banche, e una di loro le scrive domani» è uscito.** In banca «fare domanda» si legge «domanda di mutuo», e «le scrive domani» era una drammatizzazione senza fonte che in una stanza Intesa suona come «gli altri sono più veloci di voi». Ora: «sta ancora confrontando le offerte delle tre banche che le ha indicato l'assistente», cioè il momento 01. Nessun dato pubblico dice quante banche si confrontano (cercato: Nomisma/MutuiSupermarket dicono solo che oltre 6 su 10 scelgono il mutuo online).
+- **Il processo è quello vero di Intesa** (guida XME Mutuo, pagina «Offerta Online»): un non cliente simula senza documenti, prosegue online registrandosi nell'app con My Key, carica i documenti anche a rate, ha **30 giorni** per completare la richiesta. Allineati: **tre** buste paga (la guida chiede le ultime tre più la CU), «30 giorni per completare la richiesta» e non «per non perdere la simulazione», titolo «Si ferma perché le mancano le buste paga». My Key non è in slide: il relatore lo deve sapere se chiedono.
+- **L'email delle otto** non è il promemoria a dodici ore (alle 22:05 + 12 h fa le 10): è la proposta scelta da AI Decisioning la sera prima; il promemoria scatta solo se non riprende. Detto nello script.
+- **Lo script del relatore ha un sorgente**: `docs/Factory/script-intervento-intesa/` (git-ignorato) con `script.html` → `genera-script-ts.py` (rigenera `src/data/script.ts`, che va confrontato con `git diff` prima) e `pdf.mjs` (rigenera `docs/Intesa Sanpaolo/SCRIPT-INTERVENTO-ANTONIO-2026-11-19.pdf`). Una frase si cambia lì, mai solo nel `.ts`.
+- Gate: `wrap-audit` PULITO (un «le» appeso nel taglio corto, legato); `audit:deck` momenti 25 e dieci-minuti solo `a`, uguali alla baseline; `copy-audit` 6 HARD preesistenti, nessuno nei file toccati. `cut-audit` **non girato**: scade in `networkidle` su `/dieci-minuti/` (da guardare).
 
 ⚠️ **Panel:** lo stato del 18 sera **non** è coperto da nessun giro; resta il P0 Intesa in Parte 2.
