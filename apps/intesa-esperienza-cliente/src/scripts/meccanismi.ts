@@ -310,7 +310,12 @@ export async function prepara(root: HTMLElement): Promise<Meccanismo> {
     passo('p6');
     fuoco([ajo, sito, canaliT], 'p6');
     tappa(3, 'p6');
-    T.fromTo(mail, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: .7, immediateRender: false }, 'p6+=.3');
+    // L'EMAIL ARRIVA SOPRA IL SITO (19 nov 2026): alla sua altezza naturale finiva
+    // 48 unità sotto il riquadro dei canali, sopra «Iniziative commerciali» (misurato a
+    // 1512×860 e 1920×1080). Sale di 60 e si posa sul fondo del browser come una
+    // notifica; il sito, che al mattino dopo non è più il punto, si attenua.
+    T.fromTo(mail, { autoAlpha: 0, y: -36 }, { autoAlpha: 1, y: -60, duration: .7, immediateRender: false }, 'p6+=.3');
+    T.to(sito, { opacity: .45, duration: .5 }, 'p6+=.3');
 
     // ── Misura ──
     passo('p7');

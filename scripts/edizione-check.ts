@@ -144,7 +144,20 @@ export async function checkSala(b: Browser) {
   await p.close();
 }
 
-const CHECKS: Record<string, (b: Browser) => Promise<void>> = { autoreveal: checkAutoreveal, parliamone: checkParliamone, telefono: checkTelefono, rete: checkRete, sala: checkSala };
+export async function checkComeFunziona(b: Browser) {
+  // In lettura il «Come funziona» è un passaggio obbligato: la freccia avanti lo apre.
+  for (const [nome, base, atteso] of [['lettura', LETTURA, true], ['sala', SALA, false]] as const) {
+    if (base === '/') continue;
+    const p = await b.newPage({ viewport: { width: 1512, height: 860 } });
+    await p.goto(base + 'messa-a-terra/#slide-innesto', { waitUntil: 'load' }); await p.waitForTimeout(3500);
+    await p.keyboard.press('ArrowRight'); await p.waitForTimeout(1500);
+    const aperto = await p.evaluate(() => !!document.querySelector('dialog[data-e2e][open]'));
+    ok(`${nome}: dall'innesto la freccia ${atteso ? 'apre' : 'non apre'} il «Come funziona»`, aperto === atteso, `aperto=${aperto}`);
+    await p.close();
+  }
+}
+
+const CHECKS: Record<string, (b: Browser) => Promise<void>> = { autoreveal: checkAutoreveal, parliamone: checkParliamone, telefono: checkTelefono, rete: checkRete, sala: checkSala, comefunziona: checkComeFunziona };
 
 const scelti = process.argv.slice(2);
 const b = await chromium.launch();

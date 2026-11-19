@@ -1,4 +1,5 @@
 ---
+import { EDIZIONE } from '@edf/core/utils/edizione';
 /**
  * IL MOCKUP A PASSI di un componente che si innesta. Stessa meccanica del pop-in di
  * Trenitalia: `<dialog>` nativo, i pezzi entrano al passo `data-da`, niente testo
@@ -26,6 +27,14 @@ const base3d = p3 ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p
       </div>
       {s.cosa && <p class:list={['pp-cosa', s.v2d?.cosa && 'pp-ha-v2d']}>{s.cosa}</p>}
       {scena === 'e2e' && <p class="pp-cosa pp-leggi-t" aria-live="polite">Prima di partire: come si legge</p>}
+      {/* IL RACCONTO SCRITTO, SOLO IN LETTURA (19 nov 2026): in sala la didascalia è
+          spenta perché la dice chi presenta (16 nov). Chi apre il link è da solo: in
+          testa, passo per passo, la stessa frase che in sala si dice a voce. */}
+      {scena === 'e2e' && EDIZIONE === 'lettura' && (
+        <div class="pp-racconto" aria-live="polite">
+          {s.passi.map((p, i) => <p class="pp-racc" data-passo-t={i + 1}>{p}</p>)}
+        </div>
+      )}
       {s.v2d?.cosa && <p class="pp-cosa pp-v2d">{s.v2d.cosa}</p>}
       <button type="button" class="pp-x" data-pp-chiudi aria-label="Chiudi">×</button>
     </header>
@@ -183,6 +192,15 @@ const base3d = p3 ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}/media/3d/${p
      presenta, e in sala si leggeva invece di ascoltare. Restano i capitoli, i punti e
      i comandi, sulla stessa riga; il palco prende lo spazio. */
   dialog.pp[data-e2e] :global(.pp-didas) { display: none; }
+  /* Il racconto scritto della lettura: nella colonna di mezzo della testata, sul fondo
+     scuro. Le frasi stanno una sopra l'altra e si accende quella del passo (lo script
+     accende ogni [data-passo-t]); durante «Come si legge» lascia il posto alla riga gialla. */
+  .pp-racconto { display: grid; align-items: center; min-width: 0; max-width: 62rem; }
+  .pp-racc { grid-area: 1 / 1; margin: 0; font-size: clamp(0.98rem, calc(0.92 * var(--vu)), 1.5rem); line-height: 1.42; color: var(--color-bianco); text-wrap: pretty;
+    opacity: 0; visibility: hidden; transform: translateY(4px); transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0.35s; }
+  .pp-racc:global(.pp-on) { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+  dialog.pp[data-leggi] .pp-racconto { display: none; }
+  @media (prefers-reduced-motion: reduce) { .pp-racc { transition: none; transform: none; } }
   dialog.pp[data-e2e] .pp-capitoli { grid-row: 1; grid-column: 1; margin-bottom: 0; align-self: center; }
   dialog.pp[data-e2e] :global(.pp-nav) { grid-row: 1; grid-column: 2; }
   /* I TRE CAPITOLI SONO IL RIFERIMENTO (owner, 17 nov 2026): la frase in testa li

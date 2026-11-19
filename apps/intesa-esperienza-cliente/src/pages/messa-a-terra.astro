@@ -169,7 +169,9 @@ const RITORNO = [
     {/* L'INNESTO, ad alto livello. Parte dall'architettura di oggi, con il motore di targeting a monte;
         la freccia giù accende i due componenti Adobe. Ogni componente apre il suo
         mockup a passi. Le etichette sono HTML accanto ai nodi, l'SVG porta i tratti. */}
-    <Slide id="slide-innesto" bg="inverse" align="left">
+    {/* In lettura il «Come funziona» è un passaggio obbligato: la freccia avanti lo apre
+        prima di lasciare la slide (deck.ts, `data-lettura-prima`). */}
+    <Slide id="slide-innesto" bg="inverse" align="left" data-lettura-prima="[data-pp-e2e]">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         {/* Titolo e riga di confine: decisione del proprietario dell'11 nov 2026.
@@ -210,6 +212,12 @@ const RITORNO = [
               <span data-lang-it>Come funziona</span><span data-lang-en>How it works</span>
               <span class="im-inn-funziona-d"><span data-lang-it>dall’annuncio alla firma</span><span data-lang-en>from the ad to the signature</span></span>
             </button>
+            {/* COME ESCONO I DATI (19 nov 2026, dalla domanda in sala sui canali media): la
+                gemella di «Come entrano i dati», sullo stesso bordo e con lo stesso gesto. Le
+                quattro famiglie di destinazioni di Experience League («Destination types and
+                categories»); la prima dice anche COME si abbina il pubblico: email e telefono
+                con hash, mai un ID Adobe (KB ka-24608). Se ne apre una alla volta. */}
+            <div class="im-inn-flussi">
             <button type="button" class="im-inn-ingresso" data-ingresso aria-expanded="false">
               <span class="im-ing-k"><span data-lang-it>Come entrano i dati</span><span data-lang-en>How data comes in</span></span>
               <span class="im-ing-i"><Segno k="online" /><span class="im-ing-n">Web e Mobile SDK</span></span>
@@ -217,6 +225,14 @@ const RITORNO = [
               <span class="im-ing-i"><Segno k="stream" /><span class="im-ing-n"><span data-lang-it>API in streaming</span><span data-lang-en>Streaming API</span></span></span>
               <span class="im-ing-i"><Segno k="lotti" /><span class="im-ing-n"><span data-lang-it>Caricamento batch</span><span data-lang-en>Batch ingestion</span></span></span>
             </button>
+            <button type="button" class="im-inn-ingresso im-inn-uscita" data-uscita aria-expanded="false">
+              <span class="im-ing-k"><span data-lang-it>Come escono i dati</span><span data-lang-en>How data goes out</span></span>
+              <span class="im-ing-i"><Segno k="media" /><span class="im-ing-n"><span data-lang-it>Media e social, su email e telefono con hash</span><span data-lang-en>Media and social, on hashed email and phone</span></span></span>
+              <span class="im-ing-i"><Segno k="lotti" /><span class="im-ing-n"><span data-lang-it>File batch</span><span data-lang-en>Batch files</span></span></span>
+              <span class="im-ing-i"><Segno k="stream" /><span class="im-ing-n">Streaming</span></span>
+              <span class="im-ing-i"><Segno k="edge" /><span class="im-ing-n">Edge</span></span>
+            </button>
+            </div>
           </div>
           {/* LE CARTE (owner, 13 nov 2026). La slide si proietta in sala e su Teams:
               a riposo dice solo i ruoli (i titoli) e il perimetro (le pillole
@@ -777,21 +793,26 @@ const RITORNO = [
     };
     /* Servizi comuni e «Come entrano i dati» stanno sullo stesso bordo:
        se ne apre uno alla volta. */
-    const ingresso = (apri?: boolean) => {
-      const b = inn.querySelector<HTMLButtonElement>('[data-ingresso]');
+    /* Le due pillole dei flussi (entrano · escono) si aprono una alla volta;
+       `data-ingresso-aperto` sulla mappa vuol dire «un flusso è aperto». */
+    const flusso = (sel: string, altro: string) => (apri?: boolean) => {
+      const b = inn.querySelector<HTMLButtonElement>(sel);
       if (!b) return;
       const on = apri ?? b.getAttribute('aria-expanded') !== 'true';
       b.setAttribute('aria-expanded', String(on));
-      inn.toggleAttribute('data-ingresso-aperto', on);
+      if (on) inn.querySelector<HTMLButtonElement>(altro)?.setAttribute('aria-expanded', 'false');
+      inn.toggleAttribute('data-ingresso-aperto', !!inn.querySelector('.im-inn-flussi [aria-expanded="true"]'));
       bordo();
     };
+    const ingresso = flusso('[data-ingresso]', '[data-uscita]');
+    const uscita = flusso('[data-uscita]', '[data-ingresso]');
     /* IL BORDO BASSO (owner, 17 nov 2026): i tre bottoni restano cliccabili in
        qualunque momento, quindi nessuno sparisce più. Quando uno si apre, gli altri si
        accorciano un passo alla volta finché fra loro restano almeno 12 px: mai due
        pillole che si toccano, mai un bottone nascosto. Il CSS dei passi è in
        innesto.css, «Il bordo basso non nasconde più niente». */
     const bordo = () => {
-      const ing = inn.querySelector<HTMLElement>('[data-ingresso]');
+      const ing = inn.querySelector<HTMLElement>('.im-inn-flussi');
       const fz = inn.querySelector<HTMLElement>('.im-inn-funziona');
       const svc = document.getElementById('im-svc');
       if (!ing || !fz || !svc) return;
@@ -810,7 +831,7 @@ const RITORNO = [
       };
       const passi: [string, string][] = svcOn
         ? [['data-fz', 'corto'], ['data-ing-corto', ''], ['data-svc-corto', ''], ['data-fz', 'icona']]
-        : [['data-fz', 'corto'], ['data-fz', 'icona']];
+        : [['data-fz', 'corto'], ['data-ing-corto', ''], ['data-fz', 'icona']];
       for (const [a, v] of passi) { if (ok()) return; inn.setAttribute(a, v); }
       ok();
     };
@@ -823,7 +844,7 @@ const RITORNO = [
       b.setAttribute('aria-expanded', String(on));
       p.toggleAttribute('data-chiuso', !on);
       inn.toggleAttribute('data-svc-aperto', on);
-      if (on) ingresso(false); else bordo();
+      if (on) { ingresso(false); uscita(false); } else bordo();
     };
     const gira = (c: HTMLElement) => posa(inn.dataset.carta === c.dataset.carta ? null : c.dataset.carta!);
 
@@ -832,6 +853,7 @@ const RITORNO = [
       if (!slideI.contains(t) || t.closest('dialog, #im-gm, .im-inn-m, [data-pp-open], [data-pp-e2e], a')) return;
       if (t.closest('[data-svc]')) { e.stopPropagation(); servizi(); return; }
       if (t.closest('[data-ingresso]')) { e.stopPropagation(); ingresso(); if (inn.hasAttribute('data-ingresso-aperto')) servizi(false); return; }
+      if (t.closest('[data-uscita]')) { e.stopPropagation(); uscita(); if (inn.hasAttribute('data-ingresso-aperto')) servizi(false); return; }
       const c = t.closest<HTMLElement>('.im-carta');
       if (c && inn.contains(c)) { e.stopPropagation(); e.preventDefault(); gira(c); return; }
       if (inn.dataset.carta) { e.stopPropagation(); posa(null); }
@@ -845,7 +867,7 @@ const RITORNO = [
       }
       if (e.key === 'Escape' && inn.dataset.carta && !document.querySelector('dialog.pp[open]')) posa(null);
     }, { capture: true, signal });
-    mo(() => { if (slideI.getAttribute('aria-hidden') === 'true') { posa(null); servizi(false); ingresso(false); } })
+    mo(() => { if (slideI.getAttribute('aria-hidden') === 'true') { posa(null); servizi(false); ingresso(false); uscita(false); } })
       .observe(slideI, { attributes: true, attributeFilter: ['aria-hidden'] });
 
     /* La freccia bianca entra sotto la pillola «programmate»: la posizione si

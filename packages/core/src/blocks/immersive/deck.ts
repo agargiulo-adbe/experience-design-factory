@@ -269,6 +269,15 @@ export class Deck {
 
   next() {
     if (this.locked) return;
+    // Edizione «lettura»: una slide può chiedere che, prima di lasciarla, si veda un
+    // contenuto che in sala si apre a voce (`data-lettura-prima="<selettore>"`, es. il
+    // «Come funziona»). La prima volta la freccia avanti lo apre; dalla seconda si va oltre.
+    const cur = this.slides[this.index];
+    const prima = cur?.getAttribute('data-lettura-prima');
+    if (prima && edizioneLettura() && !cur.hasAttribute('data-lettura-vista')) {
+      const el = cur.querySelector<HTMLElement>(prima);
+      if (el) { cur.setAttribute('data-lettura-vista', ''); el.click(); return; }
+    }
     if (this.index < this.slides.length - 1) this.goTo(this.index + 1);
     else this.exitForward();
   }
