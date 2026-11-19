@@ -21,6 +21,7 @@ import { CHAPTERS } from '../data/chapters';
 import { AGENDA as AGENDA_SALA, TITOLO_INCONTRO } from '../data/agenda';
 import { EDIZIONE } from '@edf/core/utils/edizione';
 import ContaAperture from '@edf/core/blocks/immersive/ContaAperture.astro';
+import ritratto from '../assets/generated/persona-giulia.webp';
 import { MOMENTI } from '../data/momenti';
 
 const type = EXPERIENCE_TYPES[SITE.type];
@@ -58,6 +59,23 @@ const AGENDA = LETTURA
         Il titolo resta quello della Storia perché è il filo che tiene
         insieme i sei capitoli: il capitolo su Adobe è la premessa, non
         il tema. */}
+    {/* LA COPERTINA DEL LIBRO (owner, 19 nov 2026): nella versione da distribuire non è
+        la copertina di un incontro. Niente agenda: il volto di Giulia, il titolo, due righe
+        che promettono la storia e un solo gesto, aprirla. L'indice resta nella barra. */}
+    {LETTURA ? (
+      <Slide id="slide-cover" bg="inverse" align="left">
+        <div slot="backdrop" class="im-libro-fondo" style={`--ritratto: url('${ritratto.src}')`}></div>
+        <div class="im-libro" data-reveal>
+          <CoBrand variant="hero" class="im-libro-lockup edf-cobrand--on-dark" />
+          <h1 class="im-libro-t">{TITOLO_INCONTRO.t.it}</h1>
+          <p class="im-libro-s">{TITOLO_INCONTRO.s.it}</p>
+          <p class="im-libro-l">Giulia ha 34 anni, cerca il primo mutuo e non è ancora vostra cliente. In sette momenti si vede come la banca la riconosce, le parla quando serve e la accompagna fino alla firma.</p>
+          <a class="im-libro-apri" href={href(base, '/' + first.slug)}>Apri la storia<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4 12.5 8l-4 4" /></svg></a>
+          <p class="im-libro-tipo">{type.coverLine.it}</p>
+          <p class="im-cop-nota">Contiamo quante volte questa pagina viene aperta, giorno per giorno. Non registriamo chi la apre.</p>
+        </div>
+      </Slide>
+    ) : (
     <Slide id="slide-cover" bg="inverse" align="left"
            data-made-with="Adobe Firefly" data-made-with-for="clip" data-audio="loud">
       <LoopVideo slot="backdrop" src={`${CLIP}/innesto-cover.loop.mp4`}
@@ -71,7 +89,6 @@ const AGENDA = LETTURA
           <T as="h1" class="im-cop-t" it={TITOLO_INCONTRO.t.it} en={TITOLO_INCONTRO.t.en} data-reveal data-reveal-delay="0.1" />
           <T as="p" class="im-cop-sot" it={TITOLO_INCONTRO.s.it} en={TITOLO_INCONTRO.s.en} data-reveal data-reveal-delay="0.16" />
           <T as="p" class="im-cop-tipo" it={type.coverLine.it} en={type.coverLine.en} data-reveal data-reveal-delay="0.22" />
-          {LETTURA && <p class="im-cop-nota" data-reveal data-reveal-delay="0.28">Contiamo quante volte questa pagina viene aperta, giorno per giorno. Non registriamo chi la apre.</p>}
         </div>
 
         <nav class="im-cop-dx" data-reveal data-reveal-delay="0.2" aria-label="Il percorso">
@@ -105,6 +122,7 @@ const AGENDA = LETTURA
       </div>
 
     </Slide>
+    )}
 
   </DeckContainer>
   {LETTURA && <ContaAperture progetto="intesa-storia" pagina="copertina" />}

@@ -40,8 +40,19 @@ const CHAPTERS_SALA: Chapter[] = [
    «I prossimi passi», scritto per la sala, ma «Parliamone». L'edizione è una
    costante di build, quindi la sala esce identica. */
 const PARLIAMONE: Chapter = { slug: 'parliamone', num: '06', title: { it: 'Parliamone', en: 'Let’s talk' } };
+/* IL LIBRO DI GIULIA (owner, 19 nov 2026): chi riceve il link non era in sala, e un
+   documento che si legge da soli non apre presentando chi lo manda. In lettura si
+   comincia dalla storia; «Adobe, chi siamo» diventa la pagina degli autori, in fondo,
+   subito prima di «Parliamone». I numeri si rifanno sull'ordine nuovo. */
+const ORDINE_LETTURA = ['scenario', 'persona', 'momenti', 'messa-a-terra', 'coworker', 'risultati', 'adobe', 'parliamone'];
 export function capitoli(ed: Edizione): Chapter[] {
-  return ed === 'lettura' ? [...CHAPTERS_SALA.slice(0, -1), PARLIAMONE] : CHAPTERS_SALA;
+  if (ed !== 'lettura') return CHAPTERS_SALA;
+  const tutti = [...CHAPTERS_SALA, PARLIAMONE];
+  let n = 0;
+  return ORDINE_LETTURA.map((slug) => {
+    const c = tutti.find((x) => x.slug === slug)!;
+    return c.num ? { ...c, num: String(++n).padStart(2, '0') } : c;
+  });
 }
 export const CHAPTERS: Chapter[] = capitoli(EDIZIONE);
 
@@ -56,9 +67,10 @@ const VOCI_SALA: VoceNav[] = [
   { n: '06', it: 'I prossimi passi', en: 'Next steps', slug: 'prossimi-passi', pagine: ['prossimi-passi'] },
 ];
 export function vociNav(ed: Edizione): VoceNav[] {
-  return ed === 'lettura'
-    ? [...VOCI_SALA.slice(0, -1), { n: '06', it: 'Parliamone', en: 'Let’s talk', slug: 'parliamone', pagine: ['parliamone'] }]
-    : VOCI_SALA;
+  if (ed !== 'lettura') return VOCI_SALA;
+  const tutte = [...VOCI_SALA, { n: '', it: 'Parliamone', en: 'Let’s talk', slug: 'parliamone', pagine: ['parliamone'] }];
+  return ['scenario', 'messa-a-terra', 'coworker', 'risultati', 'adobe', 'parliamone']
+    .map((slug, i) => ({ ...tutte.find((v) => v.slug === slug)!, n: String(i + 1).padStart(2, '0') }));
 }
 export const VOCI_NAV: VoceNav[] = vociNav(EDIZIONE);
 
