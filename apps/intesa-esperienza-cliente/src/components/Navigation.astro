@@ -6,6 +6,7 @@
 import { href } from '@edf/core/utils/url.js';
 import LangToggle from '@edf/core/blocks/i18n/LangToggle.astro';
 import { VOCI_NAV } from '../data/chapters';
+import { EDIZIONE } from '@edf/core/utils/edizione';
 import { SITE } from '../data/site';
 
 interface Props {
@@ -41,9 +42,13 @@ function isActive(pagine: string[]) {
         documento ora che il documento SI CHIAMA «Adobe × Intesa
         Sanpaolo». Al suo posto la data: è l'informazione che manca a chi
         riapre il link, e che il titolo da solo non dà. */}
-    <span class="hidden 2xl:inline text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-note)] ml-1 whitespace-nowrap">
-      {SITE.sottotitolo}
-    </span>
+    {/* Nell'edizione da distribuire la data dell'incontro non c'è: il link
+        resta valido dopo quella riunione, e chi lo riceve non c'era. */}
+    {EDIZIONE !== 'lettura' && (
+      <span class="hidden 2xl:inline text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-note)] ml-1 whitespace-nowrap">
+        {SITE.sottotitolo}
+      </span>
+    )}
   </a>
 
   <ol class="hidden md:flex flex-nowrap items-center gap-0.5 min-w-0 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" role="list">

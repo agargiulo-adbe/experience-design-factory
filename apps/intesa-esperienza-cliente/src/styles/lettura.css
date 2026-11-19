@@ -1,0 +1,68 @@
+/**
+ * EDIZIONE DA DISTRIBUIRE — Giulia sempre a colonne (spec 2026-11-19, §2).
+ * ⚠️ COPIA delle regole del blocco `@media (max-height: 1040px)` dei momenti in
+ * global.css («le due viste si AFFIANCANO»): lì valgono sotto i 1040px, qui
+ * sempre, ma solo nella build lettura. Si è copiato invece di estrarre perché
+ * estrarle cambiava l'ordine della cascata in sala, che deve restare identica.
+ * Se cambi una regola là, cambiala qui.
+ */
+:root[data-edizione="lettura"] {
+
+  .im-due {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 0.4rem 1.6rem; max-width: 78rem;
+  }
+  .im-due-cer { display: none; }
+  /* Affiancate, la vista «In Intesa Sanpaolo» cade SOPRA la fotografia, che
+     è chiara: titolo bianco su un ufficio luminoso, illeggibile (visto a
+     1280×800 l'11 nov 2026; `audit:ink` misura solo a 1920 e non lo vede).
+     La foto resta come atmosfera, abbassata quanto basta perché il bianco
+     regga. Il tipo non si tocca. */
+  .im-bg-vx::before { filter: brightness(0.3) saturate(0.85); }
+  .im-due-banda {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
+    gap: 0.25rem; padding-top: 0.3rem;
+  }
+  /* ⚠️ Il margine negativo serve SOLO nel layout impilato, dove il
+     mockup deve scavalcare il taglio verticale del fondo. Affiancato, il
+     mockup sta nella colonna di sinistra e quel margine lo spingeva
+     fuori dalla safe-area: check `c`, HARD. */
+  .im-due-mock { grid-column: 1; align-items: flex-start; margin-left: 0; }
+  .im-due-txt { grid-column: 1; align-self: start; }
+  .im-due-t { font-size: clamp(1.05rem, calc(1.3 * var(--vu)), 1.6rem); max-width: none; }
+  .im-due-b { max-width: none; }
+  .im-due-mock .im-cli { max-width: 22rem; }
+  .im-due-mock .im-cli--sito,
+  .im-due-mock .im-cli--filiale,
+  .im-due-mock .im-ado { max-width: 26rem; }
+  /* Gli elenchi illustrativi si accorciano: restano le prime voci, che
+     sono quelle di cui parla la slide. Il tipo NON si tocca. */
+  .im-due-mock .im-ado-dom li:nth-child(n+5),
+  .im-due-mock .im-ado-off li:nth-child(n+5),
+  .im-due-mock .im-ado-passi li:nth-child(n+5),
+  .im-due-mock .im-ado-barra:nth-child(n+5),
+  .im-due-mock .im-cli-passi li:nth-child(n+5) { display: none; }
+  .im-due-mock .im-cli-post-img { aspect-ratio: auto; height: 5rem; }
+  /* Il gestionale è l'unico mockup a due colonne: in 20rem le due
+     colonne si schiacciano e sbordano. Qui l'altezza c'è, la larghezza
+     no: una colonna sola. */
+  .im-due-mock .im-cli-gest { grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+
+  /* Lo scalino dei 820px di global.css («Proiezione BASSISSIMA») va ripetuto:
+     qui i selettori pesano di più e altrimenti vincerebbero i 5rem sopra. */
+  @media (max-height: 820px) {
+    .im-due-mock .im-cli-post-img { height: 4.1rem; }
+  }
+
+  /* La scheda «Prodotto Adobe» non sparisce: senza relatore è l'unica frase
+     che dice che cosa si sta guardando. Sotto i 940px diventa compatta: via
+     l'etichetta e il marchio, restano il nome e la riga che lo spiega. */
+  @media (max-height: 940px) {
+    .im-due .im-due-pro.im-due-tess { display: block; padding: 0.38rem 0.75rem; }
+    .im-due .im-due-pro .im-due-leg,
+    .im-due .im-due-pro .im-due-adobe { display: none; }
+    .im-due .im-due-pro strong { margin-right: 0.45rem; }
+  }
+}
