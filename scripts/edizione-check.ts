@@ -44,7 +44,24 @@ export async function checkAutoreveal(b: Browser) {
   }
 }
 
-const CHECKS: Record<string, (b: Browser) => Promise<void>> = { autoreveal: checkAutoreveal };
+export async function checkParliamone(b: Browser) {
+  const p = await b.newPage({ viewport: { width: 1512, height: 860 } });
+  await p.goto(LETTURA + 'parliamone/', { waitUntil: 'load' });
+  const l = await p.evaluate(() => [...document.querySelectorAll('a')].map((a) => a.getAttribute('href') || ''));
+  const mail = l.filter((h) => h.startsWith('mailto:'));
+  const wa = l.filter((h) => h.startsWith('https://wa.me/'));
+  ok('parliamone: tre email', mail.length === 3 && ['agordiani@', 'fellena@', 'agargiulo@'].every((x) => mail.some((m) => m.includes(x))), mail.join(' '));
+  ok('parliamone: due WhatsApp, i numeri giusti', wa.length === 2 && wa.some((h) => h.includes('393489696067')) && wa.some((h) => h.includes('393499385457')), wa.join(' '));
+  await p.close();
+  if (SALA !== '/') {
+    const s = await b.newPage();
+    const r = await s.goto(SALA + 'parliamone/');
+    ok('sala: parliamone non esiste', r?.status() === 404, String(r?.status()));
+    await s.close();
+  }
+}
+
+const CHECKS: Record<string, (b: Browser) => Promise<void>> = { autoreveal: checkAutoreveal, parliamone: checkParliamone };
 
 const scelti = process.argv.slice(2);
 const b = await chromium.launch();

@@ -20,12 +20,15 @@
  * Non c'è nessun pulsante in pagina: in sala nessuno lo vede.
  */
 import { PAGE_REGISTRY } from '../data/slides';
+import { EDIZIONE } from '@edf/core/utils/edizione';
 import { SITE } from '../data/site';
 
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const PROJECT_SLUG = SITE.slug;
 const NASCOSTE = new Set(['admin', 'relatore', 'analytics', 'circolo', 'risultati-old']);
-const GRUPPI = PAGE_REGISTRY.filter((p) => !NASCOSTE.has(p.slug)).map((p) => ({
+/* In lettura il pannello resta vuoto: le slide di riserva continuano a uscire
+   dal percorso (lo script sotto), ma nessun elenco porta alle pagine della sala. */
+const GRUPPI = PAGE_REGISTRY.filter((p) => EDIZIONE !== 'lettura' && !NASCOSTE.has(p.slug)).map((p) => ({
   slug: p.slug,
   label: p.label,
   url: p.slug === 'index' ? base : `${base}${p.slug}/`,
@@ -33,7 +36,7 @@ const GRUPPI = PAGE_REGISTRY.filter((p) => !NASCOSTE.has(p.slug)).map((p) => ({
 }));
 /* IL PIANO B: la versione breve, in testa al pannello. Non sta nel registro della
    Console (non è un capitolo): la si elenca qui, slide per slide. */
-GRUPPI.unshift({
+if (EDIZIONE !== 'lettura') GRUPPI.unshift({
   slug: 'dieci-minuti',
   label: 'Piano B · la versione breve («In breve»)',
   url: `${base}dieci-minuti/`,
@@ -152,6 +155,8 @@ GRUPPI.unshift({
       return;
     }
     if (e.key !== 'g' && e.key !== 'G') return;
+    // Edizione da distribuire: il pannello di chi presenta non esiste.
+    if (document.documentElement.dataset.edizione === 'lettura') return;
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     if (t.matches('input, textarea, select, [contenteditable]')) return;
     if (document.querySelector('dialog.pp[open]')) return;

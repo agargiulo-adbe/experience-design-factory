@@ -18,7 +18,8 @@ import { href } from '@edf/core/utils/url.js';
 import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
 import { SITE } from '../data/site';
 import { CHAPTERS } from '../data/chapters';
-import { AGENDA, TITOLO_INCONTRO } from '../data/agenda';
+import { AGENDA as AGENDA_SALA, TITOLO_INCONTRO } from '../data/agenda';
+import { EDIZIONE } from '@edf/core/utils/edizione';
 import { MOMENTI } from '../data/momenti';
 
 const type = EXPERIENCE_TYPES[SITE.type];
@@ -30,6 +31,15 @@ const first = CHAPTERS[0];
    già composta prima che la rete risponda. */
 const CLIP = 'https://github.com/agargiulo-adbe/experience-design-factory/releases/download/media';
 const last = CHAPTERS[CHAPTERS.length - 1];
+/* Edizione da distribuire: la copertina non è più quella di un incontro.
+   Niente data, e l'indice diventa «Da dove volete partire», con l'ultimo
+   capitolo che porta a «Parliamone» invece che ai prossimi passi. */
+const LETTURA = EDIZIONE === 'lettura';
+const AGENDA = LETTURA
+  ? AGENDA_SALA.map((v) => v.capitolo === 'prossimi-passi'
+      ? { ...v, capitolo: 'parliamone', ancora: undefined, titolo: { it: 'Parliamone', en: 'Let’s talk' } }
+      : v)
+  : AGENDA_SALA;
 ---
 <BaseLayout title={SITE.name}>
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -56,14 +66,16 @@ const last = CHAPTERS[CHAPTERS.length - 1];
       <div class="im-cop" data-reveal>
         <div class="im-cop-sx">
           <CoBrand variant="hero" class="im-cop-lockup edf-cobrand--on-dark" data-reveal />
-          <T as="p" class="im-cov-occ" it="Incontro del 19 novembre 2026" en="Meeting of 19 November 2026" data-reveal data-reveal-delay="0.06" />
+          {!LETTURA && <T as="p" class="im-cov-occ" it="Incontro del 19 novembre 2026" en="Meeting of 19 November 2026" data-reveal data-reveal-delay="0.06" />}
           <T as="h1" class="im-cop-t" it={TITOLO_INCONTRO.t.it} en={TITOLO_INCONTRO.t.en} data-reveal data-reveal-delay="0.1" />
           <T as="p" class="im-cop-sot" it={TITOLO_INCONTRO.s.it} en={TITOLO_INCONTRO.s.en} data-reveal data-reveal-delay="0.16" />
           <T as="p" class="im-cop-tipo" it={type.coverLine.it} en={type.coverLine.en} data-reveal data-reveal-delay="0.22" />
         </div>
 
         <nav class="im-cop-dx" data-reveal data-reveal-delay="0.2" aria-label="Il percorso">
-          <T as="p" class="im-cop-occ" it="Agenda dell’incontro" en="Meeting agenda" />
+          {LETTURA
+            ? <T as="p" class="im-cop-occ" it="Da dove volete partire" en="Where would you like to start" />
+            : <T as="p" class="im-cop-occ" it="Agenda dell’incontro" en="Meeting agenda" />}
           {/* ⚠️ L'agenda viene da `agenda.ts`, non dai capitoli: i
               capitoli sono quello che il documento contiene OGGI,
               l'agenda è quello di cui si parla in sala. Finché un pezzo

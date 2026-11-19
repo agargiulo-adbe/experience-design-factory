@@ -1,0 +1,48 @@
+---
+/**
+ * «Parliamone» — l'ultimo capitolo dell'edizione da distribuire, al posto de
+ * «I prossimi passi», che era scritto per la sala. Chi ha letto la storia da
+ * solo trova qui le tre persone e due modi di scriverci. Nessun modulo e
+ * nessuna misura in questa versione (spec 2026-11-19, versione A).
+ * Esiste solo nella build lettura: l'integrazione d'edizione la toglie dalla sala.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoBrand from '../components/CoBrand.astro';
+import Divisore from '../components/Divisore.astro';
+import Contatti from '../components/Contatti.astro';
+import { href } from '@edf/core/utils/url.js';
+import { capitoli, prevSlug } from '../data/chapters';
+import fondo from '../assets/generated/cover-passi.webp';
+
+const SLUG = 'parliamone';
+// La pagina si costruisce anche nella build sala (poi l'integrazione la toglie):
+// il capitolo si legge dall'elenco della lettura, che è l'unico che lo contiene.
+const ch = capitoli('lettura').find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, '/')} prevHref={href(base, prevSlug(SLUG))}>
+    <Slide id="slide-cover" bg="secondary" align="left" data-made-with="Adobe Firefly" data-made-with-for="sfondo">
+      <div slot="backdrop" class="im-div-bg" style={`--foto: url('${fondo.src}'); --fuoco: 34% 62%`}></div>
+      <Divisore num={ch.num} tIt="Parliamone" tEn="Let’s talk" />
+    </Slide>
+
+    <Slide id="slide-parliamone" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo im-parl" data-reveal>
+        <CoBrand variant="hero" class="im-parl-lockup edf-cobrand--on-dark" />
+        <h2 class="im-ado-t">Ne parliamo con chi lavora su questo</h2>
+        <p class="im-parl-l">Una domanda su un momento di Giulia, su un prodotto, su come si innesta nei vostri sistemi: scriveteci, anche solo una riga.</p>
+        <Contatti />
+      </div>
+    </Slide>
+  </DeckContainer>
+</BaseLayout>

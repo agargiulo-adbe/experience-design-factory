@@ -1,0 +1,22 @@
+---
+/* Le schede delle tre persone: foto, nome, ruolo, email e, dove c'è,
+   WhatsApp. Usate da «Parliamone» e dalla pagina breve del telefono. */
+import { CONTATTI, OGGETTO_EMAIL, TESTO_WHATSAPP } from '../data/contatti';
+import { linkWhatsApp } from '@edf/core/utils/contatti';
+interface Props { class?: string }
+const { class: cls = '' } = Astro.props;
+const mail = (e: string) => `mailto:${e}?subject=${encodeURIComponent(OGGETTO_EMAIL)}`;
+---
+<ul class:list={['im-cont', cls]}>
+  {CONTATTI.map((c) => (
+    <li class="im-cont-i">
+      <span class="im-team-ft" style={`--ritratto: url('${c.foto.src}')`} aria-hidden="true"></span>
+      <span class="im-cont-n">{c.nome}</span>
+      <span class="im-cont-r">{c.ruolo}</span>
+      <span class="im-cont-az">
+        <a class="im-cont-a" href={mail(c.email)}>Email</a>
+        {c.whatsapp && <a class="im-cont-a" href={linkWhatsApp(c.whatsapp, TESTO_WHATSAPP)} target="_blank" rel="noopener">WhatsApp</a>}
+      </span>
+    </li>
+  ))}
+</ul>

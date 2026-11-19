@@ -1,3 +1,4 @@
+import { EDIZIONE, type Edizione } from '@edf/core/utils/edizione';
 /**
  * Adobe × Intesa Sanpaolo — i capitoli. Fonte unica per nav, home, SECTION_FLOW e, tramite
  * `admin.astro`, il registro delle slide.
@@ -18,7 +19,7 @@ export interface Chapter {
   breve?: { it: string; en: string };
 }
 
-export const CHAPTERS: Chapter[] = [
+const CHAPTERS_SALA: Chapter[] = [
   /* L'ordine delle PAGINE. Il titolo è quello della voce d'agenda e finisce
      nel <title> (scheda del browser, anteprima del link): una pagina che
      dice un nome e una barra che ne dice un altro sembrano due documenti.
@@ -35,8 +36,18 @@ export const CHAPTERS: Chapter[] = [
   { slug: 'prossimi-passi', num: '06', title: { it: 'I prossimi passi', en: 'Next steps' } },
 ];
 
+/* Edizione «lettura» (il link da distribuire): l'ultimo capitolo non è più
+   «I prossimi passi», scritto per la sala, ma «Parliamone». L'edizione è una
+   costante di build, quindi la sala esce identica. */
+const PARLIAMONE: Chapter = { slug: 'parliamone', num: '06', title: { it: 'Parliamone', en: 'Let’s talk' } };
+export function capitoli(ed: Edizione): Chapter[] {
+  return ed === 'lettura' ? [...CHAPTERS_SALA.slice(0, -1), PARLIAMONE] : CHAPTERS_SALA;
+}
+export const CHAPTERS: Chapter[] = capitoli(EDIZIONE);
+
 /** La barra: le sette voci dell'agenda. `pagine` accende la voce. */
-export const VOCI_NAV: { n: string; it: string; en: string; slug: string; ancora?: string; pagine: string[] }[] = [
+type VoceNav = { n: string; it: string; en: string; slug: string; ancora?: string; pagine: string[] };
+const VOCI_SALA: VoceNav[] = [
   { n: '01', it: 'Adobe, chi siamo', en: 'Adobe, who we are', slug: 'adobe', pagine: ['adobe'] },
   { n: '02', it: 'Giulia', en: 'Giulia', slug: 'scenario', pagine: ['scenario', 'persona', 'momenti'] },
   { n: '03', it: 'Dove ci innestiamo', en: 'Where we plug in', slug: 'messa-a-terra', pagine: ['messa-a-terra', 'approfondimenti'] },
@@ -44,6 +55,12 @@ export const VOCI_NAV: { n: string; it: string; en: string; slug: string; ancora
   { n: '05', it: 'Referenze', en: 'References', slug: 'risultati', pagine: ['risultati'] },
   { n: '06', it: 'I prossimi passi', en: 'Next steps', slug: 'prossimi-passi', pagine: ['prossimi-passi'] },
 ];
+export function vociNav(ed: Edizione): VoceNav[] {
+  return ed === 'lettura'
+    ? [...VOCI_SALA.slice(0, -1), { n: '06', it: 'Parliamone', en: 'Let’s talk', slug: 'parliamone', pagine: ['parliamone'] }]
+    : VOCI_SALA;
+}
+export const VOCI_NAV: VoceNav[] = vociNav(EDIZIONE);
 
 export function chapterIndex(slug: string): number {
   return CHAPTERS.findIndex((c) => c.slug === slug);
