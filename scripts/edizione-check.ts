@@ -33,6 +33,8 @@ export async function checkAutoreveal(b: Browser) {
   ok('lettura: passi aperti da soli', a.n > 0 && a.aperti === a.n, JSON.stringify(a));
   await p.keyboard.press('ArrowLeft'); await p.waitForTimeout(1200);
   const b1 = await s();
+  // La slide precedente riapre i suoi passi: si aspetta l'anello pieno, come farebbe chi legge.
+  await p.waitForFunction(() => (window as any).__edfDeck.root.hasAttribute('data-lettura-pronta'), null, { timeout: 15000 }).catch(() => {});
   ok('lettura: indietro va alla slide prima', b1.index === a.index - 1, `${a.index} → ${b1.index}`);
   await p.keyboard.press('ArrowRight');
   for (let t0 = Date.now(); Date.now() - t0 < 12000; await p.waitForTimeout(400)) { const x = await s(); if (x.n && x.aperti === x.n) break; }
@@ -153,6 +155,7 @@ export async function checkComeFunziona(b: Browser) {
     if (base === '/') continue;
     const p = await b.newPage({ viewport: { width: 1512, height: 860 } });
     await p.goto(base + 'messa-a-terra/#slide-innesto', { waitUntil: 'load' }); await p.waitForTimeout(3500);
+    if (atteso) await p.waitForFunction(() => (window as any).__edfDeck.root.hasAttribute('data-lettura-pronta'), null, { timeout: 15000 }).catch(() => {});
     await p.keyboard.press('ArrowRight'); await p.waitForTimeout(1500);
     const aperto = await p.evaluate(() => !!document.querySelector('dialog[data-e2e][open]'));
     ok(`${nome}: dall'innesto la freccia ${atteso ? 'apre' : 'non apre'} il «Come funziona»`, aperto === atteso, `aperto=${aperto}`);
@@ -172,7 +175,31 @@ export async function checkRitmo(b: Browser) {
   await p.close();
 }
 
-const CHECKS: Record<string, (b: Browser) => Promise<void>> = { autoreveal: checkAutoreveal, parliamone: checkParliamone, telefono: checkTelefono, rete: checkRete, sala: checkSala, comefunziona: checkComeFunziona, ritmo: checkRitmo };
+export async function checkAnello(b: Browser) {
+  // L'anello sul pulsante «avanti» e la rete: prima freccia = completa, seconda = slide dopo.
+  const p = await b.newPage({ viewport: { width: 1512, height: 860 } });
+  await p.goto(LETTURA + 'messa-a-terra/#slide-attribuzione', { waitUntil: 'load' });
+  await p.waitForTimeout(1200);
+  const st = () => p.evaluate(() => { const d = (window as any).__edfDeck; const r = d.root as HTMLElement; const sl = d.slides[d.index] as HTMLElement; const ps = [...sl.querySelectorAll('[data-substep]')];
+    return { i: d.index as number, corsa: r.hasAttribute('data-lettura-corsa'), pronta: r.hasAttribute('data-lettura-pronta'), aperti: ps.filter((x) => x.hasAttribute('data-substep-active')).length, n: ps.length }; });
+  const a = await st();
+  ok('anello: in corsa a 1,2 s, non ancora pronto', a.corsa && !a.pronta, JSON.stringify(a));
+  await p.keyboard.press('ArrowRight'); await p.waitForTimeout(500);
+  const b1 = await st();
+  ok('anello: la prima freccia completa la slide senza cambiarla', b1.i === a.i && b1.aperti === b1.n && b1.pronta, JSON.stringify(b1));
+  await p.keyboard.press('ArrowRight'); await p.waitForTimeout(1200);
+  const c = await st();
+  ok('anello: la seconda freccia va alla slide dopo', c.i === a.i + 1, JSON.stringify(c));
+  await p.close();
+  if (SALA !== '/') {
+    const s = await b.newPage({ viewport: { width: 1512, height: 860 } });
+    await s.goto(SALA + 'messa-a-terra/#slide-attribuzione', { waitUntil: 'load' }); await s.waitForTimeout(1200);
+    ok('sala: nessun anello', !(await s.evaluate(() => (window as any).__edfDeck.root.hasAttribute('data-lettura-corsa'))), '');
+    await s.close();
+  }
+}
+
+const CHECKS: Record<string, (b: Browser) => Promise<void>> = { autoreveal: checkAutoreveal, parliamone: checkParliamone, telefono: checkTelefono, rete: checkRete, sala: checkSala, comefunziona: checkComeFunziona, ritmo: checkRitmo, anello: checkAnello };
 
 const scelti = process.argv.slice(2);
 const b = await chromium.launch();

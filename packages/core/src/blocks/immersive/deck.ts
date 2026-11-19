@@ -219,7 +219,9 @@ export class Deck {
   /** Step-aware advance: reveal a sub-step if any is pending, else next slide. */
   stepForward() {
     if (this.locked) return;
-    // In lettura i passi si aprono da soli: la freccia va alla slide dopo.
+    // In lettura i passi si aprono da soli. Se si preme «avanti» prima che siano tutti
+    // aperti (l'anello non è ancora pieno), la prima pressione li apre subito invece di
+    // cambiare slide: si perde l'animazione, non il contenuto. Poi si va alla slide dopo.
     if (edizioneLettura()) { this.next(); return; }
     if (!this.revealSubstep()) this.next();
   }
@@ -269,6 +271,10 @@ export class Deck {
 
   next() {
     if (this.locked) return;
+    // In lettura ogni gesto in avanti (freccia, swipe, pulsante) passa di qui: se i passi
+    // non sono ancora tutti aperti (l'anello non è pieno), il primo li apre subito invece
+    // di cambiare slide. Si perde l'animazione, non il contenuto.
+    if (edizioneLettura() && this.completaLettura()) return;
     // Edizione «lettura»: una slide può chiedere che, prima di lasciarla, si veda un
     // contenuto che in sala si apre a voce (`data-lettura-prima="<selettore>"`, es. il
     // «Come funziona»). La prima volta la freccia avanti lo apre; dalla seconda si va oltre.
@@ -313,6 +319,7 @@ export class Deck {
   private scheduleActivate(delay: number) {
     window.clearTimeout(this.playTimer);
     this.clearAutoReveal();
+    this.azzeraLettura();
     this.playTimer = window.setTimeout(() => {
       if (this.destroyed) return;
       void playSlide(this.slides[this.index]);
@@ -328,14 +335,39 @@ export class Deck {
     this.revealTimers = [];
   }
 
+  /* L'ANELLO DI LETTURA (owner, 19 nov 2026): la radice del deck porta la durata del
+     ritmo (`--lettura-durata`) e due stati, `data-lettura-corsa` (i passi si stanno
+     aprendo) e `data-lettura-pronta` (tutti aperti). Il CSS di DeckContainer ne fa un
+     anello che si riempie intorno al pulsante «avanti». */
+  private azzeraLettura() {
+    this.root.removeAttribute('data-lettura-corsa');
+    this.root.removeAttribute('data-lettura-pronta');
+  }
+
+  private completaLettura(): boolean {
+    if (!this.root.hasAttribute('data-lettura-corsa') || this.root.hasAttribute('data-lettura-pronta')) return false;
+    this.clearAutoReveal();
+    while (this.revealSubstep()) { /* apre i passi rimasti */ }
+    this.root.setAttribute('data-lettura-pronta', '');
+    return true;
+  }
+
   private autoReveal() {
-    if (!edizioneLettura() || reduced) return; // con movimento ridotto il CSS li mostra già tutti
+    this.azzeraLettura();
+    if (!edizioneLettura()) return;
     const slide = this.slides[this.index];
     if (!slide) return;
-    const piano = pianoRivelazione(this.substepsOf(slide).length, false, ritmoDi(slide));
-    this.revealTimers = piano.map(ms => window.setTimeout(() => {
+    const n = this.substepsOf(slide).length;
+    // Con movimento ridotto il CSS li mostra già tutti; senza passi non c'è niente da aspettare.
+    if (reduced || n === 0) { this.root.setAttribute('data-lettura-pronta', ''); return; }
+    const piano = pianoRivelazione(n, false, ritmoDi(slide));
+    this.root.style.setProperty('--lettura-durata', `${piano[piano.length - 1]}ms`);
+    void this.root.offsetWidth; // riparte l'animazione dell'anello anche sulla stessa slide
+    this.root.setAttribute('data-lettura-corsa', '');
+    this.revealTimers = piano.map((ms, i) => window.setTimeout(() => {
       if (this.destroyed || this.slides[this.index] !== slide) return;
       this.revealSubstep();
+      if (i === piano.length - 1) this.root.setAttribute('data-lettura-pronta', '');
     }, ms));
   }
 

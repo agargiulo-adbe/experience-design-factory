@@ -156,6 +156,32 @@ const EDF_PROJECT = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '').split(
   .deck-first-visit .deck-hint { display: inline-block; }
   /* Hide deck chrome while a slide-over (HowItWorks) is open */
   .deck[data-deck-lock] .deck-chrome { opacity: 0; pointer-events: none; }
+  /* ── L'anello di lettura (edizione «lettura», owner 19 nov 2026) ─────────
+     I sotto-passi si aprono da soli: intorno al pulsante «avanti» un anello si riempie
+     alla velocità del ritmo (`--lettura-durata`, da deck.ts). Pieno = la slide è
+     completa, e il pulsante si accende. Evidente perché sta dove si guarda per andare
+     avanti; non invasivo perché non aggiunge niente alla pagina. Senza @property
+     l'anello compare già pieno: resta il segnale «pronta». */
+  @property --lettura-p { syntax: '<number>'; inherits: false; initial-value: 0; }
+  :root[data-edizione='lettura'] [data-deck] [data-deck-next] { position: relative; }
+  :root[data-edizione='lettura'] [data-deck][data-lettura-corsa] [data-deck-next]::after {
+    content: ''; position: absolute; inset: -5px; border-radius: 9999px; pointer-events: none;
+    background: conic-gradient(var(--accent-primary) calc(var(--lettura-p) * 360deg), color-mix(in srgb, var(--accent-primary) 22%, transparent) 0);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
+            mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2.5px));
+    animation: lettura-anello var(--lettura-durata, 1600ms) linear forwards;
+  }
+  :root[data-edizione='lettura'] [data-deck][data-lettura-pronta] [data-deck-next]::after { animation: none; --lettura-p: 1; }
+  :root[data-edizione='lettura'] [data-deck][data-lettura-pronta] [data-deck-next] {
+    color: var(--accent-primary); border-color: var(--accent-primary);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent-primary) 18%, transparent);
+    transition: color 0.3s ease, border-color 0.3s ease, box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes lettura-anello { from { --lettura-p: 0; } to { --lettura-p: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    :root[data-edizione='lettura'] [data-deck][data-lettura-corsa] [data-deck-next]::after { animation: none; --lettura-p: 1; }
+  }
+
   .deck-btn {
     width: 3.5rem;      /* 56px — visibile a 3m */
     height: 3.5rem;
