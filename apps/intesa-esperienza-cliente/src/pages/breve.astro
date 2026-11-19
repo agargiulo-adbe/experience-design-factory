@@ -7,29 +7,49 @@
  * schermata alla volta (scroll-snap, come il diario de «L'ora in più»):
  *   copertina (il volto di Giulia) → prologo (chi è, e l'indice dei sette momenti) →
  *   sette momenti (la sua scena, quello che vede, quello che fa la banca, il prodotto)
- *   → la storia intera → «Parliamone».
- * Le righe dei momenti vengono da `momenti.ts`, le stesse delle slide.
+ *   → la versione intera (tre schermate vere) → «Parliamone» → il piede.
+ * Le righe di Giulia e della banca vengono da `momenti.ts`, le stesse delle slide; la
+ * riga del prodotto è scritta qui (CAPACITA), per il telefono.
  * VOCE (owner, 19 nov 2026): i pulsanti al «tu», perché sono il gesto di una persona sul
- * suo telefono; il testo in terza persona, senza «voi» («i sistemi della banca»), così
- * «tu» e «voi» non si mescolano mai nella stessa frase. Nel deck resta il «voi».
+ * suo telefono; il testo in terza persona, senza «voi», così «tu» e «voi» non si
+ * mescolano nella stessa frase. Nel deck resta il «voi».
+ * MISURE: un telefono vero, con le barre del browser, ha ~660px utili e non 844. Scena e
+ * mockup si misurano in `svh` perché la riga del prodotto stia sempre nello schermo.
  * Esiste solo nella build lettura. Non è un DeckContainer: è una pagina.
  */
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CoBrand from '../components/CoBrand.astro';
-import Contatti from '../components/Contatti.astro';
+import { CONTATTI, OGGETTO_EMAIL, TESTO_WHATSAPP } from '../data/contatti';
+import { linkWhatsApp } from '@edf/core/utils/contatti';
 import ContaAperture from '@edf/core/blocks/immersive/ContaAperture.astro';
 import { TITOLO_INCONTRO } from '../data/agenda';
 import { MOMENTI } from '../data/momenti';
 import ritratto from '../assets/generated/persona-giulia.webp';
+import finestra from '../assets/generated/scena-08-tracce.webp';
 
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const intero = new URL(base, Astro.site).href;
 const mandami = `mailto:?subject=${encodeURIComponent('Adobe × Intesa Sanpaolo · la storia intera')}&body=${encodeURIComponent(intero)}`;
+const mail = (e: string) => `mailto:${e}?subject=${encodeURIComponent(OGGETTO_EMAIL)}`;
 
 /* Le scene dei momenti: le stesse fotografie delle slide (Adobe Firefly). */
 const SCENE = import.meta.glob<{ default: ImageMetadata }>('../assets/generated/scena-0*.webp', { eager: true });
 const scena = (nome: string) => SCENE[`../assets/generated/${nome}.webp`]?.default;
+
+/* CHE COSA FA IL PRODOTTO, detto per il telefono (owner, 19 nov 2026): le etichette
+   corte della mappa del deck («Più citata dall'AI», «La pratica riparte») qui stanno
+   da sole e suonano da slogan. Ogni riga dice un fatto che la riga della banca non dice
+   già, preso dalle tessere di `momenti.ts`. */
+const CAPACITA: Record<string, string> = {
+  '01': 'Suggerisce i contenuti da pubblicare per entrare nelle risposte',
+  '02': 'Mostra quale annuncio rende di più, e il brief dopo parte da lì',
+  '03': 'Tiene un solo profilo di Giulia per sito, email e annunci, aggiornato in tempo reale',
+  '04': 'Sceglie la Next Best Experience, nel rispetto di consenso e regole',
+  '05': 'Coordina email, sito e annunci in un solo percorso',
+  '06': 'Il gestore la accoglie sapendo già quale mutuo ha simulato e dove si è fermata',
+  '07': 'Misura quanto rende ogni canale, dalla prima visita alla firma',
+};
 ---
 <BaseLayout title="In breve">
   <main class="br">
@@ -51,11 +71,13 @@ const scena = (nome: string) => SCENE[`../assets/generated/${nome}.webp`]?.defau
       </div>
     </header>
 
-    {/* PROLOGO: chi è Giulia, detto subito, e l'indice come in un libro. */}
+    {/* PROLOGO: chi è Giulia e l'indice, come in un libro. Che sia inventata lo dice
+        una pillola accanto al nome, non la prima frase (owner, 19 nov 2026). */}
     <section class="br-pg br-pro" id="br-prologo" aria-labelledby="br-pro-t">
-      <h2 class="br-pro-t" id="br-pro-t">Giulia, 34 anni</h2>
-      <p class="br-pro-l">È un personaggio inventato. Cerca il primo mutuo, a Torino, e non è ancora cliente di Intesa Sanpaolo.</p>
-      <p class="br-pro-l">La storia la segue in sette momenti, dalla prima domanda alla firma, e accanto a ogni suo gesto mostra la risposta della banca con le soluzioni Adobe.</p>
+      <h2 class="br-pro-t" id="br-pro-t">Giulia, 34&nbsp;anni</h2>
+      <span class="br-pill">personaggio di fantasia</span>
+      <p class="br-pro-l">Cerca il primo mutuo per una casa a Torino e non è ancora cliente di Intesa Sanpaolo.</p>
+      <p class="br-pro-l">Il suo percorso va dalla prima domanda a un assistente AI fino alla firma, in sette momenti. In ognuno si vede che cosa fa lei e come risponde la banca con le soluzioni Adobe.</p>
       <ol class="br-indice">
         {MOMENTI.map((m) => (
           <li><a href={`#m-${m.n}`}><span class="br-ind-n">{m.n}</span><span class="br-ind-t">{m.ora.it}<small>{m.dove.it}</small></span></a></li>
@@ -68,10 +90,11 @@ const scena = (nome: string) => SCENE[`../assets/generated/${nome}.webp`]?.defau
       const foto = scena(m.cliente.scena);
       return (
         <section class="br-pg br-m" id={`m-${m.n}`} data-momento={m.n} aria-label={`Momento ${m.n}: ${m.ora.it}`}>
-          <div class="br-m-scena">
-            {foto && <Image class="br-m-foto" src={foto} widths={[480, 800]} sizes="100vw" alt="" loading="lazy" />}
+          <div class="br-scena">
+            {foto && <Image class="br-scena-foto" src={foto} widths={[480, 800]} sizes="100vw" alt="" loading="lazy" />}
+            <p class="br-ff"><span class="adb-tile" role="img" aria-label="Adobe"></span>Firefly</p>
             <p class="br-m-n" aria-hidden="true">{m.n}</p>
-            <div class="br-m-quando">
+            <div class="br-scena-t">
               <p class="br-m-ora">{m.ora.it}</p>
               <p class="br-m-dove">{m.dove.it}</p>
             </div>
@@ -84,28 +107,63 @@ const scena = (nome: string) => SCENE[`../assets/generated/${nome}.webp`]?.defau
             <p class="br-m-r">{m.interno.titolo.it}</p>
             <p class="br-m-pro">
               <span class="adb-tile br-m-adb" role="img" aria-label="Adobe"></span>
-              <span class="br-m-pro-t"><strong>{m.prodotto}</strong><span>{m.funzione.it}</span></span>
+              <span class="br-m-pro-t"><strong>{m.prodotto}</strong><span>{CAPACITA[m.n]}</span></span>
             </p>
           </div>
         </section>
       );
     })}
 
+    {/* LA VERSIONE INTERA: si mostra, non si descrive. Tre schermate vere a ventaglio. */}
     <section class="br-pg br-pc" aria-labelledby="br-pc-t">
-      <h2 class="br-h" id="br-pc-t">Questo è solo il riassunto</h2>
-      <p class="br-l">La versione completa mostra, per ogni momento, le schermate dei prodotti e quello che succede nei sistemi della banca. È pensata per uno schermo grande.</p>
-      <div class="br-az">
-        <a class="br-btn br-btn--pieno" href={mandami}>Invia il link a te stesso</a>
-        <a class="br-btn" href={base} data-apri-comunque>Aprila qui comunque</a>
+      <div class="br-ventaglio" aria-hidden="true">
+        <img src={`${base}miniature/lettura/d-attribuzione.jpg`} alt="" loading="lazy" decoding="async" />
+        <img src={`${base}miniature/lettura/d-flusso.jpg`} alt="" loading="lazy" decoding="async" />
+        <img src={`${base}miniature/lettura/d-innesto.jpg`} alt="" loading="lazy" decoding="async" />
+      </div>
+      <div class="br-pc-testo">
+        <h2 class="br-h" id="br-pc-t">Questo è solo il riassunto</h2>
+        <p class="br-l">La versione completa mostra, per ogni momento, le schermate dei prodotti e quello che succede nei sistemi della banca. È pensata per uno schermo grande.</p>
+        <div class="br-az">
+          <a class="br-btn br-btn--pieno" href={mandami}>Invia il link a te stesso</a>
+          <a class="br-btn" href={base} data-apri-comunque>Aprila qui comunque</a>
+        </div>
       </div>
     </section>
 
-    <section class="br-pg br-parl" aria-labelledby="br-parl-t">
-      <h2 class="br-h" id="br-parl-t">Parliamone</h2>
-      <p class="br-l">Bastano due righe, su un momento di Giulia, su un prodotto o su come si collega ai sistemi della banca.</p>
-      <Contatti class="br-cont" />
-      <p class="br-nota">Le scene sono generate con Adobe Firefly; il ritratto di Giulia è una foto di repertorio. Contiamo quante volte questa pagina viene aperta, giorno per giorno. Non registriamo chi la apre.</p>
+    {/* PARLIAMONE: la scena del telefono sul davanzale, poi le tre persone in righe. */}
+    <section class="br-pg br-m br-parl" aria-labelledby="br-parl-t">
+      <div class="br-scena br-scena--parl">
+        <Image class="br-scena-foto" src={finestra} widths={[480, 800]} sizes="100vw" alt="" loading="lazy" />
+        <p class="br-ff"><span class="adb-tile" role="img" aria-label="Adobe"></span>Firefly</p>
+        <div class="br-scena-t">
+          <h2 class="br-m-ora" id="br-parl-t">Parliamone</h2>
+          <p class="br-m-dove">Bastano due righe, su un momento di Giulia, su un prodotto o su come si collega ai sistemi della banca.</p>
+        </div>
+      </div>
+      <ul class="br-pers">
+        {CONTATTI.map((c) => (
+          <li class="br-per">
+            <span class="br-per-ft" style={`--ritratto: url('${c.foto.src}')`} aria-hidden="true"></span>
+            <span class="br-per-chi"><strong>{c.nome}</strong><span>{c.ruolo}</span></span>
+            <span class="br-per-az">
+              <a class="br-per-a" href={mail(c.email)}>Scrivi</a>
+              {c.whatsapp && <a class="br-per-a" href={linkWhatsApp(c.whatsapp, TESTO_WHATSAPP)} target="_blank" rel="noopener">WhatsApp</a>}
+            </span>
+          </li>
+        ))}
+      </ul>
     </section>
+
+    {/* IL PIEDE: chi l'ha preparata, da dove vengono le immagini, che cosa si conta. */}
+    <footer class="br-piede">
+      <CoBrand variant="hero" class="br-piede-lockup edf-cobrand--on-dark" />
+      <p class="br-piede-k">Storia preparata dal team Adobe Italia per Intesa Sanpaolo</p>
+      <dl class="br-piede-dl">
+        <div><dt>Immagini</dt><dd>Le scene sono generate con Adobe Firefly. Il ritratto di Giulia è una foto di repertorio.</dd></div>
+        <div><dt>Misura</dt><dd>Contiamo quante volte questa pagina viene aperta, giorno per giorno. Non registriamo chi la apre.</dd></div>
+      </dl>
+    </footer>
   </main>
   <ContaAperture progetto="intesa-storia" pagina="breve" />
 </BaseLayout>
@@ -120,8 +178,7 @@ const scena = (nome: string) => SCENE[`../assets/generated/${nome}.webp`]?.defau
     /* Il filo dei momenti e l'arrivo del mockup: si accendono quando un momento
        occupa più di metà schermo. Senza IntersectionObserver tutto resta visibile. */
     if (!('IntersectionObserver' in window)) return;
-    var root = document.documentElement;
-    root.classList.add('br-vivo');
+    document.documentElement.classList.add('br-vivo');
     var filo = document.querySelector('.br-filo');
     var io = new IntersectionObserver(function (voci) {
       voci.forEach(function (v) {
@@ -142,14 +199,13 @@ const scena = (nome: string) => SCENE[`../assets/generated/${nome}.webp`]?.defau
 
 <style>
   /* Lo sfoglio: la pagina si aggancia all'inizio di ogni schermata. `mandatory`
-     regge perché OGNI blocco è un punto d'aggancio; un blocco più alto dello
-     schermo si scorre lo stesso al suo interno. */
+     regge perché OGNI blocco è un punto d'aggancio (il piede si aggancia in fondo). */
   :global(html:has(.br)) { scroll-snap-type: y mandatory; background: var(--color-night); }
   .br { color: var(--color-paper); font-family: var(--font-body); font-size: 1rem; line-height: 1.5; background: var(--color-night); }
   .br ::selection { background: var(--color-verde-chiaro); color: var(--color-night); }
   .br-pg {
     position: relative; min-height: 100svh; scroll-snap-align: start;
-    padding: max(1.6rem, env(safe-area-inset-top)) 1.25rem max(1.8rem, env(safe-area-inset-bottom));
+    padding: max(1.6rem, env(safe-area-inset-top)) 1.25rem max(1.6rem, env(safe-area-inset-bottom));
     display: flex; flex-direction: column;
   }
 
@@ -180,12 +236,19 @@ const scena = (nome: string) => SCENE[`../assets/generated/${nome}.webp`]?.defau
   /* ── Il prologo ─────────────────────────────────────────────── */
   .br-pro { justify-content: center; background: linear-gradient(180deg, var(--color-night) 0%, var(--color-night-2) 100%); }
   .br-pro > * { width: 100%; max-width: 32rem; margin-inline: auto; }
-  .br-pro-t { margin-bottom: 1rem; font-family: var(--font-display); font-weight: 700; font-size: 2rem; line-height: 1.1; letter-spacing: -0.015em; }
+  .br-pro > .br-pill { width: fit-content; max-width: none; margin-inline: 0 auto; }
+  .br-pro-t { margin-bottom: 1rem; font-family: var(--font-display); font-weight: 700; font-size: 2rem; line-height: 1.15; letter-spacing: -0.015em; }
+  .br-pro-t { margin-bottom: 0.55rem; }
+  .br-pill {
+    display: block; width: fit-content; margin: 0 0 1rem; padding: 0.15rem 0.6rem; border-radius: 999px;
+    border: 1px solid rgb(185 230 163 / 0.55); color: var(--color-verde-chiaro);
+    font-family: var(--font-body); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.02em; white-space: nowrap;
+  }
   .br-pro-l { margin-top: 0; margin-bottom: 0; font-size: 1.1rem; line-height: 1.55; color: rgb(255 255 255 / 0.9); text-wrap: pretty; }
   .br-pro-l + .br-pro-l { margin-top: 0.75rem; }
-  .br-indice { list-style: none; margin-top: 1.8rem; padding: 0; border-top: 1px solid rgb(255 255 255 / 0.16); }
+  .br-indice { list-style: none; margin-top: 1.2rem; padding: 0; border-top: 1px solid rgb(255 255 255 / 0.16); }
   .br-indice a {
-    display: grid; grid-template-columns: 2.6rem 1fr; align-items: baseline; gap: 0.4rem; min-height: 48px; padding: 0.55rem 0;
+    display: grid; grid-template-columns: 2.6rem 1fr; align-items: baseline; gap: 0.4rem; min-height: 44px; padding: 0.3rem 0;
     border-bottom: 1px solid rgb(255 255 255 / 0.1); color: var(--color-paper); text-decoration: none;
   }
   .br-ind-n { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; color: var(--color-verde-chiaro); font-variant-numeric: tabular-nums; }
@@ -193,34 +256,44 @@ const scena = (nome: string) => SCENE[`../assets/generated/${nome}.webp`]?.defau
   .br-ind-t small { display: block; font-size: 1rem; font-weight: 400; color: rgb(255 255 255 / 0.68); }
   .br-indice a:focus-visible { outline: 2px solid var(--color-verde-chiaro); outline-offset: 2px; }
 
-  /* ── Il momento: la scena in alto, il mockup che sale sopra, le due righe ── */
-  .br-m { padding: 0 0 max(1.6rem, env(safe-area-inset-bottom)); }
-  .br-m-scena { position: relative; height: 34svh; min-height: 15rem; overflow: hidden; }
-  .br-m-foto { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; }
-  .br-m-scena::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(13 41 1 / 0.35) 0%, rgb(13 41 1 / 0) 35%, rgb(13 41 1 / 0.7) 78%, var(--color-night) 100%); }
+  /* ── La scena (momenti e «Parliamone») ──────────────────────── */
+  .br-m { padding: 0 0 max(1.2rem, env(safe-area-inset-bottom)); }
+  .br-scena { position: relative; flex: none; height: 30svh; min-height: 11rem; overflow: hidden; }
+  .br-scena-foto { width: 100%; height: 100%; object-fit: cover; object-position: 50% 45%; }
+  .br-scena::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(13 41 1 / 0.4) 0%, rgb(13 41 1 / 0) 32%, rgb(13 41 1 / 0.72) 76%, var(--color-night) 100%); }
+  .br-scena-t { position: absolute; z-index: 1; left: 1.25rem; right: 1.25rem; bottom: 2.9rem; }
+  .br-m-ora { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; line-height: 1.1; text-shadow: 0 2px 14px rgb(0 0 0 / 0.5); }
+  .br-m-dove { margin: 0.2rem 0 0; font-size: 1.05rem; color: rgb(255 255 255 / 0.9); text-shadow: 0 2px 10px rgb(0 0 0 / 0.55); }
   .br-m-n {
     position: absolute; z-index: 1; right: 1rem; top: max(0.9rem, env(safe-area-inset-top)); margin: 0;
-    font-family: var(--font-display); font-weight: 700; font-size: 5.5rem; line-height: 1; letter-spacing: -0.04em;
+    font-family: var(--font-display); font-weight: 700; font-size: 4.6rem; line-height: 1; letter-spacing: -0.04em;
     color: transparent; -webkit-text-stroke: 1.5px rgb(255 255 255 / 0.85); font-variant-numeric: tabular-nums;
   }
-  .br-m-quando { position: absolute; z-index: 1; left: 1.25rem; right: 1.25rem; bottom: 3.6rem; }
-  .br-m-ora { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 1.7rem; line-height: 1.1; text-shadow: 0 2px 14px rgb(0 0 0 / 0.5); }
-  .br-m-dove { margin: 0.2rem 0 0; font-size: 1.05rem; color: rgb(255 255 255 / 0.88); text-shadow: 0 2px 10px rgb(0 0 0 / 0.5); }
-  .br-m-mock {
-    position: relative; z-index: 2; display: block; width: calc(100% - 2.5rem); max-width: 30rem; height: auto; margin: -2.6rem auto 0;
-    border-radius: 12px; box-shadow: 0 1.2rem 2.4rem -1rem rgb(0 0 0 / 0.75), 0 0 0 1px rgb(255 255 255 / 0.12);
+  /* La firma di Firefly sulla scena: piccola, a sinistra sotto il filo, mai sul soggetto. */
+  .br-ff {
+    position: absolute; z-index: 1; left: 0.9rem; top: max(1.1rem, calc(env(safe-area-inset-top) + 0.6rem)); margin: 0;
+    display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.18rem 0.55rem 0.18rem 0.3rem; border-radius: 999px;
+    background: rgb(10 22 4 / 0.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; color: rgb(255 255 255 / 0.9);
   }
-  .br-m-testo { width: 100%; max-width: 32rem; margin: 0 auto; padding: 0.4rem 1.25rem 0; }
-  .br-m-chi { margin: 1rem 0 0; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-verde-chiaro); }
-  .br-m-r { margin: 0.2rem 0 0; font-size: 1.12rem; font-weight: 600; line-height: 1.35; text-wrap: pretty; }
-  .br-m-pro { display: flex; align-items: center; gap: 0.7rem; margin: 1.1rem 0 0; padding-top: 0.9rem; border-top: 1px solid rgb(255 255 255 / 0.14); }
-  .br-m-adb { font-size: 1.15rem; }
+  .br-ff .adb-tile { font-size: 0.78rem; }
+
+  /* Il mockup sale sulla scena; alto al massimo il 30% dello schermo, così la riga del
+     prodotto resta dentro anche su un telefono vero con le barre del browser. */
+  .br-m-mock {
+    position: relative; z-index: 2; display: block; width: auto; max-width: calc(100% - 2.5rem); max-height: 30svh; height: auto;
+    margin: -2.2rem auto 0; border-radius: 12px; box-shadow: 0 1.2rem 2.4rem -1rem rgb(0 0 0 / 0.75), 0 0 0 1px rgb(255 255 255 / 0.12);
+  }
+  .br-m-testo { width: 100%; max-width: 32rem; margin: 0 auto; padding: 0 1.25rem; }
+  .br-m-chi { margin: 0.75rem 0 0; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-verde-chiaro); }
+  .br-m-r { margin: 0.12rem 0 0; font-size: 1.05rem; font-weight: 600; line-height: 1.32; text-wrap: pretty; }
+  .br-m-pro { display: flex; align-items: center; gap: 0.7rem; margin: 0.85rem 0 0; padding-top: 0.75rem; border-top: 1px solid rgb(255 255 255 / 0.14); }
+  .br-m-adb { font-size: 1.1rem; }
   .br-m-pro-t { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
   .br-m-pro-t strong { font-size: 1rem; font-weight: 700; }
-  .br-m-pro-t span { font-size: 1rem; color: rgb(255 255 255 / 0.72); }
+  .br-m-pro-t span { font-size: 1rem; color: rgb(255 255 255 / 0.74); }
 
-  /* L'unico movimento pensato: il mockup sale sulla scena quando il momento arriva.
-     Senza JavaScript (o con il movimento ridotto) è già al suo posto. */
+  /* L'unico movimento pensato: il mockup sale sulla scena quando il momento arriva. */
   @media (prefers-reduced-motion: no-preference) {
     :global(html.br-vivo) .br-m .br-m-mock { opacity: 0; transform: translateY(2rem) scale(0.97); }
     :global(html.br-vivo) .br-m[data-visto] .br-m-mock { opacity: 1; transform: none; transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -236,20 +309,60 @@ const scena = (nome: string) => SCENE[`../assets/generated/${nome}.webp`]?.defau
   .br-filo li { flex: 1; height: 3px; border-radius: 2px; background: rgb(255 255 255 / 0.28); transition: background-color 0.35s ease; }
   .br-filo li[data-fatto] { background: var(--color-paper); }
 
-  /* ── La storia intera, «Parliamone» ─────────────────────────── */
-  .br-pc, .br-parl { justify-content: center; }
-  .br-pc > *, .br-parl > * { width: 100%; max-width: 32rem; margin-inline: auto; }
-  .br-pc { background: linear-gradient(180deg, var(--color-night) 0%, var(--color-night-2) 100%); }
+  /* ── La versione intera: tre schermate a ventaglio, poi il testo ── */
+  .br-pc { justify-content: center; gap: 2rem; background: radial-gradient(120% 70% at 50% 18%, var(--color-night-2) 0%, var(--color-night) 70%); }
+  .br-ventaglio { position: relative; width: 100%; max-width: 30rem; margin: 0 auto; aspect-ratio: 16 / 11; }
+  .br-ventaglio img {
+    position: absolute; left: 50%; top: 50%; width: 82%; height: auto; border-radius: 8px;
+    box-shadow: 0 1rem 2.4rem -0.8rem rgb(0 0 0 / 0.8), 0 0 0 1px rgb(255 255 255 / 0.14);
+  }
+  .br-ventaglio img:nth-child(1) { transform: translate(-60%, -66%) rotate(-7deg); opacity: 0.6; }
+  .br-ventaglio img:nth-child(2) { transform: translate(-40%, -56%) rotate(5deg); opacity: 0.8; }
+  .br-ventaglio img:nth-child(3) { transform: translate(-50%, -36%) rotate(-1deg); }
+  .br-pc-testo { width: 100%; max-width: 32rem; margin: 0 auto; }
   .br-h { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; line-height: 1.18; text-wrap: balance; }
   .br-l { margin: 0.7rem 0 0; font-size: 1.05rem; color: rgb(255 255 255 / 0.88); text-wrap: pretty; }
-  .br-cont { margin-top: 1.4rem; }
-  .br-az { display: grid; gap: 0.75rem; margin-top: 1.5rem; }
+  .br-az { display: grid; gap: 0.75rem; margin-top: 1.4rem; }
   .br-btn {
     display: flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 1.2rem;
     border-radius: 999px; border: 1.5px solid rgb(255 255 255 / 0.6);
     color: var(--color-paper); font-weight: 600; text-decoration: none; text-align: center;
   }
   .br-btn--pieno { background: var(--color-cta); border-color: var(--color-cta); color: var(--color-on-cta); }
-  .br-btn:focus-visible, .br-sfoglia:focus-visible { outline: 2px solid var(--color-verde-chiaro); outline-offset: 3px; }
-  .br-nota { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgb(255 255 255 / 0.16); font-size: 1rem; line-height: 1.5; color: rgb(255 255 255 / 0.66); }
+  .br-btn:focus-visible, .br-sfoglia:focus-visible, .br-per-a:focus-visible { outline: 2px solid var(--color-verde-chiaro); outline-offset: 3px; }
+
+  /* ── «Parliamone»: la scena, poi le tre persone in righe compatte ── */
+  .br-scena--parl { height: 36svh; }
+  .br-scena--parl .br-scena-t { bottom: 1.4rem; }
+  .br-scena--parl .br-m-dove { font-size: 1rem; line-height: 1.45; }
+  .br-pers { list-style: none; margin: 0.4rem 0 0; padding: 0 1.25rem; display: grid; gap: 0.6rem; width: 100%; max-width: 34rem; margin-inline: auto; }
+  .br-per {
+    display: grid; grid-template-columns: 3.4rem minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 0.85rem; row-gap: 0.5rem; align-items: center;
+    padding: 0.75rem 0.85rem; border-radius: 14px; background: rgb(255 255 255 / 0.06); border: 1px solid rgb(255 255 255 / 0.12);
+  }
+  .br-per-ft {
+    grid-row: 1 / span 2; width: 3.4rem; aspect-ratio: 1; border-radius: 999px;
+    background: var(--ritratto) center / 100% no-repeat, radial-gradient(circle at 50% 36%, #4a8a30 0%, #23571a 48%, #0f2f05 100%);
+    box-shadow: 0 0 0 2px rgb(255 255 255 / 0.2);
+  }
+  .br-per-chi { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+  .br-per-chi strong { font-size: 1.05rem; }
+  .br-per-chi span { font-size: 1rem; color: rgb(255 255 255 / 0.72); }
+  .br-per-az { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .br-per-a {
+    display: inline-flex; align-items: center; min-height: 40px; padding: 0 0.95rem; border-radius: 999px;
+    border: 1.5px solid rgb(255 255 255 / 0.5); color: var(--color-paper); font-size: 0.95rem; font-weight: 600; text-decoration: none;
+  }
+
+  /* ── Il piede: un footer vero, piccolo e separato ───────────── */
+  .br-piede {
+    scroll-snap-align: end; padding: 2rem 1.25rem max(2rem, calc(env(safe-area-inset-bottom) + 1rem));
+    border-top: 1px solid rgb(255 255 255 / 0.14); background: #091d01; color: rgb(255 255 255 / 0.7);
+  }
+  .br-piede > * { max-width: 34rem; margin-inline: auto; }
+  .br-piede-lockup { justify-content: flex-start; transform: scale(0.72); transform-origin: left center; margin-bottom: 0.4rem; }
+  .br-piede-k { margin: 0 0 1rem; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.06em; color: #9fd68a; }
+  .br-piede-dl { display: grid; gap: 0.8rem; margin: 0; }
+  .br-piede-dl dt { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgb(255 255 255 / 0.5); }
+  .br-piede-dl dd { margin: 0.15rem 0 0; font-size: 0.9rem; line-height: 1.5; }
 </style>

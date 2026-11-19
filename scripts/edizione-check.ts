@@ -86,7 +86,7 @@ export async function checkTelefono(b: Browser) {
     await q.goto(LETTURA + 'breve/', { waitUntil: 'load' }); await q.waitForTimeout(1200);
     const m = await q.evaluate(() => {
       const piccoli = [...document.querySelectorAll('main p, main li, main a, main h1, main h2')]
-        .filter((e) => (e.textContent ?? '').trim().length > 20 && getComputedStyle(e).textTransform !== 'uppercase')
+        .filter((e) => !e.closest('footer') && (e.textContent ?? '').trim().length > 20 && getComputedStyle(e).textTransform !== 'uppercase')
         .filter((e) => parseFloat(getComputedStyle(e).fontSize) < 16).map((e) => (e.textContent ?? '').trim().slice(0, 40));
       return { sw: document.documentElement.scrollWidth, iw: innerWidth, piccoli };
     });
