@@ -1,12 +1,25 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import { fileURLToPath } from 'url';
+import { edizioneIntegration } from '../../packages/core/src/integrations/edizione.ts';
+
+/* Due edizioni dallo stesso sorgente (spec 2026-11-19-edizione-lettura):
+   `sala` è il deck proiettato, `lettura` (PUBLIC_EDF_EDIZIONE=lettura) è il
+   link da distribuire, su un percorso suo e senza le pagine di chi presenta. */
+const LETTURA = (process.env.PUBLIC_EDF_EDIZIONE ?? '').trim().toLowerCase() === 'lettura';
 
 export default defineConfig({
   site: 'https://agargiulo-adbe.github.io',
-  base: '/experience-design-factory/intesa-esperienza-cliente',
+  base: LETTURA ? '/experience-design-factory/intesa-storia' : '/experience-design-factory/intesa-esperienza-cliente',
+  outDir: LETTURA ? './dist-lettura' : './dist',
   output: 'static',
   trailingSlash: 'always',
+  integrations: [
+    edizioneIntegration({
+      soloSala: ['relatore', 'presentatore', 'admin', 'analytics', 'circolo', 'risultati-old', 'dieci-minuti', 'prossimi-passi'],
+      soloLettura: ['parliamone', 'breve'],
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
     resolve: {
