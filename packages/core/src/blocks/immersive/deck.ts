@@ -26,6 +26,7 @@
  *    experience a dominante scura `--surface-inverse` è il fondo CHIARO.
  */
 import { prepareSlide, playSlide } from './animations';
+import { pianoRivelazione, edizioneLettura } from './autoreveal';
 
 const SLIDE_MS = 500;
 
@@ -218,12 +219,15 @@ export class Deck {
   /** Step-aware advance: reveal a sub-step if any is pending, else next slide. */
   stepForward() {
     if (this.locked) return;
+    // In lettura i passi si aprono da soli: la freccia va alla slide dopo.
+    if (edizioneLettura()) { this.next(); return; }
     if (!this.revealSubstep()) this.next();
   }
 
   /** Step-aware retreat: hide a sub-step if any is shown, else previous slide. */
   stepBack() {
     if (this.locked) return;
+    if (edizioneLettura()) { this.prev(); return; }
     if (!this.hideSubstep()) this.prev();
   }
 
@@ -299,10 +303,31 @@ export class Deck {
 
   private scheduleActivate(delay: number) {
     window.clearTimeout(this.playTimer);
+    this.clearAutoReveal();
     this.playTimer = window.setTimeout(() => {
       if (this.destroyed) return;
       void playSlide(this.slides[this.index]);
+      this.autoReveal();
     }, delay);
+  }
+
+  // ── Edizione «lettura»: i sotto-passi si aprono da soli ─────────
+  private revealTimers: number[] = [];
+
+  private clearAutoReveal() {
+    this.revealTimers.forEach(t => window.clearTimeout(t));
+    this.revealTimers = [];
+  }
+
+  private autoReveal() {
+    if (!edizioneLettura() || reduced) return; // con movimento ridotto il CSS li mostra già tutti
+    const slide = this.slides[this.index];
+    if (!slide) return;
+    const piano = pianoRivelazione(this.substepsOf(slide).length, false);
+    this.revealTimers = piano.map(ms => window.setTimeout(() => {
+      if (this.destroyed || this.slides[this.index] !== slide) return;
+      this.revealSubstep();
+    }, ms));
   }
 
   // ── Layout ──────────────────────────────────────────────────────
