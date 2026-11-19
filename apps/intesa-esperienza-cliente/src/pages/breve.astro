@@ -1,0 +1,106 @@
+---
+/**
+ * LA PAGINA BREVE — il primo livello sul telefono (spec 2026-11-19, §3).
+ *
+ * Chi apre il link dal telefono, di solito dalla posta e per pochi secondi,
+ * non trova il deck (che sul telefono non si legge) ma questa pagina che si
+ * scorre: la storia in sette momenti, le tre persone da contattare, e il
+ * rimando al computer per la versione intera. Nessun testo nuovo sui momenti:
+ * le righe vengono da `momenti.ts`, le stesse delle slide.
+ * Esiste solo nella build lettura. Non è un DeckContainer: è una pagina.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CoBrand from '../components/CoBrand.astro';
+import Contatti from '../components/Contatti.astro';
+import { SITE } from '../data/site';
+import { TITOLO_INCONTRO } from '../data/agenda';
+import { MOMENTI, TITOLO_GIRO } from '../data/momenti';
+import { EXPERIENCE_TYPES } from '@edf/core/data/experienceTypes';
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const intero = new URL(base, Astro.site).href;
+const tipo = EXPERIENCE_TYPES[SITE.type];
+const mandami = `mailto:?subject=${encodeURIComponent('Adobe × Intesa Sanpaolo · la storia da leggere al computer')}&body=${encodeURIComponent(intero)}`;
+---
+<BaseLayout title="In breve">
+  <main class="br">
+    <header class="br-testa">
+      <CoBrand variant="hero" class="br-lockup edf-cobrand--on-dark" />
+      <h1 class="br-t">{TITOLO_INCONTRO.t.it}</h1>
+      <p class="br-s">{TITOLO_INCONTRO.s.it}</p>
+      <p class="br-tipo">{tipo.coverLine.it}</p>
+    </header>
+
+    <section class="br-giro" aria-labelledby="br-giro-t">
+      <h2 class="br-h" id="br-giro-t">{TITOLO_GIRO.it}</h2>
+      <ol class="br-mom">
+        {MOMENTI.map((m, i) => (
+          <li class="br-m">
+            <p class="br-m-k"><span class="br-m-n">{m.n}</span> {m.ora.it} · {m.dove.it}</p>
+            <img class="br-m-img" src={`${base}miniature/lettura/m-0${i + 1}.jpg`} alt="" loading="lazy" decoding="async" />
+            <p class="br-m-chi">Giulia</p>
+            <p class="br-m-r">{m.cliente.titolo.it}</p>
+            <p class="br-m-chi">La banca</p>
+            <p class="br-m-r">{m.interno.titolo.it}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="br-parl" aria-labelledby="br-parl-t">
+      <h2 class="br-h" id="br-parl-t">Parliamone</h2>
+      <p class="br-l">Una domanda su un momento di Giulia, su un prodotto, su come si innesta nei vostri sistemi: scriveteci, anche solo una riga.</p>
+      <Contatti class="br-cont" />
+    </section>
+
+    <section class="br-pc" aria-labelledby="br-pc-t">
+      <h2 class="br-h" id="br-pc-t">La storia completa si legge meglio su un computer</h2>
+      <p class="br-l">Ci sono le schermate dei prodotti, momento per momento, e come si innestano nei vostri sistemi.</p>
+      <div class="br-az">
+        <a class="br-btn br-btn--pieno" href={mandami}>Mandatemela per email</a>
+        <a class="br-btn" href={base} data-apri-comunque>Apri comunque qui</a>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<script is:inline>
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest && e.target.closest('[data-apri-comunque]');
+    if (!a) return;
+    try { sessionStorage.setItem('edf:apri-comunque', '1'); } catch (_) {}
+  });
+</script>
+
+<style>
+  .br {
+    min-height: 100dvh; padding: 2.2rem 1.15rem 3rem;
+    background: linear-gradient(180deg, var(--color-night-2) 0%, var(--color-night) 60%);
+    color: var(--color-paper); font-family: var(--font-body); font-size: 1rem; line-height: 1.5;
+  }
+  .br > * { max-width: 34rem; margin-inline: auto; }
+  .br-testa { padding-bottom: 2rem; border-bottom: 1px solid rgba(255, 255, 255, 0.16); }
+  .br-lockup { justify-content: flex-start; margin-bottom: 1.6rem; }
+  .br-t { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 1.95rem; line-height: 1.12; letter-spacing: -0.01em; text-wrap: balance; }
+  .br-s { margin: 0.5rem 0 0; font-size: 1.15rem; color: var(--color-verde-chiaro); }
+  .br-tipo { margin: 1rem 0 0; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255, 255, 255, 0.72); }
+  .br-h { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: 1.4rem; line-height: 1.2; text-wrap: balance; }
+  .br-l { margin: 0.6rem 0 0; color: rgba(255, 255, 255, 0.86); }
+  .br-giro, .br-parl, .br-pc { padding-top: 2.2rem; }
+  .br-mom { list-style: none; margin: 1.2rem 0 0; padding: 0; display: grid; gap: 1.6rem; }
+  .br-m { padding: 1rem; border-radius: 10px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); }
+  .br-m-k { margin: 0 0 0.75rem; font-size: 1rem; color: rgba(255, 255, 255, 0.78); }
+  .br-m-n { display: inline-block; min-width: 1.9rem; font-weight: 700; color: var(--color-verde-chiaro); }
+  .br-m-img { display: block; width: 100%; height: auto; border-radius: 8px; margin-bottom: 0.9rem; }
+  .br-m-chi { margin: 0.7rem 0 0; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-verde-chiaro); }
+  .br-m-r { margin: 0.15rem 0 0; font-size: 1.05rem; font-weight: 600; line-height: 1.35; }
+  .br-cont { margin-top: 1.4rem; }
+  .br-az { display: grid; gap: 0.75rem; margin-top: 1.2rem; }
+  .br-btn {
+    display: flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 1.2rem;
+    border-radius: 999px; border: 1.5px solid rgba(255, 255, 255, 0.6);
+    color: var(--color-paper); font-weight: 600; text-decoration: none;
+  }
+  .br-btn--pieno { background: var(--color-cta); border-color: var(--color-cta); color: var(--color-on-cta); }
+  .br-btn:focus-visible { outline: 2px solid var(--color-verde-chiaro); outline-offset: 3px; }
+</style>

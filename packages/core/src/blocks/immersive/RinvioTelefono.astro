@@ -1,0 +1,21 @@
+---
+/**
+ * Edizione da distribuire: su un telefono il deck non si apre, si apre la
+ * pagina breve (`destinazione`). Gira in <head>, prima che la pagina si
+ * disegni, così chi apre il link non vede un deck rotto nemmeno per un istante.
+ * La regola è `deveRinviare` (testata): qui se ne inietta il sorgente, così il
+ * browser esegue esattamente la stessa funzione dei test.
+ * Usa le misure dello SCHERMO, non della finestra: in <head> il viewport
+ * del telefono può valere ancora 980px. «Apri comunque qui» scrive `edf:apri-comunque` in sessionStorage.
+ */
+import { deveRinviare } from '../../utils/telefono';
+interface Props { destinazione: string }
+const { destinazione } = Astro.props;
+const codice = `(function(){try{
+  var regola=${deveRinviare.toString()};
+  var apri=false;try{apri=sessionStorage.getItem('edf:apri-comunque')==='1';}catch(e){}
+  var coarse=window.matchMedia&&matchMedia('(pointer: coarse)').matches;
+  if(regola({larghezza:screen.width,altezza:screen.height,coarse:coarse,apriComunque:apri})){location.replace(${JSON.stringify(destinazione)});}
+}catch(e){}})();`;
+---
+<script is:inline set:html={codice}></script>

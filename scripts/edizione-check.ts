@@ -61,7 +61,40 @@ export async function checkParliamone(b: Browser) {
   }
 }
 
-const CHECKS: Record<string, (b: Browser) => Promise<void>> = { autoreveal: checkAutoreveal, parliamone: checkParliamone };
+const SHOTS = process.env.SHOTS_DIR ?? '';
+const telefono = (w: number, h: number) => ({ viewport: { width: w, height: h }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
+
+export async function checkTelefono(b: Browser) {
+  for (const [w, h, atteso] of [[390, 844, 'breve'], [844, 390, 'breve'], [820, 1180, 'momenti']] as const) {
+    const c = await b.newContext(telefono(w, h)); const p = await c.newPage();
+    await p.goto(LETTURA + 'momenti/', { waitUntil: 'load' }); await p.waitForTimeout(800);
+    ok(`telefono ${w}×${h}: link profondo → ${atteso}`, p.url().includes(`/${atteso}/`), p.url());
+    await c.close();
+  }
+  const c = await b.newContext(telefono(390, 844)); const p = await c.newPage();
+  await p.goto(LETTURA, { waitUntil: 'load' }); await p.waitForTimeout(600);
+  await p.click('[data-apri-comunque]'); await p.waitForTimeout(1500);
+  ok('telefono: «apri comunque» porta alla copertina', !p.url().includes('/breve/'), p.url());
+  await p.goto(LETTURA + 'momenti/', { waitUntil: 'load' }); await p.waitForTimeout(800);
+  ok('telefono: dopo «apri comunque» niente rinvio', p.url().includes('/momenti/'), p.url());
+  await c.close();
+  for (const [w, h] of [[360, 740], [390, 844], [430, 932]] as const) {
+    const c2 = await b.newContext(telefono(w, h)); const q = await c2.newPage();
+    await q.goto(LETTURA + 'breve/', { waitUntil: 'load' }); await q.waitForTimeout(1200);
+    const m = await q.evaluate(() => {
+      const piccoli = [...document.querySelectorAll('main p, main li, main a, main h1, main h2')]
+        .filter((e) => (e.textContent ?? '').trim().length > 20 && getComputedStyle(e).textTransform !== 'uppercase')
+        .filter((e) => parseFloat(getComputedStyle(e).fontSize) < 16).map((e) => (e.textContent ?? '').trim().slice(0, 40));
+      return { sw: document.documentElement.scrollWidth, iw: innerWidth, piccoli };
+    });
+    ok(`breve ${w}: niente scorrimento orizzontale`, m.sw <= m.iw, `${m.sw} > ${m.iw}`);
+    ok(`breve ${w}: corpo ≥ 16px`, m.piccoli.length === 0, m.piccoli.join(' | '));
+    if (SHOTS) await q.screenshot({ path: `${SHOTS}/breve-${w}.png`, fullPage: true });
+    await c2.close();
+  }
+}
+
+const CHECKS: Record<string, (b: Browser) => Promise<void>> = { autoreveal: checkAutoreveal, parliamone: checkParliamone, telefono: checkTelefono };
 
 const scelti = process.argv.slice(2);
 const b = await chromium.launch();

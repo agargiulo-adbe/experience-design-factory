@@ -1,5 +1,6 @@
 ---
 import { EDIZIONE } from '@edf/core/utils/edizione';
+import RinvioTelefono from '@edf/core/blocks/immersive/RinvioTelefono.astro';
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 import CoBrand from '../components/CoBrand.astro';
@@ -65,6 +66,8 @@ const docTitle = (isHome || title === SITE_NAME || title === SITE.name) ? SITE_N
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    {/* Edizione da distribuire: un telefono va alla pagina breve, mai al deck. */}
+    {EDIZIONE === 'lettura' && !/\/breve\/?$/.test(Astro.url.pathname) && <RinvioTelefono destinazione={`${base.replace(/\/?$/, '/')}breve/`} />}
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <title>{docTitle}</title>
