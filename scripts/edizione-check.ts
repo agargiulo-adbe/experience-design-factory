@@ -16,12 +16,14 @@ const ok = (nome: string, cond: boolean, motivo = '') => {
 async function statoPassi(b: Browser, base: string) {
   const p = await b.newPage({ viewport: { width: 1512, height: 860 } });
   await p.goto(base + 'momenti/#slide-m-03', { waitUntil: 'load' });
-  await p.waitForTimeout(3500);
   const s = () => p.evaluate(() => {
     const d = (window as any).__edfDeck; const sl = d.slides[d.index] as HTMLElement;
     const passi = [...sl.querySelectorAll('[data-substep]')];
     return { index: d.index as number, n: passi.length, aperti: passi.filter((x) => x.hasAttribute('data-substep-active')).length };
   });
+  // Il ritmo di lettura apre un passo ogni 1,6 s: si aspetta finché sono tutti aperti (al massimo 12 s).
+  for (let t0 = Date.now(); Date.now() - t0 < 12000; await p.waitForTimeout(400)) { const x = await s(); if (x.n && x.aperti === x.n) break; }
+  await p.waitForTimeout(base === SALA ? 3500 : 0);
   return { p, s };
 }
 
@@ -32,7 +34,8 @@ export async function checkAutoreveal(b: Browser) {
   await p.keyboard.press('ArrowLeft'); await p.waitForTimeout(1200);
   const b1 = await s();
   ok('lettura: indietro va alla slide prima', b1.index === a.index - 1, `${a.index} → ${b1.index}`);
-  await p.keyboard.press('ArrowRight'); await p.waitForTimeout(3500);
+  await p.keyboard.press('ArrowRight');
+  for (let t0 = Date.now(); Date.now() - t0 < 12000; await p.waitForTimeout(400)) { const x = await s(); if (x.n && x.aperti === x.n) break; }
   const c = await s();
   ok('lettura: tornando, passi di nuovo aperti', c.index === a.index && c.aperti === c.n, JSON.stringify(c));
   await p.close();
@@ -157,7 +160,19 @@ export async function checkComeFunziona(b: Browser) {
   }
 }
 
-const CHECKS: Record<string, (b: Browser) => Promise<void>> = { autoreveal: checkAutoreveal, parliamone: checkParliamone, telefono: checkTelefono, rete: checkRete, sala: checkSala, comefunziona: checkComeFunziona };
+export async function checkRitmo(b: Browser) {
+  // Le slide in cui ogni passo è uno stato: il primo stato resta a vista prima del cambio.
+  const p = await b.newPage({ viewport: { width: 1512, height: 860 } });
+  await p.goto(LETTURA + 'messa-a-terra/#slide-attribuzione', { waitUntil: 'load' });
+  const aperti = () => p.evaluate(() => { const d = (window as any).__edfDeck; const sl = d.slides[d.index] as HTMLElement; return [...sl.querySelectorAll('[data-substep]')].filter((x) => x.hasAttribute('data-substep-active')).length; });
+  await p.waitForTimeout(2200);
+  ok('ritmo: a 2,2 s l\'attribuzione mostra ancora il primo stato', (await aperti()) === 0, `aperti=${await aperti()}`);
+  await p.waitForTimeout(5000);
+  ok('ritmo: entro 7 s tutti i passi aperti', (await aperti()) === 2, `aperti=${await aperti()}`);
+  await p.close();
+}
+
+const CHECKS: Record<string, (b: Browser) => Promise<void>> = { autoreveal: checkAutoreveal, parliamone: checkParliamone, telefono: checkTelefono, rete: checkRete, sala: checkSala, comefunziona: checkComeFunziona, ritmo: checkRitmo };
 
 const scelti = process.argv.slice(2);
 const b = await chromium.launch();

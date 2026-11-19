@@ -26,7 +26,7 @@
  *    experience a dominante scura `--surface-inverse` è il fondo CHIARO.
  */
 import { prepareSlide, playSlide } from './animations';
-import { pianoRivelazione, edizioneLettura } from './autoreveal';
+import { pianoRivelazione, edizioneLettura, ritmoDi } from './autoreveal';
 
 const SLIDE_MS = 500;
 
@@ -332,7 +332,7 @@ export class Deck {
     if (!edizioneLettura() || reduced) return; // con movimento ridotto il CSS li mostra già tutti
     const slide = this.slides[this.index];
     if (!slide) return;
-    const piano = pianoRivelazione(this.substepsOf(slide).length, false);
+    const piano = pianoRivelazione(this.substepsOf(slide).length, false, ritmoDi(slide));
     this.revealTimers = piano.map(ms => window.setTimeout(() => {
       if (this.destroyed || this.slides[this.index] !== slide) return;
       this.revealSubstep();
