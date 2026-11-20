@@ -15,6 +15,7 @@
 // La cartella DEVE essere nuova e vuota: un ciclo di una ripresa precedente rimasto vivo
 // continua a scrivere fotogrammi dove trova posto (successo il 17 nov 2026: si ferma con
 // `chmod a-w <cartella vecchia>`).
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions -- non è codice morto: è il corpo che si passa a `browser_run_code_unsafe`, che lo valuta come funzione.
 async (page) => {
   const CONFIG = {
     dir: '.playwright-mcp/rec-NOME',                     // relativa alla cwd della sessione
