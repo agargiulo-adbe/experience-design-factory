@@ -10,13 +10,20 @@
  * in silenzio. Lo stesso vale per `deveRinviare` in RinvioTelefono.
  * La frase in pagina dice «non registriamo»: la tabella non ha IP né ora, ma
  * i log di GitHub Pages e del gateway Supabase vedono l'IP come per ogni sito.
+ * SI CONTA SOLO IL SITO PUBBLICATO, E SOLO DA UN BROWSER VERO: niente localhost
+ * né anteprime (il nome host deve essere quello di `site`), niente browser
+ * pilotati (`navigator.webdriver`, cioè audit, screenshot e check). Fino al 20
+ * nov 2026 il contatore contava anche quelli, e le prime 136 aperture erano
+ * tutte nostre.
  */
 import { rigaApertura, type PaginaContata } from '../../utils/aperture';
 interface Props { progetto: string; pagina: PaginaContata }
 const { progetto, pagina } = Astro.props;
 const URL_DB = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
 const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+const HOST = Astro.site?.hostname ?? '';
 const codice = `(function(){try{
+  if(navigator.webdriver||location.hostname!==${JSON.stringify(HOST)})return;
   var riga=(${rigaApertura.toString()})(${JSON.stringify(progetto)},${JSON.stringify(pagina)},navigator.globalPrivacyControl===true);
   if(!riga)return;
   fetch(${JSON.stringify(URL_DB + '/rest/v1/aperture')},{method:'POST',keepalive:true,credentials:'omit',referrerPolicy:'no-referrer',
@@ -24,4 +31,4 @@ const codice = `(function(){try{
     body:JSON.stringify(riga)}).catch(function(){});
 }catch(e){}})();`;
 ---
-{URL_DB && CHIAVE && <script is:inline set:html={codice}></script>}
+{URL_DB && CHIAVE && HOST && <script is:inline set:html={codice}></script>}

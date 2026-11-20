@@ -103,10 +103,17 @@ export async function checkTelefono(b: Browser) {
 const ROTTE = ['', 'adobe/', 'scenario/', 'persona/', 'momenti/', 'messa-a-terra/', 'approfondimenti/', 'coworker/', 'risultati/', 'parliamone/'];
 const AMMESSI = /^(localhost|127\.0\.0\.1|agargiulo-adbe\.github\.io|github\.com|objects\.githubusercontent\.com|release-assets\.githubusercontent\.com|fonts\.googleapis\.com|fonts\.gstatic\.com|[a-z0-9-]+\.scene7\.com|[a-z0-9-]+\.supabase\.co)$/;
 
+/** Il contatore conta solo sul dominio pubblicato (ContaAperture.astro). */
+const PUBBLICATO = (u: string) => new URL(u).hostname === 'agargiulo-adbe.github.io';
+
 async function giro(b: Browser, opts: { mobile: boolean; gpc: boolean }) {
   const c = await b.newContext(opts.mobile ? telefono(390, 844) : { viewport: { width: 1512, height: 860 } });
   // Come stringa: tsx avvolge le funzioni con `__name`, che nel browser non esiste.
   if (opts.gpc) await c.addInitScript({ content: "Object.defineProperty(navigator, 'globalPrivacyControl', { get: function () { return true; } });" });
+  // Il contatore non conta i browser pilotati: qui si finge un browser vero, e la
+  // chiamata si ferma prima del database (prima del 20 nov il check scriveva lì).
+  await c.addInitScript({ content: "Object.defineProperty(navigator, 'webdriver', { get: function () { return false; } });" });
+  await c.route('**/rest/v1/aperture', (x) => x.fulfill({ status: 201, body: '' }));
   const richieste: { url: string; metodo: string; corpo: string | null; pagina: string }[] = [];
   let pagina = '';
   c.on('request', (r) => richieste.push({ url: r.url(), metodo: r.method(), corpo: r.postData(), pagina }));
@@ -125,7 +132,8 @@ export async function checkRete(b: Browser) {
     const estranei = [...new Set(r.map((x) => new URL(x.url).hostname).filter((h) => !AMMESSI.test(h)))];
     ok(`rete ${mobile ? 'telefono' : 'computer'}: solo domini ammessi`, estranei.length === 0, estranei.join(' '));
     const db = r.filter((x) => x.url.includes('.supabase.co'));
-    const attesa = mobile ? ['breve'] : ['copertina'];
+    // Il contatore parte solo sul sito pubblicato: contro un'anteprima locale non deve partire.
+    const attesa = !PUBBLICATO(LETTURA) ? [] : mobile ? ['breve'] : ['copertina'];
     ok(`rete ${mobile ? 'telefono' : 'computer'}: verso Supabase solo il contatore`,
       db.length === attesa.length && db.every((x) => x.metodo === 'POST' && x.url.endsWith('/rest/v1/aperture')),
       db.map((x) => `${x.metodo} ${x.url} @${x.pagina}`).join(' | '));
@@ -204,7 +212,7 @@ export async function checkInsieme(b: Browser) {
   // La versione A non ha né modulo né riepilogo.
   const a = await b.newPage({ viewport: { width: 1366, height: 768 } });
   await a.goto(LETTURA + 'momenti/', { waitUntil: 'load' }); await a.waitForTimeout(1200);
-  ok('A: nessun modulo e nessun «Chiedeteci di questo»', (await a.locator('dialog[data-edf-contributo], .edf-mc-chiedi').count()) === 0, '');
+  ok('A: nessun modulo e nessun «Fateci una domanda»', (await a.locator('dialog[data-edf-contributo], .edf-mc-chiedi').count()) === 0, '');
   const r404 = await a.goto(LETTURA + 'riepilogo/');
   ok('A: il riepilogo non esiste', r404?.status() === 404, `status=${r404?.status()}`);
   await a.close();
@@ -216,14 +224,19 @@ export async function checkInsieme(b: Browser) {
   c.on('request', (x) => { if (x.url().includes('.supabase.co')) rich.push({ url: x.url(), metodo: x.method(), corpo: x.postData() }); });
   // L'invio non deve scrivere nel database vero: la rotta risponde da sé.
   await c.route('**/rest/v1/contributi', (x) => x.fulfill({ status: 201, body: '' }));
+  // Il contatore non scrive nel database vero, e conta solo un browser non
+  // pilotato sul sito pubblicato: qui gli si nasconde `webdriver`.
+  await c.route('**/rest/v1/aperture', (x) => x.fulfill({ status: 201, body: '' }));
+  await c.addInitScript({ content: "Object.defineProperty(navigator, 'webdriver', { get: function () { return false; } });" });
   const p = await c.newPage();
   for (const r of ['', 'momenti/', 'parliamone/']) { await p.goto(INSIEME + r, { waitUntil: 'load' }); await p.waitForTimeout(1200); }
-  ok('B: prima dell\'invio verso Supabase solo il contatore', rich.length === 1 && rich[0].url.endsWith('/rest/v1/aperture'), rich.map((x) => `${x.metodo} ${x.url}`).join(' | '));
-  ok('B: il contatore conta la versione B', JSON.parse(rich[0]?.corpo ?? '{}').progetto === 'intesa-storia-insieme', rich[0]?.corpo ?? '');
+  const attesoB = PUBBLICATO(INSIEME) ? 1 : 0;
+  ok('B: prima dell\'invio verso Supabase solo il contatore', rich.length === attesoB && rich.every((x) => x.url.endsWith('/rest/v1/aperture')), rich.map((x) => `${x.metodo} ${x.url}`).join(' | '));
+  if (attesoB) ok('B: il contatore conta la versione B', JSON.parse(rich[0]?.corpo ?? '{}').progetto === 'intesa-storia-insieme', rich[0]?.corpo ?? '');
   await p.goto(INSIEME + 'momenti/', { waitUntil: 'load' }); await p.waitForTimeout(1500);
   await p.locator('.edf-mc-chiedi').click();
   const sez = await p.inputValue('dialog[data-edf-contributo] input[name=sezione]');
-  ok('B: «Chiedeteci di questo» precompila capitolo e slide, in italiano', sez.includes(' · ') && !/[Ss]he |the /.test(sez), sez);
+  ok('B: «Fateci una domanda» precompila capitolo e slide, in italiano', sez.includes(' · ') && !/[Ss]he |the /.test(sez), sez);
   const i0 = await p.evaluate(() => (window as any).__edfDeck.index);
   await p.locator('dialog[data-edf-contributo] textarea').focus();
   await p.keyboard.type('Come si collega al nostro CRM? ');
@@ -273,7 +286,7 @@ export async function checkFunzioni(b: Browser) {
   await p.click('.im-libro-funz');
   ok('funzioni: la copertina apre le card', await p.locator('dialog[data-edf-funzioni][open]').isVisible(), '');
   ok('funzioni: ogni tappa ha la sua miniatura', (await p.evaluate(() => [...document.querySelectorAll('.edf-cf-img img')].every((i) => (i as HTMLImageElement).getAttribute('src')))) , '');
-  ok('A: nelle card niente «Chiedeteci da qui»', (await p.locator('.edf-cf-chiedi').count()) === 0, '');
+  ok('A: nelle card niente «Fateci una domanda»', (await p.locator('.edf-cf-chiedi').count()) === 0, '');
   await p.click('.edf-cf-voce[data-k="dati"]');
   await p.click('.edf-cf-c[data-k="dati"] .edf-cf-a >> nth=1'); await p.waitForTimeout(2500);
   const st = await p.evaluate(() => ({ attiva: document.querySelector('[data-deck] [data-slide]:not([aria-hidden])')?.id, btn: document.querySelector('.edf-cf-btn')?.textContent }));
@@ -288,7 +301,7 @@ export async function checkFunzioni(b: Browser) {
     await q.goto(INSIEME, { waitUntil: 'load' }); await q.waitForTimeout(800);
     await q.click('.im-libro-funz'); await q.click('.edf-cf-voce[data-k="rete"]'); await q.click('.edf-cf-c[data-k="rete"] .edf-cf-chiedi'); await q.waitForTimeout(300);
     const v = await q.evaluate(() => ({ f: (document.querySelector('dialog[data-edf-contributo] select[name=funzione]') as HTMLSelectElement).value, s: (document.querySelector('dialog[data-edf-contributo] input[name=sezione]') as HTMLInputElement).value, cf: (document.querySelector('dialog[data-edf-funzioni]') as HTMLDialogElement).open }));
-    ok('B: «Chiedeteci da qui» apre il modulo con la funzione già scelta', v.f === 'rete' && v.s.includes('Rete e filiali') && !v.cf, JSON.stringify(v));
+    ok('B: «Fateci una domanda» della card apre il modulo con la funzione già scelta', v.f === 'rete' && v.s.includes('Rete e filiali') && !v.cf, JSON.stringify(v));
     await q.close();
   }
 }

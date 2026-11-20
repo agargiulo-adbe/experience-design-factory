@@ -9,9 +9,14 @@
  * parte nessuna chiamata di rete.
  *
  * Come si apre:
- *  - con `pulsante`, il componente posa «Chiedeteci di questo» nella barra dei
+ *  - con `pulsante`, il componente posa «Fateci una domanda» nella barra dei
  *    comandi del deck (fuori dalle slide, quindi fuori da audit:deck) e
- *    precompila la sezione con «capitolo · titolo della slide attiva»;
+ *    precompila la sezione con «capitolo · titolo della slide attiva». Il
+ *    pulsante resta visibile anche quando il resto della barra si dissolve
+ *    (`.deck-idle`), e si spegne sulle slide dove una domanda non ha oggetto:
+ *    copertine, firme di chiusura, `[data-senza-domanda]` (`SENZA_DOMANDA`).
+ *    Si spegne con `visibility`, non con `display`: la barra è centrata, e
+ *    togliere il pulsante farebbe saltare le frecce a ogni copertina;
  *  - qualunque elemento `[data-contributo-apri]` lo apre, con la sezione di
  *    `data-sezione` e la funzione di `data-funzione` se ci sono (le card per
  *    funzione, `CardFunzioni.astro`).
@@ -24,7 +29,7 @@ interface Props {
   progetto: string;
   /** il titolo del capitolo della pagina, per precompilare la sezione */
   capitolo?: string;
-  /** posa «Chiedeteci di questo» nella barra del deck */
+  /** posa «Fateci una domanda» nella barra del deck */
   pulsante?: boolean;
 }
 const { progetto, capitolo = '', pulsante = false } = Astro.props;
@@ -57,22 +62,22 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       </label>
       <label class="edf-mc-c">
         <span class="edf-mc-e">La domanda o lo spunto</span>
-        <textarea name="testo" rows="5" maxlength={LIMITI.testo} required></textarea>
+        <textarea name="testo" rows="4" maxlength={LIMITI.testo} required></textarea>
       </label>
       <div class="edf-mc-due">
         <label class="edf-mc-c">
           <span class="edf-mc-e">Funzione <span class="edf-mc-fac">facoltativa</span></span>
-          <select name="funzione">
+          <span class="edf-mc-sel"><select name="funzione">
             <option value="">Preferisco non dirlo</option>
             {FUNZIONI.map((f) => <option value={f.k}>{f.l}</option>)}
-          </select>
+          </select></span>
         </label>
         <label class="edf-mc-c">
           <span class="edf-mc-e">Livello <span class="edf-mc-fac">facoltativo</span></span>
-          <select name="livello">
+          <span class="edf-mc-sel"><select name="livello">
             <option value="">Preferisco non dirlo</option>
             {LIVELLI.map((l) => <option value={l.k}>{l.l}</option>)}
-          </select>
+          </select></span>
         </label>
       </div>
       <label class="edf-mc-ok">
@@ -165,6 +170,8 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         body: JSON.stringify(esito.riga),
       });
       if (!r.ok) throw new Error(String(r.status));
+      // Il reset svuota anche la sezione: «Scrivine un altro» la ritrova da qui.
+      d.dataset.ultimaSezione = v('sezione');
       f.reset();
       stato(d, 'fatto');
     } catch {
@@ -183,9 +190,32 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     b.type = 'button';
     b.className = 'deck-btn edf-mc-chiedi';
     b.setAttribute('data-contributo-apri', '');
-    b.setAttribute('aria-label', 'Chiedeteci di questo: apre il modulo con questa parte già indicata');
-    b.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" stroke-linejoin="round"/></svg><span class="edf-mc-chiedi-l">Chiedeteci di questo</span>';
+    b.setAttribute('aria-label', 'Fateci una domanda su questa parte: il modulo è anonimo');
+    b.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5.5h16v10.5H10l-4.5 3.5V16H4z" stroke-linejoin="round"/><path d="M8.5 9.5h7M8.5 12.5h4.5" stroke-linecap="round"/></svg><span class="edf-mc-chiedi-l">Fateci una domanda</span>';
     barra.appendChild(b);
+    seguiSlide(b);
+  }
+
+  // Le slide dove una domanda non ha oggetto: la copertina di ogni capitolo, la
+  // firma di chiusura, e quelle che lo dichiarano.
+  const SENZA_DOMANDA = '#slide-cover, #slide-firma, [data-senza-domanda]';
+
+  function seguiSlide(b: HTMLButtonElement) {
+    const aggiorna = () => {
+      const s = document.querySelector<HTMLElement>('[data-deck] [data-slide]:not([aria-hidden])');
+      const spento = !s || s.matches(SENZA_DOMANDA);
+      if (b.hasAttribute('data-spento') === spento) return;
+      b.toggleAttribute('data-spento', spento);
+      b.tabIndex = spento ? -1 : 0;
+    };
+    aggiorna();
+    // Il deck cambia slide togliendo aria-hidden a quella attiva: si ascolta
+    // quello, e SOLO sulle slide. ⚠️ Osservare tutto il sottoalbero reagendo
+    // anche al pulsante, che cambia i propri attributi, è un ciclo infinito.
+    const deck = document.querySelector('[data-deck]');
+    if (deck) new MutationObserver((m) => {
+      if (m.some((x) => (x.target as Element).hasAttribute?.('data-slide'))) aggiorna();
+    }).observe(deck, { subtree: true, attributes: true, attributeFilter: ['aria-hidden'] });
   }
 
   function collega() {
@@ -198,7 +228,11 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     d.addEventListener('click', (e) => {
       const t = e.target as HTMLElement;
       if (t === d || t.closest('[data-edf-mc-chiudi]')) d.close();
-      if (t.closest('[data-edf-mc-altro]')) stato(d, 'campi');
+      if (t.closest('[data-edf-mc-altro]')) {
+        stato(d, 'campi');
+        (d.querySelector('[name="sezione"]') as HTMLInputElement).value = d.dataset.ultimaSezione ?? '';
+        (d.querySelector('[name="testo"]') as HTMLTextAreaElement).focus();
+      }
     });
     d.querySelector('[data-edf-mc-form]')!.addEventListener('submit', (e) => { e.preventDefault(); invia(d); });
     posaPulsante();
@@ -229,7 +263,7 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     overflow: auto;
   }
   .edf-mc::backdrop { background: color-mix(in srgb, var(--surface-inverse, CanvasText) 62%, transparent); }
-  .edf-mc-f { padding: clamp(1.25rem, 3vw, 2rem); display: grid; gap: 1rem; }
+  .edf-mc-f { padding: clamp(1.25rem, 3vw, 2rem); padding-bottom: 0; display: grid; gap: 1rem; }
   .edf-mc-testa { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
   .edf-mc-t { font-family: var(--font-display, inherit); font-size: clamp(1.35rem, 2vw, 1.6rem); line-height: 1.2; margin: 0; }
   .edf-mc-t2 { font-family: var(--font-display, inherit); font-size: 1.4rem; margin: 0; }
@@ -239,20 +273,42 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
   .edf-mc-c { display: grid; gap: 0.35rem; }
   .edf-mc-e { font-size: 0.95rem; font-weight: 600; }
   .edf-mc-fac { font-weight: 400; color: var(--ink-tertiary, inherit); }
+  .edf-mc ::selection { background: color-mix(in srgb, var(--accent-primary, Highlight) 28%, transparent); }
   .edf-mc input[type='text'], .edf-mc textarea, .edf-mc select {
     font: inherit; font-size: 1rem; color: inherit;
     background: var(--surface-secondary, transparent);
     border: 1px solid var(--line-default, currentColor);
     border-radius: 8px; padding: 0.65rem 0.75rem; min-height: 44px; width: 100%;
   }
-  .edf-mc textarea { resize: vertical; min-height: 7.5rem; line-height: 1.5; }
+  .edf-mc input[type='text'], .edf-mc textarea { caret-color: var(--accent-primary, auto); }
+  .edf-mc textarea { resize: vertical; min-height: 6.5rem; line-height: 1.5; }
+  /* La tendina: freccia nostra, con il suo margine. Quella di sistema stava a
+     ridosso del bordo e cambiava da un browser all'altro. */
+  .edf-mc-sel { position: relative; display: block; }
+  .edf-mc .edf-mc-sel select { appearance: none; -webkit-appearance: none; padding-right: 2.75rem; cursor: pointer; text-overflow: ellipsis; }
+  .edf-mc-sel::after {
+    content: ''; position: absolute; right: 1.1rem; top: 50%; width: 0.55rem; height: 0.55rem; pointer-events: none;
+    border-right: 1.8px solid currentColor; border-bottom: 1.8px solid currentColor;
+    transform: translateY(-70%) rotate(45deg); opacity: 0.7;
+  }
   .edf-mc :focus-visible { outline: 2px solid var(--accent-primary, Highlight); outline-offset: 2px; }
   .edf-mc-due { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
   .edf-mc-ok { display: grid; grid-template-columns: auto 1fr; gap: 0.6rem; align-items: start; font-size: 0.95rem; line-height: 1.45; }
   .edf-mc-ok input { width: 1.25rem; height: 1.25rem; margin-top: 0.1rem; accent-color: var(--accent-primary, auto); }
   .edf-mc-ok .edf-mc-fac { display: block; margin-top: 0.2rem; }
   .edf-mc-err { margin: 0; color: var(--ink-accent, inherit); font-weight: 600; }
-  .edf-mc-az { display: flex; justify-content: flex-end; gap: 0.75rem; flex-wrap: wrap; }
+  /* I pulsanti restano a vista anche su uno schermo basso: la barra si incolla
+     in fondo al modulo, che è lui a scorrere. */
+  .edf-mc-az {
+    display: flex; justify-content: flex-end; gap: 0.75rem; flex-wrap: wrap;
+    position: sticky; bottom: 0; z-index: 1;
+    margin: 0 calc(-1 * clamp(1.25rem, 3vw, 2rem));
+    padding: 0.9rem clamp(1.25rem, 3vw, 2rem) clamp(1.25rem, 3vw, 2rem);
+    background: var(--surface-primary, Canvas);
+    border-top: 1px solid var(--line-subtle, transparent);
+  }
+  [data-edf-mc-fatto] { display: grid; gap: 1rem; }
+  [data-edf-mc-fatto][hidden] { display: none; }
   .edf-mc-b {
     font: inherit; font-weight: 600; cursor: pointer; min-height: 44px; padding: 0.6rem 1.3rem; border-radius: 999px;
     background: var(--accent-primary, CanvasText); color: var(--color-on-accent, Canvas); border: 1px solid transparent;
@@ -260,12 +316,36 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
   .edf-mc-b--2 { background: transparent; color: inherit; border-color: var(--line-strong, currentColor); }
   .edf-mc-b:disabled { opacity: 0.55; cursor: progress; }
 
-  /* «Chiedeteci di questo» nella barra del deck: eredita colore e auto-hide del
-     chrome da `.deck-btn`; l'etichetta si vede dove c'è spazio. */
-  [data-deck] .deck-btn.edf-mc-chiedi { width: auto; gap: 0.5rem; padding: 0 0.85rem; border-radius: 999px; display: inline-flex; align-items: center; }
+  /* «Fateci una domanda» nella barra del deck. È l'unico comando della barra
+     che resta quando il resto si dissolve: chi legge da solo non deve cercarlo.
+     Pieno nel colore d'accento, ma piccolo e fermo: niente pulsazioni. */
+  /* Due attributi in più nel selettore: i temi scuri delle app riscrivono
+     `[data-deck][data-on-dark] .deck-btn`, e lo spegnerebbero nel grigio della barra. */
+  [data-deck] [data-deck-controls] .deck-btn.edf-mc-chiedi {
+    width: auto; gap: 0.55rem; padding: 0 1.1rem 0 0.95rem; border-radius: 999px;
+    display: inline-flex; align-items: center; margin-left: 0.25rem;
+    background: var(--accent-primary, CanvasText); color: var(--color-on-accent, Canvas);
+    border: 1px solid transparent; opacity: 1;
+    box-shadow: 0 6px 18px -8px color-mix(in srgb, var(--surface-inverse, #000) 70%, transparent);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, visibility 0.3s, filter 0.2s ease;
+  }
+  [data-deck] [data-deck-controls] .deck-btn.edf-mc-chiedi:hover {
+    color: var(--color-on-accent, Canvas); border-color: transparent; filter: brightness(1.1); transform: translateY(-1px);
+  }
+  [data-deck] [data-deck-controls] .deck-btn.edf-mc-chiedi:focus-visible { outline: 2px solid var(--color-on-accent, Canvas); outline-offset: 3px; }
+  [data-deck] [data-deck-controls] .deck-btn.edf-mc-chiedi[data-spento] { visibility: hidden; opacity: 0; transform: translateY(4px); }
   /* L'icona non si stringe: in un pulsante flex con l'etichetta lunga finiva a 6 px. */
-  [data-deck] .deck-btn.edf-mc-chiedi svg { flex: none; width: 22px; height: 22px; }
-  .edf-mc-chiedi-l { font-size: 0.95rem; letter-spacing: 0.01em; white-space: nowrap; }
-  @media (max-width: 899px) { .edf-mc-chiedi-l { display: none; } [data-deck] .deck-btn.edf-mc-chiedi { padding: 0; } }
+  [data-deck] .deck-btn.edf-mc-chiedi svg { flex: none; width: 20px; height: 20px; }
+  .edf-mc-chiedi-l { font-size: 0.95rem; font-weight: 600; letter-spacing: 0.01em; white-space: nowrap; }
+  /* Barra a riposo: si dissolve tutto tranne la domanda. */
+  [data-deck].deck-idle .deck-chrome:has(.edf-mc-chiedi) { opacity: 1; }
+  [data-deck] [data-deck-controls]:has(.edf-mc-chiedi) > :not(.edf-mc-chiedi) { transition: opacity 0.3s ease; }
+  /* `!important` perché il deck scrive l'opacità della freccia indietro in linea. */
+  [data-deck].deck-idle:not(.deck-first-visit) [data-deck-controls]:has(.edf-mc-chiedi) > :not(.edf-mc-chiedi) { opacity: 0 !important; }
+  @media (max-width: 899px) {
+    .edf-mc-chiedi-l { display: none; }
+    [data-deck] [data-deck-controls] .deck-btn.edf-mc-chiedi { padding: 0; width: 2.75rem; justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) { [data-deck] [data-deck-controls] .deck-btn.edf-mc-chiedi { transition: none; } }
   @media print { .edf-mc, .edf-mc-chiedi { display: none !important; } }
 </style>
