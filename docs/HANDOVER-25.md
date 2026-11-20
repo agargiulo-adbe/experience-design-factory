@@ -151,3 +151,10 @@ Con il sì dell'owner, le nove slide a schede di `approfondimenti` (Coworker `sl
 - **Altro del 20 nov:** la casella del riepilogo riscritta dopo un commento del team («La domanda può entrare nel riepilogo per i colleghi», con che cosa succede se resta vuota); in Parliamone e nella versione breve tre persone in più (Selmi, Grieco, Mecca; email e telefono dalle firme delle loro mail, la rubrica del connettore non è leggibile). Le schede di Parliamone diventano orizzontali con azioni a icona per stare in due righe a 1366×768. La risposta diretta dal modulo va solo ai tre dell'account (`modulo: true`).
 - **Verifica:** tre build e console; test unitari 8/8; `check:edizione` 60/60 (con `SENZA_ESTERNI=1`: con la rete lenta il `load` aspettava Google Fonts e scadeva); Parliamone misurata a 1366, 1512 e 1920; modulo, architettura e breve guardati. `audit:deck` sulle rotte toccate: 223 rilievi contro 216 della base, +7 «testo troppo in alto» su slide più dense (ingaggio-mappa, m-03, m-05, m-07, integrazioni, integrazioni-dati, coworker-video): da guardare.
 - ⚠️ Le personas Workflow possono lasciare `apps/zz-baseline-tmp/`: va cancellata prima di un commit (fatto).
+
+## 42.37 Le domande si cancellano entro 90 giorni (20 nov)
+
+- **Decisione dell'owner:** il modulo e la versione breve dicono «si cancellano quando la raccolta si chiude, e comunque entro 90 giorni dall'invio».
+- **Lo garantisce il database:** `0046_contributi_scadenza_90_giorni.sql` (provata in rollback, applicata con l'ok dell'owner) attiva `pg_cron`, crea `contributi_scaduti()` e il job `contributi-scaduti` ogni notte alle 03:00 UTC; la stessa pulizia parte a ogni invio. La cancellazione alla chiusura della raccolta resta un gesto della console.
+- ⚠️ Oltre i 30 giorni le regole privacy interne chiedono la registrazione con il team privacy: la richiesta su OneTrust resta da aprire.
+- La casella del riepilogo è stata riscritta di nuovo dal punto di vista di chi spunta («Potete mostrare questa domanda ai colleghi della banca», commit `1f0f49d`).

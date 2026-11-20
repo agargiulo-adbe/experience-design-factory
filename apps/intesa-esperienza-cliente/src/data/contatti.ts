@@ -35,7 +35,8 @@ export const TESTO_WHATSAPP = 'Buongiorno, ho letto la storia Adobe × Intesa Sa
 export const PROGETTO_EDIZIONE = conContributi() ? 'intesa-storia-insieme' : 'intesa-storia';
 
 /** La riga in fondo al modulo: dove finiscono le domande, chi le legge, per quanto
- *  (panel del 20 nov, P0; decisione dell'owner). ⚠️ «si cancellano quando la
- *  raccolta si chiude» è un impegno: alla chiusura si cancellano a mano dalla console. */
+ *  (panel del 20 nov, P0; decisione dell'owner). I 90 giorni li garantisce il
+ *  database (0046, pg_cron ogni notte); ⚠️ la cancellazione alla chiusura della
+ *  raccolta è un impegno: si fa a mano dalla console. */
 export const INFORMATIVA_MODULO =
-  'Le domande restano in un database in Europa (Supabase, Francoforte) e le legge il team Adobe dell’account; nel riepilogo entrano solo quelle che permettete. Si cancellano quando la raccolta si chiude.';
+  'Le domande restano in un database in Europa (Supabase, Francoforte) e le legge il team Adobe dell’account; nel riepilogo entrano solo quelle che permettete. Si cancellano quando la raccolta si chiude, e comunque entro 90 giorni dall’invio.';
