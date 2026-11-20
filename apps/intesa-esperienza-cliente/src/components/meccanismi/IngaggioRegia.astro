@@ -1,0 +1,186 @@
+---
+/**
+ * slide-ingaggio-regia — «Tre modi di eseguire la stessa decisione», disegnata.
+ *
+ * Il meccanismo: UNA decisione a sinistra, configurata una volta, che esce
+ * per tre strade (al bordo · dentro il percorso · dai vostri sistemi).
+ * Sei passi: la decisione · le tre strade, una per passo · il terzo modo
+ * («e quello che abbiamo già?») con le altre due in secondo piano · i due
+ * contatori, ciascuno dove si applica (il limite per offerta alla decisione,
+ * il tetto per persona e per canale all'invio; su web e app vale il primo).
+ *
+ * Contenuti: gli stessi della slide a schede (ESEC in approfondimenti, il
+ * lead, il riquadro sul terzo modo, la riga delle fonti). Il lead è la
+ * didascalia del passo 1; il riquadro si divide fra i passi 5 e 6, parola
+ * per parola, perché in una fascia sola non stava.
+ * ⚠️ Il terzo modo non è un dettaglio tecnico: dice che l'orchestrazione può
+ * restare dove è oggi. Per questo ha un passo suo.
+ */
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+
+const STRADE = [
+  { k: '1', y: 58, t: { it: 'Al bordo, in sessione', en: 'At the edge, in session' },
+    chi: { it: 'SDK web e app, o Edge API', en: 'Web and app SDK, or Edge API' },
+    d: { it: 'L’offerta compare sulla pagina o nella schermata mentre la persona è lì.', en: 'The offer appears on the page or screen while the person is there.' } },
+  { k: '2', y: 200, t: { it: 'Dentro il percorso', en: 'Inside the journey' },
+    chi: { it: 'Journey Optimizer', en: 'Journey Optimizer' },
+    d: { it: 'Il percorso decide quando, e la decisione entra nel messaggio al momento dell’invio.', en: 'The journey decides when, and the decision enters the message at send time.' } },
+  { k: '3', y: 342, t: { it: 'Dai vostri sistemi', en: 'From your own systems' },
+    chi: { it: 'API di decisioning', en: 'Decisioning API' },
+    d: { it: 'Il vostro backend resta il motore delle iniziative e chiede solo quale offerta. La postazione della Filiale Digitale fa la stessa chiamata.', en: 'Your backend stays the engine of your initiatives and only asks which offer. The Filiale Digitale desktop makes the same call.' } },
+];
+/* La decisione: x=200, y 120-280; le strade partono a 160/200/240. */
+const DX = 200;
+const EX = 620;
+const PARTENZA = [160, 200, 240];
+---
+<Slide id="slide-ingaggio-regia" bg="inverse" align="left" data-lettura-ritmo="3200">
+  <div slot="backdrop" class="im-bg-notte"></div>
+  <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+    <T as="p" class="im-ado-occ" it="Approfondimento · la regia" en="Deep dive · orchestration" />
+    <T as="h2" class="im-ado-t im-ado-t--stretto" it="Tre modi di eseguire la stessa decisione" en="Three ways to execute the same decision" />
+    <i class="mc-reg-passo" data-substep data-p="1" aria-hidden="true"></i>
+    <i class="mc-reg-passo" data-substep data-p="2" aria-hidden="true"></i>
+    <i class="mc-reg-passo" data-substep data-p="3" aria-hidden="true"></i>
+    <i class="mc-reg-passo" data-substep data-p="4" aria-hidden="true"></i>
+    <i class="mc-reg-passo" data-substep data-p="5" aria-hidden="true"></i>
+    <i class="mc-reg-passo" data-substep data-p="6" aria-hidden="true"></i>
+    <figure class="mc-reg">
+      <div class="mc-reg-int" aria-hidden="true">
+        <T as="span" style={`--x:${(DX + 8) / 10}%`} class="mc-reg-int-c" it="Si configura una volta" en="Configured once" />
+        <T as="span" style={`--x:${EX / 10}%`} it="Dove viene eseguita" en="Where it runs" />
+      </div>
+      <div class="mc-reg-g" role="img" aria-label="Una decisione configurata una volta esce per tre strade: al bordo in sessione, dentro il percorso di Journey Optimizer, dai vostri sistemi con l'API di decisioning">
+        <svg class="mc-reg-svg" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+          {STRADE.map((s, i) => <path class="mc-reg-r" data-k={s.k} pathLength="1" d={`M${DX + 14} ${PARTENZA[i]} C ${(DX + EX) / 2 + 10} ${PARTENZA[i]}, ${(DX + EX) / 2 + 10} ${s.y}, ${EX} ${s.y}`} />)}
+        </svg>
+        <svg class="mc-reg-nodi" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+          <rect class="mc-reg-dec" x={DX} y="120" width="14" height="160" />
+          {STRADE.map((s) => <rect class="mc-reg-n" data-k={s.k} x={EX} y={s.y - 28} width="14" height="56" />)}
+        </svg>
+        <T as="span" class="mc-reg-l mc-reg-l--dec" style={`--x:${(DX - 8) / 10}%;--y:50%`} it="La decisione" en="The decision" />
+        <span class="mc-reg-cont mc-reg-cont--dec" style={`--x:${(DX + 7) / 10}%;--y:${290 / 4}%`}>
+          <span class="mc-reg-cont-n">1</span><T as="span" it="Limite per offerta · quando si decide" en="Per-offer limit · when deciding" />
+        </span>
+        {/* I contatori sulle strade, appena sopra il nastro, prima dell'arrivo. */}
+        <span class="mc-reg-cont mc-reg-cont--strada" style={`--x:${(EX - 16) / 10}%;--y:${STRADE[0].y / 4}%`}>
+          <T as="span" it="Su web e app vale solo il primo" en="On web and app only the first holds" />
+        </span>
+        <span class="mc-reg-cont mc-reg-cont--strada" style={`--x:${(EX - 16) / 10}%;--y:${STRADE[1].y / 4}%`}>
+          <span class="mc-reg-cont-n">2</span><T as="span" it="Tetto all’invio" en="Cap at send" />
+        </span>
+        {STRADE.map((s) => (
+          <span class="mc-reg-l mc-reg-l--dx" data-k={s.k} style={`--x:${(EX + 26) / 10}%;--y:${s.y / 4}%`}>
+            <T as="span" class="mc-reg-l-t" it={s.t.it} en={s.t.en} />
+            <T as="span" class="mc-reg-l-chi" it={s.chi.it} en={s.chi.en} />
+          </span>
+        ))}
+      </div>
+    </figure>
+    <div class="mc-reg-banda">
+      <div class="mc-reg-didas">
+        <p data-per="1"><T as="strong" it="Una decisione" en="One decision" /> <T as="span" it="La decisione si configura una volta. Dove viene eseguita è una scelta, e le tre strade convivono." en="The decision is configured once. Where it runs is a choice, and the three routes coexist." /></p>
+        {STRADE.map((s, i) => <p data-per={String(i + 2)}><T as="strong" it={s.t.it} en={s.t.en} /> <T as="span" it={s.d.it} en={s.d.en} /></p>)}
+        <p data-per="5"><T as="strong" it="Il terzo modo è la risposta a «e quello che abbiamo già?»" en="The third route answers “what about what we already have?”" /> <T as="span" it="L’orchestrazione può restare dove è oggi: cambia solo chi decide quale offerta esce. La regola resta vostra." en="The orchestration can stay where it is today: only who decides which offer goes out changes. The rule stays yours." /></p>
+        <p data-per="6"><T as="strong" it="Due contatori" en="Two counters" /> <T as="span" it="il limite per offerta si valuta quando si decide; il tetto per persona e per canale si applica all’invio (su web e app vale solo il primo). La vostra politica si mappa sul secondo, oppure arriva dal vostro sistema come attributo “contatti residui”: si sceglie in fase 0." en="the per-offer limit is evaluated when deciding; the per-person, per-channel cap is applied at send (on web and app only the first holds). Your policy maps onto the second, or comes from your system as a “contacts remaining” attribute: this is chosen in phase 0." /></p>
+      </div>
+    </div>
+    <p class="im-fonte-riga">
+      <span data-lang-it>Il limite per offerta si conta per identità al bordo e per profilo nel percorso. Per la funzione precedente (Offer Decisioning) la documentazione indica qualche minuto di ritardo sulla Decisioning API e fino a 30 minuti fra bordo e hub; per il nuovo Decisioning i tempi vanno riverificati. Documentazione pubblica, 11 nov 2026: </span><span data-lang-en>The per-offer limit counts per identity at the edge and per profile in the journey. For the previous capability (Offer Decisioning) the documentation gives a few minutes’ delay on the Decisioning API and up to 30 minutes between edge and hub; for the new Decisioning the timings need re-checking. Public documentation, 11 Nov 2026: </span>
+      <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/decisioning/experience-decisioning/gs-experience-decisioning" target="_blank" rel="noopener">Journey Optimizer · Decisioning</a><span> · </span>
+      <a href="https://experienceleague.adobe.com/en/docs/experience-cloud-kcs/kbarticles/ka-30469" target="_blank" rel="noopener">KB ka-30469</a><span> · </span>
+      <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/decisioning/offer-decisioning/managing-offers-in-the-offer-library/configure-offers/add-constraints" target="_blank" rel="noopener"><span data-lang-it>limiti per offerta</span><span data-lang-en>offer capping</span></a>
+      <a class="im-torna" href="#slide-ingaggio-ciclo"><span data-lang-it>← Torna ai quattro componenti</span><span data-lang-en>← Back to the four components</span></a>
+    </p>
+  </div>
+</Slide>
+
+<style is:global>
+  /* ══ UNA DECISIONE, TRE STRADE (slide-ingaggio-regia) ══════════════════
+     Stato base: la decisione e i tre punti d'arrivo a vista e spenti.
+     1 la decisione · 2-4 una strada per passo · 5 il terzo modo in primo
+     piano · 6 i due contatori, ciascuno dove si applica. */
+  #slide-ingaggio-regia { --mr-v: #b9e6a3; --mr-nastro: rgba(185, 230, 163, 0.32); --mr-acc: #6cc04a; --mr-ease: cubic-bezier(0.16, 1, 0.3, 1); }
+  .mc-reg-passo { position: absolute; width: 0; height: 0; overflow: hidden; }
+  .mc-reg { position: relative; margin: clamp(0.4rem, calc(0.6 * var(--vu)), 1.2rem) 0 0; }
+  .mc-reg-int { position: relative; height: 1.6em; font-size: clamp(0.8rem, calc(0.74 * var(--vu)), 1.55rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #c9dcc2; }
+  .mc-reg-int > span { position: absolute; left: var(--x); white-space: nowrap; }
+  .mc-reg-int > .mc-reg-int-c { translate: -50% 0; }
+  .mc-reg-g { position: relative; height: clamp(11rem, calc(15.5 * var(--vu)), 28rem); margin-top: clamp(0.8rem, calc(1 * var(--vu)), 2rem); margin-bottom: clamp(1.4rem, calc(1.8 * var(--vu)), 3.4rem); }
+  .mc-reg-svg, .mc-reg-nodi { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+
+  .mc-reg-svg path { fill: none; stroke: var(--mr-nastro); stroke-width: 12; vector-effect: non-scaling-stroke; stroke-linecap: butt;
+    stroke-dasharray: 3; stroke-dashoffset: 3; transition: stroke-dashoffset 1.1s var(--mr-ease), stroke 0.45s ease, stroke-width 0.3s ease, opacity 0.45s ease; }
+  .mc-reg-dec { fill: rgba(255, 255, 255, 0.28); transition: fill 0.45s ease; }
+  .mc-reg-n { fill: rgba(185, 230, 163, 0.28); transition: fill 0.45s ease, opacity 0.45s ease; }
+
+  .mc-reg-l { position: absolute; left: var(--x); top: var(--y); line-height: 1.15; white-space: nowrap; color: #ffffff; transition: opacity 0.45s ease; }
+  .mc-reg-l--dec { translate: -100% -50%; text-align: right; font-size: clamp(1.02rem, calc(1 * var(--vu)), 2.2rem); font-weight: 700; opacity: 0.6; }
+  .mc-reg-l--dx { translate: 0 -50%; display: grid; gap: 0.12rem; opacity: 0.6; }
+  .mc-reg-l-t { font-size: clamp(1.02rem, calc(1 * var(--vu)), 2.2rem); font-weight: 700; }
+  .mc-reg-l-chi { font-size: clamp(0.92rem, calc(0.86 * var(--vu)), 1.85rem); font-weight: 500; color: #d9e6d4; }
+  /* I contatori: compaiono al passo 6, ciascuno dove si applica. */
+  .mc-reg-cont { display: inline-flex; align-items: center; gap: 0.4rem; font-size: clamp(0.76rem, calc(0.64 * var(--vu)), 1.42rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9fd68a; white-space: nowrap;
+    opacity: 0; visibility: hidden; transition: opacity 0.45s ease, visibility 0s linear 0.45s; }
+  .mc-reg-cont--dec { position: absolute; left: var(--x); top: var(--y); translate: -50% 0.5rem; }
+  .mc-reg-cont--strada { position: absolute; left: var(--x); top: var(--y); translate: -100% calc(-100% - 0.7rem); }
+  .mc-reg-cont-n { flex: none; width: 1.6em; height: 1.6em; border-radius: 999px; display: grid; place-items: center; background: #b9e6a3; color: #0b1f06; letter-spacing: 0; }
+
+  /* ── La fascia ── */
+  .mc-reg-banda { margin: clamp(0.6rem, calc(0.9 * var(--vu)), 1.8rem) 0 0; padding: clamp(0.55rem, calc(0.75 * var(--vu)), 1.4rem) clamp(0.9rem, calc(1.2 * var(--vu)), 2.2rem);
+    border: 1px solid rgba(185, 230, 163, 0.34); border-radius: 8px; background: rgba(185, 230, 163, 0.09);
+    font-size: clamp(1.02rem, calc(1 * var(--vu)), 2.2rem); line-height: 1.38; color: #f2f8f0;
+    opacity: 0; visibility: hidden; transition: opacity 0.5s ease, visibility 0s linear 0.5s; }
+  .mc-reg-didas { display: grid; min-width: 0; }
+  .mc-reg-didas > p { grid-area: 1 / 1; margin: 0; max-width: none; opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0s linear 0.25s; }
+  .mc-reg-didas strong { color: #b9e6a3; margin-right: 0.35em; }
+
+  /* ── Gli stati ── */
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="1"][data-substep-active]) .mc-reg-banda { opacity: 1; visibility: visible; transition: opacity 0.5s ease, visibility 0s; }
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="1"][data-substep-active]) .mc-reg-dec { fill: #ffffff; }
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="1"][data-substep-active]) .mc-reg-l--dec { opacity: 1; }
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="2"][data-substep-active]) .mc-reg-r[data-k="1"],
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="3"][data-substep-active]) .mc-reg-r[data-k="2"],
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="4"][data-substep-active]) .mc-reg-r[data-k="3"] { stroke-dashoffset: 0; stroke: var(--mr-v); }
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="2"][data-substep-active]) .mc-reg-n[data-k="1"],
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="3"][data-substep-active]) .mc-reg-n[data-k="2"],
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="4"][data-substep-active]) .mc-reg-n[data-k="3"] { fill: var(--mr-v); }
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="2"][data-substep-active]) .mc-reg-l[data-k="1"],
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="3"][data-substep-active]) .mc-reg-l[data-k="2"],
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="4"][data-substep-active]) .mc-reg-l[data-k="3"] { opacity: 1; }
+  /* la strada del passo in corso porta l'accento */
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="2"][data-substep-active]):not(:has(.mc-reg-passo[data-p="3"][data-substep-active])) .mc-reg-n[data-k="1"],
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="3"][data-substep-active]):not(:has(.mc-reg-passo[data-p="4"][data-substep-active])) .mc-reg-n[data-k="2"],
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="4"][data-substep-active]):not(:has(.mc-reg-passo[data-p="5"][data-substep-active])) .mc-reg-n[data-k="3"] { fill: var(--mr-acc); }
+  /* 5 · il terzo modo in primo piano, le altre due arretrano */
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="5"][data-substep-active]):not(:has(.mc-reg-passo[data-p="6"][data-substep-active])) .mc-reg-r:not([data-k="3"]),
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="5"][data-substep-active]):not(:has(.mc-reg-passo[data-p="6"][data-substep-active])) .mc-reg-n:not([data-k="3"]) { opacity: 0.25; }
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="5"][data-substep-active]):not(:has(.mc-reg-passo[data-p="6"][data-substep-active])) .mc-reg-l--dx:not([data-k="3"]) { opacity: 0.45; }
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="5"][data-substep-active]):not(:has(.mc-reg-passo[data-p="6"][data-substep-active])) .mc-reg-r[data-k="3"] { stroke-width: 18; }
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="5"][data-substep-active]):not(:has(.mc-reg-passo[data-p="6"][data-substep-active])) .mc-reg-n[data-k="3"] { fill: var(--mr-acc); }
+  /* 6 · i due contatori */
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="6"][data-substep-active]) .mc-reg-cont { opacity: 1; visibility: visible; transition: opacity 0.45s ease 0.15s, visibility 0s; }
+
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="1"][data-substep-active]):not(:has(.mc-reg-passo[data-p="2"][data-substep-active])) .mc-reg-didas > [data-per="1"],
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="2"][data-substep-active]):not(:has(.mc-reg-passo[data-p="3"][data-substep-active])) .mc-reg-didas > [data-per="2"],
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="3"][data-substep-active]):not(:has(.mc-reg-passo[data-p="4"][data-substep-active])) .mc-reg-didas > [data-per="3"],
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="4"][data-substep-active]):not(:has(.mc-reg-passo[data-p="5"][data-substep-active])) .mc-reg-didas > [data-per="4"],
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="5"][data-substep-active]):not(:has(.mc-reg-passo[data-p="6"][data-substep-active])) .mc-reg-didas > [data-per="5"],
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="6"][data-substep-active]) .mc-reg-didas > [data-per="6"] { opacity: 1; visibility: visible; transition: opacity 0.35s ease 0.1s, visibility 0s; }
+  /* A strade accese, passare su una strada ne richiama la didascalia. */
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="4"][data-substep-active]):has(.mc-reg-l--dx:hover) .mc-reg-didas > p { opacity: 0 !important; visibility: hidden !important; transition: none !important; }
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="4"][data-substep-active]):has(.mc-reg-l--dx[data-k="1"]:hover) .mc-reg-didas > [data-per="2"],
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="4"][data-substep-active]):has(.mc-reg-l--dx[data-k="2"]:hover) .mc-reg-didas > [data-per="3"],
+  #slide-ingaggio-regia:has(.mc-reg-passo[data-p="4"][data-substep-active]):has(.mc-reg-l--dx[data-k="3"]:hover) .mc-reg-didas > [data-per="4"] { opacity: 1 !important; visibility: visible !important; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mc-reg-svg path, .mc-reg-dec, .mc-reg-n, .mc-reg-l, .mc-reg-cont, .mc-reg-banda, .mc-reg-didas > p { transition: none !important; }
+  }
+  @media (max-height: 880px) {
+    .mc-reg-g { height: clamp(9.5rem, calc(13 * var(--vu)), 26rem); }
+  }
+  @media (max-width: 900px) {
+    .mc-reg-l--dx, .mc-reg-cont { white-space: normal; }
+  }
+</style>
