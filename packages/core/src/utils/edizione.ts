@@ -22,7 +22,7 @@ export function inLettura(): boolean {
 /**
  * La versione di un'edizione da distribuire (spec, «Le risposte dell'owner»):
  * `leggere` (A) è la storia con i contatti e nient'altro; `insieme` (B)
- * aggiunge il modulo (email facoltativa), «Fateci una domanda» e il riepilogo per la
+ * aggiunge il modulo anonimo, «Fateci una domanda» e il riepilogo per la
  * banca. Si sceglie con `PUBLIC_EDF_VERSIONE=insieme` e vale solo in lettura:
  * la sala non ha versioni.
  */

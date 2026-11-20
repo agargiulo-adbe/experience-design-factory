@@ -131,3 +131,12 @@ Con il sì dell'owner, le nove slide a schede di `approfondimenti` (Coworker `sl
 - **Console:** l'email sulla scheda; «Risposto: cancella l'email» registra `risposto_il`; in testa il conteggio delle email in attesa e il link dei contatti da copiare.
 - **Testi riallineati:** nessun «anonimo» assoluto e nessun rimando a Parliamone o WhatsApp per avere una risposta, nel modulo, in Parliamone («usate il modulo, anche senza firmarvi»), nella versione breve (bottone e piè) e nella console. La voce resta al plurale istituzionale («Un'altra domanda», non «Scrivine un altro»).
 - **Verifica:** test unitari 9/9; `check:edizione` 62 controlli verdi (email rotta rifiutata, email normalizzata, conferma, contatti senza token, A senza contatti); modulo a 1366×768 e pagina contatti a 390 guardati.
+
+## 42.35 Il contatto tolto: le regole privacy di Adobe (20 nov pomeriggio)
+
+- **Perché:** le fonti interne (wiki privacy e strumenti autorizzati) non permettono di conservare contatti dei clienti su sistemi non approvati senza revisione privacy e valutazione del fornitore. Supabase non è approvato, e i 90 giorni superavano anche la soglia dei 30 oltre cui ci si registra col team privacy. La spec ha la sua «Revisione del 20 nov pomeriggio».
+- **Decisione dell'owner:** il campo email esce. Nel modulo, «Volete una risposta diretta? Mandateci la domanda per email» apre la posta di chi legge, indirizzata ai tre contatti di Parliamone, con parte e domanda già scritte (`ModuloContributo`, prop `rispondere`). Niente passa dal database.
+- **Tolto:** `0043_contributi_senza_contatto.sql` (applicata, provata prima in rollback; la tabella era vuota) annulla `0042`: via colonne, token e RPC. Via anche la pagina `contatti/`, `ContattiPage.astro` e la sezione in console. La §42.34 resta come storia.
+- **Testi:** il modulo torna «anonimo: non chiede nome né contatto»; la versione breve dice che per una risposta diretta il modulo fa scrivere per email; Parliamone dice «usate il modulo, anche senza firmarvi».
+- ⚠️ **Regola per il futuro:** un dato personale di un cliente (anche solo un'email, anche facoltativa) non si salva su Supabase né su altri sistemi nostri senza PIA su OneTrust e valutazione del fornitore. Memoria `contatti-cliente-solo-su-strumenti-approvati`.
+- **Verifica:** test unitari 8/8; `check:edizione` 59 controlli verdi (niente campo email, risposta diretta ai tre indirizzi Adobe, «Un'altra domanda» ritrova la parte); modulo guardato a 1366×768.

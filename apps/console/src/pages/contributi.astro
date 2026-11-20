@@ -2,14 +2,11 @@
 /**
  * Contributi — la curatela della versione B delle edizioni da distribuire
  * (spec 2026-11-19, §8-§9 e «Revisione del 19 nov sera»; migrazione 0041).
- * Qui si legge ciò che è arrivato dal modulo (email facoltativa, 0042), si approva o si esclude,
+ * Qui si legge ciò che è arrivato dal modulo anonimo, si approva o si esclude,
  * si assegna l'area evolutiva, si riformula chi si è reso riconoscibile nel
  * testo (l'originale resta), si scrive la risposta, e si vede il riepilogo con
  * le stesse soglie che vede la banca. Le righe le leggono solo i membri del
  * progetto (`progetto_membri`) e i super admin: lo fa la RLS, non questa pagina.
- * L'email, quando c'è, si vede sulla scheda; «Risposto» la cancella (il
- * trigger permette solo di toglierla). Il referente vede le domande con
- * l'email nella sua pagina dei contatti, con un link distinto dal riepilogo.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { FUNZIONI, LIVELLI } from '@edf/core/utils/contributi';
@@ -18,7 +15,7 @@ import { FUNZIONI, LIVELLI } from '@edf/core/utils/contributi';
   <div class="page-head">
     <div>
       <h1 class="page-title">Contributi</h1>
-      <p class="page-sub">Le domande arrivate dal modulo delle edizioni da distribuire, chi ha chiesto una risposta, e il riepilogo per la banca.</p>
+      <p class="page-sub">Le domande arrivate dal modulo anonimo delle edizioni da distribuire, e il riepilogo per la banca.</p>
     </div>
     <label class="ct-prog">Progetto <select data-ct-prog></select></label>
   </div>
@@ -33,12 +30,6 @@ import { FUNZIONI, LIVELLI } from '@edf/core/utils/contributi';
         <button type="button" class="ct-btn ct-btn--2" data-ct-aperto></button>
       </p>
       <p class="ct-nota">L’approvazione la dà il referente a voce o per mail; qui la si registra. Un contributo curato dopo la riporta in bozza.</p>
-    </div>
-    <div class="ct-card">
-      <h2 class="ct-h">Chi vuole una risposta</h2>
-      <p data-ct-nc></p>
-      <p class="ct-link"><a data-ct-clink target="_blank" rel="noopener">Apri come lo vede il referente</a> · <button type="button" class="ct-btn ct-btn--2" data-ct-ccopia>Copia il link</button></p>
-      <p class="ct-nota">Solo per il referente: non mandarlo con il riepilogo, che sale ai vertici della banca. Le email si cancellano con «Risposto», o da sole dopo 90 giorni.</p>
     </div>
     <div class="ct-card">
       <h2 class="ct-h">Aperture</h2>
@@ -64,8 +55,7 @@ import { FUNZIONI, LIVELLI } from '@edf/core/utils/contributi';
     import { rest } from '../lib/supabase';
 
     type C = { id: string; progetto: string; sezione: string; testo: string; funzione: string | null; livello: string | null;
-      ok_riepilogo: boolean; stato: string; area: string | null; testo_curato: string | null; risposta: string | null; ts: string;
-      contatto: string | null; risposto_il: string | null };
+      ok_riepilogo: boolean; stato: string; area: string | null; testo_curato: string | null; risposta: string | null; ts: string };
     const { FUNZIONI, LIVELLI } = (window as any).__CT as { FUNZIONI: { k: string; l: string }[]; LIVELLI: { k: string; l: string }[] };
     const eti = (l: { k: string; l: string }[], k: string | null) => (k ? l.find((x) => x.k === k)?.l ?? k : 'non indicata');
     const esc = (s: unknown) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
@@ -76,7 +66,7 @@ import { FUNZIONI, LIVELLI } from '@edf/core/utils/contributi';
       const ctx = await requireAuth();
       if (!ctx) return;
       const { session } = ctx;
-      let riep: { progetto: string; share_token: string | null; contatti_token: string | null; aperto: boolean; approvato_il: string | null }[] = [];
+      let riep: { progetto: string; share_token: string | null; aperto: boolean; approvato_il: string | null }[] = [];
       try { riep = await rest('riepiloghi?select=*&order=progetto', {}, session); } catch { /* sotto */ }
       const sel = q<HTMLSelectElement>('[data-ct-prog]');
       if (!riep.length) { q('[data-ct-lista]').innerHTML = '<p class="ct-nota">Nessun progetto che raccoglie contributi, o non sei fra i membri di nessuno.</p>'; return; }
@@ -91,13 +81,6 @@ import { FUNZIONI, LIVELLI } from '@edf/core/utils/contributi';
         const a = q<HTMLAnchorElement>('[data-ct-link]');
         a.href = link || '#';
         q('[data-ct-copia]').onclick = () => navigator.clipboard.writeText(link);
-        const clink = r.contatti_token ? `${PAGES}/${r.progetto}/contatti/?t=${r.contatti_token}` : '';
-        q<HTMLAnchorElement>('[data-ct-clink]').href = clink || '#';
-        q('[data-ct-ccopia]').onclick = () => navigator.clipboard.writeText(clink);
-        try {
-          const nc: { id: string }[] = await rest(`contributi?progetto=eq.${encodeURIComponent(r.progetto)}&contatto=not.is.null&stato=neq.escluso&select=id`, {}, session);
-          q('[data-ct-nc]').textContent = nc.length ? `${nc.length} ${nc.length === 1 ? 'domanda aspetta' : 'domande aspettano'} una risposta per email.` : 'Nessuna email in attesa di risposta.';
-        } catch { q('[data-ct-nc]').textContent = ''; }
         const ap = q<HTMLButtonElement>('[data-ct-aperto]');
         ap.textContent = r.aperto ? 'Chiudi la raccolta' : 'Riapri la raccolta';
         ap.onclick = async () => { await rest(`riepiloghi?progetto=eq.${encodeURIComponent(r.progetto)}`, { method: 'PATCH', body: JSON.stringify({ aperto: !r.aperto }) }, session); r.aperto = !r.aperto; testa(); };
@@ -134,7 +117,6 @@ import { FUNZIONI, LIVELLI } from '@edf/core/utils/contributi';
         el.innerHTML = righe.map((r) => `
           <article class="ct-card ct-c" data-id="${esc(r.id)}">
             <p class="ct-meta">${esc(new Date(r.ts).toLocaleString('it-IT'))} · <strong>${esc(r.sezione)}</strong> · funzione ${esc(eti(FUNZIONI, r.funzione))} · livello ${esc(eti(LIVELLI, r.livello))} · ${r.ok_riepilogo ? '<span class="ct-si">può entrare nel riepilogo</span>' : '<span class="ct-no">solo per noi: non entra nel riepilogo</span>'}</p>
-            ${r.contatto ? `<p class="ct-mail">Vuole una risposta: <a href="mailto:${esc(r.contatto)}">${esc(r.contatto)}</a> <button type="button" class="ct-btn ct-btn--2" data-risposto>Risposto: cancella l’email</button></p>` : r.risposto_il ? `<p class="ct-nota">Risposto il ${esc(new Date(r.risposto_il).toLocaleDateString('it-IT'))}; email cancellata.</p>` : ''}
             <blockquote class="ct-testo">${esc(r.testo)}</blockquote>
             <div class="ct-campi">
               <label>Stato <select name="stato">${['nuovo', 'approvato', 'escluso'].map((s) => `<option ${s === r.stato ? 'selected' : ''}>${s}</option>`).join('')}</select></label>
@@ -145,15 +127,6 @@ import { FUNZIONI, LIVELLI } from '@edf/core/utils/contributi';
             <p class="ct-az"><button type="button" class="ct-btn" data-salva>Salva</button> <span class="ct-esito" data-esito></span></p>
           </article>`).join('');
         el.querySelectorAll<HTMLElement>('.ct-c').forEach((card) => {
-          const rb = card.querySelector<HTMLButtonElement>('[data-risposto]');
-          if (rb) rb.onclick = async () => {
-            if (!confirm('Abbiamo risposto? L’email si cancella e non si recupera.')) return;
-            try {
-              await rest(`contributi?id=eq.${card.dataset.id}`, { method: 'PATCH', headers: { Prefer: 'return=minimal' },
-                body: JSON.stringify({ contatto: null, risposto_il: new Date().toISOString() }) }, session);
-              testa(); lista();
-            } catch (e) { alert('Non registrato: ' + (e as Error).message); }
-          };
           card.querySelector<HTMLButtonElement>('[data-salva]')!.onclick = async () => {
             const v = (n: string) => (card.querySelector(`[name=${n}]`) as HTMLInputElement).value.trim();
             const out = card.querySelector<HTMLElement>('[data-esito]')!;
@@ -194,7 +167,6 @@ import { FUNZIONI, LIVELLI } from '@edf/core/utils/contributi';
     .ct-lista { display: grid; gap: 1rem; }
     .ct-meta { margin: 0 0 0.5rem; font-size: 0.9rem; color: var(--ink-secondary); }
     .ct-si { color: var(--accent-green); } .ct-no { color: var(--accent-gold); }
-    .ct-mail { margin: 0 0 0.6rem; display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; font-size: 0.95rem; }
     .ct-testo { margin: 0 0 0.9rem; padding-left: 0.9rem; border-left: 3px solid var(--border-strong); font-size: 1rem; }
     .ct-campi { display: grid; grid-template-columns: 12rem 1fr; gap: 0.75rem; }
     .ct-campi label { display: grid; gap: 0.3rem; font-size: 0.9rem; color: var(--ink-secondary); }

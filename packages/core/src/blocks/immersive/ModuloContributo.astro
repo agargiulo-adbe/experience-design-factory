@@ -1,15 +1,20 @@
 ---
 /**
  * Il modulo dei contributi — versione B («Da costruire insieme») dell'edizione
- * da distribuire. Spec 2026-11-19, «Revisione del 19 nov sera»; il contatto:
- * spec 2026-11-20-contatto-facoltativo-design.md (migrazione 0042).
+ * da distribuire. Spec 2026-11-19, «Revisione del 19 nov sera», e
+ * 2026-11-20-contatto-facoltativo-design.md, «Revisione del 20 nov pomeriggio».
  *
- * Sezione, testo, funzione e livello facoltativi, una sola casella («nel
- * riepilogo per la banca») spenta, e un'EMAIL FACOLTATIVA per chi vuole una
- * risposta. Senza email resta anonimo come prima; con l'email, il modulo dice
- * chi la vede (noi e il referente, `referente`), che non entra nel riepilogo e
- * quando si cancella. Niente nome, niente cookie o memoria nel browser. Prima
- * del clic su «Invia» non parte nessuna chiamata di rete.
+ * ANONIMO PER COSTRUZIONE: sezione, testo, funzione e livello facoltativi, una
+ * sola casella («nel riepilogo per la banca») spenta. Niente nome, niente
+ * contatto, niente cookie o memoria nel browser. Prima del clic su «Invia» non
+ * parte nessuna chiamata di rete.
+ *
+ * CHI VUOLE UNA RISPOSTA ci scrive per email dal modulo stesso (`rispondere`):
+ * il pulsante apre la posta di chi legge con la domanda e la parte già scritte.
+ * L'indirizzo arriva nella nostra casella e NON viene salvato da nessuna parte
+ * qui: le regole privacy di Adobe non permettono di conservare contatti dei
+ * clienti su sistemi non approvati (Supabase) senza revisione. Non si rimette
+ * un campo email senza quella revisione.
  *
  * Come si apre:
  *  - con `pulsante`, il componente posa «Fateci una domanda» nella barra dei
@@ -34,10 +39,10 @@ interface Props {
   capitolo?: string;
   /** posa «Fateci una domanda» nella barra del deck */
   pulsante?: boolean;
-  /** chi, oltre a noi, vede l'email: lo si dice accanto al campo */
-  referente?: string;
+  /** a chi scrive chi vuole una risposta diretta: indirizzi e oggetto della mail */
+  rispondere?: { a: string[]; oggetto: string };
 }
-const { progetto, capitolo = '', pulsante = false, referente = 'il referente della banca per questo progetto' } = Astro.props;
+const { progetto, capitolo = '', pulsante = false, rispondere } = Astro.props;
 const URL_DB = (import.meta.env.PUBLIC_SUPABASE_URL ?? '').replace(/\/$/, '');
 const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 ---
@@ -49,6 +54,8 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
   data-pulsante={pulsante ? '' : undefined}
   data-url={URL_DB}
   data-chiave={CHIAVE}
+  data-rispondere-a={rispondere?.a.join(',')}
+  data-rispondere-oggetto={rispondere?.oggetto}
   aria-labelledby="edf-mc-t"
 >
   <form method="dialog" class="edf-mc-f" novalidate data-edf-mc-form>
@@ -58,7 +65,7 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>
       </button>
     </div>
-    <p class="edf-mc-l">Lo legge il team Adobe che segue la banca. Lasciate un’email se volete una risposta diretta; senza, la domanda resta anonima.</p>
+    <p class="edf-mc-l">Lo legge il team Adobe che segue la banca. Il modulo è anonimo: non chiede nome né contatto.</p>
 
     <div data-edf-mc-campi>
       <label class="edf-mc-c">
@@ -85,15 +92,13 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
           </select></span>
         </label>
       </div>
-      <label class="edf-mc-c">
-        <span class="edf-mc-e">Email per la risposta <span class="edf-mc-fac">facoltativa</span></span>
-        <input type="email" name="contatto" maxlength={LIMITI.contatto} autocomplete="email" inputmode="email" spellcheck="false" aria-describedby="edf-mc-chi" />
-        <span class="edf-mc-fac edf-mc-nota" id="edf-mc-chi">La vediamo noi e {referente}. Non entra nel riepilogo, e la cancelliamo dopo la risposta o al più tardi dopo 90 giorni.</span>
-      </label>
       <label class="edf-mc-ok">
         <input type="checkbox" name="ok" />
-        <span>Potete usarlo nel riepilogo per la banca. <span class="edf-mc-fac">Il riepilogo mette insieme domande e spunti per funzione, senza nomi né email; il livello compare solo nei totali.</span></span>
+        <span>Potete usarlo nel riepilogo per la banca. <span class="edf-mc-fac">Il riepilogo mette insieme domande e spunti per funzione, senza nomi; il livello compare solo nei totali.</span></span>
       </label>
+      {rispondere && (
+        <p class="edf-mc-diretta">Volete una risposta diretta? <button type="button" class="edf-mc-link" data-edf-mc-mail>Mandateci la domanda per email</button>: si apre la vostra posta con il testo già scritto.</p>
+      )}
       <p class="edf-mc-err" data-edf-mc-err role="alert" hidden></p>
       <div class="edf-mc-az">
         <button type="button" class="edf-mc-b edf-mc-b--2" data-edf-mc-chiudi>Annulla</button>
@@ -167,7 +172,6 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     const esito = rigaContributo(d.dataset.progetto ?? '', {
       sezione: v('sezione'), testo: v('testo'), funzione: v('funzione'), livello: v('livello'),
       okRiepilogo: (f.elements.namedItem('ok') as HTMLInputElement).checked,
-      contatto: v('contatto'),
     });
     if (!esito.ok) { errore(d, esito.errore); return; }
     const url = d.dataset.url, chiave = d.dataset.chiave;
@@ -183,9 +187,9 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       if (!r.ok) throw new Error(String(r.status));
       // Il reset svuota anche la sezione: «Scrivine un altro» la ritrova da qui.
       d.dataset.ultimaSezione = v('sezione');
-      d.querySelector<HTMLElement>('[data-edf-mc-fatto-l]')!.textContent = esito.riga.contatto
-        ? `Vi rispondiamo a ${esito.riga.contatto}.`
-        : 'Lo leggiamo noi, nel team Adobe che segue la banca. Se poi volete una risposta diretta, scriveteci di nuovo lasciando un’email.';
+      d.querySelector<HTMLElement>('[data-edf-mc-fatto-l]')!.textContent = d.dataset.rispondereA
+        ? 'Lo leggiamo noi, nel team Adobe che segue la banca. Se poi volete una risposta diretta, mandateci la domanda per email dal modulo.'
+        : 'Lo leggiamo noi, nel team Adobe che segue la banca.';
       f.reset();
       stato(d, 'fatto');
     } catch {
@@ -193,6 +197,17 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     } finally {
       b.disabled = false;
     }
+  }
+
+  // La risposta diretta: si apre la posta di chi legge, con parte e domanda già
+  // scritte. Niente passa da qui al database.
+  function scriviPerEmail(d: HTMLDialogElement) {
+    const f = d.querySelector<HTMLFormElement>('[data-edf-mc-form]')!;
+    const v = (n: string) => (f.elements.namedItem(n) as HTMLInputElement).value.trim();
+    const a = d.dataset.rispondereA ?? '';
+    if (!a) return;
+    const corpo = [`Sulla parte: ${v('sezione') || 'In generale'}`, '', v('testo') || '(scrivete qui la domanda)'].join('\n');
+    location.href = `mailto:${a}?subject=${encodeURIComponent(d.dataset.rispondereOggetto ?? '')}&body=${encodeURIComponent(corpo)}`;
   }
 
   function posaPulsante() {
@@ -204,7 +219,7 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     b.type = 'button';
     b.className = 'deck-btn edf-mc-chiedi';
     b.setAttribute('data-contributo-apri', '');
-    b.setAttribute('aria-label', 'Fateci una domanda su questa parte: l’email è facoltativa');
+    b.setAttribute('aria-label', 'Fateci una domanda su questa parte: il modulo è anonimo');
     b.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5.5h16v10.5H10l-4.5 3.5V16H4z" stroke-linejoin="round"/><path d="M8.5 9.5h7M8.5 12.5h4.5" stroke-linecap="round"/></svg><span class="edf-mc-chiedi-l">Fateci una domanda</span>';
     barra.appendChild(b);
     seguiSlide(b);
@@ -242,6 +257,7 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     d.addEventListener('click', (e) => {
       const t = e.target as HTMLElement;
       if (t === d || t.closest('[data-edf-mc-chiudi]')) d.close();
+      if (t.closest('[data-edf-mc-mail]')) scriviPerEmail(d);
       if (t.closest('[data-edf-mc-altro]')) {
         stato(d, 'campi');
         (d.querySelector('[name="sezione"]') as HTMLInputElement).value = d.dataset.ultimaSezione ?? '';
@@ -288,14 +304,19 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
   .edf-mc-e { font-size: 0.95rem; font-weight: 600; }
   .edf-mc-fac { font-weight: 400; color: var(--ink-tertiary, inherit); }
   .edf-mc ::selection { background: color-mix(in srgb, var(--accent-primary, Highlight) 28%, transparent); }
-  .edf-mc-nota { font-size: 0.9rem; line-height: 1.45; }
-  .edf-mc input[type='text'], .edf-mc input[type='email'], .edf-mc textarea, .edf-mc select {
+  .edf-mc-diretta { margin: 0; font-size: 0.95rem; line-height: 1.45; color: var(--ink-secondary, inherit); }
+  .edf-mc-link {
+    font: inherit; font-weight: 600; color: var(--ink-accent, inherit); background: none; border: 0; padding: 0; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 0.18em; text-decoration-thickness: 1.5px;
+  }
+  .edf-mc-link:hover { text-decoration-thickness: 2.5px; }
+  .edf-mc input[type='text'], .edf-mc textarea, .edf-mc select {
     font: inherit; font-size: 1rem; color: inherit;
     background: var(--surface-secondary, transparent);
     border: 1px solid var(--line-default, currentColor);
     border-radius: 8px; padding: 0.65rem 0.75rem; min-height: 44px; width: 100%;
   }
-  .edf-mc input[type='text'], .edf-mc input[type='email'], .edf-mc textarea { caret-color: var(--accent-primary, auto); }
+  .edf-mc input[type='text'], .edf-mc textarea { caret-color: var(--accent-primary, auto); }
   .edf-mc textarea { resize: vertical; min-height: 6.5rem; line-height: 1.5; }
   /* La tendina: freccia nostra, con il suo margine. Quella di sistema stava a
      ridosso del bordo e cambiava da un browser all'altro. */

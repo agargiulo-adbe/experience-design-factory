@@ -32,3 +32,22 @@ Il modulo anonimo rende possibile solo la terza strada. Il contatto serve alle a
 
 - Dell'owner: il contatto lo vedono il team Adobe **e** il referente; per il referente, un posto separato che vede solo lui.
 - Nostre, confermabili: cancellazione dopo la risposta o a 90 giorni; niente notifiche al referente; un campo solo; la pagina dei contatti non stampa in PDF e non porta la filigrana.
+
+## Revisione del 20 nov pomeriggio — il contatto non si salva (prevale su quanto sopra)
+
+Le fonti interne di Adobe (wiki: «Surveys and Authorized Survey Tools», «Privacy Handbook for DMe Products and Services», la guida Adobe Stock sulle campagne email, il caso di revisione privacy «create.adobe.com») dicono tre cose:
+- i contatti dei clienti non si conservano fuori dagli strumenti approvati;
+- un fornitore che li tiene va valutato (Vendor Risk Assessment);
+- oltre i 30 giorni di conservazione ci si registra col team privacy, e un caso d'uso nuovo passa da una valutazione d'impatto (PIA) su OneTrust.
+
+Supabase non è uno strumento approvato. Alcune di quelle pagine sono vecchie o regionali, ma dicono la stessa cosa.
+
+**Decisione dell'owner:** il campo email esce. Chi vuole una risposta diretta ci scrive per email dal modulo stesso: un pulsante apre la sua posta con parte e domanda già scritte, indirizzata ai tre contatti di Parliamone. L'indirizzo resta nella posta di Adobe, che è approvata. Il modulo torna anonimo per costruzione.
+
+**Cosa è stato tolto:** la colonna `contatto`, `risposto_il`, `contatti_token`, la RPC `get_contatti` (migrazione `0043`, che annulla `0042`; la tabella era vuota), la pagina `contatti/` e la sua sezione in console.
+
+**Cosa cambia per il referente:** non ha più una pagina dei contatti. Chi ci scrive arriva nella nostra casella, e se serve glielo diciamo noi.
+
+**Cosa resta valido:** le tre strade (risposta per email, call di approfondimento, sessione allargata); la seconda e la terza partono dalla nostra posta.
+
+Il campo email non si rimette senza la revisione privacy (PIA su OneTrust) e la valutazione del fornitore.

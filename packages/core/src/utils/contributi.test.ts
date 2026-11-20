@@ -30,18 +30,9 @@ describe('rigaContributo', () => {
     const r = rigaContributo('p', { ...base, sezione: ' ' });
     expect(r.ok && r.riga.sezione).toBe('In generale');
   });
-  it('non porta mai il nome, né un campo che non è il contatto', () => {
+  it('non porta mai nome o contatto, anche se qualcuno li passa', () => {
     const r = rigaContributo('p', { ...base, nome: 'Mario', email: 'x@y.it' } as never);
     expect(r.ok && Object.keys(r.riga).sort()).toEqual(['funzione', 'livello', 'ok_riepilogo', 'progetto', 'sezione', 'testo']);
-  });
-  it('l’email è facoltativa: se c’è si normalizza, se è rotta si dice', () => {
-    const r = rigaContributo('p', { ...base, contatto: '  Mario.Rossi@Esempio.IT ' });
-    expect(r.ok && r.riga.contatto).toBe('mario.rossi@esempio.it');
-    const vuota = rigaContributo('p', { ...base, contatto: '   ' });
-    expect(vuota.ok && 'contatto' in vuota.riga).toBe(false);
-    const rotta = rigaContributo('p', { ...base, contatto: 'mario@' });
-    expect(rotta.ok).toBe(false);
-    expect(!rotta.ok && rotta.errore).toMatch(/email/i);
   });
 });
 

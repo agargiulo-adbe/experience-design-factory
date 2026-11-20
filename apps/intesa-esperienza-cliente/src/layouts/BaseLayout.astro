@@ -3,7 +3,7 @@ import { EDIZIONE, conContributi } from '@edf/core/utils/edizione';
 import ModuloContributo from '@edf/core/blocks/immersive/ModuloContributo.astro';
 import CardFunzioni from '@edf/core/blocks/immersive/CardFunzioni.astro';
 import { CARD_FUNZIONI } from '../data/funzioni';
-import { PROGETTO_EDIZIONE } from '../data/contatti';
+import { PROGETTO_EDIZIONE, CONTATTI, OGGETTO_EMAIL } from '../data/contatti';
 import RinvioTelefono from '@edf/core/blocks/immersive/RinvioTelefono.astro';
 // Le regole della sola edizione lettura: in sala non entrano nemmeno nel bundle.
 import letturaCss from '../styles/lettura.css?inline';
@@ -73,7 +73,7 @@ const docTitle = (isHome || title === SITE_NAME || title === SITE.name) ? SITE_N
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     {/* Edizione da distribuire: un telefono va alla pagina breve, mai al deck. */}
-    {EDIZIONE === 'lettura' && !/\/(breve|riepilogo|contatti)\/?$/.test(Astro.url.pathname) && <RinvioTelefono destinazione={`${base.replace(/\/?$/, '/')}breve/`} />}
+    {EDIZIONE === 'lettura' && !/\/(breve|riepilogo)\/?$/.test(Astro.url.pathname) && <RinvioTelefono destinazione={`${base.replace(/\/?$/, '/')}breve/`} />}
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <title>{docTitle}</title>
@@ -208,15 +208,15 @@ const docTitle = (isHome || title === SITE_NAME || title === SITE.name) ? SITE_N
     <MadeWith />
     {/* Edizione da distribuire (A e B): le card per funzione, dalla copertina e
          dalla barra dei comandi. Non sulla pagina del telefono né sul riepilogo. */}
-    {EDIZIONE === 'lettura' && !/\/(breve|riepilogo|contatti)\/?$/.test(Astro.url.pathname) && (
+    {EDIZIONE === 'lettura' && !/\/(breve|riepilogo)\/?$/.test(Astro.url.pathname) && (
       <CardFunzioni funzioni={CARD_FUNZIONI} base={base} conModulo={conContributi()} />
     )}
     {/* Versione B: il modulo anonimo, e sulle pagine del deck «Fateci una domanda»
-         nella barra dei comandi. Il riepilogo e i contatti non lo portano: sono pagine per chi le riceve.
+         nella barra dei comandi. Il riepilogo non lo porta: è una pagina per chi lo riceve.
          Niente pulsante sul breve (ha il suo) né su Parliamone, che è già la pagina dei contatti
          e porta il modulo nella frase d'apertura. */}
-    {conContributi() && !/\/(riepilogo|contatti)\/?$/.test(Astro.url.pathname) && (
-      <ModuloContributo progetto={PROGETTO_EDIZIONE} capitolo={isHome ? '' : title} pulsante={!/\/(breve|parliamone)\/?$/.test(Astro.url.pathname)} />
+    {conContributi() && !/\/riepilogo\/?$/.test(Astro.url.pathname) && (
+      <ModuloContributo progetto={PROGETTO_EDIZIONE} capitolo={isHome ? '' : title} pulsante={!/\/(breve|parliamone)\/?$/.test(Astro.url.pathname)} rispondere={{ a: CONTATTI.map((c) => c.email), oggetto: OGGETTO_EMAIL }} />
     )}
   </body>
 </html>
