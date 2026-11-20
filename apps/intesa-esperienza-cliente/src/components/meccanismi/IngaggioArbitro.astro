@@ -1,0 +1,250 @@
+---
+/**
+ * L'arbitro — «Come ragiona una decisione, in cinque passaggi», disegnata
+ * (20 nov 2026). Era un elenco di cinque schede; ora è un imbuto: le quattro
+ * proposte del momento 04 entrano dal catalogo, l'eleggibilità, i vincoli e
+ * la classifica ne scartano una alla volta (in arancio, escono dal flusso), e
+ * ne esce una sola. Il quinto passaggio, il ripiego, è il ramo tratteggiato
+ * per quando nessuna è ammessa; il confine con il core banking è la
+ * didascalia dell'ultimo passo.
+ *
+ * Stessa grammatica di `slide-domanda-consenso` (domande.css) e del Sankey
+ * `slide-flusso` (innesto.css): marcatori di passo invisibili che accendono
+ * il disegno via `:has()`, SVG 1000×400 senza testo, etichette HTML in %,
+ * una didascalia per passo nella fascia sotto.
+ *
+ * ⚠️ Nessun fatto nuovo rispetto alla slide a schede: le cinque frasi e il
+ * riquadro «Dove si fermano le nostre regole» sono ridistribuiti fra
+ * etichette e didascalie. Le quattro proposte non hanno un nome: sono
+ * A, B, C, D, e quale cade a quale passaggio è illustrativo.
+ * I testi della versione a schede restano in `DECIDE` (approfondimenti.astro).
+ */
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+
+const TORNA = '#slide-ingaggio-ciclo';
+
+/* Le colonne: catalogo, poi i tre cancelli, poi l'uscita. */
+const X = [150, 300, 460, 620, 820];
+const GATE = [
+  { x: 300, p: 2 },
+  { x: 460, p: 3 },
+  { x: 620, p: 4 },
+];
+const INT = [
+  { x: 14.3, p: 1, it: '1 · Il catalogo', en: '1 · The catalogue' },
+  { x: 30, p: 2, it: '2 · L’eleggibilità', en: '2 · Eligibility' },
+  { x: 46, p: 3, it: '3 · I vincoli', en: '3 · Constraints' },
+  { x: 62, p: 4, it: '4 · La classifica', en: '4 · Ranking' },
+];
+
+/* Le quattro proposte: la quota a ogni colonna, e dove cadono.
+   `cut` è l'indice della colonna in cui escono; `fuori` il punto in cui
+   finiscono, fuori dal flusso. B è quella che esce. */
+const PROPOSTE = [
+  { k: 'a', it: 'Proposta A', en: 'Proposal A', y: [65, 100, 128, 150, 150], cut: 3, p: 4, fuori: [700, 22] },
+  { k: 'b', it: 'Proposta B', en: 'Proposal B', y: [155, 162, 170, 176, 176], cut: -1, p: 0, fuori: null },
+  { k: 'c', it: 'Proposta C', en: 'Proposal C', y: [245, 228, 210, 202, 202], cut: 2, p: 3, fuori: [545, 380] },
+  { k: 'd', it: 'Proposta D', en: 'Proposal D', y: [335, 300, 262, 228, 228], cut: 1, p: 2, fuori: [385, 380] },
+] as const;
+
+const tratto = (pts: number[][]) =>
+  pts.reduce((d, [x, y], i) => {
+    if (i === 0) return `M${x} ${y}`;
+    const [px, py] = pts[i - 1];
+    const mx = (px + x) / 2;
+    return `${d} C ${mx} ${py}, ${mx} ${y}, ${x} ${y}`;
+  }, '');
+
+const DISEGNO = PROPOSTE.map((pr) => {
+  const pts = X.map((x, i) => [x, pr.y[i]]);
+  if (pr.cut < 0) return { ...pr, dentro: tratto(pts), prosegue: '', esce: '' };
+  const [cx, cy] = pts[pr.cut];
+  const [fx, fy] = pr.fuori!;
+  return {
+    ...pr,
+    dentro: tratto(pts.slice(0, pr.cut + 1)),
+    prosegue: tratto(pts.slice(pr.cut)),
+    esce: `M${cx} ${cy} C ${cx + 55} ${cy}, ${fx} ${cy + (fy - cy) * 0.35}, ${fx} ${fy}`,
+  };
+});
+
+const DIDAS = [
+  { t: { it: 'Il catalogo', en: 'The catalogue' },
+    d: { it: 'le offerte che esistono, con le loro date e i canali su cui possono uscire.', en: 'the offers that exist, with their dates and the channels they may go out on.' } },
+  { t: { it: 'L’eleggibilità', en: 'Eligibility' },
+    d: { it: 'quella creditizia viene dal core banking, target e propensione dal motore di targeting. L’arbitro non interroga il core in sincrono: l’eleggibilità è un attributo precalcolato nel profilo, oppure la passa il vostro sistema nella richiesta di decisione.', en: 'credit eligibility comes from core banking, targets and propensity from the targeting engine. The arbiter does not query the core synchronously: eligibility is a precomputed attribute in the profile, or your system passes it in the decision request.' } },
+  { t: { it: 'I vincoli', en: 'The constraints' },
+    d: { it: 'limite per offerta, consenso, capienza di un’offerta, esclusioni.', en: 'per-offer limit, consent, an offer’s capacity, exclusions.' } },
+  { t: { it: 'La classifica', en: 'The ranking' },
+    d: { it: 'fra le ammesse, l’ordine. Se avete già un punteggio sui non‑clienti, entra come attributo; altrimenti valgono la priorità dell’offerta e le regole che fissate voi.', en: 'among those allowed, the order. If you already have a score on non-customers, it comes in as an attribute; otherwise the offer’s priority and the rules you set apply.' } },
+  { t: { it: 'Dove si fermano le nostre regole', en: 'Where our rules stop' },
+    d: { it: 'il motore non è il sistema di record dell’eleggibilità creditizia, dei saldi e delle approvazioni: quelli restano nel core banking. Qui si scelgono offerta, canale e momento fra ciò che il core ha già dichiarato ammissibile.', en: 'the engine is not the system of record for credit eligibility, balances or approvals: those stay in core banking. Here offer, channel and timing are chosen among what the core has already declared eligible.' } },
+];
+---
+<Slide id="slide-ingaggio-arbitro" bg="inverse" align="left" data-lettura-ritmo="3200">
+  <div slot="backdrop" class="im-bg-notte"></div>
+  <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+    <T as="p" class="im-ado-occ" it="Approfondimento · l’arbitro" en="Deep dive · the arbiter" />
+    <T as="h2" class="im-ado-t im-ado-t--stretto" it="Come ragiona una decisione, in cinque passaggi" en="How a decision reasons, in five steps" />
+    <T as="p" class="im-ado-l" it="Delle quattro proposte del momento 04 ne esce una sola." en="Of the four proposals in moment 04 only one goes out." />
+    {[1, 2, 3, 4, 5].map((p) => <i class="mc-arb-passo" data-substep data-p={p} aria-hidden="true"></i>)}
+
+    <figure class="mc-arb">
+      <div class="mc-arb-int" aria-hidden="true">
+        {INT.map((h) => <T as="span" data-p={h.p} style={`--x:${h.x}%`} it={h.it} en={h.en} />)}
+      </div>
+      <div class="mc-arb-g" role="img" aria-label="Quattro proposte entrano dal catalogo; l'eleggibilità, i vincoli e la classifica ne scartano una alla volta e ne esce una sola. Se nessuna è ammessa esce il ripiego, dichiarato in anticipo.">
+        <svg class="mc-arb-svg" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+          {GATE.map((g) => <line class="mc-arb-cancello" data-p={g.p} x1={g.x} y1="0" x2={g.x} y2="400" />)}
+          <path class="mc-arb-ripiego" d="M620 250 C 720 250, 730 325, 820 325" />
+          {DISEGNO.map((d) => (
+            <g class="mc-arb-pr" data-k={d.k}>
+              <path class="mc-arb-dentro" d={d.dentro} />
+              {d.prosegue && <path class="mc-arb-prosegue" d={d.prosegue} />}
+              {d.esce && <path class="mc-arb-esce" d={d.esce} />}
+            </g>
+          ))}
+        </svg>
+        <svg class="mc-arb-nodi" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+          {PROPOSTE.map((pr) => <rect class="mc-arb-n" data-k={pr.k} x="136" y={pr.y[0] - 25} width="14" height="50" />)}
+          <rect class="mc-arb-n mc-arb-n--esce" x="820" y="136" width="14" height="104" />
+          <rect class="mc-arb-n mc-arb-n--ripiego" x="820" y="302" width="14" height="46" />
+        </svg>
+        {PROPOSTE.map((pr) => <T as="span" class="mc-arb-l mc-arb-l--sx" data-k={pr.k} style={`--x:12.8%;--y:${pr.y[0] / 4}%`} it={pr.it} en={pr.en} />)}
+        {DISEGNO.filter((d) => d.fuori).map((d) => (
+          <svg class="mc-arb-x" data-k={d.k} style={`--x:${d.fuori![0] / 10}%;--y:${d.fuori![1] / 4}%`} viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4 L16 16 M16 4 L4 16" /></svg>
+        ))}
+        <T as="span" class="mc-arb-l mc-arb-l--dx mc-arb-l--esce" style="--x:84.6%;--y:47%" it="Ne esce una" en="One goes out" />
+        <span class="mc-arb-l mc-arb-l--dx mc-arb-l--ripiego" style="--x:84.6%;--y:81.25%">
+          <T as="span" class="mc-arb-tag" it="5 · Il ripiego" en="5 · The fallback" />
+          <T as="span" class="mc-arb-nota" it="se nessuna è ammessa," en="if none is allowed," />
+          <T as="span" class="mc-arb-nota" it="dichiarato in anticipo" en="declared in advance" />
+        </span>
+      </div>
+    </figure>
+
+    <div class="mc-arb-banda">
+      <div class="mc-arb-didas">
+        {DIDAS.map((x, i) => <p data-per={i + 1}><T as="strong" it={x.t.it} en={x.t.en} /> <T as="span" it={x.d.it} en={x.d.en} /></p>)}
+      </div>
+    </div>
+
+    <p class="im-fonte-riga">
+      <span data-lang-it>I cinque passaggi, dalla documentazione pubblica (11 nov 2026): </span><span data-lang-en>The five steps, from the public documentation (11 Nov 2026): </span>
+      <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/decisioning/experience-decisioning/gs-experience-decisioning" target="_blank" rel="noopener">Journey Optimizer · Decisioning</a><span data-lang-it>. Il confine con il core banking è una scelta di progetto nostra, da confermare con&nbsp;voi.</span><span data-lang-en>. The boundary with core banking is a design choice of ours, to confirm with you.</span>
+      <a class="im-torna" href={TORNA}><span data-lang-it>← Torna ai quattro componenti</span><span data-lang-en>← Back to the four components</span></a>
+    </p>
+  </div>
+</Slide>
+
+<style is:global>
+/* ══ L'ARBITRO, DISEGNATO (mc-arb) ═══════════════════════════════════
+   Stato base: proposte e cancelli a vista, i nastri no.
+   Passo 1: i quattro nastri scorrono dal catalogo all'uscita.
+   Passi 2-4: a ogni cancello una proposta diventa arancio ed esce.
+   Passo 4: B, l'unica rimasta, si accende.
+   Passo 5: il ramo del ripiego; la fascia diventa il confine. */
+.mc-arb { --arb-n: #b9e6a3; --arb-nastro: rgba(185, 230, 163, 0.32); --arb-ko: #ff8a5c; --arb-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative; margin: clamp(0.4rem, calc(0.6 * var(--vu)), 1.2rem) 0 0; }
+.mc-arb-passo { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+.mc-arb-int { position: relative; height: 1.6em; font-size: clamp(0.8rem, calc(0.74 * var(--vu)), 1.55rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #c9dcc2; }
+.mc-arb-int > span { position: absolute; left: var(--x); translate: -50% 0; white-space: nowrap; transition: color 0.4s ease; }
+
+.mc-arb-g { position: relative; height: clamp(11rem, calc(14.5 * var(--vu)), 28rem); margin-top: clamp(0.9rem, calc(1.2 * var(--vu)), 2.4rem); }
+.mc-arb-svg, .mc-arb-nodi { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+
+/* I cancelli: tre linee tratteggiate; quella del passo in corso si accende. */
+.mc-arb-cancello { stroke: rgba(159, 214, 138, 0.4); stroke-width: 1.5; stroke-dasharray: 4 6; vector-effect: non-scaling-stroke; transition: stroke 0.4s ease; }
+
+/* I nastri. */
+.mc-arb-svg path { fill: none; stroke: var(--arb-nastro); stroke-width: 9; vector-effect: non-scaling-stroke; stroke-linecap: butt;
+  transition: stroke 0.45s ease, opacity 0.45s ease, stroke-width 0.45s ease; }
+.mc-arb-pr { clip-path: inset(-5% 100% -5% -5%); transition: clip-path 1.4s var(--arb-ease); }
+.mc-arb-svg .mc-arb-esce { stroke: var(--arb-ko); opacity: 0; transition: opacity 0.6s ease 0.25s; }
+.mc-arb-svg .mc-arb-ripiego { stroke: var(--arb-n); stroke-width: 3; stroke-dasharray: 7 7; opacity: 0; transition: opacity 0.6s ease 0.2s; }
+
+.mc-arb-n { fill: var(--arb-n); transition: opacity 0.45s ease, fill 0.45s ease; }
+.mc-arb-n--esce { fill: #ffffff; }
+.mc-arb-n--ripiego { fill: transparent; stroke: var(--arb-n); stroke-width: 2; stroke-dasharray: 4 4; vector-effect: non-scaling-stroke; opacity: 0; transition: opacity 0.6s ease 0.2s; }
+
+.mc-arb-l { position: absolute; left: var(--x); top: var(--y); font-size: clamp(0.92rem, calc(0.86 * var(--vu)), 1.85rem); font-weight: 600; line-height: 1.15; color: #ffffff; white-space: nowrap;
+  transition: opacity 0.45s ease, color 0.45s ease; }
+.mc-arb-l--sx { translate: -100% -50%; text-align: right; }
+.mc-arb-l--dx { translate: 0 -50%; font-weight: 700; }
+.mc-arb-l--ripiego { display: grid; justify-items: start; gap: 0.15rem; font-weight: 600; opacity: 0; transition: opacity 0.6s ease 0.3s; }
+.mc-arb-tag { font-size: clamp(0.8rem, calc(0.74 * var(--vu)), 1.55rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #9fd68a; }
+.mc-arb-nota { font-size: clamp(0.86rem, calc(0.76 * var(--vu)), 1.65rem); font-weight: 500; color: #d9e6d4; }
+
+.mc-arb-x { position: absolute; left: var(--x); top: var(--y); width: clamp(1.1rem, calc(1.2 * var(--vu)), 2.4rem); height: auto; translate: -50% -50%; overflow: visible; opacity: 0; transition: opacity 0.4s ease; }
+.mc-arb-x path { fill: none; stroke: var(--arb-ko); stroke-width: 3.2; stroke-linecap: round; }
+
+/* La fascia: una didascalia per passo. Al passo 5 prende il rosso del confine,
+   lo stesso segno di `.im-confine`: è una dichiarazione nostra. */
+.mc-arb-banda { margin: clamp(0.6rem, calc(0.9 * var(--vu)), 1.8rem) 0 0; padding: clamp(0.55rem, calc(0.75 * var(--vu)), 1.4rem) clamp(0.9rem, calc(1.2 * var(--vu)), 2.2rem);
+  border: 1px solid rgba(185, 230, 163, 0.34); border-radius: 8px; background: rgba(185, 230, 163, 0.09);
+  font-size: clamp(1.02rem, calc(1 * var(--vu)), 2.2rem); line-height: 1.38; color: #f2f8f0;
+  opacity: 0; visibility: hidden; transition: opacity 0.5s ease, visibility 0s linear 0.5s, background-color 0.4s ease, border-color 0.4s ease; }
+.mc-arb-didas { display: grid; min-width: 0; }
+.mc-arb-didas > p { grid-area: 1 / 1; margin: 0; max-width: none; opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0s linear 0.25s; }
+.mc-arb-didas strong { color: #b9e6a3; margin-right: 0.35em; }
+
+/* ── I passi ─────────────────────────────────────────────────────────── */
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="1"][data-substep-active]) .mc-arb-banda { opacity: 1; visibility: visible; transition: opacity 0.5s ease, visibility 0s, background-color 0.4s ease, border-color 0.4s ease; }
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="1"][data-substep-active]):not(:has(.mc-arb-passo[data-p="2"][data-substep-active])) :is(.mc-arb-didas > [data-per="1"], .mc-arb-int > [data-p="1"]),
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="2"][data-substep-active]):not(:has(.mc-arb-passo[data-p="3"][data-substep-active])) :is(.mc-arb-didas > [data-per="2"], .mc-arb-int > [data-p="2"]),
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="3"][data-substep-active]):not(:has(.mc-arb-passo[data-p="4"][data-substep-active])) :is(.mc-arb-didas > [data-per="3"], .mc-arb-int > [data-p="3"]),
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="4"][data-substep-active]):not(:has(.mc-arb-passo[data-p="5"][data-substep-active])) :is(.mc-arb-didas > [data-per="4"], .mc-arb-int > [data-p="4"]),
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="5"][data-substep-active]) .mc-arb-didas > [data-per="5"] { opacity: 1; visibility: visible; color: #ffffff; transition: opacity 0.35s ease 0.1s, visibility 0s, color 0.4s ease; }
+
+/* Passo 1: i nastri, dal catalogo all'uscita. */
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="1"][data-substep-active]) .mc-arb-pr { clip-path: inset(-5% -5% -5% -5%); }
+
+/* Il cancello del passo in corso. */
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="2"][data-substep-active]):not(:has(.mc-arb-passo[data-p="3"][data-substep-active])) .mc-arb-cancello[data-p="2"],
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="3"][data-substep-active]):not(:has(.mc-arb-passo[data-p="4"][data-substep-active])) .mc-arb-cancello[data-p="3"],
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="4"][data-substep-active]):not(:has(.mc-arb-passo[data-p="5"][data-substep-active])) .mc-arb-cancello[data-p="4"] { stroke: #b9e6a3; }
+
+/* Passi 2-4: la proposta che cade diventa arancio, il suo nastro smette di
+   proseguire e piega fuori dal flusso, verso la ×. */
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="2"][data-substep-active]) .mc-arb-pr[data-k="d"] .mc-arb-dentro,
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="3"][data-substep-active]) .mc-arb-pr[data-k="c"] .mc-arb-dentro,
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="4"][data-substep-active]) .mc-arb-pr[data-k="a"] .mc-arb-dentro { stroke: rgba(255, 138, 92, 0.55); }
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="2"][data-substep-active]) .mc-arb-pr[data-k="d"] .mc-arb-prosegue,
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="3"][data-substep-active]) .mc-arb-pr[data-k="c"] .mc-arb-prosegue,
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="4"][data-substep-active]) .mc-arb-pr[data-k="a"] .mc-arb-prosegue { opacity: 0; }
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="2"][data-substep-active]) .mc-arb-pr[data-k="d"] .mc-arb-esce,
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="3"][data-substep-active]) .mc-arb-pr[data-k="c"] .mc-arb-esce,
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="4"][data-substep-active]) .mc-arb-pr[data-k="a"] .mc-arb-esce { opacity: 1; }
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="2"][data-substep-active]) .mc-arb-x[data-k="d"],
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="3"][data-substep-active]) .mc-arb-x[data-k="c"],
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="4"][data-substep-active]) .mc-arb-x[data-k="a"] { opacity: 1; transition-delay: 0.7s; }
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="2"][data-substep-active]) .mc-arb-l[data-k="d"],
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="3"][data-substep-active]) .mc-arb-l[data-k="c"],
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="4"][data-substep-active]) .mc-arb-l[data-k="a"] { color: var(--arb-ko); text-decoration: line-through; text-decoration-thickness: 2px; }
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="2"][data-substep-active]) .mc-arb-n[data-k="d"],
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="3"][data-substep-active]) .mc-arb-n[data-k="c"],
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="4"][data-substep-active]) .mc-arb-n[data-k="a"] { fill: var(--arb-ko); opacity: 0.55; }
+
+/* Passo 4: ne resta una, e si accende fino all'uscita. */
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="4"][data-substep-active]) .mc-arb-pr[data-k="b"] .mc-arb-dentro { stroke: #b9e6a3; stroke-width: 14; }
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="4"][data-substep-active]) .mc-arb-n--esce { fill: #6cc04a; }
+.mc-arb-l--esce { color: #d9e6d4; }
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="4"][data-substep-active]) .mc-arb-l--esce { color: #b9e6a3; }
+
+/* Passo 5: il ripiego, e la fascia del confine. */
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="5"][data-substep-active]) :is(.mc-arb-ripiego, .mc-arb-n--ripiego, .mc-arb-l--ripiego) { opacity: 1; }
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="5"][data-substep-active]) .mc-arb-banda { background: rgba(235, 16, 0, 0.14); border-color: rgba(235, 16, 0, 0.45); }
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="5"][data-substep-active]) .mc-arb-didas > [data-per="5"] strong { color: #ffffff; }
+/* Al passo 5 il resto del disegno resta, più quieto. */
+#slide-ingaggio-arbitro:has(.mc-arb-passo[data-p="5"][data-substep-active]) .mc-arb-pr[data-k="b"] .mc-arb-dentro { stroke: rgba(185, 230, 163, 0.7); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mc-arb-pr, .mc-arb-svg path, .mc-arb-cancello, .mc-arb-n, .mc-arb-l, .mc-arb-x, .mc-arb-banda, .mc-arb-didas > p, .mc-arb-int > span { transition: none !important; }
+}
+@media (max-height: 820px) {
+  .mc-arb-g { height: clamp(9rem, calc(12.5 * var(--vu)), 26rem); margin-top: 0.9rem; }
+  .mc-arb-banda { margin-top: 0.45rem; padding-block: 0.45rem; }
+}
+</style>

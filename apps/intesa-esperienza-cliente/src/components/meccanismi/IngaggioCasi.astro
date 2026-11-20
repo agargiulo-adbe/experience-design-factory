@@ -1,0 +1,193 @@
+---
+/**
+ * I casi d'uso — «Quattro casi d'uso che richiedono profilo, decisione e
+ * misura nello stesso sistema», disegnata (20 nov 2026). Erano quattro schede;
+ * ora è un disegno solo: quattro righe, una per caso, dal punto in cui comincia
+ * a quello in cui arriva, attraverso le tre colonne profilo · decisione ·
+ * misura. Prima del suo passo ogni riga è a pezzi separati (tratti spezzati,
+ * sistemi che non si parlano); al suo passo i pezzi si accendono in arancio e
+ * diventano un filo continuo. Un caso per passo.
+ *
+ * Il secondo caso non ha un «a pezzi separati» ma una domanda: resta marcata
+ * «da chiedere» sul disegno e nella didascalia, prima e dopo il suo passo.
+ *
+ * Stessa grammatica di `slide-domanda-consenso` (domande.css) e del Sankey
+ * `slide-flusso` (innesto.css). Nessun fatto nuovo: i testi sono quelli delle
+ * schede (`CASI` in approfondimenti.astro), ridistribuiti — da e a nelle
+ * etichette, titolo, «che cosa serve» e «a pezzi separati» nella didascalia.
+ */
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+
+const TORNA = '#slide-ingaggio-ciclo';
+
+/* Le colonne: da dove comincia, profilo, decisione, misura, dove arriva. */
+const NX = [190, 340, 480, 620, 760];
+const NW = 14;
+const NH = 36;
+const INT = [
+  { x: 34.7, it: 'Profilo', en: 'Profile' },
+  { x: 48.7, it: 'Decisione', en: 'Decision' },
+  { x: 62.7, it: 'Misura', en: 'Measurement' },
+];
+/* I tratti spezzati: fra un nodo e il successivo, staccati dai nodi. */
+const PEZZI = NX.slice(0, -1).map((x, i) => [x + NW + 12, NX[i + 1] - 12]);
+
+const CASI = [
+  { r: 1, y: 50, chiedere: false,
+    da: { it: 'Simulazione sul sito', en: 'Simulation on the site' }, a: { it: 'Gestore in filiale', en: 'Adviser in the branch' },
+    t: { it: 'Chi non vi conosce, riconosciuto in filiale', en: 'Someone who does not know you, recognised in the branch' },
+    serve: { it: 'un’identità nata da una visita fatta senza lasciare il nome, un percorso verso il CRM di filiale e una misura unica fra digitale e sportello.', en: 'an identity that starts from a pseudonymous visit, a journey that hands lead and simulation to the branch CRM, and one measurement holding digital and counter together.' },
+    pezzi: { it: 'A pezzi separati: il sito non sa chi è, la filiale ignora la simulazione, e nessuno dei due sa dell’altro.', en: 'With the pieces apart: the site does not know who it is, the branch is unaware of the simulation, and neither knows about the other.' } },
+  { r: 2, y: 150, chiedere: true,
+    da: { it: 'Quattro proposte', en: 'Four proposals' }, a: { it: 'Una, sul canale giusto', en: 'One, on the right channel' },
+    t: { it: 'Una politica di contatto sui canali di invio', en: 'A contact policy across the sending channels' },
+    serve: { it: 'la regola di contatto resta vostra. Il tetto per persona e per canale vale su email, SMS, push e canali custom. Su web e app vale solo il limite per offerta.', en: 'the contact rule stays yours. The per-person, per-channel cap holds on email, SMS, push and custom channels. On web and app only the per-offer limit applies.' },
+    pezzi: { it: 'Da chiedere: sui canali digitali, a chi non ha una scheda cliente, oggi la pressione si conta per persona o canale per canale?', en: 'To ask: on the digital channels, for people without a customer record, is pressure counted per person today, or channel by channel?' } },
+  { r: 3, y: 250, chiedere: false,
+    da: { it: 'I vostri sistemi', en: 'Your own systems' }, a: { it: 'La stessa decisione', en: 'The same decision' },
+    t: { it: 'La decisione chiesta da chi ce l’ha già', en: 'The decision asked for by whoever already has one' },
+    serve: { it: 'un motore interrogabile via API dal vostro backend e dalla postazione della Filiale Digitale, senza spostare l’orchestrazione.', en: 'an engine callable over API from your backend and from the Filiale Digitale desktop, without moving the orchestration.' },
+    pezzi: { it: 'A pezzi separati: la regola si riscrive in ogni canale, e due canali danno due risposte diverse alla stessa persona.', en: 'With the pieces apart: the rule gets rewritten in every channel, and two channels give the same person two different answers.' } },
+  { r: 4, y: 350, chiedere: false,
+    da: { it: 'Un evento di vita', en: 'A life event' }, a: { it: 'La proposta, quando serve', en: 'The proposal, when it is needed' },
+    t: { it: 'Il cross-sell subito dopo la firma', en: 'Cross-sell right after signature' },
+    serve: { it: 'l’evento, l’eleggibilità creditizia del core banking come attributo nel profilo, e l’uplift misurato su un gruppo di controllo.', en: 'the event, credit eligibility from core banking as a profile attribute, and uplift measured against a control group.' },
+    pezzi: { it: 'A pezzi separati: la proposta parte quando chiude il trimestre, e di quanto sia servita non si sa dire.', en: 'With the pieces apart: the proposal goes out when the quarter closes, and nobody can say how much it helped.' } },
+];
+---
+<Slide id="slide-ingaggio-casi" bg="inverse" align="left" data-lettura-ritmo="3200">
+  <div slot="backdrop" class="im-bg-notte"></div>
+  <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+    <T as="p" class="im-ado-occ" it="Approfondimento · casi d’uso" en="Deep dive · use cases" />
+    <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quattro casi d’uso che richiedono profilo, decisione e misura nello stesso sistema" en="Four use cases that need profile, decision and measurement in one system" />
+    <T as="p" class="im-ado-l" it="In tutti e quattro la persona non deve ripetere quello che ha già detto a un altro canale." en="In all four, the person does not have to repeat what they already told another channel." />
+    {CASI.map((c) => <i class="mc-cas-passo" data-substep data-p={c.r} aria-hidden="true"></i>)}
+
+    <figure class="mc-cas">
+      <div class="mc-cas-int" aria-hidden="true">
+        {INT.map((h) => <T as="span" style={`--x:${h.x}%`} it={h.it} en={h.en} />)}
+      </div>
+      <div class="mc-cas-g" role="img" aria-label="Quattro casi d'uso, uno per riga. A pezzi separati il percorso fra profilo, decisione e misura si interrompe; nello stesso sistema diventa un filo continuo. Il secondo caso porta una domanda da chiedere.">
+        <svg class="mc-cas-svg" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+          {CASI.map((c) => (
+            <g class="mc-cas-riga" data-r={c.r} data-chiedere={c.chiedere ? '' : null}>
+              {PEZZI.map(([x1, x2]) => <line class="mc-cas-pezzo" x1={x1} y1={c.y} x2={x2} y2={c.y} />)}
+              <path class="mc-cas-filo" d={`M${NX[0] + NW} ${c.y} L${NX[4]} ${c.y}`} />
+              {NX.map((x, i) => <rect class={`mc-cas-n${i === 0 || i === 4 ? ' mc-cas-n--capo' : ''}`} x={x} y={c.y - NH / 2} width={NW} height={NH} />)}
+            </g>
+          ))}
+        </svg>
+        {CASI.map((c) => <T as="span" class="mc-cas-l mc-cas-l--sx" data-r={c.r} style={`--x:${(NX[0] - 12) / 10}%;--y:${c.y / 4}%`} it={c.da.it} en={c.da.en} />)}
+        {CASI.map((c) => <T as="span" class="mc-cas-l mc-cas-l--dx" data-r={c.r} style={`--x:${(NX[4] + NW + 12) / 10}%;--y:${c.y / 4}%`} it={c.a.it} en={c.a.en} />)}
+        {CASI.filter((c) => c.chiedere).map((c) => (
+          <T as="span" class="mc-cas-chiedi" data-r={c.r} style={`--x:${(NX[2] + NW + NX[3]) / 20}%;--y:${c.y / 4}%`} it="da chiedere" en="to ask" />
+        ))}
+      </div>
+    </figure>
+
+    <div class="mc-cas-banda">
+      <div class="mc-cas-didas">
+        {CASI.map((c) => (
+          <p data-per={c.r}>
+            <T as="strong" it={c.t.it} en={c.t.en} /> <T as="span" it={c.serve.it} en={c.serve.en} />
+            <T as="span" class="mc-cas-pezzi" data-chiedere={c.chiedere ? '' : null} it={c.pezzi.it} en={c.pezzi.en} />
+          </p>
+        ))}
+      </div>
+    </div>
+
+    <T as="p" class="im-fonte-riga" it="Casi d’uso proposti sul vostro perimetro, da prioritizzare insieme: la fattibilità di ciascuno dipende da quali dati sono già in piattaforma. La riga in basso di ogni caso dice che cosa resta fuori portata con&nbsp;profilo, decisione e misura in tre sistemi diversi." en="Use cases proposed for your perimeter, to be prioritised together: the feasibility of each depends on which data is already on the platform. The bottom line of each case says what stays out of reach when profile, decision and measurement live in different systems." />
+    <p class="im-fonte-riga"><a class="im-torna" href={TORNA}><span data-lang-it>← Torna ai quattro componenti</span><span data-lang-en>← Back to the four components</span></a></p>
+  </div>
+</Slide>
+
+<style is:global>
+/* ══ I CASI D'USO, DISEGNATI (mc-cas) ════════════════════════════════
+   Stato base: quattro righe a pezzi separati, tratti spezzati e grigi.
+   Passo N: i pezzi della riga N si accendono in arancio e si spengono, il
+   filo continuo la attraversa da capo a capo. Le righe già raccontate
+   restano col filo, più quiete; quelle ancora da raccontare restano a pezzi.
+   Il caso 2 è una domanda: niente arancio, e la pillola «da chiedere» resta. */
+.mc-cas { --cas-n: #b9e6a3; --cas-ko: #ff8a5c; --cas-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative; margin: clamp(0.4rem, calc(0.6 * var(--vu)), 1.2rem) 0 0; }
+.mc-cas-passo { position: absolute; width: 0; height: 0; overflow: hidden; }
+/* Titolo e riga larghi: tre righe di titolo e due di lead non lasciavano posto al disegno a 768 di altezza. */
+#slide-ingaggio-casi .im-ado-t { max-width: 44ch; }
+#slide-ingaggio-casi .im-ado-l { max-width: none; }
+
+.mc-cas-int { position: relative; height: 1.6em; font-size: clamp(0.8rem, calc(0.74 * var(--vu)), 1.55rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #9fd68a; }
+.mc-cas-int > span { position: absolute; left: var(--x); translate: -50% 0; white-space: nowrap; }
+
+.mc-cas-g { position: relative; height: clamp(11rem, calc(14.5 * var(--vu)), 28rem); margin-top: clamp(0.5rem, calc(0.7 * var(--vu)), 1.4rem); }
+.mc-cas-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+
+.mc-cas-riga { transition: opacity 0.45s ease; }
+.mc-cas-pezzo { stroke: rgba(255, 255, 255, 0.42); stroke-width: 3; stroke-dasharray: 6 9; vector-effect: non-scaling-stroke;
+  transition: stroke 0.25s ease, opacity 0.35s ease; }
+.mc-cas-filo { fill: none; stroke: var(--cas-n); stroke-width: 5; vector-effect: non-scaling-stroke;
+  transform-box: fill-box; transform-origin: 0 50%; transform: scaleX(0); transition: transform 0.3s ease, stroke 0.45s ease; }
+.mc-cas-n { fill: rgba(185, 230, 163, 0.45); transition: fill 0.45s ease; }
+.mc-cas-n--capo { fill: #ffffff; }
+
+.mc-cas-l { position: absolute; left: var(--x); top: var(--y); font-size: clamp(0.92rem, calc(0.86 * var(--vu)), 1.85rem); font-weight: 600; line-height: 1.15; color: #d9e6d4; white-space: nowrap;
+  transition: color 0.45s ease; }
+.mc-cas-l--sx { translate: -100% -50%; text-align: right; }
+.mc-cas-l--dx { translate: 0 -50%; }
+
+.mc-cas-chiedi { position: absolute; left: var(--x); top: var(--y); translate: -50% -50%; padding: 0.18em 0.7em; border: 1.5px dashed #9fd68a; border-radius: 999px; background: #0b1f06;
+  font-size: clamp(0.76rem, calc(0.64 * var(--vu)), 1.42rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9fd68a; white-space: nowrap; }
+
+.mc-cas-banda { margin: clamp(0.6rem, calc(0.9 * var(--vu)), 1.8rem) 0 0; padding: clamp(0.55rem, calc(0.75 * var(--vu)), 1.4rem) clamp(0.9rem, calc(1.2 * var(--vu)), 2.2rem);
+  border: 1px solid rgba(185, 230, 163, 0.34); border-radius: 8px; background: rgba(185, 230, 163, 0.09);
+  font-size: clamp(1.02rem, calc(1 * var(--vu)), 2.2rem); line-height: 1.38; color: #f2f8f0;
+  opacity: 0; visibility: hidden; transition: opacity 0.5s ease, visibility 0s linear 0.5s; }
+.mc-cas-didas { display: grid; min-width: 0; }
+.mc-cas-didas > p { grid-area: 1 / 1; margin: 0; max-width: none; opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0s linear 0.25s; }
+.mc-cas-didas strong { color: #b9e6a3; margin-right: 0.35em; }
+.mc-cas-pezzi { display: block; margin-top: 0.3em; color: #ffc3ab; }
+.mc-cas-pezzi[data-chiedere] { color: #ffffff; font-style: italic; }
+
+/* ── I passi ─────────────────────────────────────────────────────────── */
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="1"][data-substep-active]) .mc-cas-banda { opacity: 1; visibility: visible; transition: opacity 0.5s ease, visibility 0s; }
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="1"][data-substep-active]):not(:has(.mc-cas-passo[data-p="2"][data-substep-active])) .mc-cas-didas > [data-per="1"],
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="2"][data-substep-active]):not(:has(.mc-cas-passo[data-p="3"][data-substep-active])) .mc-cas-didas > [data-per="2"],
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="3"][data-substep-active]):not(:has(.mc-cas-passo[data-p="4"][data-substep-active])) .mc-cas-didas > [data-per="3"],
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="4"][data-substep-active]) .mc-cas-didas > [data-per="4"] { opacity: 1; visibility: visible; transition: opacity 0.35s ease 0.1s, visibility 0s; }
+
+/* Una riga raccontata: i pezzi (arancio, se erano a pezzi) si spengono e il filo la attraversa. */
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="1"][data-substep-active]) .mc-cas-riga[data-r="1"] .mc-cas-pezzo,
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="2"][data-substep-active]) .mc-cas-riga[data-r="2"] .mc-cas-pezzo,
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="3"][data-substep-active]) .mc-cas-riga[data-r="3"] .mc-cas-pezzo,
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="4"][data-substep-active]) .mc-cas-riga[data-r="4"] .mc-cas-pezzo { stroke: var(--cas-ko); opacity: 0; transition: stroke 0.2s ease, opacity 0.45s ease 0.85s; }
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="2"][data-substep-active]) .mc-cas-riga[data-r="2"] .mc-cas-pezzo { stroke: rgba(255, 255, 255, 0.42); }
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="1"][data-substep-active]) .mc-cas-riga[data-r="1"] .mc-cas-filo,
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="2"][data-substep-active]) .mc-cas-riga[data-r="2"] .mc-cas-filo,
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="3"][data-substep-active]) .mc-cas-riga[data-r="3"] .mc-cas-filo,
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="4"][data-substep-active]) .mc-cas-riga[data-r="4"] .mc-cas-filo { transform: scaleX(1); transition: transform 1.1s var(--cas-ease) 0.55s, stroke 0.45s ease; }
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="1"][data-substep-active]) .mc-cas-riga[data-r="1"] .mc-cas-n,
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="2"][data-substep-active]) .mc-cas-riga[data-r="2"] .mc-cas-n,
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="3"][data-substep-active]) .mc-cas-riga[data-r="3"] .mc-cas-n,
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="4"][data-substep-active]) .mc-cas-riga[data-r="4"] .mc-cas-n { fill: #b9e6a3; }
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="1"][data-substep-active]) .mc-cas-riga[data-r="1"] .mc-cas-n--capo,
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="2"][data-substep-active]) .mc-cas-riga[data-r="2"] .mc-cas-n--capo,
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="3"][data-substep-active]) .mc-cas-riga[data-r="3"] .mc-cas-n--capo,
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="4"][data-substep-active]) .mc-cas-riga[data-r="4"] .mc-cas-n--capo { fill: #6cc04a; }
+/* Le etichette della riga in corso si accendono. */
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="1"][data-substep-active]):not(:has(.mc-cas-passo[data-p="2"][data-substep-active])) .mc-cas-l[data-r="1"],
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="2"][data-substep-active]):not(:has(.mc-cas-passo[data-p="3"][data-substep-active])) .mc-cas-l[data-r="2"],
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="3"][data-substep-active]):not(:has(.mc-cas-passo[data-p="4"][data-substep-active])) .mc-cas-l[data-r="3"],
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="4"][data-substep-active]) .mc-cas-l[data-r="4"] { color: #ffffff; font-weight: 700; }
+/* Le righe già raccontate restano col filo, più quiete. */
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="2"][data-substep-active]) .mc-cas-riga[data-r="1"],
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="3"][data-substep-active]) .mc-cas-riga[data-r="2"],
+#slide-ingaggio-casi:has(.mc-cas-passo[data-p="4"][data-substep-active]) .mc-cas-riga[data-r="3"] { opacity: 0.5; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mc-cas-riga, .mc-cas-pezzo, .mc-cas-filo, .mc-cas-n, .mc-cas-l, .mc-cas-banda, .mc-cas-didas > p { transition: none !important; }
+}
+@media (max-height: 820px) {
+  .mc-cas-g { height: clamp(8.5rem, calc(11.5 * var(--vu)), 24rem); }
+  .mc-cas-banda { margin-top: 0.45rem; padding-block: 0.45rem; }
+}
+</style>
