@@ -3,7 +3,7 @@ import { EDIZIONE, conContributi } from '@edf/core/utils/edizione';
 import ModuloContributo from '@edf/core/blocks/immersive/ModuloContributo.astro';
 import CardFunzioni from '@edf/core/blocks/immersive/CardFunzioni.astro';
 import { CARD_FUNZIONI } from '../data/funzioni';
-import { PROGETTO_EDIZIONE, CONTATTI, OGGETTO_EMAIL } from '../data/contatti';
+import { PROGETTO_EDIZIONE, CONTATTI, OGGETTO_EMAIL, INFORMATIVA_MODULO } from '../data/contatti';
 import RinvioTelefono from '@edf/core/blocks/immersive/RinvioTelefono.astro';
 // Le regole della sola edizione lettura: in sala non entrano nemmeno nel bundle.
 import letturaCss from '../styles/lettura.css?inline';
@@ -216,7 +216,7 @@ const docTitle = (isHome || title === SITE_NAME || title === SITE.name) ? SITE_N
          Niente pulsante sul breve (ha il suo) né su Parliamone, che è già la pagina dei contatti
          e porta il modulo nella frase d'apertura. */}
     {conContributi() && !/\/riepilogo\/?$/.test(Astro.url.pathname) && (
-      <ModuloContributo progetto={PROGETTO_EDIZIONE} capitolo={isHome ? '' : title} pulsante={!/\/(breve|parliamone)\/?$/.test(Astro.url.pathname)} rispondere={{ a: CONTATTI.map((c) => c.email), oggetto: OGGETTO_EMAIL }} />
+      <ModuloContributo progetto={PROGETTO_EDIZIONE} capitolo={isHome ? '' : title} pulsante={!/\/(breve|parliamone)\/?$/.test(Astro.url.pathname)} rispondere={{ a: CONTATTI.filter((c) => c.modulo).map((c) => c.email), oggetto: OGGETTO_EMAIL }} informativa={INFORMATIVA_MODULO} />
     )}
   </body>
 </html>

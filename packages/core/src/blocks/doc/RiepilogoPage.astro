@@ -10,6 +10,10 @@
  *
  * La voce è quella della banca: chi la riceve la deve poter presentare come
  * sua. Adobe compare una volta, nel piè, come chi ha reso possibile la raccolta.
+ * Dal 20 nov (0045, panel + owner) le domande entrano come sono arrivate; una
+ * riformulata per non rendere riconoscibile chi l'ha scritta è segnata, e in
+ * testa ci sono quante ne sono arrivate e quante volte il link è stato aperto.
+ * La versione finale la approva il referente.
  * Stampabile in PDF su carta bianca; finché non è approvata porta «Bozza».
  */
 import { FUNZIONI } from '../../utils/contributi';
@@ -47,10 +51,11 @@ const ETICHETTE = Object.fromEntries(FUNZIONI.map((f) => [f.k, f.l]));
 </main>
 
 <script>
-  type Voce = { area: string; funzione: string; testo: string; risposta: string | null; sezione: string };
+  type Voce = { area: string; funzione: string; testo: string; risposta: string | null; sezione: string; riformulata?: boolean };
   type Riepilogo = {
     stato: 'in_preparazione' | 'bozza' | 'approvato'; funzioni: number; totale: number | null;
     livelli: { livelli: string[]; n: number }[]; voci: Voce[]; approvato_il: string | null; aperto: boolean;
+    arrivate?: number; aperture?: number;
   };
   const PLURALI: Record<string, string> = { operativo: 'operativi', responsabile: 'responsabili', dirigente: 'dirigenti' };
 
@@ -90,8 +95,12 @@ const ETICHETTE = Object.fromEntries(FUNZIONI.map((f) => [f.k, f.l]));
     const stato = root.querySelector<HTMLElement>('[data-rp-stato]')!;
     stato.hidden = false;
     stato.dataset.stato = r.stato;
+    const finora = (r.arrivate !== undefined && r.aperture !== undefined)
+      ? `Finora ${numero(r.arrivate, 'domanda arrivata', 'domande arrivate')}; il link è stato aperto ${numero(r.aperture, 'volta', 'volte')}.`
+      : '';
     if (r.stato === 'in_preparazione') {
       stato.append(el('p', 'rp-stato-t', 'La raccolta è aperta.'));
+      if (finora) stato.append(el('p', 'rp-stato-l', finora));
       stato.append(el('p', 'rp-stato-l', r.funzioni > 0
         ? `Finora hanno scritto ${numero(r.funzioni, 'funzione', 'funzioni')}. Il riepilogo si compone quando le funzioni sono almeno tre: prima, una raccolta così piccola direbbe poco e renderebbe riconoscibile chi ha scritto.`
         : 'Il riepilogo si compone quando hanno scritto almeno tre funzioni: prima, una raccolta così piccola direbbe poco e renderebbe riconoscibile chi ha scritto.'));
@@ -99,7 +108,7 @@ const ETICHETTE = Object.fromEntries(FUNZIONI.map((f) => [f.k, f.l]));
     }
     if (r.stato === 'bozza') {
       stato.append(el('p', 'rp-stato-t', 'Bozza da approvare'));
-      stato.append(el('p', 'rp-stato-l', 'L’abbiamo preparata noi a partire dai contributi; prima di condividerla, diteci se va bene così o che cosa cambiare.'));
+      stato.append(el('p', 'rp-stato-l', 'Le domande sono riportate come sono arrivate, raggruppate per argomento. Prima di condividerla, la rivede e la approva il referente della banca.'));
       root.querySelector<HTMLElement>('[data-rp-filigrana]')!.hidden = false;
     } else {
       const d = r.approvato_il ? new Date(r.approvato_il).toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
@@ -108,7 +117,8 @@ const ETICHETTE = Object.fromEntries(FUNZIONI.map((f) => [f.k, f.l]));
 
     const amp = root.querySelector<HTMLElement>('[data-rp-ampiezza]')!;
     amp.hidden = false;
-    amp.append(el('p', 'rp-num', `${numero(r.totale ?? 0, 'contributo', 'contributi')} da ${numero(r.funzioni, 'funzione', 'funzioni')}`));
+    amp.append(el('p', 'rp-num', `${numero(r.totale ?? 0, 'domanda', 'domande')} nel riepilogo, da ${numero(r.funzioni, 'funzione', 'funzioni')}`));
+    if (finora) amp.append(el('p', 'rp-liv', `${finora} Entrano qui solo quelle che chi le ha scritte ha permesso di usare.`));
     if (r.livelli.length) {
       const parti = r.livelli.map((g) => g.livelli.length === 1
         ? `${g.n} ${PLURALI[g.livelli[0]] ?? g.livelli[0]}`
@@ -127,6 +137,7 @@ const ETICHETTE = Object.fromEntries(FUNZIONI.map((f) => [f.k, f.l]));
         const li = el('li', 'rp-voce');
         li.append(el('p', 'rp-voce-f', etichetta(v.funzione)));
         li.append(el('p', 'rp-voce-t', v.testo));
+        if (v.riformulata) li.append(el('p', 'rp-voce-s', 'Riformulata per non rendere riconoscibile chi l’ha scritta.'));
         if (v.risposta) {
           const ri = el('div', 'rp-risp');
           ri.append(el('p', 'rp-risp-e', 'Risposta di Adobe'));

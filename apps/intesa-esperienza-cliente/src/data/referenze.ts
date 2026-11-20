@@ -46,9 +46,9 @@ export const CIFRE_TSB = [
      (owner) «base non pubblicata» è tolto: in slide suonava da revisore e
      non diceva la cosa che conta; il perimetro sta nell'etichetta, «clienti
      già di TSB», e vale anche nel taglio corto. */
-  { n: '+39%', l: { it: 'clienti già di TSB che scelgono un suo prodotto dopo un’interazione personalizzata', en: 'existing TSB customers choosing one of its products after a personalized interaction' }  },
-  { n: '1.000+', l: { it: 'casi d’uso in produzione: erano 250 tre anni fa', en: 'use cases live: 250 three years ago' },
-    lBreve: { it: 'casi d’uso in produzione', en: 'use cases live' } },
+  { n: '+39%', l: { it: 'di clienti che scelgono un prodotto TSB dopo un’interazione personalizzata', en: 'customers choosing a TSB product after a personalized interaction' }  },
+  { n: '1.000+', l: { it: 'casi d’uso personalizzati: erano 250 tre anni fa', en: 'personalized use cases: 250 three years ago' },
+    lBreve: { it: 'casi d’uso personalizzati', en: 'personalized use cases' } },
   { n: '91%', l: { it: 'dei prodotti, oggi, si compra sui canali digitali', en: 'of products are bought digitally today' },
     lBreve: { it: 'dei prodotti, oggi, comprati sui canali digitali', en: 'of products bought digitally today' } },
 ];
@@ -127,6 +127,8 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Cas
        filiale…») è tolto (owner, 18 nov 2026): una referenza dice che cosa ha
        fatto un'altra banca, non afferma fatti sulla vostra; la filiale nella
        misura la dicono il momento 07 e l'attribuzione. */
+    /* Il punto di partenza (panel del 20 nov 2026), letto sulla pagina il 20 nov. */
+    ponte: { it: 'Il punto di partenza: dato in batch, con nove giorni di latenza; canali in filiale, al telefono e in app. Stack precedente e durata del programma non pubblicati.', en: 'The starting point: batch data, nine days of latency; branch, phone and app channels. Previous stack and programme length not published.' },
     fonte: { url: FONTI.tsb, nome: 'business.adobe.com · TSB' },
   },
   santander: {
@@ -134,11 +136,11 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Cas
     occ: { it: 'Un caso internazionale · Gruppo Santander', en: 'An international case · Santander Group' },
     titolo: { pre: { it: 'Santander Brasil:', en: 'Santander Brasil:' }, accento: { it: 'reagire entro 15 minuti', en: 'reacting within 15 minutes' } },
     hero: {
-      occ: { it: 'Le iniziative per chi abbandona a metà', en: 'Initiatives for people who drop out halfway' },
+      occ: { it: 'Le iniziative sul carrello abbandonato', en: 'Abandoned-cart initiatives' },
       prima: { n: { it: '3 giorni', en: '3 days' } },
       oggi: { k: { it: 'Oggi, entro', en: 'Today, within' }, n: { it: '15 minuti', en: '15 minutes' } },
     },
-    metrica: { n: '+600%', l: { it: 'conversioni su queste iniziative', en: 'conversions on these initiatives' } },
+    metrica: { n: '+600%', l: { it: 'di conversione su queste iniziative', en: 'conversion on these initiatives' } },
     riquadri: [
       { n: '100 mln+', l: { it: 'profili cliente in una vista unica', en: 'customer profiles in a single view' } },
       { n: '2,3x', l: { it: 'conversione delle iniziative personalizzate sulle generiche', en: 'conversion of personalized initiatives over generic ones' } },
@@ -150,6 +152,7 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Cas
     },
     /* La frase «Nessuno di questi casi è uguale al vostro» esce dalla slide e si dice
        a voce, prima del caso (commento del team, 16 nov 2026): sta nelle note. */
+    ponte: { it: 'Il punto di partenza: dati frammentati su sistemi legacy, poi migrati; retail, PMI e corporate. Programma avviato a marzo 2024, Experience Platform in produzione a novembre 2024.', en: 'The starting point: data fragmented across legacy systems, later migrated; retail, SMEs and corporate. Programme started in March 2024, Experience Platform live in November 2024.' },
     fonte: { url: FONTI.santander, nome: 'business.adobe.com · Santander' },
   },
   creditAgricole: {
@@ -169,9 +172,10 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Cas
     ],
     fascia: {
       occ: { it: 'Cinque prodotti Adobe', en: 'Five Adobe products' },
-      testo: { it: 'Journey Optimizer · Real-Time Activation · Customer Journey Analytics · Target · Workfront', en: 'Journey Optimizer · Real-Time Activation · Customer Journey Analytics · Target · Workfront' },
+      testo: { it: 'Journey Optimizer · Real-Time CDP · Customer Journey Analytics · Target · Workfront', en: 'Journey Optimizer · Real-Time CDP · Customer Journey Analytics · Target · Workfront' },
       icona: 'strati',
     },
+    ponte: { it: 'Il punto di partenza: sistemi d’ingaggio non pensati per il tempo reale e segmenti aggiornati una volta al mese; app, sito e filiale. Stack precedente non pubblicato.', en: 'The starting point: engagement systems not built for real time and segments refreshed monthly; app, website and branch. Previous stack not published.' },
     fonte: { url: FONTI.creditAgricole, nome: 'business.adobe.com · Crédit Agricole Italia' },
   },
   /* Unipol — assicurazioni, non banca. Il punto per chi è in sala: una rete
@@ -189,36 +193,27 @@ export const CASI: Record<'tsb' | 'santander' | 'creditAgricole' | 'unipol', Cas
   unipol: {
     slug: 'unipol', nome: 'Unipol',
     occ: { it: 'Un caso italiano · Gruppo Unipol, assicurazioni', en: 'An Italian case · Unipol Group, insurance' },
-    titolo: { pre: { it: 'Unipol:', en: 'Unipol:' }, accento: { it: 'le campagne misurate fino in agenzia', en: 'campaigns measured all the way to the agency' } },
-    /* ⚠️ STESSO MODELLO DELLE ALTRE TRE (owner, 13 nov 2026): hero, riga,
-       due riquadri. Le cifre di risultato del Summit (−90%, 2x) restano fuori
-       finché il team dell'account Unipol non conferma che si citano (panel
-       del 12 nov). Le «cinque fonti» sono la descrizione del modello nelle
-       slide della sessione, non un risultato: sito, app, strumento di vendita
-       delle agenzie, CRM, polizze emesse. */
-    /* 14 nov 2026 (owner: «non dice nulla di utile»). Riscritta dalla sessione
-       del Summit, con le parole di Unipol: «From data silos to insight
-       collaboration», «Impact of marketing campaign on offline conversion»,
-       la round table («From shared data to shared decisions… refine insights
-       live during discussions»), ECID per gli anonimi e Person ID per gli
-       autenticati. Le cifre di risultato restano fuori, come deciso il 12 nov. */
+    /* PANEL DEL 20 NOV 2026 (P0): senza il via libera scritto dell'account Unipol
+       e senza un link pubblico alla sessione del Summit, restano solo i due
+       numeri del fact sheet. Fuori «5 → 1», «1 tavolo», «campagne misurate fino
+       in agenzia» e la riga della sessione. Con il via libera tornano, nella
+       forma «marketing e vendite analizzano insieme» (senza l'IT) e «campagne
+       lette anche sulla conversione offline». */
+    titolo: { pre: { it: 'Unipol:', en: 'Unipol:' }, accento: { it: '17,6 milioni di clienti e 2.035 agenzie', en: '17.6 million customers and 2,035 agencies' } },
     hero: {
-      occ: { it: 'Il modello su Customer Journey Analytics', en: 'The model on Customer Journey Analytics' },
-      oggi: { k: { it: 'Fonti in un modello', en: 'Sources in one model' }, n: { it: '5 → 1', en: '5 → 1' } },
-      l: { it: 'sito, app, strumento di vendita delle agenzie, CRM e polizze emesse, uniti per ECID e ID cliente', en: 'website, app, agents’ selling tool, CRM and issued policies, joined by ECID and customer ID' },
+      occ: { it: 'Il gruppo, al 31 dicembre 2025', en: 'The group, at 31 December 2025' },
+      oggi: { k: { it: 'Clienti del gruppo', en: 'Group customers' }, n: { it: '17,6 mln', en: '17.6 m' } },
+      l: { it: 'al 31 dicembre 2025', en: 'at 31 December 2025' },
     },
-    metrica: { n: '17,6 mln', l: { it: 'clienti del gruppo, al 31 dicembre 2025', en: 'group customers, at 31 December 2025' } },
-    riquadri: [
-      { n: '2.035', l: { it: 'agenzie in Italia, nella stessa analisi del digitale', en: 'agencies in Italy, in the same analysis as digital' } },
-      { n: '1 tavolo', l: { it: 'marketing, vendite e IT analizzano insieme, con il report aperto', en: 'marketing, sales and IT analyse together, with the report open' } },
-    ],
+    metrica: { n: '2.035', l: { it: 'agenzie in Italia, al 31 dicembre 2025', en: 'agencies in Italy, at 31 December 2025' } },
+    riquadri: [],
     fascia: {
-      occ: { it: 'Adobe Summit 2026 · la sessione di Unipol', en: 'Adobe Summit 2026 · Unipol’s session' },
-      testo: { it: 'Dai dati condivisi alle decisioni condivise: gli insight si verificano e si correggono durante la riunione', en: 'From shared data to shared decisions: insights are checked and refined during the meeting' },
+      occ: { it: 'Il punto di partenza', en: 'The starting point' },
+      testo: { it: 'Assicurazione con rete di agenzie: il paragone è con la filiale, non con il self-service', en: 'An insurer with an agency network: the comparison is with the branch, not with self-service' },
       icona: 'rete',
     },
     fonte: { url: FONTI.unipol, nome: 'unipol.com · fact sheet, giugno 2026' },
-    fonteCoda: { it: ' · clienti e agenzie <span class=im-nw>al 31 dicembre 2025.</span> Il modello e le fonti: Unipol ad Adobe Summit 2026', en: ' · customers and agencies <span class=im-nw>at 31 December 2025.</span> The model and its sources: Unipol at Adobe Summit 2026' },
+    fonteCoda: { it: ' · clienti e agenzie <span class=im-nw>al 31 dicembre 2025.</span>', en: ' · customers and agencies <span class=im-nw>at 31 December 2025.</span>' },
   },
 };
 

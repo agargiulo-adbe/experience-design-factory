@@ -41,8 +41,10 @@ interface Props {
   pulsante?: boolean;
   /** a chi scrive chi vuole una risposta diretta: indirizzi e oggetto della mail */
   rispondere?: { a: string[]; oggetto: string };
+  /** dove finiscono le domande, chi le legge, per quanto: una riga in fondo al modulo */
+  informativa?: string;
 }
-const { progetto, capitolo = '', pulsante = false, rispondere } = Astro.props;
+const { progetto, capitolo = '', pulsante = false, rispondere, informativa } = Astro.props;
 const URL_DB = (import.meta.env.PUBLIC_SUPABASE_URL ?? '').replace(/\/$/, '');
 const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 ---
@@ -74,7 +76,8 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       </label>
       <label class="edf-mc-c">
         <span class="edf-mc-e">La domanda o lo spunto</span>
-        <textarea name="testo" rows="4" maxlength={LIMITI.testo} required></textarea>
+        <span class="edf-mc-fac edf-mc-avviso" id="edf-mc-avviso">Non scrivete nomi, dati di clienti o dettagli dei sistemi interni.</span>
+        <textarea name="testo" rows="4" maxlength={LIMITI.testo} required aria-describedby="edf-mc-avviso"></textarea>
       </label>
       <div class="edf-mc-due">
         <label class="edf-mc-c">
@@ -94,11 +97,12 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
       </div>
       <label class="edf-mc-ok">
         <input type="checkbox" name="ok" />
-        <span>Potete usarlo nel riepilogo per la banca. <span class="edf-mc-fac">Il riepilogo mette insieme domande e spunti per funzione, senza nomi; il livello compare solo nei totali.</span></span>
+        <span>La domanda può entrare nel riepilogo per i colleghi. <span class="edf-mc-fac">Il referente della banca raccoglie in un documento le domande arrivate, divise per argomento. Ci entra senza nome e, al più, con la funzione; il livello si conta ma non compare accanto alla domanda. Se lasciate la casella vuota, la legge solo il team Adobe.</span></span>
       </label>
       {rispondere && (
         <p class="edf-mc-diretta">Volete una risposta diretta? <button type="button" class="edf-mc-link" data-edf-mc-mail>Mandateci la domanda per email</button>: si apre la vostra posta con il testo già scritto.</p>
       )}
+      {informativa && <p class="edf-mc-fac edf-mc-informativa">{informativa}</p>}
       <p class="edf-mc-err" data-edf-mc-err role="alert" hidden></p>
       <div class="edf-mc-az">
         <button type="button" class="edf-mc-b edf-mc-b--2" data-edf-mc-chiudi>Annulla</button>
@@ -304,6 +308,8 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
   .edf-mc-e { font-size: 0.95rem; font-weight: 600; }
   .edf-mc-fac { font-weight: 400; color: var(--ink-tertiary, inherit); }
   .edf-mc ::selection { background: color-mix(in srgb, var(--accent-primary, Highlight) 28%, transparent); }
+  .edf-mc-avviso { font-size: 0.9rem; line-height: 1.4; }
+  .edf-mc-informativa { margin: 0; font-size: 0.85rem; line-height: 1.45; }
   .edf-mc-diretta { margin: 0; font-size: 0.95rem; line-height: 1.45; color: var(--ink-secondary, inherit); }
   .edf-mc-link {
     font: inherit; font-weight: 600; color: var(--ink-accent, inherit); background: none; border: 0; padding: 0; cursor: pointer;

@@ -1,6 +1,7 @@
 ---
-/* Le schede delle tre persone: foto, nome, ruolo, email e, dove c'è,
-   WhatsApp. Usate da «Parliamone» e dalla pagina breve del telefono. */
+/* Le schede delle persone: foto, nome, ruolo, email e, dove c'è,
+   WhatsApp o telefono. Dal 20 nov le azioni sono icone con il nome per esteso
+   in aria-label e title: sei schede su due righe devono stare a 1366×768. Usate da «Parliamone» e dalla pagina breve del telefono. */
 import { CONTATTI, OGGETTO_EMAIL, TESTO_WHATSAPP } from '../data/contatti';
 import { linkWhatsApp } from '@edf/core/utils/contatti';
 interface Props { class?: string }
@@ -14,8 +15,19 @@ const mail = (e: string) => `mailto:${e}?subject=${encodeURIComponent(OGGETTO_EM
       <span class="im-cont-n">{c.nome}</span>
       <span class="im-cont-r">{c.ruolo}</span>
       <span class="im-cont-az">
-        <a class="im-cont-a" href={mail(c.email)}>Email</a>
-        {c.whatsapp && <a class="im-cont-a" href={linkWhatsApp(c.whatsapp, TESTO_WHATSAPP)} target="_blank" rel="noopener">WhatsApp</a>}
+        <a class="im-cont-a" href={mail(c.email)} aria-label={`Email a ${c.nome}`} title="Email">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
+        </a>
+        {c.whatsapp && (
+          <a class="im-cont-a" href={linkWhatsApp(c.whatsapp, TESTO_WHATSAPP)} target="_blank" rel="noopener" aria-label={`WhatsApp a ${c.nome}`} title="WhatsApp">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 19.5 5.6 16A8 8 0 1 1 8.4 18.6Z"/><path d="M9.2 9.3c.3 1.9 1.6 3.6 3.6 4.5l1-1 1.8.8-.4 1.4c-3.3.1-6.6-3.2-6.6-6.5l1.4-.4.8 1.8Z"/></svg>
+          </a>
+        )}
+        {c.telefono && (
+          <a class="im-cont-a" href={`tel:${c.telefono.replace(/\s/g, '')}`} aria-label={`Telefono di ${c.nome}: ${c.telefono}`} title={c.telefono}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.4 4.5h2.4l1.2 4-1.7 1.3a10 10 0 0 0 4.9 4.9l1.3-1.7 4 1.2v2.4a2 2 0 0 1-2.2 2A15 15 0 0 1 5.4 6.7a2 2 0 0 1 2-2.2Z"/></svg>
+          </a>
+        )}
       </span>
     </li>
   ))}

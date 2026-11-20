@@ -12,7 +12,7 @@
    - `algo`: modello algoritmico di Customer Journey Analytics. Le quote sono
      quelle che il mock del momento 07 mostrava già. */
 export interface CanaleAttr {
-  k: 'annunci' | 'ricerca' | 'sito' | 'email' | 'filiale';
+  k: 'annunci' | 'ricerca' | 'organica' | 'sito' | 'email' | 'filiale';
   l: { it: string; en: string };
   ultimo: number;
   algo: number;
@@ -21,7 +21,10 @@ export interface CanaleAttr {
 
 export const ATTRIBUZIONE: readonly CanaleAttr[] = [
   { k: 'annunci', l: { it: 'Annunci social', en: 'Social ads' }, ultimo: 2, algo: 14 },
-  { k: 'ricerca', l: { it: 'Ricerca a pagamento', en: 'Paid search' }, ultimo: 3, algo: 12 },
+  /* La ricerca divisa in due (panel del 20 nov 2026): «Ricerca» non diceva se
+     l'organico fosse dentro. Somme e quota digitale restano quelle di prima. */
+  { k: 'ricerca', l: { it: 'Ricerca a pagamento', en: 'Paid search' }, ultimo: 2, algo: 8 },
+  { k: 'organica', l: { it: 'Ricerca organica', en: 'Organic search' }, ultimo: 1, algo: 4 },
   { k: 'sito', l: { it: 'Sito e app', en: 'Website and app' }, ultimo: 6, algo: 24 },
   { k: 'email', l: { it: 'Email', en: 'Email' }, ultimo: 9, algo: 16 },
   { k: 'filiale', l: { it: 'Filiale', en: 'Branch' }, ultimo: 80, algo: 34, filiale: true },

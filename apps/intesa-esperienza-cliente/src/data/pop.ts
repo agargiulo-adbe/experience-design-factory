@@ -94,7 +94,7 @@ export const SCENE: Record<ScenaId, Scena> = {
     prodotto: 'Decisioning',
     cosa: 'Sceglie quale proposta mostrare, usando gli score del motore di targeting e le regole della banca.',
     passi: [
-      'Il motore di targeting continua a calcolare target e propensione; l’eleggibilità creditizia arriva dal core banking.',
+      'Il motore di targeting continua a calcolare target e propensione; l’eleggibilità creditizia arriva dal sistema che la calcola oggi, da confermare con voi.',
       'Arrivano a Decisioning come attributi del profilo. Eleggibilità: attributo precalcolato nel profilo, oppure passata dal vostro sistema nella richiesta di decisione.',
       'Per la stessa persona ci sono quattro proposte candidate.',
       'Regole, consenso e politica di contatto escludono quelle non ammesse.',
@@ -121,13 +121,13 @@ export const SCENE: Record<ScenaId, Scena> = {
   },
   cdp: {
     prodotto: 'Real-Time Activation',
-    cosa: 'Costruisce il profilo di clienti e non‑clienti. Nel caso di Giulia: prima dal comportamento sul sito, poi dall’email che lascia.',
+    cosa: 'Costruisce il profilo di chi non è ancora cliente. Nel caso di Giulia: prima dal comportamento sul sito, poi dall’email che lascia.',
     passi: [
       'Giulia visita il sito senza identificarsi: il sistema registra quello che fa, ma non sa ancora chi è.',
       'Simula la rata ed entra in tempo reale nel segmento «mutuo prima casa».',
       'Quando torna, il sito le propone di riprendere la simulazione.',
       'Lascia email e consenso. Le visite fatte prima di lasciare il nome si uniscono al suo profilo.',
-      'Ora il profilo ha un nome: oltre a personalizzare il sito, Journey Optimizer può scriverle. Quando prende appuntamento, il lead arriva nel CRM di filiale, via API o connettori nativi.',
+      'Ora il profilo ha un nome: oltre a personalizzare il sito, Journey Optimizer può scriverle. Quando prende appuntamento, il lead arriva nel CRM di filiale, via API esposta dal vostro CRM.',
     ],
     // Panel 16 nov: «Real-Time Activation» resta (scelta dell'owner del 13 nov) ma si dice di
     // quale prodotto è; il passaggio al CRM è da definire, non un fatto.
@@ -138,7 +138,7 @@ export const SCENE: Record<ScenaId, Scena> = {
         null,
         'Se torna entro un giorno, il sito le propone di riprendere la simulazione.',
         'Lascia l’email e il consenso marketing. Le visite fatte prima di lasciare il nome si uniscono al suo profilo.',
-        'Con l’email e il consenso marketing, Journey Optimizer può scriverle. Se prenota, l’appuntamento arriva al CRM di filiale, via API o connettori nativi.',
+        'Con l’email e il consenso marketing, Journey Optimizer può scriverle. Se prenota, l’appuntamento arriva al CRM di filiale, via API esposta dal vostro CRM.',
       ],
     },
     nota: '',

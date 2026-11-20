@@ -56,19 +56,20 @@ const MAPPA = [
     { n: 'CRM di filiale', d: { it: 'lead, appuntamenti, pratiche', en: 'leads, appointments, applications' } },
     { n: 'Motore di targeting', d: { it: 'target, propensione, score dei clienti', en: 'targets, propensity, customer scores' } },
     { n: 'Data lake', d: { it: 'storico e attributi dei clienti', en: 'customer history and attributes' } },
-    { n: 'Core banking', d: { it: 'eleggibilità creditizia, saldi, approvazioni', en: 'credit eligibility, balances, approvals' } },
-    { n: 'CDP attuale', d: { it: 'la politica di contatto, da confermare; chi tiene profilo e tetto in fase 1 è il primo punto della fase 0', en: 'the contact policy, to confirm; who holds profile and cap in phase 1 is the first item of phase 0' } },
+    { n: 'Core banking', d: { it: 'saldi e approvazioni', en: 'balances and approvals' } },
+    { n: 'CDP attuale', d: { it: 'resta; il ruolo si decide in fase 0', en: 'stays; its role is decided in phase 0' } },
     { n: 'Registro dei consensi', d: { it: 'consensi e preferenze', en: 'consents and preferences' } },
     { n: 'Media pagato', d: { it: 'le piattaforme pubblicitarie', en: 'the advertising platforms' } },
+    { n: 'Motori di proposta', sempre: true, d: { it: 'eventuali, sui canali digitali: da confermare', en: 'if any, on digital channels: to confirm' } },
   ] },
   { stato: 'nuovo', t: { it: 'Si aggiunge', en: 'Gets added' }, v: [
-    { n: 'Real-Time Activation', d: { it: 'il profilo, che riceve il consenso dal registro e lo applica', en: 'the profile, which receives consent from the register and applies it' } },
+    { n: 'Real-Time Activation', sempre: true, d: { it: 'capacità di Adobe Real-Time CDP; il profilo che applica il consenso', en: 'a capability of Adobe Real-Time CDP; the profile that applies consent' } },
     { n: 'Journey Optimizer', d: { it: 'percorsi a evento, e la scelta dell’offerta (Decisioning)', en: 'event-driven journeys, and offer selection (Decisioning)' } },
     { n: 'Customer Journey Analytics', d: { it: 'la misura unica, Analytics compreso', en: 'the one measurement, Analytics included' } },
     { n: 'Brand Visibility', d: { it: 'come comparite nelle risposte generate', en: 'how you show up in generated answers' } },
   ] },
   { stato: 'vostro', t: { it: 'Resta vostro', en: 'Stays yours' }, v: [
-    { n: 'Eleggibilità creditizia', d: { it: 'nel core banking, come oggi', en: 'in core banking, as today' } },
+    { n: 'Eleggibilità creditizia', d: { it: 'nel sistema che la calcola oggi (da confermare con voi)', en: 'in the system that computes it today (to confirm with you)' } },
     { n: 'Target e propensione', d: { it: 'nel motore di targeting', en: 'in the targeting engine' } },
     { n: 'Politica di contatto', d: { it: 'la regola di contatto resta vostra', en: 'the contact rule stays yours' } },
     { n: 'Gestione del consenso', d: { it: 'consensi e preferenze: il registro resta il sistema di record', en: 'consents and preferences: the register stays the system of record' } },
@@ -128,16 +129,17 @@ const FRECCE = [
      il profilo (l'SDK su AEM on-premise è l'integrazione più grossa, e si
      dice) e il ritorno dalla filiale, senza il quale la misura si ferma
      alla porta dello sportello. */
-  { da: 'Sito e app', a: 'Experience Platform', d: { it: 'eventi in sessione via Web SDK su AEM on-premise: doppia raccolta o migrazione, si sceglie in fase 0', en: 'in-session events via Web SDK on on-premise AEM: dual collection, or migration with forwarding to Analytics; chosen in phase 0, and the first to design' }, aperta: true },
+  { da: 'Sito e app', a: 'Experience Platform', d: { it: 'Web SDK su AEM on-premise (nostra ipotesi): doppia raccolta o migrazione; la doppia porta tempi, peso di pagina e numeri doppi', en: 'in-session events via Web SDK on on-premise AEM: dual collection, or migration with forwarding to Analytics; chosen in phase 0, and the first to design' }, aperta: true },
   { da: 'Adobe Analytics', a: 'Customer Journey Analytics', d: { it: 'gli eventi di sito e app, via connettore', en: 'site and app events, via connector' } },
   { da: 'Registro dei consensi', a: 'Real-Time Activation', d: { it: 'stato e data del consenso, in continuo', en: 'consent status and date, continuously' } },
-  { da: 'Journey Optimizer', a: 'CRM di filiale', d: { it: 'lead, appuntamento e simulazione, via API o connettori nativi', en: 'lead, appointment and simulation, via API or native connectors' } },
-  { da: 'CRM di filiale', a: 'Profilo e misura', d: { it: 'appuntamento tenuto, pratica, delibera: il ritorno che chiude l’imbuto', en: 'appointment held, application, approval: the return that closes the funnel' } },
-  { da: 'Core banking', a: 'Arbitro', d: { it: 'Eleggibilità: attributo precalcolato nel profilo, oppure passata dal vostro sistema nella richiesta di decisione', en: 'Eligibility: precomputed attribute in the profile, or passed by your system in the decision request' }, aperta: true },
-  { da: 'Real-Time Activation', a: 'Piattaforme pubblicitarie', d: { it: 'pubblico e soppressione di chi ha firmato · con il consenso di profilazione · giornaliero · da validare con il DPO', en: 'audience and suppression of those who signed · with profiling consent · daily · to validate with the DPO' }, aperta: true },
+  { da: 'Journey Optimizer', a: 'CRM di filiale', d: { it: 'lead e appuntamento: push via API (azione personalizzata) al vostro CRM, dietro il vostro API gateway; autenticazione e allowlist in fase 0', en: 'lead, appointment and simulation: pushed via API (a Journey Optimizer custom action) to an endpoint of your CRM, behind your API gateway; authentication and allowlist in phase 0' } },
+  { da: 'CRM di filiale', a: 'profilo Real-Time Activation / dataset CJA', d: { it: 'appuntamento tenuto, pratica, delibera: il ritorno che chiude l’imbuto', en: 'appointment held, application, approval: the return that closes the funnel' } },
+  { da: 'Sistema dell’eleggibilità', a: 'Journey Optimizer Decisioning', d: { it: 'attributo nel profilo o passata nella richiesta; il sistema d’origine è da confermare', en: 'Eligibility: precomputed attribute in the profile, or passed by your system in the decision request' }, aperta: true },
+  { da: 'Real-Time Activation', a: 'Piattaforme pubblicitarie', d: { it: 'pubblico e soppressione di chi ha firmato · consenso di profilazione · giornaliero · col DPO', en: 'audience and suppression of those who signed · with profiling consent · daily · to validate with the DPO' }, aperta: true },
+  { da: 'Spesa media per campagna', a: 'Customer Journey Analytics', d: { it: 'da piattaforme o pianificazione · giornaliero · chi la carica: da definire in fase 0', en: 'from the platforms or the planning system · daily · who loads it: to define in phase 0' }, aperta: true },
   { da: 'Postazione Filiale Digitale', a: 'API di decisione', d: { it: 'la stessa decisione, chiesta dall’operatore', en: 'the same decision, requested by the agent' }, aperta: true },
   { da: 'Data lake', a: 'Real-Time Activation', d: { it: 'attributi dei clienti, batch notturno', en: 'customer attributes, nightly batch' }, dopo: true },
-  { da: 'Motore di targeting', a: 'Arbitro', d: { it: 'score dei clienti, batch notturno', en: 'customer scores, nightly batch' }, dopo: true },
+  { da: 'Motore di targeting', a: 'Journey Optimizer Decisioning', d: { it: 'score dei clienti, batch notturno', en: 'customer scores, nightly batch' }, dopo: true },
 ];
 /* ⚠️ Panel dell'11 nov 2026: le frecce sono diventate dieci, e la forma è
    rimasta (contenuto · verso · modo; le incerte tratteggiate). L'arbitro NON
@@ -154,6 +156,10 @@ const DATI = [
   { n: { it: 'Eventi di sito e app', en: 'Site and app events' },
     dove: { it: 'In Experience Platform, nella regione europea', en: 'In Experience Platform, in the European region' },
     tempo: { it: 'Retention per dataset, da fissare in fase 0', en: 'Retention per dataset, to set in phase 0' } },
+  /* Il dato più sensibile (panel del 20 nov 2026): il grafo di identità. */
+  { n: { it: 'Identificativi e grafo di identità', en: 'Identifiers and identity graph' },
+    dove: { it: 'Experience Platform, Amsterdam; NDG in chiaro o hash', en: 'In Experience Platform, Amsterdam; customer ID in clear or hashed: phase 0' },
+    tempo: { it: 'Retention e accessi a contratto', en: 'Retention and access to set in the contract' } },
   { n: { it: 'Attributi e score dei clienti', en: 'Customer attributes and scores' },
     dove: { it: 'Una copia nel profilo; il sistema di record resta vostro', en: 'A copy in the profile; the system of record stays yours' },
     tempo: { it: 'Riscritti a ogni batch notturno', en: 'Rewritten at each nightly batch' } },
@@ -195,7 +201,7 @@ const DQ_ARCH = [
   { k: 'piattaforma', it: 'Piattaforma', en: 'Platform',
     t: { it: 'Il sito scrive il consenso sul profilo; l’export dei dataset ne riporta una copia nel vostro storage.', en: 'The website writes consent on the profile; dataset export brings a copy back to your storage.' } },
   { k: 'warehouse', it: 'Data warehouse', en: 'Data warehouse',
-    t: { it: 'Con Federated Audience Composition le audience nascono sul data warehouse, senza copiarlo. È un componente aggiuntivo.', en: 'With Federated Audience Composition audiences are built on the warehouse, without copying it. It is an add-on.' } },
+    t: { it: 'Con Federated Audience Composition le audience nascono sul data warehouse, senza copiarlo. È un componente aggiuntivo; la connessione privata (PrivateLink o VPN) richiede Privacy and Security Shield.', en: 'With Federated Audience Composition audiences are built on the warehouse, without copying it. It is an add-on; a private connection (PrivateLink or VPN) requires Privacy and Security Shield.' } },
 ];
 /* Misura: pesi, contributi e curva sono DI ESEMPIO (la slide lo dichiara). */
 const DQ_TOCCHI = [
@@ -344,13 +350,17 @@ const SALA_O_VOI = EDIZIONE === 'lettura' ? 'da verificare con voi' : 'da correg
                 {col.v.map((x) => (
                   <li>
                     <span class="im-mappa-n">{x.n}</span>
-                    <T as="span" class="im-mappa-d" it={x.d.it} en={x.d.en} />
+                    <T as="span" class={(x as { sempre?: boolean }).sempre ? 'im-mappa-d im-mappa-d--sempre' : 'im-mappa-d'} it={x.d.it} en={x.d.en} />
                   </li>
                 ))}
               </ul>
             </section>
           ))}
         </div>
+        {/* LA CDP DI OGGI (panel del 20 nov 2026, P0): in «Avete» e poi sparita da
+            ogni architettura, mentre Real-Time Activation «si aggiunge». La riga dice
+            che resta, e che il suo ruolo lo decide la banca in fase 0. */}
+        <T as="p" class="im-mappa-cdp" it="<strong>CDP attuale.</strong> Resta. Accanto a Real-Time Activation si decide in fase 0 se convive (con un confine, per esempio i non‑clienti in sessione), se la alimenta <span class=im-nw>o se si spegne,</span> e quale dei due è <span class=im-nw>il profilo</span> di riferimento. Lo decide la banca." en="<strong>Current CDP.</strong> It stays. Alongside Real-Time Activation, phase 0 decides whether it coexists (with a boundary, for example non-customers in session), feeds it or is switched off, and which of the two is the reference profile. The bank decides." />
 
         <p class="im-fonte-riga">
           <span data-lang-it>L’installato è un’ipotesi nostra: le voci «da confermare» si chiudono con voi al primo tavolo. </span><span data-lang-en>The installed base is our assumption: the “to confirm” items close with you at the first working session. </span>
@@ -397,8 +407,8 @@ const SALA_O_VOI = EDIZIONE === 'lettura' ? 'da verificare con voi' : 'da correg
         </ul>
 
         <p class="im-fonte-riga">
-          <span data-lang-it>Tre cose si concordano prima: quali identificativi compongono il grafo, la tassonomia degli eventi (anche in filiale), i KPI con i gruppi di controllo dal giorno uno. Il modello conta meno del dato: oggi la filiale non entra nell’attribuzione. Sul media servono test di incrementalità (pubblico o area geografica di controllo), dal cross-sell sui clienti (fase 2 del piano). Il limite si dichiara, perché non misura quello che succede fuori dai canali osservati e la finestra di osservazione è una scelta. Modelli: </span>
-          <span data-lang-en>Three things get agreed first: which identifiers build the graph, the event taxonomy (in the branch too), KPIs with control groups from day one. The model matters less than the data: today the branch is not part of attribution. On media, incrementality tests (holdout audience or geography) are needed, from cross-sell to customers (phase 2 of the plan). The limit is stated, because it does not measure what happens outside the observed channels and the lookback window is a choice. Models: </span>
+          <span data-lang-it>Tre cose si concordano prima: quali identificativi compongono il grafo, la tassonomia degli eventi (anche in filiale), i KPI con i gruppi di controllo dal giorno uno. Il modello conta meno del dato: oggi la filiale non entra nell’attribuzione (da confermare). Sul media servono test di incrementalità (pubblico o area di controllo), dal cross-sell sui clienti, che viene dopo. Il limite si dichiara: non misura ciò che succede fuori dai canali osservati, e la finestra di osservazione è una scelta. Modelli: </span>
+          <span data-lang-en>Three things get agreed first: which identifiers build the graph, the event taxonomy (in the branch too), KPIs with control groups from day one. The model matters less than the data: today the branch is not part of attribution (to confirm with you). On media, incrementality tests (holdout audience or geography) are needed, from cross-sell to customers, which comes later. The limit is stated, because it does not measure what happens outside the observed channels and the lookback window is a choice. Models: </span>
           <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-workspace/attribution/models" target="_blank" rel="noopener">Customer Journey Analytics · attribution</a>
           <a class="im-torna" href={TORNA}><span data-lang-it>← Torna ai quattro componenti</span><span data-lang-en>← Back to the four components</span></a>
         </p>
@@ -427,14 +437,14 @@ const SALA_O_VOI = EDIZIONE === 'lettura' ? 'da verificare con voi' : 'da correg
     <Slide id="slide-integrazioni" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="I collegamenti della fase 1, e quelli che arrivano dopo" en="The phase 1 connections, and those that come later" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="I collegamenti per partire, e quelli che arrivano dopo" en="The connections to start with, and those that come later" />
         <T as="p" class="im-ado-l" it="Le frecce tratteggiate si disegnano con voi." en="The dashed arrows get designed with you." />
 
         <ul class="im-frecce">
           {FRECCE.map((f, i) => (
             <>
             {f.dopo && !FRECCE[i - 1]?.dopo && (
-              <li class="im-frecce-dopo"><span data-lang-it>Dal cross-sell sui clienti (fase 2 del piano)</span><span data-lang-en>From cross-sell to customers (phase 2 of the plan)</span></li>
+              <li class="im-frecce-dopo"><span data-lang-it>Dal cross-sell sui clienti, che viene dopo</span><span data-lang-en>From cross-sell to customers, which comes later</span></li>
             )}
             <li class="im-frecce-i" data-aperta={f.aperta ? '' : null}>
               <span class="im-frecce-da">{f.da}</span><span class="im-frecce-fr" aria-hidden="true">→</span><span class="im-frecce-a">{f.a}</span>
@@ -445,6 +455,7 @@ const SALA_O_VOI = EDIZIONE === 'lettura' ? 'da verificare con voi' : 'da correg
         </ul>
 
         <p class="im-fonte-riga">
+          <span class="im-frecce-legenda"><span data-lang-it>Le frecce tratteggiate si disegnano con voi.</span><span data-lang-en>The dashed arrows get designed with you.</span></span>
           <a class="im-torna" href="#slide-integrazioni-dati"><span data-lang-it>Dove gira, e dove sta ogni dato →</span><span data-lang-en>Where it runs, and where each piece of data sits →</span></a>
           <a class="im-torna" href="#slide-integrazioni-crm"><span data-lang-it>La riga del CRM in quattro punti →</span><span data-lang-en>The CRM line in four points →</span></a>
         </p>
@@ -569,7 +580,7 @@ const SALA_O_VOI = EDIZIONE === 'lettura' ? 'da verificare con voi' : 'da correg
         </figure>
         <div class="im-dq-banda">
           <div class="im-dq-didas">
-            <p data-per="1"><T as="strong" it="Dalle fonti al profilo" en="From the sources to the profile" /> <T as="span" it="consensi e revoche passano dal vostro registro; l’email lasciata a una fiera si unisce al profilo del sito." en="consents and withdrawals pass through your register; an email left at a fair joins the website profile." /></p>
+            <p data-per="1"><T as="strong" it="Dalle fonti al profilo" en="From the sources to the profile" /> <T as="span" it="consensi e revoche passano dal vostro registro; l’email lasciata a una fiera si unisce al profilo del sito. Da validare con il DPO: il ricongiungimento all’indietro delle sessioni pseudonime." en="consents and withdrawals pass through your register; an email left at a fair joins the website profile. To validate with the DPO: linking earlier pseudonymous sessions back to the person." /></p>
             <p data-per="2"><T as="strong" it="Prima di ogni invio, una regola" en="Before every send, a rule" /> <T as="span" it="un canale parte solo se il consenso c’è. Journey Optimizer non scrive a chi ha revocato." en="a channel goes out only if consent is there. Journey Optimizer does not write to anyone who opted out." /></p>
             <p data-per="3"><T as="strong" it="Una revoca in filiale ferma l’annuncio" en="A withdrawal at the branch stops the ad" /> <T as="span" it="nelle audience la regola la mette chi le costruisce; con Privacy & Security Shield si applica da sola. È un componente aggiuntivo: lo precisiamo rispetto alla sala." en="in audiences the rule is set by whoever builds them; with Privacy & Security Shield it applies by itself. It is an add-on: a correction to what we said in the room." /></p>
             {DQ_ARCH.map((x) => <p data-per="4" data-arch-per={x.k}><T as="strong" it="Chi è il riferimento" en="Who holds the reference" /> <T as="span" it={x.t.it} en={x.t.en} /></p>)}
@@ -747,7 +758,7 @@ const SALA_O_VOI = EDIZIONE === 'lettura' ? 'da verificare con voi' : 'da correg
   }
 
   /* Una riga fatta solo di rimandi parte dal bordo, come i blocchi sopra. */
-  #slide-integrazioni .im-fonte-riga .im-torna:first-child { margin-left: 0; }
+  #slide-integrazioni .im-fonte-riga :is(.im-torna:first-child, .im-frecce-legenda + .im-torna) { margin-left: 0; }
 
   /* I collegamenti: le due frecce del cross-sell sotto un'etichetta sola. */
   .im-frecce-dopo {

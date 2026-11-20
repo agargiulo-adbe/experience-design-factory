@@ -34,7 +34,7 @@ import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
 import Divisore from '../components/Divisore.astro';
 import fondo from '../assets/generated/cover-innesto.webp';
 import fondoMisura from '../assets/generated/lavoro-07-misura.webp';
-import { TITOLO, CONFINE, OGGI, ACCANTO, EVOLUZIONE, AFFIANCA, IPOTESI, MOMENTO_SCHEMA } from '../data/innesto';
+import { TITOLO, CONFINE, OGGI, ACCANTO, EVOLUZIONE, AFFIANCA, IPOTESI, MOMENTO_SCHEMA, SCELTE } from '../data/innesto';
 import { MOMENTI } from '../data/momenti';
 import '../styles/innesto.css';
 
@@ -55,7 +55,7 @@ const CAPACITA = [
     { it: 'Un profilo anche per chi non ha ancora lasciato il nome', en: 'A profile even before someone leaves their name' },
     { it: 'Unisce le sessioni quando arriva un identificativo', en: 'Merges sessions when an identifier arrives' },
     { it: 'Segmenti in tempo reale', en: 'Real-time segments' },
-  ], g: { it: 'quando lascia l’email, le visite delle sere prima si agganciano al suo profilo', en: 'when she leaves her email, the visits of the evenings before attach to her profile' } },
+  ], g: { it: 'quando lascia l’email, la visita della sera prima si aggancia al suo profilo', en: 'when she leaves her email, the visit of the evening before attaches to her profile' } },
   { p: 'Decisioning', k: 'sceglie', r: { it: 'Sceglie', en: 'Chooses' }, v: [
     { it: 'Un unico catalogo di offerte', en: 'A single offer catalogue' },
     { it: 'Applica la politica di contatto della banca', en: 'Applies the bank’s contact policy' },
@@ -64,7 +64,7 @@ const CAPACITA = [
   { p: 'Journey Optimizer', k: 'agisce', r: { it: 'Orchestra', en: 'Orchestrates' }, v: [
     { it: 'Si attiva su un’azione del cliente', en: 'Triggered by a customer action' },
     { it: 'Email, sito, app, SMS, WhatsApp', en: 'Email, site, app, SMS, WhatsApp' },
-    { it: 'Consenso e tetto per canale', en: 'Consent and per-channel cap' },
+    { it: 'Consenso e tetto per canale (sui canali in uscita); su sito e app, limite per offerta', en: 'Consent and per-channel cap (outbound channels); on site and app, a per-offer limit' },
   ], g: { it: 'le ricorda la richiesta per email e sul sito; gli annunci partono da Real-Time Activation', en: 'reminds her of the application by email and on the site; ads start from Real-Time Activation' } },
   { p: 'Customer Journey Analytics', k: 'misura', r: { it: 'Misura', en: 'Measures' }, v: [
     { it: 'Percorso del cliente su tutti i canali', en: 'The customer journey across every channel' },
@@ -177,7 +177,11 @@ const RITORNO = [
         {/* Titolo e riga di confine: decisione del proprietario dell'11 nov 2026.
             SAS non è confermato dal cliente, quindi non sta nel titolo come fatto. */}
         <T as="h2" class="im-ado-t" it={TITOLO.it} en={TITOLO.en} />
-        <T as="p" class="im-inn-confine" it={CONFINE.it} en={CONFINE.en} />
+        {/* LA RISERVA SOTTO IL TITOLO (panel del 20 nov 2026): in fondo alla slide
+            finiva sotto i comandi del deck a 1512×860, ed è la frase che protegge
+            chi la fa girare. Sta in alto a destra della riga «Si parte da qui», sopra il
+            rimando alle evoluzioni, in corpo di fonte. */}
+        <p class="im-inn-confine"><T as="span" it={CONFINE.it} en={CONFINE.en} /></p>
         <div class="im-inn">
           {/* DUE CORNICI (check col referente, 11 nov 2026). Sopra, il perimetro
               che la banca ha già: non si sostituisce, si delimita. Sotto, i tre
@@ -187,6 +191,10 @@ const RITORNO = [
               griglia, non pseudo-elementi: il testo si traduce e l'audit lo vede. */}
           <div class="im-inn-cornice im-inn-cornice--oggi" aria-hidden="true">
             <T as="span" class="im-inn-legenda" it="Il perimetro di Intesa Sanpaolo" en="Intesa Sanpaolo’s perimeter" />
+            {/* LA CDP DI OGGI (panel del 20 nov 2026): compariva in «Avete» e poi
+                spariva da ogni architettura, e Real-Time Activation «si aggiunge».
+                Sta nel perimetro della banca, col ruolo dichiarato aperto. */}
+            <span class="im-inn-cdp-oggi"><strong><span data-lang-it>CDP attuale</span><span data-lang-en>Current CDP</span></strong> <span data-lang-it>ruolo da decidere in fase 0</span><span data-lang-en>role to decide in phase 0</span></span>
             {/* LA LEGENDA DELLE FRECCE (owner, 13 nov 2026): tre segni, tre significati. */}
             <span class="im-inn-legenda im-inn-legenda--frecce">
               <span class="im-lg im-lg--nbe"><i></i><span data-lang-it>Next Best Experience</span><span data-lang-en>Next Best Experience</span></span>
@@ -301,6 +309,7 @@ const RITORNO = [
                 <div class="im-carta-f">
                   <Segno k="giro" />
                   <span class="im-inn-t">Real-Time Activation</span>
+                  <T as="span" class="im-inn-cdp-nome" it="capacità di Adobe Real-Time CDP" en="a capability of Adobe Real-Time CDP" />
                   <span class="im-inn-tipi im-inn-tipi--b" role="list"><T as="span" role="listitem" class="im-inn-tipo im-chi im-chi--nc" it="non‑clienti" en="non-customers" /></span>
                 </div>
                 <div class="im-carta-r">
@@ -413,6 +422,7 @@ const RITORNO = [
             posizioni sono opzioni nel dettaglio, senza numeri — i numeri di fase
             sono del piano. Lo strumento di campagna di oggi non si nomina. */}
         <div class="im-accanto-riga">
+        <p class="im-inn-ipotesi"><span data-lang-it set:html={IPOTESI.it.replace('da correggere con voi.', '<span class="im-nw">da correggere con voi.</span>') + ' '} /><span data-lang-en>{IPOTESI.en} </span><a href={DETTAGLI}><span data-lang-it>Dettagli tecnici →</span><span data-lang-en>Technical detail →</span></a></p>
         <div class="im-accanto" data-substep>
           <T as="span" class="im-accanto-k" it={ACCANTO.k.it} en={ACCANTO.k.en} />
           <T as="strong" class="im-accanto-t" it={ACCANTO.t.it} en={ACCANTO.t.en} />
@@ -422,6 +432,7 @@ const RITORNO = [
           {/* Tre tappe in fila con la freccia fra l'una e l'altra: la prima è
               accesa (si parte da lì), le altre due dicono chi le decide. La
               frequenza è una decisione di fase 0, non una tappa: sta sotto. */}
+          <T as="p" class="im-evo-scelte" it={SCELTE.it} en={SCELTE.en} />
           <ol class="im-evo" role="list">
             {EVOLUZIONE.map((e) => (
               <li class="im-evo-i" data-ora={e.ora ? '' : null}>
@@ -435,10 +446,6 @@ const RITORNO = [
           <p class="im-evo-nota"><T as="strong" it={AFFIANCA.t.it} en={AFFIANCA.t.en} /> <T as="span" it={AFFIANCA.d.it} en={AFFIANCA.d.en} /></p>
         </HowItWorks>
         </div>
-        <p class="im-fonte-riga">
-          <span data-lang-it>{IPOTESI.it} </span><span data-lang-en>{IPOTESI.en} </span>
-          <a href={DETTAGLI}><span data-lang-it>Dettagli tecnici →</span><span data-lang-en>Technical detail →</span></a>
-        </p>
       </div>
     </Slide>
 
@@ -477,7 +484,10 @@ const RITORNO = [
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <div class="im-capmap-testa"><T as="h2" class="im-ado-t im-ado-t--stretto" it="Più identificativi, una persona sola: dal sito alla filiale e oltre la firma" en="Many identifiers, one person: from the site to the branch and past the signature" /><MappaCapacita accese={['riconosce']} /></div>
-        <T as="p" class="im-ado-l" it="Pseudonimo, email, codice pratica, telefono e NDG si collegano alla stessa persona: dalla simulazione alla firma, una storia sola." en="Pseudonym, email, application code, phone and customer ID link to the same person: from the simulation to the signature, one history." />
+        {/* L'IPOTESI SALE IN TESTA (panel del 20 nov 2026): stava in fondo, sotto i
+            comandi del deck, e ora porta anche il censimento e l'alternativa
+            all'NDG in chiaro. */}
+        <T as="p" class="im-ado-l im-idg-lead" it="<span class=im-idg-ip>Ipotesi di lavoro</span> il codice pratica nasce alla simulazione e si riconcilia con l’NDG al censimento anagrafico (alla firma o all’apertura della pratica: da verificare con voi). L’NDG può entrare come hash, oppure resta solo il codice pratica <span class=im-nw>e la riconciliazione</span> la fate voi: <span class=im-nw>si sceglie in fase 0.</span>" en="<span class=im-idg-ip>Working assumption</span> the application code is created at the simulation and reconciles with the customer ID issued at registration (at signing or when the application opens: to verify with you). The ID can come in hashed, or only the application code is kept and you reconcile: chosen in phase 0." />
 
         {/* L'IDENTITY GRAPH E LA RICUCITURA (owner, 14 nov 2026). A sinistra il
             grafo che si forma, a destra la storia di Giulia. Al passo 1 l'ECID
@@ -510,7 +520,7 @@ const RITORNO = [
             <div class="im-idg-n" data-dal="2" data-k="email" style="--x:83%;--y:20%"><b>Email</b><T as="small" it="col consenso" en="with consent" /></div>
             <div class="im-idg-n" data-dal="4" data-k="tel" style="--x:83%;--y:80%"><T as="b" it="Telefono" en="Phone" /><T as="small" it="in filiale" en="in the branch" /></div>
             <div class="im-idg-n" data-dal="2" data-k="pratica" style="--x:50%;--y:8%"><T as="b" it="Codice pratica" en="Application code" /><T as="small" it="alla simulazione" en="at the simulation" /></div>
-            <div class="im-idg-n" data-dal="5" data-k="ndg" style="--x:17%;--y:80%"><b>NDG</b><T as="small" it="alla firma, dal core" en="at signing, from core banking" /></div>
+            <div class="im-idg-n" data-dal="5" data-k="ndg" style="--x:17%;--y:80%"><b>NDG</b><T as="small" it="al censimento anagrafico" en="at customer registration" /></div>
           </div>
           <ol class="im-idg-tl">
             {CHIAVE.map((c) => (
@@ -528,9 +538,8 @@ const RITORNO = [
         </div>
         <div class="im-chv-barra im-idg-barra" data-dal="5">
           <T as="span" class="im-chv-prima" it="non‑cliente" en="Non-customer" />
-          <T as="span" class="im-chv-dopo" it="Cliente da oggi: in CJA la storia è già sul suo NDG" en="Customer from today: in CJA her history is already on her ID" />
+          <T as="span" class="im-chv-dopo" it="Cliente da oggi: in CJA, dopo lo stitching, la storia passa sul suo NDG · fino a 90 minuti dal data lake, fino a 4 ore lo stitching" en="Customer from today: in CJA, after stitching, her history moves to her ID · up to 90 minutes from the data lake, up to 4 hours for stitching" />
         </div>
-        <T as="p" class="im-idg-nota" data-dal="5" it="<span class=im-idg-ip>Ipotesi di lavoro</span> il codice pratica nasce alla simulazione e si riconcilia con l’NDG che il core emette alla firma." en="<span class=im-idg-ip>Working assumption</span> the application code is created at the simulation and reconciles with the customer ID that core banking issues at signing." />
 
       </div>
     </Slide>
@@ -613,8 +622,7 @@ const RITORNO = [
     <Slide id="slide-attribuzione" bg="inverse" align="left" data-lettura-ritmo="3200">
       <div slot="backdrop" class="im-bg-doppia" style={`--bg: url('${fondoMisura.src}')`}></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <div class="im-capmap-testa"><T as="h2" class="im-ado-t im-ado-t--stretto" it="Quanto vale ogni canale, anche in filiale" en="What each channel is worth, branch included" /><MappaCapacita accese={['misura']} /></div>
-        <T as="p" class="im-ado-l" it="Per il Controllo di Gestione: quanto pesa il digitale sulle vendite che si firmano in filiale. Esempio: il mutuo." en="For management control: how much digital weighs on the sales signed at the branch. Example: the mortgage." />
+        <div class="im-capmap-testa"><T as="h2" class="im-ado-t im-ado-t--stretto" it="Quanto pesa il digitale <span class=im-nw>sulle firme in filiale?</span> <span class=im-nw>Con l’ultimo clic,</span> un quinto." en="How much does digital weigh on branch signatures? With last click, one fifth." /><MappaCapacita accese={['misura']} /></div>
 
         <i class="im-cjp-passo" data-substep data-p="1" aria-hidden="true"></i>
         <i class="im-cjp-passo" data-substep data-p="2" aria-hidden="true"></i>
@@ -622,8 +630,8 @@ const RITORNO = [
           <figure class="im-cjp" data-cjp data-modello="ultimo">
             <div class="im-cjp-testa">
               <div class="im-cjp-tit">
-                <T as="strong" it="Attribuzione · Mutuo prima casa" en="Attribution · First-home mortgage" />
-                <small>{[["Customer Journey Analytics", "Customer Journey Analytics"], ["ultimi 90 giorni", "last 90 days"], ["dati di esempio", "sample data"]].map(([it, en], k) => <>{k > 0 && ' · '}<T as="span" class="im-cjp-seg" it={it} en={en} /></>)}</small>
+                <T as="strong" it="Esempio illustrativo · Attribuzione del mutuo" en="Illustrative example · Mortgage attribution" />
+                <small>{[["Customer Journey Analytics", "Customer Journey Analytics"], ["ultimi 90 giorni", "last 90 days"]].map(([it, en], k) => <>{k > 0 && ' · '}<T as="span" class="im-cjp-seg" it={it} en={en} /></>)}</small>
               </div>
               <div class="im-cjp-mod" role="group" aria-label="Modello di attribuzione" data-deck-nochrome>
                 <button type="button" data-mod="ultimo" aria-pressed="true"><span data-lang-it>Ultimo clic</span><span data-lang-en>Last click</span></button>
@@ -672,15 +680,16 @@ const RITORNO = [
               <T as="span" it="con il modello algoritmico, sugli stessi dati" en="with the algorithmic model, on the same data" />
               <i aria-hidden="true"></i>
             </div>
-            <p class="im-cjp-dunque" data-dal="2"><T as="strong" it="Il digitale porta due terzi delle firme, non un quinto." en="Digital brings two thirds of the signatures, not one fifth." /> <T as="span" it="È la cifra su cui si decide dove investire, e la filiale non perde niente: entra nella stessa misura. Il modello si cambia nel report, senza ricaricare i dati." en="It is the figure that decides where to invest, and the branch loses nothing: it is in the same measure. The model changes in the report, without reloading data." /></p>
-          </div>
-        </div>
-
-        <p class="im-fonte-riga">
-          <span data-lang-it>Esempio illustrativo. L’attribuzione non misura quello che succede fuori dai canali osservati. Modelli: </span><span data-lang-en>Illustrative example. Attribution does not measure what happens outside the observed channels. Models: </span>
+            <p class="im-cjp-dunque" data-dal="2"><T as="strong" it={`In questo esempio illustrativo, con un modello algoritmico, il digitale passa dal ${DIGITALE.ultimo}% al ${DIGITALE.algo}%.`} en={`In this illustrative example, with an algorithmic model, digital goes from ${DIGITALE.ultimo}% to ${DIGITALE.algo}%.`} /> <T as="span" it="Il modello ripartisce il merito fra i canali osservati, non dimostra la causa: per decidere il budget serve un test con gruppo di controllo. Prerequisito: l’esito della filiale nel dato, con il ritorno dal CRM di filiale." en="The model shares credit among the observed channels; it does not prove cause. Deciding the budget takes a test with a control group. Prerequisite: the branch outcome in the data, returned from the branch CRM." /></p>
+            {/* La fonte sale nella colonna (panel del 20 nov 2026): in fondo finiva
+                sotto i comandi del deck a 1512×860. */}
+            <p class="im-fonte-riga im-cjp-fonte">
+          <span data-lang-it>Il traffico dagli assistenti AI entra in CJA come canale di provenienza: si configura in fase 0. L’attribuzione non misura quello che succede fuori dai canali osservati. Modelli: </span><span data-lang-en>Traffic from AI assistants enters CJA as a referring channel: it is configured in phase 0. Attribution does not measure what happens outside the observed channels. Models: </span>
           <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-workspace/attribution/models" target="_blank" rel="noopener">Customer Journey Analytics · attribution</a>
           <a class="im-torna" href={href(base, '/approfondimenti/#slide-domanda-misura')}><span data-lang-it>E fuori dai canali osservati →</span><span data-lang-en>And beyond the observed channels →</span></a>
-        </p>
+            </p>
+          </div>
+        </div>
       </div>
     </Slide>
 

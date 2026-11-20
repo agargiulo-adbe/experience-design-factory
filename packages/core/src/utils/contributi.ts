@@ -9,6 +9,7 @@
  */
 export const FUNZIONI = [
   { k: 'direzione', l: 'Direzione' },
+  { k: 'targeting', l: 'Targeting e CRM commerciale' },
   { k: 'marketing', l: 'Marketing e comunicazione' },
   { k: 'dati', l: 'Dati e analisi' },
   { k: 'tecnologia', l: 'Tecnologia' },

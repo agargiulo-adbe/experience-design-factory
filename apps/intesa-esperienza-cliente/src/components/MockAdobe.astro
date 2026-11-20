@@ -117,7 +117,7 @@ const PASSI = [
   { l: 'Attesa 12 ore', s: 'fatto' },
   { l: 'Email con il link per riprendere', s: 'ora' },
   { l: 'Se non clicca «Riprendi» → riprova con l’altra variante', s: 'poi' },
-  { l: 'Lead e appuntamento nel CRM di filiale, via API o connettori nativi', s: 'poi' },
+  { l: 'Lead e appuntamento nel CRM di filiale, via API esposta dal vostro CRM', s: 'poi' },
 ];
 /* 07 · l'imbuto, e dove si perde. Dalla FONTE UNICA `data/imbuto.ts`:
    era una seconda copia a mano, con numeri diversi e un'intestazione
@@ -135,7 +135,8 @@ const PASSI = [
    voci. Cifre di esempio, dichiarate. */
 const COSTI = [
   { l: 'Annunci social', breve: 'Annunci', euro: '180 €', quota: QUOTA_ALGO.annunci },
-  { l: 'Ricerca a pagamento', breve: 'Ricerca', euro: '240 €', quota: QUOTA_ALGO.ricerca },
+  { l: 'Ricerca a pagamento', breve: 'Ricerca', costo: 'Ricerca a pagamento', euro: '240 €', quota: QUOTA_ALGO.ricerca },
+  { l: 'Ricerca organica', breve: '', euro: 'organica, nessuna spesa propria', quota: QUOTA_ALGO.organica, organico: true },
   { l: 'Email · piattaforma e produzione', breve: 'Email', euro: '95 €', quota: QUOTA_ALGO.email },
   { l: 'Sito', breve: 'Sito', euro: 'organico, nessuna spesa propria', quota: QUOTA_ALGO.sito, organico: true },
   { l: 'Filiale', breve: 'Filiale', euro: '', quota: QUOTA_ALGO.filiale, filiale: true },
@@ -199,10 +200,9 @@ const FUNNEL = IMBUTO.map((r) => ({ l: r.l.it, v: r.v, n: r.n, offline: r.offlin
           <p class="im-ado-occhiello">Profilo unico · riconosciuta 2 secondi fa</p>
           <div class="im-ado-prof-id">
             <span class="im-ado-chip" data-prima>sessione pseudonima · 12 nov</span>
-            <span class="im-ado-chip" data-prima>sessione pseudonima · 13 nov</span>
-            <span class="im-ado-chip">annuncio</span><span class="im-ado-chip">simulazione</span>
+            <span class="im-ado-chip">annuncio · 13 nov, mattina</span><span class="im-ado-chip">simulazione · 13 nov, sera</span>
           </div>
-          <p class="im-ado-prof-t">Due sere senza nome, e adesso un’email</p>
+          <p class="im-ado-prof-t">Una sera senza nome, e adesso un’email</p>
           <dl class="im-ado-righe">
             {/* ⚠️ Qui c'era «Score dal vostro motore · propensione mutuo
                 0,78»: su una persona senza storico il motore di targeting
@@ -214,11 +214,11 @@ const FUNNEL = IMBUTO.map((r) => ({ l: r.l.it, v: r.v, n: r.n, offline: r.offlin
             {/* Due consensi, due righe: i cookie raccolgono le sessioni
                 anonime, il ricontatto permette di scriverle. Erano una riga
                 sola, «Consenso: dato ora» (panel, 11 nov 2026). */}
-            <div><dt>Profilazione</dt><dd>consenso dato il 12 nov</dd></div>
+            <div><dt>Profilazione</dt><dd>consenso dato ora, con l’email</dd></div>
             <div><dt>Ricontatto</dt><dd>✓ ora, con l’email</dd></div>
             <div><dt>Regola di sessione</dt><dd>2 sessioni · 1 simulazione salvata</dd></div>
           </dl>
-          <p class="im-ado-rilievo">Le sessioni di prima si uniscono al profilo quando arriva l’email, se il consenso alla profilazione c’era già.</p>
+          <p class="im-ado-rilievo">Ricollegare le visite precedenti all’identità è configurabile: base giuridica e finestra di retroattività le fissa la banca con il DPO in fase 0.</p>
         </>
       )}
 
@@ -251,7 +251,7 @@ const FUNNEL = IMBUTO.map((r) => ({ l: r.l.it, v: r.v, n: r.n, offline: r.offlin
             <div class="im-aj-rami" style="--i:3">
               <div class="im-aj-n" style="--i:3" data-t="email" data-ora><i><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="6" width="17" height="12" rx="1.5" /><path d="m4 7 8 6 8-6" /></svg></i><span>Email</span></div>
               <div class="im-aj-n" style="--i:3;--j:1" data-t="web"><i><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="14" rx="1.5" /><path d="M3.5 9h17" /></svg></i><span>Banner sul sito</span></div>
-              <div class="im-aj-n" style="--i:3;--j:2" data-t="media"><i><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" /><circle cx="12" cy="12" r="3.5" /></svg></i><span>Annunci di re-targeting<small class="im-aj-sub">aggiornati in tempo reale</small></span></div>
+              <div class="im-aj-n" style="--i:3;--j:2" data-t="media"><i><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" /><circle cx="12" cy="12" r="3.5" /></svg></i><span>Annunci di re-targeting<small class="im-aj-sub">pubblico giornaliero via Real-Time CDP</small></span></div>
             </div>
           </div>
           <div class="im-aj-dati">
@@ -289,16 +289,26 @@ const FUNNEL = IMBUTO.map((r) => ({ l: r.l.it, v: r.v, n: r.n, offline: r.offlin
               </div>
             ))}
           </div>
+          {/* DOPO LA RICHIESTA FIRMATA (panel del 20 nov 2026): per il mutuo il KPI
+              è l'erogato. Delibera, stipula ed erogato restano tratteggiati: arrivano
+              dal ritorno del CRM di filiale, che si collega in fase 0. */}
+          <div class="im-cj-dopo">
+            <span class="im-cj-dopo-g">Delibera</span><span class="im-cj-dopo-g">Stipula</span><span class="im-cj-dopo-g">Erogato</span>
+            <small>dal ritorno del CRM di filiale, da collegare in fase 0</small>
+          </div>
           <div class="im-cj-attr">
             <small>Attribuzione delle richieste firmate per canale · algoritmica</small>
-            <div class="im-cj-seg">{COSTI.map((c) => <span style={`flex:${c.quota}`} data-on={c.filiale ? '' : null}>{c.breve}</span>)}</div>
+            <div class="im-cj-seg">{COSTI.map((c) => <span style={`flex:${c.quota}`} data-on={c.filiale ? '' : null} data-k={c.l} title={c.l}>{c.quota >= 10 ? c.breve : ''}</span>)}</div>
           </div>
           {/* Il costo con un euro a schermo, e con la sua condizione: CJA lo
               legge solo se la spesa per canale entra in piattaforma
               (fact-check, 11 nov 2026). Cifre di esempio, dichiarate. */}
           <div class="im-cj-costo">
             <small>Costo attribuito per richiesta firmata · per canale</small>
-            <div class="im-cj-costo-r">{COSTI.filter((c) => !c.filiale && !c.organico).map((c) => <span>{c.breve} <b>{c.euro}</b></span>)}</div>
+            <div class="im-cj-costo-r">{COSTI.filter((c) => !c.filiale && !c.organico).map((c) => <span>{c.costo ?? c.breve} <b>{c.euro}</b></span>)}</div>
+            {/* Panel del 20 nov 2026: il costo dei canali con operatore e il traffico
+                dagli assistenti AI, detti invece che lasciati fuori in silenzio. */}
+            <p class="im-cj-costo-fil">Il costo dei canali con operatore oggi è fuori dal calcolo: si decide in fase 0 se e da quale fonte entra.</p>
           </div>
         </div>
       )}
@@ -318,15 +328,23 @@ const FUNNEL = IMBUTO.map((r) => ({ l: r.l.it, v: r.v, n: r.n, offline: r.offlin
   /* 05 · il ramo degli annunci: la riga sotto dice da dove viene il pubblico. */
   .im-aj-sub { display: block; font-size: clamp(0.72rem, calc(0.58 * var(--vu)), 1.3rem); line-height: 1.2; color: var(--color-grey-600); }
   /* 07 · il costo per richiesta firmata, sotto l'attribuzione. */
-  .im-cj-costo { display: grid; gap: 0.2rem; margin-top: -1.1rem; padding-bottom: 1.6rem; }
+  .im-cj-costo { display: grid; gap: 0.2rem; margin-top: -1.1rem; padding-bottom: 0.1rem; }
   .im-cj-costo small { font-size: clamp(0.78rem, calc(0.68 * var(--vu)), 1.5rem); font-weight: 700; color: var(--color-ink); }
-  .im-cj-costo-r { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.3rem; }
+  .im-cj-costo-r { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+  .im-cj-costo-r span { flex: 1 1 auto; white-space: nowrap; }
   /* Due righe di costo e quella della filiale non entravano: l'imbuto cede
      altezza alle barre, non il tipo (che non si rimpicciolisce). */
   .im-ado--misura .im-cj-b { height: clamp(1.6rem, 2.6vh, 4.6rem); }
   .im-cj-seg span:nth-child(4) { background: #0d4f9e; }
   .im-cj-seg span { min-width: 0; padding-inline: 0.35rem; }
-  .im-cj-costo-fil { margin: 0; max-width: none; font-size: clamp(0.78rem, calc(0.66 * var(--vu)), 1.45rem); line-height: 1.3; color: var(--color-ink-2); }
+  /* Il rientro lascia libero l'angolo dove siede il pulsante del dettaglio. */
+  .im-cj-costo-fil { margin: 0; padding-left: 1.5rem; max-width: none; font-size: clamp(0.78rem, calc(0.66 * var(--vu)), 1.45rem); line-height: 1.3; color: var(--color-ink-2); }
   .im-cj-costo-r span { padding: 0.16rem 0.45rem; border: 1px solid var(--color-grey-200); border-radius: 4px; font-size: clamp(0.78rem, calc(0.66 * var(--vu)), 1.45rem); color: var(--color-ink-2); }
   .im-cj-costo-r b { color: var(--color-ink); font-variant-numeric: tabular-nums; }
+  /* I gradini dopo la firma: tratteggiati, perché il dato non c'è ancora. */
+  .im-cj-dopo { display: flex; align-items: center; gap: 0.35rem; margin: -0.35rem 0 0; }
+  .im-cj-dopo-g { padding: 0.08rem 0.5rem; border: 1.5px dashed #6b7480; border-radius: 4px; font-size: clamp(0.78rem, calc(0.66 * var(--vu)), 1.45rem); color: var(--color-ink-2); }
+  .im-cj-dopo small { flex: 1 1 0; min-width: 0; margin-left: 0.2rem; font-size: clamp(0.78rem, calc(0.66 * var(--vu)), 1.45rem); line-height: 1.25; color: var(--color-grey-600); }
+  .im-cj-dopo-g { flex: none; }
+  .im-ado--misura .im-cj-attr { padding-bottom: 1rem; }
 </style>

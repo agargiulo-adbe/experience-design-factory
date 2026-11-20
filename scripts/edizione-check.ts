@@ -56,7 +56,9 @@ export async function checkParliamone(b: Browser) {
   const l = await p.evaluate(() => [...document.querySelectorAll('a')].map((a) => a.getAttribute('href') || ''));
   const mail = l.filter((h) => h.startsWith('mailto:'));
   const wa = l.filter((h) => h.startsWith('https://wa.me/'));
-  ok('parliamone: tre email', mail.length === 3 && ['agordiani@', 'fellena@', 'agargiulo@'].every((x) => mail.some((m) => m.includes(x))), mail.join(' '));
+  ok('parliamone: sei email', mail.length === 6 && ['agordiani@', 'fellena@', 'agargiulo@', 'gselmi@', 'mgrieco@', 'lmecca@'].every((x) => mail.some((m) => m.includes(x))), mail.join(' '));
+  const tel = await p.$$eval('a[href^="tel:"]', (as) => as.map((a) => a.getAttribute('href') ?? ''));
+  ok('parliamone: tre telefoni, i numeri giusti', tel.length === 3 && ['+393474293328', '+393427517796', '+393459761193'].every((n) => tel.includes('tel:' + n)), tel.join(' '));
   ok('parliamone: due WhatsApp, i numeri giusti', wa.length === 2 && wa.some((h) => h.includes('393489696067')) && wa.some((h) => h.includes('393499385457')), wa.join(' '));
   await p.close();
   if (SALA !== '/') {
@@ -154,7 +156,7 @@ export async function checkSala(b: Browser) {
   await p.keyboard.press('p');
   ok('lettura: il tasto P non apre niente', !(await popup), 'si è aperta una finestra');
   const nota = await p.goto(LETTURA, { waitUntil: 'load' }).then(() => p.textContent('body'));
-  ok('lettura: la frase sul contatore dice «Non registriamo chi la apre»', (nota ?? '').includes('Non registriamo chi la apre'), '');
+  ok('lettura: la frase sul contatore dice che non registra cookie né IP', (nota ?? '').includes('non registra cookie, indirizzi IP'), nota ?? '');
   await p.close();
 }
 
@@ -317,6 +319,17 @@ const CHECKS: Record<string, (b: Browser) => Promise<void>> = { autoreveal: chec
 
 const scelti = process.argv.slice(2);
 const b = await chromium.launch();
+// SENZA_ESTERNI=1: i font di Google (e ogni host che non è quello provato) si
+// fermano prima della rete. Con la rete lenta il `load` aspettava i font e
+// scadeva in punti diversi a ogni giro (20 nov 2026); i controlli non li usano.
+if (process.env.SENZA_ESTERNI === '1') {
+  const blocca = (c: import('playwright').BrowserContext) =>
+    c.route(/^https?:\/\/(fonts\.googleapis\.com|fonts\.gstatic\.com|www\.youtube\.com|github\.com|objects\.githubusercontent\.com)\//, (r) => r.abort());
+  const nc = b.newContext.bind(b);
+  b.newContext = (async (o?: object) => { const c = await nc(o); await blocca(c); return c; }) as typeof b.newContext;
+  const np = b.newPage.bind(b);
+  b.newPage = (async (o?: object) => { const c = await nc(o); await blocca(c); const pg = await c.newPage(); return pg; }) as typeof b.newPage;
+}
 for (const [nome, fn] of Object.entries(CHECKS)) if (!scelti.length || scelti.includes(nome)) await fn(b);
 await b.close();
 if (fallimenti.length) { console.log(`\n${fallimenti.length} controlli falliti`); process.exit(1); }

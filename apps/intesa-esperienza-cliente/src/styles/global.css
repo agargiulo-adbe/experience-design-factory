@@ -5422,7 +5422,7 @@ html:not(.js) [data-segue] { opacity: 1; visibility: visible; transform: none; }
 }
 
 /* ── «Parliamone» (edizione da distribuire) ─────────────────────────────
-   Le tre persone con lo stesso ritratto tondo della squadra (`.im-team-ft`),
+   Le persone con lo stesso ritratto tondo della squadra (`.im-team-ft`),
    così si riconoscono le persone viste nel primo capitolo; sotto ogni nome
    le azioni, come pulsanti veri: chi legge da solo deve poter scrivere
    con un tocco, anche dal telefono (bersagli ≥ 44px). */
@@ -5438,14 +5438,24 @@ html:not(.js) [data-segue] { opacity: 1; visibility: visible; transform: none; }
   gap: clamp(1rem, calc(2 * var(--vu)), 3.4rem); width: 100%; max-width: 72rem;
 }
 .im-cont-i {
-  display: grid; gap: 0.3rem; justify-items: center; align-content: start; text-align: center; min-width: 0;
+  /* Sei persone (20 nov): la scheda è orizzontale, ritratto a sinistra e
+     azioni sotto, così due righe da tre entrano anche a 1366×768. */
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; column-gap: 0.9rem; row-gap: 0.15rem;
+  justify-items: start; align-items: center; align-content: start; text-align: left; min-width: 0;
   /* Una scheda per persona: nome e ruolo sono una coppia, e la scheda li tiene insieme. */
-  padding: clamp(1rem, calc(1.4 * var(--vu)), 2.2rem) 1rem; border-radius: 14px;
+  padding: clamp(0.8rem, calc(1 * var(--vu)), 1.8rem) 1rem; border-radius: 14px;
   background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.14);
 }
 .im-cont-n { font-size: clamp(1.05rem, calc(1 * var(--vu)), 2.2rem); font-weight: 700; line-height: 1.2; color: #ffffff; }
 .im-cont-r { font-size: clamp(0.92rem, calc(0.78 * var(--vu)), 1.7rem); line-height: 1.3; color: #d9e6d4; }
-.im-cont-az { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; margin-top: 0.8rem; }
+.im-cont-i .im-team-ft {
+  grid-row: 1 / span 2; width: clamp(3.4rem, calc(4.4 * var(--vu)), 7rem); height: clamp(3.4rem, calc(4.4 * var(--vu)), 7rem); margin: 0;
+}
+.im-cont-n { grid-column: 2; align-self: end; }
+.im-cont-r { grid-column: 2; align-self: start; }
+.im-cont-az { grid-column: 3; grid-row: 1 / span 2; display: flex; gap: 0.45rem; margin: 0; }
+.im-cont-i .im-cont-a { width: 44px; min-height: 44px; padding: 0; justify-content: center; }
+.im-cont-a svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linejoin: round; stroke-linecap: round; }
 .im-cont-a {
   display: inline-flex; align-items: center; min-height: 44px; padding: 0 1.15rem;
   border-radius: 999px; border: 1.5px solid rgba(255, 255, 255, 0.55);
@@ -5475,4 +5485,46 @@ html:not(.js) [data-segue] { opacity: 1; visibility: visible; transform: none; }
   .im-cont-i { padding: 0.75rem 1rem; }
   .im-cont { margin-top: 1.2rem; }
   .im-parl-lockup { margin-bottom: 0.8rem; }
+}
+
+/* Panel del 20 nov 2026: tre descrizioni della mappa restano a vista a ogni
+   altezza (il ruolo della CDP attuale, il nome di prodotto di Real-Time
+   Activation, i motori di proposta da confermare): senza, la voce dice il
+   contrario di quello che si intende. */
+#slide-ingaggio-mappa .im-mappa-d--sempre { display: block; }
+/* Le frecce con i nomi lunghi (panel del 20 nov 2026: «Journey Optimizer
+   Decisioning», «profilo Real-Time Activation / dataset CJA»): sotto i 940 px
+   d'altezza la descrizione va a capo sotto i nomi, a tutta larghezza, invece
+   di stringersi in una colonna da quattro parole. Il tipo non cambia. */
+@media (max-height: 940px) {
+  #slide-integrazioni .im-frecce { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #slide-integrazioni .im-frecce-i { grid-template-columns: auto auto minmax(0, 1fr); align-content: start; row-gap: 0.05rem; }
+  #slide-integrazioni .im-frecce { gap: 0.3rem 0.5rem; }
+  /* Nove frecce di fase 1 lasciano libera la cella accanto all'ultima: l'etichetta
+     del cross-sell ci si siede, in fondo, invece di prendere una riga sua. */
+  #slide-integrazioni .im-frecce-dopo { grid-column: auto; align-self: end; margin: 0; padding: 0 0 0.2rem 0.2rem; }
+  #slide-integrazioni .im-frecce-d { grid-column: 1 / -1; }
+}
+#slide-ingaggio-mappa p.im-mappa-cdp { margin: clamp(0.6rem, calc(0.8 * var(--vu)), 1.6rem) 0 0; max-width: none; padding-left: 0.8rem; border-left: 3px solid #c8d3c4; font-size: clamp(0.96rem, calc(0.86 * var(--vu)), 1.9rem); line-height: 1.4; color: #e3eedf; text-align: left; }
+#slide-ingaggio-mappa p.im-mappa-cdp strong { color: #ffffff; }
+.im-nwb { display: inline-block; white-space: nowrap; }
+/* Sotto gli 820 px d'altezza (1366×768, 1280×800) le schede vanno su tre
+   colonne: nove frecce di fase 1 in tre righe, e nella quarta l'etichetta del
+   cross-sell con le sue due frecce. I nomi lunghi vanno a capo. */
+@media (max-height: 820px) {
+  #slide-integrazioni .im-frecce { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  #slide-integrazioni .im-frecce .im-frecce-i { display: block; }
+  #slide-integrazioni .im-frecce .im-frecce-da, #slide-integrazioni .im-frecce .im-frecce-a { white-space: normal; }
+  #slide-integrazioni .im-frecce .im-frecce-fr { margin: 0 0.3em; }
+  #slide-integrazioni .im-frecce .im-frecce-d { display: block; margin-top: 0.15rem; }
+}
+/* La legenda delle frecce: in testa sopra gli 820 px, in calce sotto (la riga
+   in testa costava l'altezza che a 1366×768 manca alle schede). */
+#slide-integrazioni .im-frecce-legenda { display: none; margin-right: 1rem; }
+@media (max-height: 820px) {
+  #slide-integrazioni .im-ado-l { display: none; }
+  #slide-integrazioni .im-frecce-legenda { display: inline; }
+}
+@media (max-height: 820px) {
+  #slide-integrazioni .im-frecce .im-frecce-da, #slide-integrazioni .im-frecce .im-frecce-a { display: inline-block; }
 }

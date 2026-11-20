@@ -33,8 +33,8 @@ export const TITOLO: Testo = {
 
 /** La riga di confine sul motore. Frase canonica: identica ovunque compaia. */
 export const CONFINE: Testo = {
-  it: 'Quello che avete resta: Adobe aggiunge i non‑clienti e porta la Next Best Experience alle vostre iniziative programmate.',
-  en: 'What you have stays: Adobe adds non-customers and brings the Next Best Experience to your scheduled initiatives.',
+  it: 'Quello che avete resta. Adobe si aggiunge su chi non è ancora cliente e, nelle iniziative programmate, sceglie <span class=im-nw>fra le proposte</span> <span class=im-nw>che i vostri</span> <span class=im-nw>sistemi già ammettono.</span> La precedenza con i motori che usate oggi si decide insieme in fase 0.',
+  en: 'What you have stays. Adobe adds itself on people who are not yet customers and, in scheduled initiatives, picks among the offers your systems already allow. Precedence with the engines you use today is decided together in phase 0.',
 };
 
 /** L'architettura di oggi, a grandi blocchi: un'ipotesi, e la slide lo dichiara. */
@@ -85,6 +85,13 @@ export const EVOLUZIONE: { segno: string; k: Testo; t: Testo; d: Testo; ora?: bo
     d: { it: 'Percorsi e iniziative sui clienti gestiti in Journey Optimizer.', en: 'Journeys and initiatives for customers managed in Journey Optimizer.' } },
 ];
 
+/** Sopra le due opzioni (panel del 20 nov 2026): chi legge senza relatore non
+    deve prenderle per un piano di sostituzione. */
+export const SCELTE: Testo = {
+  it: 'Si parte dalla prima. Le altre due sono scelte della banca, non una nostra raccomandazione: hanno senso solo se costi, tempi e che cosa si dismette tornano. Si valutano dopo il primo caso.',
+  en: 'We start from the first. The other two are the bank’s choices, not our recommendation: they only make sense if cost, timing and what gets retired add up. They are assessed after the first use case.',
+};
+
 /** Decisioning sulle iniziative di oggi, sui clienti (13 nov 2026).
     Verificato su Experience League («Batch decisioning in direct mail»,
     batch export use case: le decisioni esportate per un CRM o un email
@@ -94,7 +101,7 @@ export const EVOLUZIONE: { segno: string; k: Testo; t: Testo; d: Testo; ora?: bo
     cliente, call del 16 ott): su evento si valuta con loro. */
 export const AFFIANCA: { t: Testo; d: Testo } = {
   t: { it: 'Decisioning accanto al vostro strumento di campagna', en: 'Decisioning alongside your campaign tool' },
-  d: { it: 'Sulle iniziative programmate sui clienti Decisioning esporta le proposte, e il vostro strumento le invia. Su quelle su evento si valuta insieme: oggi il dato dei clienti arriva in ore, non in minuti.', en: 'On scheduled initiatives to customers, Decisioning exports the offers and your tool sends them. Event-based ones are assessed together: customer data arrives in hours today, not minutes.' },
+  d: { it: 'Sulle iniziative programmate sui clienti Decisioning esporta le proposte, e il vostro strumento le invia. Su quelle su evento si valuta insieme: come ci avete descritto il 19 novembre, oggi il dato dei clienti arriva in ore, non in minuti.', en: 'On scheduled initiatives to customers, Decisioning exports the offers and your tool sends them. Event-based ones are assessed together: as you described on 19 November, customer data arrives in hours today, not minutes.' },
 };
 
 /** Una cosa da decidere SUBITO, qualunque tappa si scelga: non è una tappa. */
@@ -105,14 +112,14 @@ export const FREQUENZA: Testo = {
 
 /** La riga della decisione, sotto le tappe. */
 export const DECIDETE: Testo = {
-  it: 'La banca decide se e quando spostare le iniziative dopo i risultati della fase 1; costi e tempi si stimano in quel momento.',
-  en: 'The bank decides whether and when to move initiatives after the phase 1 results; cost and timing are estimated then.',
+  it: 'La banca decide se e quando spostare le iniziative dopo i risultati del primo caso; costi e tempi si stimano in quel momento.',
+  en: 'The bank decides whether and when to move initiatives after the first use case results; cost and timing are estimated then.',
 };
 
 /** La nota sotto lo schema («non toccare» del panel): le stesse parole nei due percorsi. */
 export const IPOTESI: Testo = {
-  it: 'L’architettura attuale è una nostra ipotesi, da correggere con voi.',
-  en: 'The current architecture is our assumption, to correct with you.',
+  it: 'L’architettura attuale è una nostra ipotesi, da correggere con voi nella fase 0: il lavoro iniziale insieme, prima di qualsiasi progetto.',
+  en: 'The current architecture is our assumption, to correct with you in phase 0: the initial work together, before any project.',
 };
 
 /** La Web Analytics nel taglio corto: l'invito la chiede (panel, 11 nov 2026,
@@ -140,7 +147,7 @@ export const MOMENTO_SCHEMA: Record<'03' | '04-06' | '07', {
     quando: { it: 'La sera stessa', en: 'That same evening' },
     attivi: [2],
     lei: { it: 'Simula la rata e, per salvare il risultato, lascia l’email.', en: 'She simulates the payment and, to save the result, leaves her email.' },
-    banca: { it: 'Le visite delle sere prima, fatte senza lasciare il nome, si uniscono al suo profilo col consenso.', en: 'The visits from earlier evenings, pseudonymous and under consent, merge into her profile.' },
+    banca: { it: 'La visita della sera prima, fatta senza lasciare il nome, si può unire al suo profilo: la finestra la fissate voi con il DPO.', en: 'The previous evening’s pseudonymous visit can join her profile: you set the window with the DPO.' },
     cambia: { it: 'Prima dell’email era un comportamento senza nome; dopo, una persona con una storia.', en: 'Before the email she was behaviour without a name; after it, a person with a history.' },
   },
   '04-06': {

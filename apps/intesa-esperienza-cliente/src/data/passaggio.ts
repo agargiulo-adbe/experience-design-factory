@@ -43,7 +43,7 @@ export const DETTAGLI_PASSAGGIO: { segno: string; ancora: Testo; riga: Testo }[]
   { segno: 'esito', ancora: { it: 'Esportazioni', en: 'Exports' },
     riga: { it: 'L’export Data Warehouse di Analytics passa a Full Table Export; i Data Feeds diventano esportazioni di dataset da Experience Platform.', en: 'Analytics’ Data Warehouse export moves to Full Table Export; Data Feeds become dataset exports from Experience Platform.' } },
   { segno: 'bordo', ancora: { it: 'Activity Map', en: 'Activity Map' },
-    riga: { it: 'Activity Map non è supportato, e oggi non è in roadmap.', en: 'Activity Map is not supported, and is not on the roadmap today.' } },
+    riga: { it: 'Activity Map non è supportato, <span class=im-nw>e il supporto</span> non è ancora pianificato.', en: 'Activity Map is not supported, and support is not yet planned.' } },
   { segno: 'canali', ancora: { it: 'Convivenza, storico, formazione', en: 'Overlap, history, training' },
     riga: { it: 'Convivenza delle licenze e storico si decidono in fase 0. Per Workspace la guida dà da tre a sei mesi.', en: 'Licence overlap and history get decided in phase 0. For Workspace the guide gives three to six months.' } },
 ];
