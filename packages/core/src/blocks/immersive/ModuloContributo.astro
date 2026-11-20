@@ -101,13 +101,24 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
   const dlg = () => document.querySelector<HTMLDialogElement>('dialog[data-edf-contributo]');
 
+  // Un titolo bilingue (<T en it>) porta le due lingue nel DOM: si toglie quella
+  // che non è attiva. Non si usa innerText, che dipende da che cosa è visibile in
+  // quell'istante: con l'animazione d'ingresso ancora in corso restituisce «».
+  function testoNellaLingua(el: HTMLElement): string {
+    const lingua = document.documentElement.dataset.lang ?? document.documentElement.lang ?? 'it';
+    const c = el.cloneNode(true) as HTMLElement;
+    c.querySelectorAll<HTMLElement>('*').forEach((x) => {
+      const altra = Object.keys(x.dataset).some((k) => /^lang[A-Z][a-z]$/.test(k) && k.slice(4).toLowerCase() !== lingua);
+      if (altra) x.remove();
+    });
+    return c.textContent ?? '';
+  }
+
   function sezioneAttiva(d: HTMLDialogElement): string {
     const cap = d.dataset.capitolo ?? '';
     const s = document.querySelector<HTMLElement>('[data-deck] [data-slide]:not([aria-hidden])');
     const h = s?.querySelector<HTMLElement>('h1, h2, h3');
-    // innerText e non textContent: un titolo bilingue (<T en it>) porta le due
-    // lingue nel DOM, e solo quella visibile è la sezione giusta.
-    return sezioneDa(cap, h?.innerText ?? '');
+    return sezioneDa(cap, h ? testoNellaLingua(h) : '');
   }
 
   function apri(sezione?: string) {
