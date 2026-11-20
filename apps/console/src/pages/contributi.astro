@@ -1,12 +1,17 @@
 ---
 /**
  * Contributi — la curatela della versione B delle edizioni da distribuire
- * (spec 2026-11-19, §8-§9 e «Revisione del 19 nov sera»; migrazione 0041).
+ * (spec 2026-11-19, §8-§9 e «Revisione del 19 nov sera»; migrazioni 0041-0046).
  * Qui si legge ciò che è arrivato dal modulo anonimo, si approva o si esclude,
  * si assegna l'area evolutiva, si riformula chi si è reso riconoscibile nel
  * testo (l'originale resta), si scrive la risposta, e si vede il riepilogo con
  * le stesse soglie che vede la banca. Le righe le leggono solo i membri del
  * progetto (`progetto_membri`) e i super admin: lo fa la RLS, non questa pagina.
+ *
+ * Riscritta il 20 nov 2026 (`/impeccable`): la pagina era illeggibile perché le
+ * schede costruite da JS non ricevevano lo stile scoped di Astro. Ora tutto lo
+ * stile è `is:global` con prefisso `ct-`, nel linguaggio delle altre pagine
+ * della console (page-head, pannelli bianchi, btn-primary / btn-ghost, field-input).
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { FUNZIONI, LIVELLI } from '@edf/core/utils/contributi';
@@ -15,36 +20,48 @@ import { FUNZIONI, LIVELLI } from '@edf/core/utils/contributi';
   <div class="page-head">
     <div>
       <h1 class="page-title">Contributi</h1>
-      <p class="page-sub">Le domande arrivate dal modulo anonimo delle edizioni da distribuire, e il riepilogo per la banca.</p>
+      <p class="page-sub">Le domande arrivate dal modulo delle edizioni da distribuire: si leggono, si curano e diventano il riepilogo per il referente.</p>
     </div>
-    <label class="ct-prog">Progetto <select data-ct-prog></select></label>
+    <label class="ct-prog"><span class="fld-label">Progetto</span><select class="field-input" data-ct-prog></select></label>
   </div>
 
   <section class="ct-testa" data-ct-testa hidden>
-    <div class="ct-card">
-      <h2 class="ct-h">Il riepilogo</h2>
-      <p data-ct-stato></p>
-      <p class="ct-link"><a data-ct-link target="_blank" rel="noopener">Apri come lo vede la banca</a> · <button type="button" class="ct-btn ct-btn--2" data-ct-copia>Copia il link</button></p>
-      <p class="ct-az">
-        <button type="button" class="ct-btn" data-ct-approva>Segna approvato dal referente</button>
-        <button type="button" class="ct-btn ct-btn--2" data-ct-aperto></button>
-      </p>
-      <p class="ct-nota">L’approvazione la dà il referente a voce o per mail; qui la si registra. Un contributo curato dopo la riporta in bozza.</p>
-    </div>
-    <div class="ct-card">
-      <h2 class="ct-h">Aperture</h2>
-      <p class="ct-nota">Copertina e pagina breve, per giorno. Nessun dato su chi apre.</p>
-      <table class="ct-tab" data-ct-aperture></table>
-    </div>
+    <article class="ct-pan">
+      <header class="ct-pan-h">
+        <h2 class="ct-h">Il riepilogo per il referente</h2>
+        <span class="ct-pill" data-ct-pill></span>
+      </header>
+      <p class="ct-spiega" data-ct-spiega></p>
+      <div class="ct-soglia" data-ct-soglia></div>
+      <p class="ct-nums" data-ct-nums></p>
+      <div class="ct-az">
+        <a class="btn-ghost" data-ct-link target="_blank" rel="noopener">Apri come lo vede il referente ↗</a>
+        <button type="button" class="btn-ghost" data-ct-copia>Copia il link</button>
+      </div>
+      <div class="ct-az ct-az--sep">
+        <button type="button" class="btn-primary" data-ct-approva>Segna approvato dal referente</button>
+        <button type="button" class="btn-ghost" data-ct-aperto></button>
+      </div>
+      <p class="ct-nota">L’approvazione la dà il referente, a voce o per email: qui la si registra. Se curate una domanda dopo, il riepilogo torna in bozza. Le domande si cancellano da sole 90 giorni dopo l’invio; alla chiusura della raccolta si cancellano da qui.</p>
+    </article>
+
+    <article class="ct-pan">
+      <header class="ct-pan-h">
+        <h2 class="ct-h">Aperture del link</h2>
+        <span class="ct-tot" data-ct-tot></span>
+      </header>
+      <p class="ct-nota">Volte che il link è stato aperto, per giorno. Nessun dato su chi lo apre.</p>
+      <div class="ct-tab-wrap"><table class="ct-tab" data-ct-aperture></table></div>
+    </article>
   </section>
 
-  <div class="ct-filtri" data-ct-filtri hidden>
-    <button type="button" class="ct-f is-on" data-f="nuovo">Nuovi</button>
-    <button type="button" class="ct-f" data-f="approvato">Approvati</button>
-    <button type="button" class="ct-f" data-f="escluso">Esclusi</button>
-    <button type="button" class="ct-f" data-f="">Tutti</button>
-  </div>
-  <div class="ct-lista" data-ct-lista><p class="ct-nota">Caricamento…</p></div>
+  <section class="ct-dom" data-ct-dom hidden>
+    <header class="ct-dom-h">
+      <h2 class="ct-h">Domande</h2>
+      <div class="ct-filtri" role="tablist" aria-label="Filtra le domande" data-ct-filtri></div>
+    </header>
+    <div class="ct-lista" data-ct-lista><p class="ct-vuoto">Caricamento…</p></div>
+  </section>
   <datalist id="ct-aree"></datalist>
 
   <script define:vars={{ FUNZIONI, LIVELLI }} is:inline>
@@ -55,121 +72,284 @@ import { FUNZIONI, LIVELLI } from '@edf/core/utils/contributi';
     import { rest } from '../lib/supabase';
 
     type C = { id: string; progetto: string; sezione: string; testo: string; funzione: string | null; livello: string | null;
-      ok_riepilogo: boolean; stato: string; area: string | null; testo_curato: string | null; risposta: string | null; ts: string };
+      ok_riepilogo: boolean; stato: 'nuovo' | 'approvato' | 'escluso'; area: string | null; testo_curato: string | null; risposta: string | null; ts: string };
+    type R = { progetto: string; share_token: string | null; aperto: boolean; approvato_il: string | null };
     const { FUNZIONI, LIVELLI } = (window as any).__CT as { FUNZIONI: { k: string; l: string }[]; LIVELLI: { k: string; l: string }[] };
-    const eti = (l: { k: string; l: string }[], k: string | null) => (k ? l.find((x) => x.k === k)?.l ?? k : 'non indicata');
+    const eti = (l: { k: string; l: string }[], k: string | null) => (k ? l.find((x) => x.k === k)?.l ?? k : null);
     const esc = (s: unknown) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
     const q = <T extends HTMLElement>(s: string) => document.querySelector<T>(s)!;
     const PAGES = 'https://agargiulo-adbe.github.io/experience-design-factory';
+    const FILTRI = [
+      { k: 'nuovo', l: 'Da leggere' },
+      { k: 'approvato', l: 'Approvate' },
+      { k: 'escluso', l: 'Escluse' },
+      { k: '', l: 'Tutte' },
+    ];
+    const STATI: Record<C['stato'], string> = { nuovo: 'Da leggere', approvato: 'Approvata', escluso: 'Esclusa' };
+    const giorno = (d: string) => new Date(d + 'T12:00:00').toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' });
+    const quando = (ts: string) => new Date(ts).toLocaleString('it-IT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 
     (async () => {
       const ctx = await requireAuth();
       if (!ctx) return;
       const { session } = ctx;
-      let riep: { progetto: string; share_token: string | null; aperto: boolean; approvato_il: string | null }[] = [];
+      let riep: R[] = [];
       try { riep = await rest('riepiloghi?select=*&order=progetto', {}, session); } catch { /* sotto */ }
       const sel = q<HTMLSelectElement>('[data-ct-prog]');
-      if (!riep.length) { q('[data-ct-lista]').innerHTML = '<p class="ct-nota">Nessun progetto che raccoglie contributi, o non sei fra i membri di nessuno.</p>'; return; }
+      if (!riep.length) {
+        q('[data-ct-dom]').hidden = false;
+        q('[data-ct-lista]').innerHTML = '<p class="ct-vuoto">Nessun progetto raccoglie contributi, o non sei fra i membri di nessuno.</p>';
+        return;
+      }
       sel.innerHTML = riep.map((r) => `<option value="${esc(r.progetto)}">${esc(r.progetto)}</option>`).join('');
       let filtro = 'nuovo';
+      let righe: C[] = [];
 
+      // ── il riepilogo e le aperture ─────────────────────────────────
       async function testa() {
         const r = riep.find((x) => x.progetto === sel.value)!;
         q('[data-ct-testa]').hidden = false;
-        q('[data-ct-filtri]').hidden = false;
         const link = r.share_token ? `${PAGES}/${r.progetto}/riepilogo/?t=${r.share_token}` : '';
-        const a = q<HTMLAnchorElement>('[data-ct-link]');
-        a.href = link || '#';
-        q('[data-ct-copia]').onclick = () => navigator.clipboard.writeText(link);
+        q<HTMLAnchorElement>('[data-ct-link]').href = link || '#';
+        const copia = q<HTMLButtonElement>('[data-ct-copia]');
+        copia.onclick = async () => { await navigator.clipboard.writeText(link); copia.textContent = 'Copiato'; setTimeout(() => (copia.textContent = 'Copia il link'), 1600); };
         const ap = q<HTMLButtonElement>('[data-ct-aperto]');
         ap.textContent = r.aperto ? 'Chiudi la raccolta' : 'Riapri la raccolta';
-        ap.onclick = async () => { await rest(`riepiloghi?progetto=eq.${encodeURIComponent(r.progetto)}`, { method: 'PATCH', body: JSON.stringify({ aperto: !r.aperto }) }, session); r.aperto = !r.aperto; testa(); };
+        ap.onclick = async () => {
+          if (r.aperto && !confirm('Chiudere la raccolta? Il modulo smette di accettare domande. Ricordati di cancellare quelle raccolte.')) return;
+          await rest(`riepiloghi?progetto=eq.${encodeURIComponent(r.progetto)}`, { method: 'PATCH', body: JSON.stringify({ aperto: !r.aperto }) }, session);
+          r.aperto = !r.aperto; testa();
+        };
         q('[data-ct-approva]').onclick = async () => {
           if (!confirm('Il referente ha approvato il riepilogo così com’è adesso?')) return;
           const now = new Date().toISOString();
           await rest(`riepiloghi?progetto=eq.${encodeURIComponent(r.progetto)}`, { method: 'PATCH', body: JSON.stringify({ approvato_il: now }) }, session);
           r.approvato_il = now; testa();
         };
+
+        const pill = q('[data-ct-pill]'), spiega = q('[data-ct-spiega]'), soglia = q('[data-ct-soglia]'), nums = q('[data-ct-nums]');
         try {
           const p = await rest('rpc/riepilogo_anteprima', { method: 'POST', body: JSON.stringify({ p_progetto: r.progetto }) }, session);
-          const STATI: Record<string, string> = { in_preparazione: 'In preparazione: la banca vede solo che la raccolta è aperta (servono almeno tre funzioni).', bozza: 'Bozza: la banca la vede con la filigrana «Bozza».', approvato: 'Approvato: la banca lo vede pulito.' };
-          const liv = (p.livelli as { livelli: string[]; n: number }[]).map((g) => `${g.n} ${g.livelli.join('+')}`).join(', ') || 'nessun livello sopra soglia';
-          q('[data-ct-stato]').innerHTML = `<strong>${esc(STATI[p.stato] ?? p.stato)}</strong><br>${esc(p.totale)} contributi nel riepilogo da ${esc(p.funzioni)} funzioni · livelli: ${esc(liv)}`;
-        } catch (e) { q('[data-ct-stato]').textContent = 'Anteprima non disponibile: ' + (e as Error).message; }
+          const STATO: Record<string, [string, string, string]> = {
+            in_preparazione: ['In preparazione', 'gold', 'Il referente vede solo che la raccolta è aperta, con il numero di domande e di aperture. Le domande compaiono quando hanno scritto almeno tre funzioni diverse.'],
+            bozza: ['Bozza', 'blue', 'Il referente vede le domande approvate, con la scritta «Bozza». Quando ve lo conferma, segnatelo approvato.'],
+            approvato: ['Approvato', 'green', 'Il referente vede il riepilogo pulito, pronto da condividere.'],
+          };
+          const [l, c, t] = STATO[p.stato] ?? [p.stato, 'gold', ''];
+          pill.textContent = l; pill.dataset.c = c;
+          spiega.textContent = r.aperto ? t : `${t} La raccolta è chiusa: il modulo non accetta nuove domande.`;
+          const f = Math.min(p.funzioni ?? 0, 3);
+          soglia.innerHTML = `<span class="ct-soglia-l">Funzioni che hanno scritto</span>
+            <span class="ct-soglia-p" aria-hidden="true">${[0, 1, 2].map((i) => `<i class="${i < f ? 'on' : ''}"></i>`).join('')}</span>
+            <span class="ct-soglia-v">${p.funzioni ?? 0} su 3 necessarie</span>`;
+          const liv = (p.livelli as { livelli: string[]; n: number }[]).map((g) => `${g.n} ${g.livelli.join(' + ')}`).join(', ');
+          nums.innerHTML = `<strong>${esc(p.totale ?? 0)}</strong> ${p.totale === 1 ? 'domanda' : 'domande'} nel riepilogo · <strong>${esc(p.arrivate ?? 0)}</strong> arrivate in tutto${liv ? ` · per livello: ${esc(liv)}` : ''}`;
+        } catch (e) { spiega.textContent = 'Anteprima non disponibile: ' + (e as Error).message; }
+
         try {
           const ap2: { giorno: string; pagina: string; aperture: number }[] = await rest(`aperture_per_giorno?progetto=eq.${encodeURIComponent(r.progetto)}&order=giorno.desc&limit=60`, {}, session);
           const giorni = [...new Set(ap2.map((x) => x.giorno))];
+          const n = (g: string, pg: string) => ap2.find((x) => x.giorno === g && x.pagina === pg)?.aperture ?? 0;
+          const tot = ap2.reduce((s, x) => s + x.aperture, 0);
+          q('[data-ct-tot]').textContent = tot ? `${tot} in tutto` : '';
           q('[data-ct-aperture]').innerHTML = giorni.length
-            ? '<tr><th>Giorno</th><th>Copertina</th><th>Breve</th></tr>' + giorni.map((g) => `<tr><td>${esc(g)}</td><td>${ap2.find((x) => x.giorno === g && x.pagina === 'copertina')?.aperture ?? 0}</td><td>${ap2.find((x) => x.giorno === g && x.pagina === 'breve')?.aperture ?? 0}</td></tr>`).join('')
-            : '<tr><td>Nessuna apertura registrata.</td></tr>';
-        } catch { q('[data-ct-aperture]').innerHTML = '<tr><td>Aperture non disponibili.</td></tr>'; }
+            ? `<thead><tr><th>Giorno</th><th>Computer</th><th>Telefono</th><th>Totale</th></tr></thead><tbody>` +
+              giorni.map((g) => `<tr><td>${esc(giorno(g))}</td><td>${n(g, 'copertina')}</td><td>${n(g, 'breve')}</td><td>${n(g, 'copertina') + n(g, 'breve')}</td></tr>`).join('') + '</tbody>'
+            : '<tbody><tr><td class="ct-vuoto">Ancora nessuna apertura.</td></tr></tbody>';
+        } catch { q('[data-ct-aperture]').innerHTML = '<tbody><tr><td class="ct-vuoto">Aperture non disponibili.</td></tr></tbody>'; }
       }
 
-      async function lista() {
-        const el = q('[data-ct-lista]');
-        let righe: C[] = [];
+      // ── le domande ─────────────────────────────────────────────────
+      async function carica() {
+        q('[data-ct-dom]').hidden = false;
         try {
-          righe = await rest(`contributi?progetto=eq.${encodeURIComponent(sel.value)}${filtro ? `&stato=eq.${filtro}` : ''}&order=ts.desc`, {}, session);
-        } catch (e) { el.innerHTML = `<p class="ct-nota">Non riesco a leggere i contributi: ${esc((e as Error).message)}</p>`; return; }
+          righe = await rest(`contributi?progetto=eq.${encodeURIComponent(sel.value)}&order=ts.desc`, {}, session);
+        } catch (e) { q('[data-ct-lista]').innerHTML = `<p class="ct-vuoto">Non riesco a leggere le domande: ${esc((e as Error).message)}</p>`; return; }
         const aree = [...new Set(righe.map((r) => r.area).filter(Boolean))];
         q('#ct-aree').innerHTML = aree.map((a) => `<option value="${esc(a)}">`).join('');
-        if (!righe.length) { el.innerHTML = '<p class="ct-nota">Niente qui.</p>'; return; }
-        el.innerHTML = righe.map((r) => `
-          <article class="ct-card ct-c" data-id="${esc(r.id)}">
-            <p class="ct-meta">${esc(new Date(r.ts).toLocaleString('it-IT'))} · <strong>${esc(r.sezione)}</strong> · funzione ${esc(eti(FUNZIONI, r.funzione))} · livello ${esc(eti(LIVELLI, r.livello))} · ${r.ok_riepilogo ? '<span class="ct-si">può entrare nel riepilogo</span>' : '<span class="ct-no">solo per noi: non entra nel riepilogo</span>'}</p>
-            <blockquote class="ct-testo">${esc(r.testo)}</blockquote>
-            <div class="ct-campi">
-              <label>Stato <select name="stato">${['nuovo', 'approvato', 'escluso'].map((s) => `<option ${s === r.stato ? 'selected' : ''}>${s}</option>`).join('')}</select></label>
-              <label>Area evolutiva <input name="area" list="ct-aree" maxlength="80" value="${esc(r.area)}" placeholder="es. Dati e misura"></label>
-              <label class="ct-largo">Testo per il riepilogo <span class="ct-nota">(vuoto = il testo originale; riformulare se chi scrive è riconoscibile)</span><textarea name="testo_curato" rows="3" maxlength="2000">${esc(r.testo_curato)}</textarea></label>
-              <label class="ct-largo">Risposta di Adobe <span class="ct-nota">(verificata alla fonte prima di scriverla)</span><textarea name="risposta" rows="3" maxlength="3000">${esc(r.risposta)}</textarea></label>
+        disegna();
+      }
+
+      function disegna() {
+        const conta = (k: string) => righe.filter((r) => !k || r.stato === k).length;
+        q('[data-ct-filtri]').innerHTML = FILTRI.map((f) =>
+          `<button type="button" role="tab" class="ct-f" aria-selected="${f.k === filtro}" data-f="${f.k}">${f.l}<span class="ct-f-n">${conta(f.k)}</span></button>`).join('');
+        q('[data-ct-filtri]').querySelectorAll<HTMLButtonElement>('.ct-f').forEach((b) => b.onclick = () => { filtro = b.dataset.f ?? ''; disegna(); });
+
+        const el = q('[data-ct-lista]');
+        const viste = righe.filter((r) => !filtro || r.stato === filtro);
+        if (!viste.length) {
+          el.innerHTML = `<p class="ct-vuoto">${filtro === 'nuovo' ? 'Nessuna domanda da leggere.' : 'Niente qui.'}</p>`;
+          return;
+        }
+        el.innerHTML = viste.map((r) => {
+          const fz = eti(FUNZIONI, r.funzione), lv = eti(LIVELLI, r.livello);
+          return `
+          <article class="ct-c" data-id="${esc(r.id)}" data-stato="${esc(r.stato)}">
+            <header class="ct-c-h">
+              <div class="ct-c-chi">
+                <p class="ct-c-sez">${esc(r.sezione)}</p>
+                <p class="ct-c-meta">${esc(quando(r.ts))}</p>
+              </div>
+              <span class="ct-stato" data-s="${esc(r.stato)}">${STATI[r.stato]}</span>
+            </header>
+            <div class="ct-chips">
+              <span class="ct-chip">${fz ? esc(fz) : '<em>Funzione non indicata</em>'}</span>
+              <span class="ct-chip">${lv ? esc(lv) : '<em>Livello non indicato</em>'}</span>
+              ${r.ok_riepilogo
+                ? '<span class="ct-chip ct-chip--si">Può entrare nel riepilogo</span>'
+                : '<span class="ct-chip ct-chip--no">Solo per noi: non entra nel riepilogo</span>'}
             </div>
-            <p class="ct-az"><button type="button" class="ct-btn" data-salva>Salva</button> <span class="ct-esito" data-esito></span></p>
-          </article>`).join('');
+            <blockquote class="ct-testo">${esc(r.testo)}</blockquote>
+            <div class="ct-cura">
+              <div class="ct-campo">
+                <span class="fld-label">Stato</span>
+                <div class="ct-seg" role="radiogroup" aria-label="Stato della domanda">
+                  ${(['nuovo', 'approvato', 'escluso'] as const).map((s) =>
+                    `<label class="ct-seg-o"><input type="radio" name="stato-${esc(r.id)}" value="${s}" ${s === r.stato ? 'checked' : ''} /><span>${STATI[s]}</span></label>`).join('')}
+                </div>
+              </div>
+              <label class="ct-campo">
+                <span class="fld-label">Area evolutiva <span class="ct-fac">raggruppa le domande nel riepilogo</span></span>
+                <input class="field-input" name="area" list="ct-aree" maxlength="80" value="${esc(r.area)}" placeholder="Per esempio: Dati e misura" />
+              </label>
+              <label class="ct-campo ct-largo">
+                <span class="fld-label">Testo per il riepilogo <span class="ct-fac">vuoto = la domanda com’è; riformulatela solo se rende riconoscibile chi l’ha scritta</span></span>
+                <textarea class="field-input" name="testo_curato" rows="2" maxlength="2000">${esc(r.testo_curato)}</textarea>
+              </label>
+              <label class="ct-campo ct-largo">
+                <span class="fld-label">Risposta di Adobe <span class="ct-fac">verificata alla fonte prima di scriverla; compare nel riepilogo</span></span>
+                <textarea class="field-input" name="risposta" rows="3" maxlength="3000">${esc(r.risposta)}</textarea>
+              </label>
+            </div>
+            <footer class="ct-c-f">
+              <button type="button" class="btn-primary" data-salva>Salva</button>
+              <span class="ct-esito" data-esito role="status"></span>
+              <button type="button" class="btn-ghost ct-elimina" data-elimina>Elimina</button>
+            </footer>
+          </article>`;
+        }).join('');
+
         el.querySelectorAll<HTMLElement>('.ct-c').forEach((card) => {
+          const id = card.dataset.id!;
+          const out = card.querySelector<HTMLElement>('[data-esito]')!;
           card.querySelector<HTMLButtonElement>('[data-salva]')!.onclick = async () => {
             const v = (n: string) => (card.querySelector(`[name=${n}]`) as HTMLInputElement).value.trim();
-            const out = card.querySelector<HTMLElement>('[data-esito]')!;
+            const stato = (card.querySelector('input[type=radio]:checked') as HTMLInputElement).value as C['stato'];
+            const corpo = { stato, area: v('area') || null, testo_curato: v('testo_curato') || null, risposta: v('risposta') || null };
             try {
-              await rest(`contributi?id=eq.${card.dataset.id}`, { method: 'PATCH', headers: { Prefer: 'return=minimal' },
-                body: JSON.stringify({ stato: v('stato'), area: v('area') || null, testo_curato: v('testo_curato') || null, risposta: v('risposta') || null }) }, session);
-              out.textContent = 'Salvato.';
+              await rest(`contributi?id=eq.${id}`, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify(corpo) }, session);
+              Object.assign(righe.find((x) => x.id === id)!, corpo);
+              out.textContent = 'Salvato';
               testa();
+              setTimeout(disegna, 700);
             } catch (e) { out.textContent = 'Non salvato: ' + (e as Error).message; }
+          };
+          card.querySelector<HTMLButtonElement>('[data-elimina]')!.onclick = async () => {
+            if (!confirm('Eliminare questa domanda? Non si recupera.')) return;
+            try {
+              await rest(`contributi?id=eq.${id}`, { method: 'DELETE', headers: { Prefer: 'return=minimal' } }, session);
+              righe = righe.filter((x) => x.id !== id);
+              testa(); disegna();
+            } catch (e) { out.textContent = 'Non eliminata: ' + (e as Error).message; }
           };
         });
       }
 
-      document.querySelectorAll<HTMLButtonElement>('.ct-f').forEach((b) => b.onclick = () => {
-        document.querySelectorAll('.ct-f').forEach((x) => x.classList.toggle('is-on', x === b));
-        filtro = b.dataset.f ?? ''; lista();
-      });
-      sel.onchange = () => { testa(); lista(); };
-      testa(); lista();
+      sel.onchange = () => { filtro = 'nuovo'; testa(); carica(); };
+      testa(); carica();
     })();
   </script>
 
-  <style>
-    .ct-prog { display: flex; gap: 0.5rem; align-items: center; color: var(--ink-secondary); }
-    .ct-prog select, .ct-campi select, .ct-campi input, .ct-campi textarea { font: inherit; color: var(--ink-primary); background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 0.65rem; }
-    .ct-testa { display: grid; grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr)); gap: 1rem; margin: 1.5rem 0; }
-    .ct-card { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1.25rem; }
-    .ct-h { margin: 0 0 0.5rem; font-size: 1.05rem; }
-    .ct-nota { color: var(--ink-tertiary); font-size: 0.9rem; }
-    .ct-az { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
-    .ct-btn { font: inherit; font-weight: 600; cursor: pointer; padding: 0.45rem 1rem; border-radius: 999px; border: 1px solid transparent; background: var(--accent-red); color: var(--bg-canvas); }
-    .ct-btn--2 { background: transparent; color: var(--ink-primary); border-color: var(--border-strong); }
-    .ct-tab { border-collapse: collapse; font-size: 0.9rem; }
-    .ct-tab td, .ct-tab th { padding: 0.2rem 0.8rem 0.2rem 0; text-align: left; }
-    .ct-filtri { display: flex; gap: 0.5rem; margin: 0 0 1rem; }
-    .ct-f { font: inherit; cursor: pointer; padding: 0.35rem 0.9rem; border-radius: 999px; border: 1px solid var(--border); background: transparent; color: var(--ink-secondary); }
-    .ct-f.is-on { background: var(--accent-red-soft); color: var(--accent-red); border-color: transparent; }
+  <style is:global>
+    .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .page-title { font-size: 1.6rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0.35rem; }
+    .page-sub { font-size: 0.9rem; color: var(--ink-secondary); max-width: 62ch; }
+    .fld-label { font-size: 0.75rem; font-weight: 500; color: var(--ink-secondary); margin-bottom: 0.3rem; display: block; }
+
+    .ct-prog { min-width: 15rem; }
+    .ct-prog .field-input { cursor: pointer; }
+
+    .ct-testa { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 1rem; margin-bottom: 2rem; align-items: start; }
+    .ct-pan { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.4rem; display: flex; flex-direction: column; gap: 0.85rem; }
+    .ct-pan-h { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+    .ct-h { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; }
+    .ct-pill { font-size: 0.75rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+    .ct-pill[data-c='gold'] { background: var(--accent-gold-soft); color: var(--accent-gold); }
+    .ct-pill[data-c='blue'] { background: var(--accent-blue-soft); color: var(--accent-blue); }
+    .ct-pill[data-c='green'] { background: var(--accent-green-soft); color: var(--accent-green); }
+    .ct-spiega { font-size: 0.875rem; line-height: 1.55; color: var(--ink-primary); max-width: 62ch; }
+    .ct-soglia { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.85rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; font-size: 0.8125rem; }
+    .ct-soglia-l { color: var(--ink-secondary); }
+    .ct-soglia-p { display: inline-flex; gap: 4px; }
+    .ct-soglia-p i { width: 26px; height: 6px; border-radius: 3px; background: var(--border-strong); }
+    .ct-soglia-p i.on { background: var(--accent-green); }
+    .ct-soglia-v { margin-left: auto; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .ct-nums { font-size: 0.8125rem; color: var(--ink-secondary); }
+    .ct-nums strong { color: var(--ink-primary); font-variant-numeric: tabular-nums; }
+    .ct-az { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+    .ct-az--sep { padding-top: 0.85rem; border-top: 1px solid var(--border); }
+    .ct-nota { font-size: 0.75rem; line-height: 1.5; color: var(--ink-tertiary); max-width: 66ch; }
+    .ct-tot { font-size: 0.8125rem; font-weight: 600; color: var(--ink-secondary); font-variant-numeric: tabular-nums; }
+
+    .ct-tab-wrap { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .ct-tab { width: 100%; border-collapse: collapse; font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
+    .ct-tab th { text-align: left; font-weight: 500; font-size: 0.6875rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-tertiary); background: var(--bg-card); padding: 0.5rem 0.75rem; }
+    .ct-tab td { padding: 0.5rem 0.75rem; border-top: 1px solid var(--border); }
+    .ct-tab th:not(:first-child), .ct-tab td:not(:first-child) { text-align: right; }
+    .ct-tab td:last-child { font-weight: 600; }
+
+    .ct-dom-h { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.85rem; flex-wrap: wrap; }
+    .ct-filtri { display: inline-flex; gap: 2px; padding: 3px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px; }
+    .ct-f { font: inherit; font-size: 0.8125rem; font-weight: 500; cursor: pointer; padding: 0.35rem 0.75rem; border: 0; border-radius: 6px; background: transparent; color: var(--ink-secondary); display: inline-flex; align-items: center; gap: 0.45rem; }
+    .ct-f:hover { color: var(--ink-primary); }
+    .ct-f[aria-selected='true'] { background: var(--accent-red-soft); color: var(--accent-red); }
+    .ct-f-n { font-size: 0.6875rem; font-weight: 600; min-width: 1.3rem; padding: 0 5px; border-radius: 10px; background: var(--bg-card-hover); color: var(--ink-secondary); text-align: center; font-variant-numeric: tabular-nums; }
+    .ct-f[aria-selected='true'] .ct-f-n { background: #fff; color: var(--accent-red); }
+
     .ct-lista { display: grid; gap: 1rem; }
-    .ct-meta { margin: 0 0 0.5rem; font-size: 0.9rem; color: var(--ink-secondary); }
-    .ct-si { color: var(--accent-green); } .ct-no { color: var(--accent-gold); }
-    .ct-testo { margin: 0 0 0.9rem; padding-left: 0.9rem; border-left: 3px solid var(--border-strong); font-size: 1rem; }
-    .ct-campi { display: grid; grid-template-columns: 12rem 1fr; gap: 0.75rem; }
-    .ct-campi label { display: grid; gap: 0.3rem; font-size: 0.9rem; color: var(--ink-secondary); }
+    .ct-vuoto { padding: 2rem; text-align: center; color: var(--ink-tertiary); font-size: 0.875rem; background: var(--bg-panel); border: 1px dashed var(--border-strong); border-radius: 12px; }
+    .ct-tab .ct-vuoto { border: 0; background: none; padding: 1rem; }
+    .ct-c { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; display: flex; flex-direction: column; gap: 0.85rem; }
+    .ct-c[data-stato='escluso'] { opacity: 0.72; }
+    .ct-c-h { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+    .ct-c-sez { font-size: 0.9375rem; font-weight: 600; line-height: 1.35; }
+    .ct-c-meta { font-size: 0.75rem; color: var(--ink-tertiary); margin-top: 0.15rem; }
+    .ct-stato { font-size: 0.6875rem; font-weight: 600; padding: 2px 9px; border-radius: 20px; white-space: nowrap; }
+    .ct-stato[data-s='nuovo'] { background: var(--accent-gold-soft); color: var(--accent-gold); }
+    .ct-stato[data-s='approvato'] { background: var(--accent-green-soft); color: var(--accent-green); }
+    .ct-stato[data-s='escluso'] { background: var(--bg-card-hover); color: var(--ink-secondary); }
+    .ct-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .ct-chip { font-size: 0.75rem; padding: 2px 9px; border-radius: 20px; border: 1px solid var(--border); color: var(--ink-secondary); background: var(--bg-card); }
+    .ct-chip em { font-style: normal; color: var(--ink-tertiary); }
+    .ct-chip--si { border-color: transparent; background: var(--accent-green-soft); color: var(--accent-green); font-weight: 500; }
+    .ct-chip--no { border-color: transparent; background: var(--accent-gold-soft); color: var(--accent-gold); font-weight: 500; }
+    .ct-testo { font-size: 1rem; line-height: 1.55; padding: 0.75rem 1rem; background: var(--bg-card); border-radius: 8px; white-space: pre-line; }
+
+    .ct-cura { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.9rem 1.2rem; padding-top: 0.9rem; border-top: 1px solid var(--border); }
+    .ct-campo { display: flex; flex-direction: column; min-width: 0; }
     .ct-largo { grid-column: 1 / -1; }
+    .ct-fac { font-weight: 400; color: var(--ink-tertiary); }
+    .ct-cura textarea.field-input { resize: vertical; line-height: 1.5; }
+    .ct-seg { display: inline-flex; gap: 2px; padding: 3px; background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 6px; }
+    .ct-seg-o { position: relative; cursor: pointer; }
+    .ct-seg-o input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+    .ct-seg-o span { display: block; font-size: 0.8125rem; font-weight: 500; padding: 0.3rem 0.7rem; border-radius: 4px; color: var(--ink-secondary); white-space: nowrap; }
+    .ct-seg-o input:checked + span { background: #fff; color: var(--ink-primary); box-shadow: 0 1px 2px rgba(17, 24, 39, 0.12); }
+    .ct-seg-o input:focus-visible + span { outline: 2px solid var(--accent-red); outline-offset: 1px; }
+
+    .ct-c-f { display: flex; align-items: center; gap: 0.75rem; }
+    .ct-esito { font-size: 0.8125rem; color: var(--ink-secondary); }
+    .ct-elimina { margin-left: auto; }
+
+    @media (max-width: 900px) {
+      .ct-testa { grid-template-columns: 1fr; }
+      .ct-cura { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .ct-filtri { width: 100%; overflow-x: auto; }
+      .ct-f { white-space: nowrap; flex: 1 0 auto; justify-content: center; }
+      .ct-prog { min-width: 0; width: 100%; }
+    }
   </style>
 </BaseLayout>
