@@ -1,0 +1,152 @@
+/* ══════════════════════════════════════════════════════════════════════
+   I DUE DISEGNI DELLE DOMANDE DEL 19 NOVEMBRE (impeccable, 20 nov 2026)
+   `slide-domanda-consenso` e `slide-domanda-misura`, in approfondimenti.
+
+   Stessa grammatica del Sankey di «Dalla email allo sportello»
+   (`innesto.css`, `.im-flu-*`): marcatori di passo invisibili
+   (`.im-dq-passo[data-substep]`) che accendono le parti del disegno via
+   `:has()`, nastri verde chiaro rivelati da `clip-path`, nodi come
+   rettangoli, etichette HTML sopra il disegno, UNA didascalia per passo in
+   una fascia sotto. Il percorso evidenziato è verde chiaro; ciò che si
+   ferma è #ff8a5c, lo stesso «ko» delle figure del deck.
+
+   Stato base, prima del primo passo: i nodi a vista, i nastri no (come il
+   Sankey). Con «Riduci movimento» niente scorrimenti: gli stati cambiano
+   per opacità.
+   ══════════════════════════════════════════════════════════════════════ */
+
+.im-dq { --dq-n: #b9e6a3; --dq-nastro: rgba(185, 230, 163, 0.32); --dq-forte: #b9e6a3; --dq-ko: #ff8a5c;
+  --dq-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative; margin: clamp(0.4rem, calc(0.6 * var(--vu)), 1.2rem) 0 0; }
+.im-dq-passo { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* Le intestazioni delle colonne, come nel Sankey. */
+.im-dq-int { position: relative; height: 1.6em; font-size: clamp(0.8rem, calc(0.74 * var(--vu)), 1.55rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #c9dcc2; }
+.im-dq-int > span { position: absolute; left: var(--x); white-space: nowrap; }
+.im-dq-int > .im-dq-int-l { translate: -100% 0; }
+
+.im-dq-g { position: relative; height: clamp(11rem, calc(14.5 * var(--vu)), 28rem); margin-top: clamp(1.2rem, calc(1.6 * var(--vu)), 3rem); }
+.im-dq-svg, .im-dq-nodi { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+
+/* ── I nastri: tratti a spessore costante, qualunque sia la scala ─────── */
+.im-dq-svg path { fill: none; stroke: var(--dq-nastro); stroke-width: 10; vector-effect: non-scaling-stroke; stroke-linecap: butt;
+  transition: stroke 0.45s ease, opacity 0.45s ease; }
+.im-dq-svg .im-dq-forte { stroke: var(--dq-forte); stroke-width: 14; }
+.im-dq-svg .im-dq-tratto { stroke: var(--dq-forte); stroke-width: 3; stroke-dasharray: 7 7; }
+
+/* ── I nodi e le etichette ───────────────────────────────────────────── */
+.im-dq-n { fill: var(--dq-n); transition: opacity 0.45s ease, fill 0.45s ease; }
+.im-dq-n--reg, .im-dq-n--prof { fill: #ffffff; }
+.im-dq-l { position: absolute; left: var(--x); top: var(--y); font-size: clamp(0.92rem, calc(0.86 * var(--vu)), 1.85rem); font-weight: 600; line-height: 1.15; color: #ffffff; white-space: nowrap; transition: opacity 0.45s ease, color 0.45s ease; }
+.im-dq-l--sx { translate: -100% -50%; text-align: right; }
+.im-dq-l--dx { translate: 0 -50%; font-weight: 700; }
+.im-dq-l--su { translate: -50% calc(-100% - 0.35rem); font-weight: 700; text-align: center; }
+.im-dq-l--sotto { translate: -50% 0; font-weight: 500; color: #d9e6d4; }
+.im-dq-l--forte { font-weight: 700; color: #ffffff; }
+.im-dq-l--tag { font-size: clamp(0.76rem, calc(0.64 * var(--vu)), 1.42rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9fd68a; }
+.im-dq-l--nota { font-size: clamp(0.8rem, calc(0.68 * var(--vu)), 1.5rem); font-weight: 500; color: #c9dcc2; }
+.im-dq-l--asse { font-size: clamp(0.8rem, calc(0.68 * var(--vu)), 1.5rem); font-weight: 500; color: #c9dcc2; translate: -100% 0; }
+.im-dq-l--asse-y { translate: 0 0; }
+.im-dq-l--sinistra { translate: calc(-100% - 0.6rem) -50% !important; }
+.im-dq-l--piano { translate: 0.6rem -50%; font-size: clamp(0.86rem, calc(0.76 * var(--vu)), 1.65rem); }
+.im-dq-l--cancello { translate: -50% 0; font-size: clamp(0.82rem, calc(0.7 * var(--vu)), 1.55rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9fd68a; }
+
+/* ── La fascia: una didascalia per passo, come nel Sankey ─────────────── */
+.im-dq-banda { display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; column-gap: clamp(1.2rem, calc(2 * var(--vu)), 4rem);
+  margin: clamp(0.6rem, calc(0.9 * var(--vu)), 1.8rem) 0 0; padding: clamp(0.55rem, calc(0.75 * var(--vu)), 1.4rem) clamp(0.9rem, calc(1.2 * var(--vu)), 2.2rem);
+  border: 1px solid rgba(185, 230, 163, 0.34); border-radius: 8px; background: rgba(185, 230, 163, 0.09);
+  font-size: clamp(1.02rem, calc(1 * var(--vu)), 2.2rem); line-height: 1.38; color: #f2f8f0;
+  opacity: 0; visibility: hidden; transition: opacity 0.5s ease, visibility 0s linear 0.5s; }
+.im-dq-didas { display: grid; min-width: 0; }
+.im-dq-didas > p { grid-area: 1 / 1; margin: 0; max-width: none; opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0s linear 0.25s; }
+.im-dq-didas strong { color: #b9e6a3; margin-right: 0.35em; }
+/* I pulsanti prendono spazio solo al passo 4: prima la didascalia ha tutta la larghezza. */
+.im-dq-scelta { display: none; gap: 0.5rem; }
+.im-dq-chip { font: inherit; font-size: clamp(0.88rem, calc(0.78 * var(--vu)), 1.7rem); font-weight: 600; cursor: pointer; white-space: nowrap;
+  min-height: 44px; padding: 0 1rem; border-radius: 999px; color: #f2f8f0; background: transparent; border: 1px solid rgba(185, 230, 163, 0.45);
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+.im-dq-chip:hover { border-color: #b9e6a3; }
+.im-dq-chip[aria-pressed='true'] { background: #b9e6a3; color: #0b1f06; border-color: #b9e6a3; }
+.im-dq-chip:focus-visible { outline: 2px solid #ffffff; outline-offset: 3px; }
+
+/* Il passo attivo è l'ultimo acceso: si scrive una volta, per entrambe le slide. */
+:is(#slide-domanda-consenso, #slide-domanda-misura):has(.im-dq-passo[data-p="1"][data-substep-active]) .im-dq-banda { opacity: 1; visibility: visible; transition: opacity 0.5s ease, visibility 0s; }
+:is(#slide-domanda-consenso, #slide-domanda-misura):has(.im-dq-passo[data-p="1"][data-substep-active]):not(:has(.im-dq-passo[data-p="2"][data-substep-active])) .im-dq-didas > [data-per="1"],
+:is(#slide-domanda-consenso, #slide-domanda-misura):has(.im-dq-passo[data-p="2"][data-substep-active]):not(:has(.im-dq-passo[data-p="3"][data-substep-active])) .im-dq-didas > [data-per="2"],
+#slide-domanda-misura:has(.im-dq-passo[data-p="3"][data-substep-active]) .im-dq-didas > [data-per="3"],
+#slide-domanda-consenso:has(.im-dq-passo[data-p="3"][data-substep-active]):not(:has(.im-dq-passo[data-p="4"][data-substep-active])) .im-dq-didas > [data-per="3"],
+#slide-domanda-consenso:has(.im-dq-passo[data-p="4"][data-substep-active]) .im-dq-didas > [data-per="4"] { opacity: 1; visibility: visible; transition: opacity 0.35s ease 0.1s, visibility 0s; }
+
+/* ══ IL CONSENSO ══════════════════════════════════════════════════════ */
+/* Le tre architetture: si vede solo ciò che appartiene a quella scelta. */
+[data-arch="registro"] [data-arch-per]:not([data-arch-per~="registro"]),
+[data-arch="piattaforma"] [data-arch-per]:not([data-arch-per~="piattaforma"]),
+[data-arch="warehouse"] [data-arch-per]:not([data-arch-per~="warehouse"]) { display: none; }
+
+/* Passo 1: le fonti scorrono fino al profilo (il nastro si scopre fin lì).
+   Passo 2: tutto il disegno, il cancello e i canali. */
+.im-dq--consenso .im-dq-svg { clip-path: inset(-2% 100% -2% -2%); transition: clip-path 1.4s var(--dq-ease); }
+#slide-domanda-consenso:has(.im-dq-passo[data-p="1"][data-substep-active]) .im-dq-svg { clip-path: inset(-2% 40% -2% -2%); }
+#slide-domanda-consenso:has(.im-dq-passo[data-p="2"][data-substep-active]) .im-dq-svg { clip-path: inset(-2% -2% -2% -2%); }
+.im-dq-cancello { stroke: #9fd68a; stroke-width: 2; stroke-dasharray: 4 6; vector-effect: non-scaling-stroke; }
+.im-dq-x { position: absolute; left: var(--x); top: var(--y); width: clamp(1.1rem, calc(1.2 * var(--vu)), 2.4rem); height: auto; translate: -50% -50%; overflow: visible; }
+.im-dq-x path { fill: none; stroke: var(--dq-ko); stroke-width: 3.2; stroke-linecap: round; }
+.im-dq--consenso :is(.im-dq-cancello, .im-dq-n--can), .im-dq--consenso :is(.im-dq-l--dx, .im-dq-l--cancello), .im-dq-x { opacity: 0; transition: opacity 0.5s ease 0.5s; }
+#slide-domanda-consenso:has(.im-dq-passo[data-p="2"][data-substep-active]) :is(.im-dq-cancello, .im-dq-n--can, .im-dq-l--dx, .im-dq-l--cancello) { opacity: 1; }
+
+/* Passo 3: la revoca fatta in filiale diventa arancio, arriva al cancello
+   e l'annuncio si ferma; email e Filiale Digitale passano. */
+#slide-domanda-consenso:has(.im-dq-passo[data-p="3"][data-substep-active]) .im-dq-svg [data-revoca],
+#slide-domanda-consenso:has(.im-dq-passo[data-p="3"][data-substep-active]) .im-dq-svg .im-dq-ann1 { stroke: var(--dq-ko); }
+#slide-domanda-consenso:has(.im-dq-passo[data-p="3"][data-substep-active]) .im-dq-svg .im-dq-ann2 { opacity: 0.12; }
+#slide-domanda-consenso:has(.im-dq-passo[data-p="3"][data-substep-active]) .im-dq-x { opacity: 1; transition-delay: 0.2s; }
+#slide-domanda-consenso:has(.im-dq-passo[data-p="3"][data-substep-active]) .im-dq-l[data-n="annunci"] { color: var(--dq-ko); text-decoration: line-through; text-decoration-thickness: 2px; }
+#slide-domanda-consenso:has(.im-dq-passo[data-p="3"][data-substep-active]) .im-dq-l[data-n="filiale"] { color: var(--dq-ko); }
+#slide-domanda-consenso:has(.im-dq-passo[data-p="3"][data-substep-active]) .im-dq-n[data-n="annunci"] { opacity: 0.3; }
+/* Passo 4: la revoca resta raccontata, e si sceglie chi è il riferimento. */
+#slide-domanda-consenso:has(.im-dq-passo[data-p="4"][data-substep-active]) .im-dq-scelta { display: flex; animation: im-dq-entra 0.4s ease both; }
+#slide-domanda-consenso:has(.im-dq-passo[data-p="4"][data-substep-active]) .im-dq-banda { grid-template-columns: minmax(0, 1fr) auto; }
+@keyframes im-dq-entra { from { opacity: 0; } to { opacity: 1; } }
+/* Cambiando architettura i nastri si ridisegnano da sinistra, come una vista nuova. */
+.im-dq--consenso .im-dq-a { animation: none; }
+.im-dq--consenso[data-ridisegna] .im-dq-a { animation: im-dq-ridisegna 0.9s var(--dq-ease) both; }
+@keyframes im-dq-ridisegna { from { clip-path: inset(-5% 100% -5% -5%); } to { clip-path: inset(-5% -5% -5% -5%); } }
+
+/* ══ LA MISURA ════════════════════════════════════════════════════════ */
+.im-dq--misura [data-pan] { opacity: 0; transition: opacity 0.5s ease; }
+#slide-domanda-misura:has(.im-dq-passo[data-p="1"][data-substep-active]) [data-pan="1"],
+#slide-domanda-misura:has(.im-dq-passo[data-p="2"][data-substep-active]) [data-pan="2"],
+#slide-domanda-misura:has(.im-dq-passo[data-p="3"][data-substep-active]) [data-pan="3"] { opacity: 1; }
+/* I pannelli già raccontati restano, più quieti, mentre si accende il successivo. */
+#slide-domanda-misura:has(.im-dq-passo[data-p="2"][data-substep-active]) [data-pan="1"],
+#slide-domanda-misura:has(.im-dq-passo[data-p="3"][data-substep-active]) [data-pan="2"] { opacity: 0.55; }
+
+.im-dq-asse { fill: none; stroke: rgba(255, 255, 255, 0.35); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+/* Il peso di ogni contatto cresce dal basso; il contributo di ogni canale da sinistra. */
+.im-dq-peso { fill: rgba(185, 230, 163, 0.55); transform-box: fill-box; transform-origin: 50% 100%; transform: scaleY(0); transition: transform 0.9s var(--dq-ease); }
+.im-dq-barra { fill: var(--dq-n); transform-box: fill-box; transform-origin: 0 50%; transform: scaleX(0); transition: transform 0.9s var(--dq-ease); }
+.im-dq-barra[data-off] { fill: rgba(185, 230, 163, 0.12); stroke: var(--dq-n); stroke-width: 2; stroke-dasharray: 6 5; vector-effect: non-scaling-stroke; }
+.im-dq-l[data-off] { color: #b9e6a3; }
+.im-dq-n--firma { fill: #6cc04a; }
+#slide-domanda-misura:has(.im-dq-passo[data-p="1"][data-substep-active]) .im-dq-peso { transform: scaleY(1); }
+#slide-domanda-misura:has(.im-dq-passo[data-p="2"][data-substep-active]) .im-dq-barra { transform: scaleX(1); }
+.im-dq-peso:nth-of-type(2), .im-dq-barra:nth-of-type(2) { transition-delay: 0.08s; }
+.im-dq-peso:nth-of-type(3), .im-dq-barra:nth-of-type(3) { transition-delay: 0.16s; }
+.im-dq-peso:nth-of-type(4), .im-dq-barra:nth-of-type(4) { transition-delay: 0.24s; }
+.im-dq-barra:nth-of-type(5) { transition-delay: 0.32s; }
+/* La curva del ritorno si disegna; i due piani ci si posano sopra. */
+.im-dq-curva { fill: none; stroke: #b9e6a3; stroke-width: 3; vector-effect: non-scaling-stroke; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.2s var(--dq-ease); }
+#slide-domanda-misura:has(.im-dq-passo[data-p="3"][data-substep-active]) .im-dq-curva { stroke-dashoffset: 0; }
+.im-dq-piano { fill: #ffffff; opacity: 0; transition: opacity 0.4s ease 0.9s; }
+.im-dq-piano--b { fill: #6cc04a; }
+#slide-domanda-misura:has(.im-dq-passo[data-p="3"][data-substep-active]) .im-dq-piano { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .im-dq-svg, .im-dq-svg path, .im-dq-peso, .im-dq-barra, .im-dq-curva, .im-dq-piano, .im-dq-l, .im-dq-n, .im-dq-banda, .im-dq-didas > p, .im-dq-scelta, .im-dq--misura [data-pan] { transition: none !important; }
+  .im-dq--consenso[data-ridisegna] .im-dq-a { animation: none; }
+}
+@media (max-height: 820px) {
+  .im-dq-g { height: clamp(9rem, calc(12.5 * var(--vu)), 26rem); margin-top: 1.4rem; }
+  .im-dq-banda { margin-top: 0.45rem; padding-block: 0.45rem; }
+}
+@media (max-width: 900px) { .im-dq-banda { grid-template-columns: minmax(0, 1fr); row-gap: 0.6rem; } .im-dq-scelta { flex-wrap: wrap; } }

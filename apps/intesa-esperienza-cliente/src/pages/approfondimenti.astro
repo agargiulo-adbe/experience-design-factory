@@ -20,6 +20,7 @@ import Dettaglio from '@edf/core/blocks/Dettaglio.astro';
 import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
 import { PASSAGGIO, DETTAGLI_PASSAGGIO } from '../data/passaggio';
 import { SERVE } from '../data/serve';
+import '../styles/domande.css';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -206,33 +207,42 @@ const DATI = [
    nelle definizioni di audience; export dei dataset (RTCDP Prime/Ultimate, AJO,
    CJA); Federated Audience Composition come componente aggiuntivo; Marketing
    Campaign Analytics (ex Mix Modeler) su Experience Platform, MMM + MTA. */
-const CONSENSO = [
-  { fig: 'grafo', t: { it: 'Comanda il vostro registro', en: 'Your register leads' },
-    chi: { it: 'Come nella storia di Giulia', en: 'As in Giulia’s story' },
-    d: { it: 'Consensi e revoche arrivano dal registro e si applicano. L’email di una fiera si unisce al profilo del sito.', en: 'Consents and withdrawals come from the register and are applied. An email from a fair joins the website profile.' } },
-  { fig: 'flusso', t: { it: 'Raccoglie la piattaforma, voi avete la copia', en: 'The platform collects, you keep a copy' },
-    chi: { it: 'Export dei dataset', en: 'Dataset export' },
-    d: { it: 'Il sito scrive il consenso sul profilo; l’export dei dataset lo riporta nel vostro storage.', en: 'The website writes consent on the profile; dataset export brings it back to your storage.' } },
-  { fig: 'archivio', t: { it: 'Il dato resta nel vostro data warehouse', en: 'The data stays in your warehouse' },
-    chi: { it: 'Componente aggiuntivo', en: 'Add-on' },
-    d: { it: 'Con Federated Audience Composition le audience nascono sul data warehouse, senza copiarlo.', en: 'With Federated Audience Composition, audiences are built on the warehouse, without copying it.' } },
+/* I due disegni (impeccable, 20 nov 2026): al posto delle tre schede, un
+   meccanismo che si costruisce a passi, con la grammatica del Sankey di
+   «Dalla email allo sportello». viewBox 1000×400 per entrambi; le etichette
+   sono HTML sopra il disegno (x/10 %, y/4 %), mai testo dentro l'SVG. */
+const DQ_FONTI = [
+  { k: 'sito', it: 'Sito', en: 'Website', y: 30, h: 70 },
+  { k: 'fiera', it: 'Fiera o evento', en: 'Fair or event', y: 150, h: 50 },
+  { k: 'filiale', it: 'Filiale', en: 'Branch', y: 250, h: 70 },
 ];
-const FERMA = [
-  { t: { it: 'Sempre', en: 'Always' },
-    d: { it: 'Journey Optimizer non scrive a chi ha revocato; nelle audience il consenso è una regola, verso terzi decidono le etichette d’uso.', en: 'Journey Optimizer does not write to anyone who opted out; in audiences consent is a rule, towards third parties usage labels decide.' } },
-  { t: { it: 'Con Privacy & Security Shield', en: 'With Privacy & Security Shield' },
-    d: { it: 'Le regole di consenso si applicano da sole, chiunque abbia costruito l’audience. È un componente aggiuntivo: lo precisiamo rispetto alla sala.', en: 'Consent rules apply by themselves, whoever built the audience. It is an add-on: a correction to what we said in the room.' } },
+const DQ_CANALI = [
+  { k: 'email', it: 'Email', en: 'Email', y: 30, h: 65 },
+  { k: 'annunci', it: 'Annunci', en: 'Ads', y: 160, h: 65 },
+  { k: 'fd', it: 'Filiale Digitale', en: 'Digital Branch', y: 255, h: 65 },
 ];
-const MISURA = [
-  { fig: 'misura', t: { it: 'Per persona', en: 'Per person' },
-    chi: { it: 'Customer Journey Analytics', en: 'Customer Journey Analytics' },
-    d: { it: 'Ogni contatto tracciato, dal sito alla filiale. I modelli di attribuzione si confrontano sugli stessi dati.', en: 'Every tracked touch, from the website to the branch. Attribution models are compared on the same data.' } },
-  { fig: 'serie', t: { it: 'Per canale, anche offline', en: 'Per channel, offline too' },
-    chi: { it: 'Marketing Campaign Analytics', en: 'Marketing Campaign Analytics' },
-    d: { it: 'Unisce marketing mix modeling e attribuzione multi-touch: l’effetto incrementale di ogni canale, TV e affissioni comprese.', en: 'It joins marketing mix modelling and multi-touch attribution: the incremental effect of every channel, TV and billboards included.' } },
-  { fig: 'esito', t: { it: 'Dove spostare il budget', en: 'Where to move the budget' },
-    chi: { it: 'Piani a confronto', en: 'Plans side by side' },
-    d: { it: 'Mette a confronto piani di budget alternativi e ne stima il ritorno, canale per canale.', en: 'It compares alternative budget plans and estimates their return, channel by channel.' } },
+/* Le tre architetture del consenso: chi è il riferimento, e da dove passano le frecce. */
+const DQ_ARCH = [
+  { k: 'registro', it: 'Registro', en: 'Register',
+    t: { it: 'Il vostro registro resta il riferimento: la piattaforma riceve consensi e revoche, e li applica.', en: 'Your register stays the reference: the platform receives consents and withdrawals, and applies them.' } },
+  { k: 'piattaforma', it: 'Piattaforma', en: 'Platform',
+    t: { it: 'Il sito scrive il consenso sul profilo; l’export dei dataset ne riporta una copia nel vostro storage.', en: 'The website writes consent on the profile; dataset export brings a copy back to your storage.' } },
+  { k: 'warehouse', it: 'Data warehouse', en: 'Data warehouse',
+    t: { it: 'Con Federated Audience Composition le audience nascono sul data warehouse, senza copiarlo. È un componente aggiuntivo.', en: 'With Federated Audience Composition audiences are built on the warehouse, without copying it. It is an add-on.' } },
+];
+/* Misura: pesi, contributi e curva sono DI ESEMPIO (la slide lo dichiara). */
+const DQ_TOCCHI = [
+  { k: 'annuncio', it: 'Annuncio', en: 'Ad', x: 40, peso: 55 },
+  { k: 'email', it: 'Email', en: 'Email', x: 125, peso: 105 },
+  { k: 'sito', it: 'Sito', en: 'Website', x: 210, peso: 80 },
+  { k: 'filiale', it: 'Filiale', en: 'Branch', x: 295, peso: 140 },
+];
+const DQ_MEZZI = [
+  { k: 'ricerca', it: 'Ricerca', en: 'Search', w: 170, off: false },
+  { k: 'social', it: 'Social', en: 'Social', w: 115, off: false },
+  { k: 'email', it: 'Email', en: 'Email', w: 140, off: false },
+  { k: 'tv', it: 'TV', en: 'TV', w: 190, off: true },
+  { k: 'affissioni', it: 'Affissioni', en: 'Billboards', w: 85, off: true },
 ];
 const CRM = [
   { fig: 'canali', t: { it: 'Chi espone l’API', en: 'Who exposes the API' },
@@ -839,38 +849,82 @@ const SALA_O_VOI = EDIZIONE === 'lettura' ? 'da verificare con voi' : 'da correg
       </div>
     </Slide>
 
-    {/* LA DOMANDA SUL CONSENSO (19 nov). Tre modi di organizzarlo e che cosa
-        ferma un invio. La riga su Shield corregge, dichiarandolo, una
-        semplificazione fatta in sala: le consent policy non sono incluse. */}
-    <Slide id="slide-domanda-consenso" bg="inverse" align="left">
+    {/* LA DOMANDA SUL CONSENSO (19 nov), disegnata. Quattro passi: le fonti
+        arrivano al profilo dal registro · il profilo parte verso i canali
+        attraverso la regola di consenso · una revoca in filiale ferma
+        l'annuncio · chi comanda il consenso, in tre architetture (pulsanti).
+        La didascalia del passo 3 dichiara Shield come componente aggiuntivo:
+        corregge una semplificazione fatta in sala. Stile in `domande.css`. */}
+    <Slide id="slide-domanda-consenso" bg="inverse" align="left" data-lettura-ritmo="3200">
       <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal data-arch="registro">
         <T as="p" class="im-ado-occ" it="Ci avete chiesto il 19 novembre · il consenso" en="You asked us on 19 November · consent" />
         <T as="h2" class="im-ado-t im-ado-t--stretto" it="Il consenso di chi non è ancora cliente: dove sta, chi lo governa" en="Consent from people who are not yet customers: where it sits, who governs it" />
-        <T as="p" class="im-ado-l" it="Tre modi di organizzarlo, e che cosa ferma un invio." en="Three ways to organise it, and what stops a send." />
-
-        <div class="im-esec">
-          {CONSENSO.map((c) => (
-            <section class="im-esec-i">
-              <FiguraCap segno={c.fig} class="im-esec-fig" />
-              <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
-              <T as="span" class="im-esec-chi" it={c.chi.it} en={c.chi.en} />
-              <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
-            </section>
-          ))}
+        <T as="p" class="im-ado-l" it="Da dove arriva, che cosa ferma un invio, e chi ne è il riferimento." en="Where it comes from, what stops a send, and who holds the reference." />
+        <i class="im-dq-passo" data-substep data-p="1" aria-hidden="true"></i>
+        <i class="im-dq-passo" data-substep data-p="2" aria-hidden="true"></i>
+        <i class="im-dq-passo" data-substep data-p="3" aria-hidden="true"></i>
+        <i class="im-dq-passo" data-substep data-p="4" aria-hidden="true"></i>
+        <figure class="im-dq im-dq--consenso" data-dq-cons>
+          <div class="im-dq-int" aria-hidden="true">
+            <T as="span" style="--x:15.4%" class="im-dq-int-l" it="Da dove arriva" en="Where it comes from" />
+            <T as="span" style="--x:37%" it="Chi è il riferimento" en="The reference" />
+            <T as="span" style="--x:76%" it="Che cosa parte" en="What goes out" />
+          </div>
+          <div class="im-dq-g" role="img" aria-label="Il consenso arriva da sito, fiere e filiale al registro e al profilo; prima di email, annunci e Filiale Digitale passa una regola di consenso, e una revoca ferma l'invio">
+            <svg class="im-dq-svg" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+              <g class="im-dq-a" data-arch-per="registro warehouse">
+                <path d="M154 65 C 262 65, 262 110, 370 110" />
+                <path d="M154 175 C 262 175, 262 170, 370 170" />
+                <path d="M154 285 C 262 285, 262 235, 370 235" data-revoca />
+              </g>
+              <path class="im-dq-a im-dq-forte" data-arch-per="registro" d="M384 170 C 487 170, 487 170, 590 170" />
+              <path class="im-dq-a im-dq-tratto" data-arch-per="warehouse" d="M384 170 C 487 170, 487 170, 590 170" />
+              <g class="im-dq-a" data-arch-per="piattaforma">
+                <path d="M154 65 C 372 65, 372 130, 590 130" />
+                <path d="M154 175 C 372 175, 372 170, 590 170" />
+                <path d="M154 285 C 372 285, 372 210, 590 210" data-revoca />
+                <path class="im-dq-tratto" d="M590 245 C 487 245, 487 262, 384 262" />
+              </g>
+              <g class="im-dq-b">
+                <path d="M604 130 C 700 130, 760 62, 860 62" />
+                <path class="im-dq-ann1" d="M604 170 C 680 170, 720 176, 760 182" />
+                <path class="im-dq-ann2" d="M760 182 C 800 188, 830 192, 860 192" />
+                <path d="M604 210 C 700 210, 760 288, 860 288" />
+              </g>
+            </svg>
+            <svg class="im-dq-nodi" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+              {DQ_FONTI.map((f) => <rect class="im-dq-n" x="140" y={f.y} width="14" height={f.h} data-n={f.k} />)}
+              <rect class="im-dq-n im-dq-n--reg" x="370" y="50" width="14" height="240" />
+              <rect class="im-dq-n im-dq-n--prof" x="590" y="90" width="14" height="160" />
+              <line class="im-dq-cancello" x1="760" y1="12" x2="760" y2="330" />
+              {DQ_CANALI.map((c) => <rect class="im-dq-n im-dq-n--can" x="860" y={c.y} width="14" height={c.h} data-n={c.k} />)}
+            </svg>
+            {DQ_FONTI.map((f) => <T as="span" class="im-dq-l im-dq-l--sx" data-n={f.k} style={`--x:13%;--y:${(f.y + f.h / 2) / 4}%`} it={f.it} en={f.en} />)}
+            <span class="im-dq-l im-dq-l--su" style="--x:37%;--y:12.5%">
+              <T as="span" data-arch-per="registro" it="Registro dei consensi" en="Consent register" />
+              <T as="span" data-arch-per="piattaforma" it="Vostro storage · copia" en="Your storage · copy" />
+              <T as="span" data-arch-per="warehouse" it="Data warehouse" en="Data warehouse" />
+            </span>
+            <T as="span" class="im-dq-l im-dq-l--su" style="--x:59%;--y:22.5%" it="Profilo · Experience Platform" en="Profile · Experience Platform" />
+            <svg class="im-dq-x" style="--x:76%;--y:45.5%" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4 L16 16 M16 4 L4 16" /></svg>
+            <T as="span" class="im-dq-l im-dq-l--cancello" style="--x:76%;--y:86%" it="Regola di consenso" en="Consent rule" />
+            {DQ_CANALI.map((c) => <T as="span" class="im-dq-l im-dq-l--dx" data-n={c.k} style={`--x:88.4%;--y:${(c.y + c.h / 2) / 4}%`} it={c.it} en={c.en} />)}
+          </div>
+        </figure>
+        <div class="im-dq-banda">
+          <div class="im-dq-didas">
+            <p data-per="1"><T as="strong" it="Dalle fonti al profilo" en="From the sources to the profile" /> <T as="span" it="consensi e revoche passano dal vostro registro; l’email lasciata a una fiera si unisce al profilo del sito." en="consents and withdrawals pass through your register; an email left at a fair joins the website profile." /></p>
+            <p data-per="2"><T as="strong" it="Prima di ogni invio, una regola" en="Before every send, a rule" /> <T as="span" it="un canale parte solo se il consenso c’è. Journey Optimizer non scrive a chi ha revocato." en="a channel goes out only if consent is there. Journey Optimizer does not write to anyone who opted out." /></p>
+            <p data-per="3"><T as="strong" it="Una revoca in filiale ferma l’annuncio" en="A withdrawal at the branch stops the ad" /> <T as="span" it="nelle audience la regola la mette chi le costruisce; con Privacy & Security Shield si applica da sola. È un componente aggiuntivo: lo precisiamo rispetto alla sala." en="in audiences the rule is set by whoever builds them; with Privacy & Security Shield it applies by itself. It is an add-on: a correction to what we said in the room." /></p>
+            {DQ_ARCH.map((x) => <p data-per="4" data-arch-per={x.k}><T as="strong" it="Chi è il riferimento" en="Who holds the reference" /> <T as="span" it={x.t.it} en={x.t.en} /></p>)}
+          </div>
+          <div class="im-dq-scelta" role="group" aria-label="Chi è il riferimento del consenso">
+            {DQ_ARCH.map((x, i) => <button type="button" class="im-dq-chip" data-dq-arch={x.k} aria-pressed={i === 0 ? 'true' : 'false'}><T as="span" it={x.it} en={x.en} /></button>)}
+          </div>
         </div>
-
-        <div class="im-ferma">
-          {FERMA.map((f) => (
-            <div class="im-ferma-i">
-              <T as="span" class="im-ferma-t" it={f.t.it} en={f.t.en} />
-              <T as="span" class="im-ferma-d" it={f.d.it} en={f.d.en} />
-            </div>
-          ))}
-        </div>
-
         <p class="im-fonte-riga">
-          <span data-lang-it>Documentazione (20 nov 2026): </span><span data-lang-en>Documentation (20 Nov 2026): </span>
+          <span data-lang-it>Schema di principio. Documentazione (20 nov 2026): </span><span data-lang-en>Principle diagram. Documentation (20 Nov 2026): </span>
           <a href="https://experienceleague.adobe.com/en/docs/experience-platform/data-governance/policies/user-guide" target="_blank" rel="noopener">consent policies</a><span> · </span>
           <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/privacy/consent/opt-out" target="_blank" rel="noopener">opt-out</a><span> · </span>
           <a href="https://experienceleague.adobe.com/en/docs/experience-platform/segmentation/tutorials/consents" target="_blank" rel="noopener"><span data-lang-it>consenso nelle audience</span><span data-lang-en>consent in audiences</span></a><span> · </span>
@@ -880,38 +934,66 @@ const SALA_O_VOI = EDIZIONE === 'lettura' ? 'da verificare con voi' : 'da correg
       </div>
     </Slide>
 
-    {/* LA DOMANDA SULLA MISURA (19 nov). Per persona con CJA, per canale con
-        Marketing Campaign Analytics. Che un modello giri senza costi NON si
-        scrive: da confermare con uno specialist. */}
-    <Slide id="slide-domanda-misura" bg="inverse" align="left">
+    {/* LA DOMANDA SULLA MISURA (19 nov), disegnata. Tre passi: il percorso di
+        una persona con il peso di ogni contatto (CJA) · i canali, TV e
+        affissioni compresi, con il loro contributo (Marketing Campaign
+        Analytics) · la curva del ritorno e due piani a confronto. Pesi e curva
+        sono di esempio, e la slide lo dice. Che un modello giri senza costi NON
+        si scrive: da confermare con uno specialist. */}
+    <Slide id="slide-domanda-misura" bg="inverse" align="left" data-lettura-ritmo="3200">
       <div slot="backdrop" class="im-bg-notte"></div>
       <div class="im-ado-cap im-ado-cap--largo" data-reveal>
         <T as="p" class="im-ado-occ" it="Ci avete chiesto il 19 novembre · la misura dei canali" en="You asked us on 19 November · measuring channels" />
         <T as="h2" class="im-ado-t im-ado-t--stretto" it="Dalla persona al budget: quanto vale ogni canale, anche offline" en="From the person to the budget: what each channel is worth, offline too" />
         <T as="p" class="im-ado-l" it="Due strumenti per due domande, sulle stesse conversioni." en="Two tools for two questions, on the same conversions." />
-
-        <div class="im-esec">
-          {MISURA.map((c) => (
-            <section class="im-esec-i">
-              <FiguraCap segno={c.fig} class="im-esec-fig" />
-              <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
-              <T as="span" class="im-esec-chi" it={c.chi.it} en={c.chi.en} />
-              <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
-            </section>
-          ))}
-        </div>
-
-        <div class="im-ferma im-ferma--uno">
-          <div class="im-ferma-i">
-            <T as="span" class="im-ferma-t" it="Che cosa entra" en="What goes in" />
-            <T as="span" class="im-ferma-d" it="Uscite e volumi di ogni canale, i costi e le conversioni, vendite in filiale comprese. Ritorno e piani si calcolano sui costi. Marketing Campaign Analytics è un’applicazione a sé, su Experience Platform." en="Each channel’s placements and volumes, its costs and the conversions, branch sales included. Return and plans are computed on costs. Marketing Campaign Analytics is an application of its own, on Experience Platform." />
+        <i class="im-dq-passo" data-substep data-p="1" aria-hidden="true"></i>
+        <i class="im-dq-passo" data-substep data-p="2" aria-hidden="true"></i>
+        <i class="im-dq-passo" data-substep data-p="3" aria-hidden="true"></i>
+        <figure class="im-dq im-dq--misura">
+          <div class="im-dq-int" aria-hidden="true">
+            <T as="span" style="--x:2%" class="im-dq-int-s" data-pan="1" it="Per persona" en="Per person" />
+            <T as="span" style="--x:42%" class="im-dq-int-s" data-pan="2" it="Per canale, anche offline" en="Per channel, offline too" />
+            <T as="span" style="--x:76%" class="im-dq-int-s" data-pan="3" it="Dove spostare il budget" en="Where to move the budget" />
+          </div>
+          <div class="im-dq-g" role="img" aria-label="Esempio: il peso di ogni contatto nel percorso di una persona, il contributo di ogni canale compresi TV e affissioni, e la curva del ritorno con due piani di budget a confronto">
+            <svg class="im-dq-nodi" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+              <g class="im-dq-pan" data-pan="1">
+                <line class="im-dq-asse" x1="30" y1="300" x2="380" y2="300" />
+                {DQ_TOCCHI.map((t) => <rect class="im-dq-peso" x={t.x - 9} y={290 - t.peso * 1.6} width="32" height={t.peso * 1.6} />)}
+                {DQ_TOCCHI.map((t) => <rect class="im-dq-n" x={t.x} y="293" width="14" height="14" />)}
+                <rect class="im-dq-n im-dq-n--firma" x="360" y="288" width="22" height="24" />
+              </g>
+              <g class="im-dq-pan" data-pan="2">
+                {DQ_MEZZI.map((m, i) => <rect class="im-dq-barra" data-off={m.off ? '' : null} x="540" y={40 + i * 56} width={m.w} height="34" />)}
+              </g>
+              <g class="im-dq-pan" data-pan="3">
+                <path class="im-dq-asse" d="M790 40 L790 320 L990 320" />
+                <path class="im-dq-curva" pathLength="1" d="M790 320 C 835 180, 900 110, 990 92" />
+                <rect class="im-dq-piano" x="836" y="194" width="16" height="16" />
+                <rect class="im-dq-piano im-dq-piano--b" x="902" y="128" width="16" height="16" />
+              </g>
+            </svg>
+            {DQ_TOCCHI.map((t) => <T as="span" class="im-dq-l im-dq-l--sotto" data-pan="1" style={`--x:${(t.x + 7) / 10}%;--y:80%`} it={t.it} en={t.en} />)}
+            <T as="span" class="im-dq-l im-dq-l--sotto im-dq-l--forte" data-pan="1" style="--x:37.1%;--y:80%" it="Firma" en="Signature" />
+            {DQ_MEZZI.map((m, i) => <T as="span" class="im-dq-l im-dq-l--sx" data-pan="2" data-off={m.off ? '' : null} style={`--x:52.6%;--y:${(57 + i * 56) / 4}%`} it={m.it} en={m.en} />)}
+            <T as="span" class="im-dq-l im-dq-l--nota" data-pan="2" style="--x:54%;--y:86%" it="tratteggiati: nessuna traccia per persona" en="dashed: no per-person trace" />
+            <T as="span" class="im-dq-l im-dq-l--asse" data-pan="3" style="--x:99%;--y:86%" it="budget" en="budget" />
+            <T as="span" class="im-dq-l im-dq-l--asse im-dq-l--asse-y" data-pan="3" style="--x:79.6%;--y:8%" it="ritorno stimato" en="estimated return" />
+            <T as="span" class="im-dq-l im-dq-l--piano" data-pan="3" style="--x:84.4%;--y:55.5%" it="Piano attuale" en="Current plan" />
+            <T as="span" class="im-dq-l im-dq-l--piano im-dq-l--sinistra im-dq-l--forte" data-pan="3" style="--x:89.4%;--y:34%" it="Piano alternativo" en="Alternative plan" />
+          </div>
+        </figure>
+        <div class="im-dq-banda">
+          <div class="im-dq-didas">
+            <p data-per="1"><T as="strong" it="Per persona" en="Per person" /> <T as="span" it="Customer Journey Analytics segue ogni contatto tracciato fino alla firma, filiale compresa, e pesa i canali con il modello che scegliete." en="Customer Journey Analytics follows every tracked touch up to the signature, branch included, and weighs channels with the model you choose." /></p>
+            <p data-per="2"><T as="strong" it="Per canale, anche offline" en="Per channel, offline too" /> <T as="span" it="Marketing Campaign Analytics unisce marketing mix modeling e attribuzione multi-touch: l’effetto incrementale di ogni canale, TV e affissioni comprese." en="Marketing Campaign Analytics joins marketing mix modelling and multi-touch attribution: the incremental effect of every channel, TV and billboards included." /></p>
+            <p data-per="3"><T as="strong" it="Dove spostare il budget" en="Where to move the budget" /> <T as="span" it="confronta piani alternativi e ne stima il ritorno. Entrano uscite, volumi, costi e conversioni; ritorno e piani si calcolano sui costi." en="it compares alternative plans and estimates their return. In go placements, volumes, costs and conversions; return and plans are computed on costs." /></p>
           </div>
         </div>
-
         <p class="im-fonte-riga">
-          <span data-lang-it>Documentazione (20 nov 2026): </span><span data-lang-en>Documentation (20 Nov 2026): </span>
+          <span data-lang-it>Esempio illustrativo: pesi e curva di esempio, non dati. Marketing Campaign Analytics è un’applicazione a sé, su Experience Platform. Documentazione (20 nov 2026): </span><span data-lang-en>Illustrative example: sample weights and curve, not data. Marketing Campaign Analytics is an application of its own, on Experience Platform. Documentation (20 Nov 2026): </span>
           <a href="https://experienceleague.adobe.com/en/docs/marketing-campaign-analytics/using/get-started/about" target="_blank" rel="noopener">Marketing Campaign Analytics</a><span> · </span>
-          <a href="https://experienceleague.adobe.com/en/docs/marketing-campaign-analytics/using/models/overview" target="_blank" rel="noopener"><span data-lang-it>i modelli</span><span data-lang-en>models</span></a>
+          <a href="https://experienceleague.adobe.com/en/docs/marketing-campaign-analytics/using/models/overview" target="_blank" rel="noopener"><span data-lang-it>modelli</span><span data-lang-en>models</span></a>
           <a class="im-torna" href={href(base, '/messa-a-terra/#slide-attribuzione')}><span data-lang-it>← L’attribuzione per persona</span><span data-lang-en>← Attribution per person</span></a>
         </p>
       </div>
@@ -993,6 +1075,21 @@ const SALA_O_VOI = EDIZIONE === 'lettura' ? 'da verificare con voi' : 'da correg
     </Slide>
 
   </DeckContainer>
+  <script>
+    /* «Chi è il riferimento» (slide-domanda-consenso, passo 4): il pulsante
+       sceglie l'architettura, i nastri si ridisegnano e cambia la didascalia.
+       Delegato su document: regge la navigazione SPA senza ricollegarsi. */
+    document.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-dq-arch]');
+      if (!b) return;
+      const cap = b.closest<HTMLElement>('[data-arch]');
+      const fig = cap?.querySelector<HTMLElement>('[data-dq-cons]');
+      if (!cap || !fig || cap.dataset.arch === b.dataset.dqArch) return;
+      cap.dataset.arch = b.dataset.dqArch!;
+      cap.querySelectorAll<HTMLButtonElement>('[data-dq-arch]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      fig.removeAttribute('data-ridisegna'); void fig.offsetWidth; fig.setAttribute('data-ridisegna', '');
+    });
+  </script>
 </BaseLayout>
 
 <style is:global>
