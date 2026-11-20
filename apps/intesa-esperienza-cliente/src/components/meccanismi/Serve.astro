@@ -1,0 +1,156 @@
+---
+/**
+ * CHE COSA SERVE PER LA FASE 0, disegnata (20 nov 2026). Era una griglia di
+ * cinque schede: ora è un tavolo al centro — la prima sessione — verso cui
+ * convergono cinque contributi, ognuno con chi lo porta e la fase. Un passo
+ * per contributo (il nastro si disegna dalla funzione al tavolo, l'etichetta
+ * si accende, la didascalia dice CHE COSA va portato); il sesto passo dice
+ * chi possiede il caso.
+ *
+ * Contenuto INVARIATO: cose, funzioni e fasi vengono da `data/serve.ts`
+ * (etichette del disegno), le descrizioni stanno nelle didascalie dei passi,
+ * la nota «Chi possiede il caso» è la didascalia del passo 6.
+ *
+ * Grammatica delle slide «domanda» (`domande.css`): marcatori di passo
+ * invisibili, nastri in un SVG 1000×400 non proporzionale con tratto a
+ * spessore costante, etichette HTML in percentuale, una didascalia per passo.
+ */
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import { EDIZIONE } from '@edf/core/utils/edizione';
+import { SERVE } from '../../data/serve';
+
+const SALA_O_VOI = EDIZIONE === 'lettura' ? 'da verificare con voi' : 'da correggere in sala';
+
+/* Tre contributi a sinistra, due a destra. y = centro del nodo nel viewBox;
+   yt = dove il nastro tocca il tavolo. */
+const POS = [
+  { lato: 'sx', y: 62, yt: 150 },
+  { lato: 'sx', y: 200, yt: 200 },
+  { lato: 'sx', y: 338, yt: 250 },
+  { lato: 'dx', y: 110, yt: 168 },
+  { lato: 'dx', y: 290, yt: 232 },
+];
+const VOCI = SERVE.map((x, i) => ({ ...x, ...POS[i], n: i + 1 }));
+const nastro = (v: (typeof VOCI)[number]) => v.lato === 'sx'
+  ? `M300 ${v.y} C 370 ${v.y}, 370 ${v.yt}, 440 ${v.yt}`
+  : `M700 ${v.y} C 630 ${v.y}, 630 ${v.yt}, 560 ${v.yt}`;
+---
+<Slide id="slide-serve" bg="inverse" align="left" data-lettura-ritmo="3200">
+  <div slot="backdrop" class="im-bg-notte"></div>
+  <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+    <T as="p" class="im-ado-occ" it="Per la fase 0" en="For phase 0" />
+    <T as="h2" class="im-ado-t im-ado-t--stretto" it="Le cinque cose da portare alla&nbsp;prima sessione, e chi le porta" en="The five things to bring to the first session, and who brings them" />
+    {[...VOCI.map((v) => v.n), 6].map((n) => <i class="mc-sv-passo" data-substep data-p={n} aria-hidden="true"></i>)}
+    <figure class="mc-sv">
+      <div class="mc-sv-g" role="img" aria-label="Cinque contributi convergono sulla prima sessione: i volumi, le integrazioni, i dati, la governance e il marketing, ognuno con le funzioni che lo portano">
+        <svg class="mc-sv-svg" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+          {VOCI.map((v) => <g class="mc-sv-a" data-v={v.n} data-lato={v.lato}><path d={nastro(v)} /></g>)}
+        </svg>
+        <svg class="mc-sv-nodi" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+          {VOCI.map((v) => <rect class="mc-sv-n" data-v={v.n} x={v.lato === 'sx' ? 286 : 700} y={v.y - 30} width="14" height="60" />)}
+          <rect class="mc-sv-tavolo" x="440" y="110" width="120" height="180" rx="6" />
+        </svg>
+        {VOCI.map((v) => (
+          <span class={`mc-sv-c mc-sv-c--${v.lato}`} data-v={v.n} style={`--x:${v.lato === 'sx' ? 27 : 73}%;--y:${v.y / 4}%`}>
+            <span class="mc-sv-t"><T as="span" it={v.t.it} en={v.t.en} /> <T as="span" class="mc-sv-q" data-due={v.quando.it.includes('1') ? '' : null} it={v.quando.it} en={v.quando.en} /></span>
+            <T as="span" class="mc-sv-chi" it={v.chi.it} en={v.chi.en} />
+          </span>
+        ))}
+        <T as="span" class="mc-sv-l mc-sv-l--su" style="--x:50%;--y:27.5%" it="La prima sessione" en="The first session" />
+        <T as="span" class="mc-sv-l mc-sv-l--dentro" style="--x:50%;--y:50%" it="fase 0" en="phase 0" />
+      </div>
+    </figure>
+    <div class="mc-sv-banda">
+      <div class="mc-sv-didas">
+        {VOCI.map((v) => <p data-per={v.n}><T as="strong" it={v.t.it} en={v.t.en} /> <T as="span" it={v.d.it} en={v.d.en} /></p>)}
+        <p data-per="6"><T as="strong" it={`Chi possiede il caso: una proposta ${SALA_O_VOI}`} en="Who owns the case: a proposal to correct in the room" /> <T as="span" it="Il caso al Targeting Commerciale, regole e canali ai Canali, l’offerta ai Mutui." en="The case to Commercial Targeting, rules and channels to Channels, the offer to Mortgages." /></p>
+      </div>
+    </div>
+  </div>
+</Slide>
+
+<style is:global>
+  #slide-serve .mc-sv { --sv-n: #b9e6a3; --sv-nastro: rgba(185, 230, 163, 0.32); --sv-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative; margin: clamp(0.4rem, calc(0.6 * var(--vu)), 1.2rem) 0 0; }
+  #slide-serve .mc-sv-passo { position: absolute; width: 0; height: 0; overflow: hidden; }
+  /* Niente lead e niente riga di fonti su questa slide: il disegno prende l'altezza. */
+  #slide-serve .mc-sv-g { position: relative; height: clamp(14rem, calc(19 * var(--vu)), 36rem); margin-top: clamp(1.4rem, calc(1.8 * var(--vu)), 3.4rem); }
+  #slide-serve :is(.mc-sv-svg, .mc-sv-nodi) { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+
+  /* I nastri si disegnano dalla funzione verso il tavolo. */
+  #slide-serve .mc-sv-svg path { fill: none; stroke: var(--sv-nastro); stroke-width: 10; vector-effect: non-scaling-stroke;
+    transition: stroke 0.45s ease; }
+  #slide-serve .mc-sv-a { clip-path: inset(-40px 100% -40px -5%); transition: clip-path 1s var(--sv-ease); }
+  #slide-serve .mc-sv-a[data-lato="dx"] { clip-path: inset(-40px -5% -40px 100%); }
+  #slide-serve .mc-sv-n { fill: var(--sv-n); opacity: 0.35; transition: opacity 0.45s ease, fill 0.45s ease; }
+  #slide-serve .mc-sv-tavolo { fill: rgba(255, 255, 255, 0.08); stroke: #ffffff; stroke-width: 2; vector-effect: non-scaling-stroke; transition: fill 0.5s ease, stroke 0.5s ease; }
+
+  /* Le etichette dei contributi: che cosa · fase, e sotto chi lo porta. */
+  #slide-serve .mc-sv-c { position: absolute; left: var(--x); top: var(--y); display: grid; gap: 0.12rem; max-width: 26%; width: max-content;
+    opacity: 0.45; transition: opacity 0.45s ease; }
+  #slide-serve .mc-sv-c--sx { translate: -100% -50%; text-align: right; justify-items: end; }
+  #slide-serve .mc-sv-c--dx { translate: 0 -50%; text-align: left; justify-items: start; }
+  #slide-serve .mc-sv-t { font-size: clamp(0.98rem, calc(0.92 * var(--vu)), 2rem); font-weight: 700; line-height: 1.15; color: #ffffff; transition: color 0.45s ease; }
+  #slide-serve .mc-sv-q { margin-left: 0.3em; font-size: clamp(0.76rem, calc(0.64 * var(--vu)), 1.42rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9fd68a; white-space: nowrap; }
+  #slide-serve .mc-sv-q[data-due] { color: #ffffff; padding: 0.05em 0.45em; border-radius: 999px; border: 1px solid #9fd68a; }
+  #slide-serve .mc-sv-chi { font-size: clamp(0.86rem, calc(0.76 * var(--vu)), 1.65rem); font-weight: 500; line-height: 1.3; color: #d9e6d4; }
+
+  #slide-serve .mc-sv-l { position: absolute; left: var(--x); top: var(--y); white-space: nowrap; font-weight: 700; color: #ffffff; }
+  #slide-serve .mc-sv-l--su { translate: -50% calc(-100% - 0.45rem); font-size: clamp(0.92rem, calc(0.86 * var(--vu)), 1.85rem); }
+  #slide-serve .mc-sv-l--dentro { translate: -50% -50%; font-size: clamp(0.82rem, calc(0.7 * var(--vu)), 1.55rem); letter-spacing: 0.06em; text-transform: uppercase; color: #9fd68a; transition: color 0.5s ease; }
+
+  /* La fascia: una didascalia per passo. */
+  #slide-serve .mc-sv-banda { margin: clamp(0.6rem, calc(0.9 * var(--vu)), 1.8rem) 0 0; padding: clamp(0.55rem, calc(0.75 * var(--vu)), 1.4rem) clamp(0.9rem, calc(1.2 * var(--vu)), 2.2rem);
+    border: 1px solid rgba(185, 230, 163, 0.34); border-radius: 8px; background: rgba(185, 230, 163, 0.09);
+    font-size: clamp(1.02rem, calc(1 * var(--vu)), 2.2rem); line-height: 1.38; color: #f2f8f0;
+    opacity: 0; visibility: hidden; transition: opacity 0.5s ease, visibility 0s linear 0.5s; }
+  #slide-serve .mc-sv-didas { display: grid; min-width: 0; }
+  #slide-serve .mc-sv-didas > p { grid-area: 1 / 1; margin: 0; max-width: none; opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0s linear 0.25s; }
+  #slide-serve .mc-sv-didas strong { color: #b9e6a3; margin-right: 0.35em; }
+  #slide-serve .mc-sv-didas > p:not([data-per="6"]) strong::after { content: ':'; }
+
+  /* ── I passi ─────────────────────────────────────────────────────────── */
+  #slide-serve:has(.mc-sv-passo[data-p="1"][data-substep-active]) .mc-sv-banda { opacity: 1; visibility: visible; transition: opacity 0.5s ease, visibility 0s; }
+  #slide-serve:has(.mc-sv-passo[data-p="1"][data-substep-active]):not(:has(.mc-sv-passo[data-p="2"][data-substep-active])) .mc-sv-didas > [data-per="1"],
+  #slide-serve:has(.mc-sv-passo[data-p="2"][data-substep-active]):not(:has(.mc-sv-passo[data-p="3"][data-substep-active])) .mc-sv-didas > [data-per="2"],
+  #slide-serve:has(.mc-sv-passo[data-p="3"][data-substep-active]):not(:has(.mc-sv-passo[data-p="4"][data-substep-active])) .mc-sv-didas > [data-per="3"],
+  #slide-serve:has(.mc-sv-passo[data-p="4"][data-substep-active]):not(:has(.mc-sv-passo[data-p="5"][data-substep-active])) .mc-sv-didas > [data-per="4"],
+  #slide-serve:has(.mc-sv-passo[data-p="5"][data-substep-active]):not(:has(.mc-sv-passo[data-p="6"][data-substep-active])) .mc-sv-didas > [data-per="5"],
+  #slide-serve:has(.mc-sv-passo[data-p="6"][data-substep-active]) .mc-sv-didas > [data-per="6"] { opacity: 1; visibility: visible; transition: opacity 0.35s ease 0.1s, visibility 0s; }
+
+  /* Ogni passo accende il suo contributo e ne disegna il nastro; quelli già
+     arrivati restano accesi. Il nastro del passo in corso è pieno. */
+  #slide-serve:has(.mc-sv-passo[data-p="1"][data-substep-active]) :is(.mc-sv-c, .mc-sv-n)[data-v="1"],
+  #slide-serve:has(.mc-sv-passo[data-p="2"][data-substep-active]) :is(.mc-sv-c, .mc-sv-n)[data-v="2"],
+  #slide-serve:has(.mc-sv-passo[data-p="3"][data-substep-active]) :is(.mc-sv-c, .mc-sv-n)[data-v="3"],
+  #slide-serve:has(.mc-sv-passo[data-p="4"][data-substep-active]) :is(.mc-sv-c, .mc-sv-n)[data-v="4"],
+  #slide-serve:has(.mc-sv-passo[data-p="5"][data-substep-active]) :is(.mc-sv-c, .mc-sv-n)[data-v="5"] { opacity: 1; }
+  #slide-serve:has(.mc-sv-passo[data-p="1"][data-substep-active]) .mc-sv-svg [data-v="1"],
+  #slide-serve:has(.mc-sv-passo[data-p="2"][data-substep-active]) .mc-sv-svg [data-v="2"],
+  #slide-serve:has(.mc-sv-passo[data-p="3"][data-substep-active]) .mc-sv-svg [data-v="3"],
+  #slide-serve:has(.mc-sv-passo[data-p="4"][data-substep-active]) .mc-sv-svg [data-v="4"],
+  #slide-serve:has(.mc-sv-passo[data-p="5"][data-substep-active]) .mc-sv-svg [data-v="5"] { clip-path: inset(-40px -5% -40px -5%); }
+  #slide-serve:has(.mc-sv-passo[data-p="1"][data-substep-active]):not(:has(.mc-sv-passo[data-p="2"][data-substep-active])) .mc-sv-svg [data-v="1"] path,
+  #slide-serve:has(.mc-sv-passo[data-p="2"][data-substep-active]):not(:has(.mc-sv-passo[data-p="3"][data-substep-active])) .mc-sv-svg [data-v="2"] path,
+  #slide-serve:has(.mc-sv-passo[data-p="3"][data-substep-active]):not(:has(.mc-sv-passo[data-p="4"][data-substep-active])) .mc-sv-svg [data-v="3"] path,
+  #slide-serve:has(.mc-sv-passo[data-p="4"][data-substep-active]):not(:has(.mc-sv-passo[data-p="5"][data-substep-active])) .mc-sv-svg [data-v="4"] path,
+  #slide-serve:has(.mc-sv-passo[data-p="5"][data-substep-active]):not(:has(.mc-sv-passo[data-p="6"][data-substep-active])) .mc-sv-svg [data-v="5"] path { stroke: var(--sv-n); }
+  #slide-serve:has(.mc-sv-passo[data-p="1"][data-substep-active]):not(:has(.mc-sv-passo[data-p="2"][data-substep-active])) .mc-sv-c[data-v="1"] .mc-sv-t > :first-child,
+  #slide-serve:has(.mc-sv-passo[data-p="2"][data-substep-active]):not(:has(.mc-sv-passo[data-p="3"][data-substep-active])) .mc-sv-c[data-v="2"] .mc-sv-t > :first-child,
+  #slide-serve:has(.mc-sv-passo[data-p="3"][data-substep-active]):not(:has(.mc-sv-passo[data-p="4"][data-substep-active])) .mc-sv-c[data-v="3"] .mc-sv-t > :first-child,
+  #slide-serve:has(.mc-sv-passo[data-p="4"][data-substep-active]):not(:has(.mc-sv-passo[data-p="5"][data-substep-active])) .mc-sv-c[data-v="4"] .mc-sv-t > :first-child,
+  #slide-serve:has(.mc-sv-passo[data-p="5"][data-substep-active]):not(:has(.mc-sv-passo[data-p="6"][data-substep-active])) .mc-sv-c[data-v="5"] .mc-sv-t > :first-child { color: #b9e6a3; }
+  /* 6 · Il tavolo è apparecchiato: tutti i nastri pieni, chi possiede il caso. */
+  #slide-serve:has(.mc-sv-passo[data-p="6"][data-substep-active]) .mc-sv-svg path { stroke: var(--sv-n); }
+  #slide-serve:has(.mc-sv-passo[data-p="6"][data-substep-active]) .mc-sv-tavolo { fill: #6cc04a; stroke: #b9e6a3; }
+  #slide-serve:has(.mc-sv-passo[data-p="6"][data-substep-active]) .mc-sv-l--dentro { color: #0b1f06; }
+
+  @media (prefers-reduced-motion: reduce) {
+    #slide-serve :is(.mc-sv-svg path, .mc-sv-a, .mc-sv-n, .mc-sv-tavolo, .mc-sv-c, .mc-sv-t, .mc-sv-l--dentro, .mc-sv-banda, .mc-sv-didas > p) { transition: none !important; }
+  }
+  @media (max-height: 820px) {
+    #slide-serve .mc-sv-g { height: clamp(12rem, calc(17 * var(--vu)), 32rem); margin-top: 1.4rem; }
+    #slide-serve .mc-sv-banda { margin-top: 0.45rem; padding-block: 0.45rem; }
+  }
+</style>
