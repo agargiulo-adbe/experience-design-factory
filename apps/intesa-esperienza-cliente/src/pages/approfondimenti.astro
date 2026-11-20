@@ -27,6 +27,9 @@ import IntegrazioniCrm from '../components/meccanismi/IntegrazioniCrm.astro';
 import BrandVisibility from '../components/meccanismi/BrandVisibility.astro';
 import ContentFactory from '../components/meccanismi/ContentFactory.astro';
 import Serve from '../components/meccanismi/Serve.astro';
+import IngaggioCiclo from '../components/meccanismi/IngaggioCiclo.astro';
+import IngaggioProfilo from '../components/meccanismi/IngaggioProfilo.astro';
+import IngaggioRegia from '../components/meccanismi/IngaggioRegia.astro';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -465,33 +468,7 @@ const SALA_O_VOI = EDIZIONE === 'lettura' ? 'da verificare con voi' : 'da correg
     </Slide>
 
     {/* ── Ingaggiare il cliente, in tre tempi ──────────────────────── */}
-    <Slide id="slide-ingaggio-ciclo" bg="inverse" align="left">
-      <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quattro componenti sullo stesso dato" en="Four components on the same data" />
-
-        <ul class="im-ciclo">
-          {CICLO.map((c) => (
-            <li class="im-ciclo-i">
-              <div class="im-ciclo-su">
-                <span class="im-ciclo-n">{c.n}</span>
-                <FiguraCap segno={c.fig} class="im-ciclo-fig" />
-                <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
-                <T as="span" class="im-bv-s" it={c.s.it} en={c.s.en} />
-                <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
-                <a class="im-apri" href={`#${c.ancora}`}><span data-lang-it>Apri il dettaglio →</span><span data-lang-en>Open the detail →</span></a>
-              </div>
-              <T as="p" class="im-ciclo-giu" it={c.i.it} en={c.i.en} />
-            </li>
-          ))}
-        </ul>
-        <T as="p" class="im-ciclo-base" it="Sotto tutti e quattro, Adobe Experience Platform." en="Beneath all four, Adobe Experience Platform." />
-        <p class="im-fonte-riga">
-          <span data-lang-it>La riga verde è quello che succederebbe nel vostro perimetro, e va confermata con voi. </span><span data-lang-en>The green line is what would happen inside your perimeter, and is to be confirmed with you. </span>
-          <a href="#slide-ingaggio-casi"><span data-lang-it>Quattro casi d’uso →</span><span data-lang-en>Four use cases →</span></a>
-        </p>
-      </div>
-    </Slide>
+    <IngaggioCiclo />
 
     <Slide id="slide-ingaggio-dato" bg="inverse" align="left">
       <div slot="backdrop" class="im-bg-notte"></div>
@@ -538,86 +515,10 @@ const SALA_O_VOI = EDIZIONE === 'lettura' ? 'da verificare con voi' : 'da correg
     </Slide>
 
     {/* ── Il profilo · Real-Time Activation ───────────────────────────────── */}
-    <Slide id="slide-ingaggio-profilo" bg="inverse" align="left">
-      <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="p" class="im-ado-occ" it="Approfondimento · il profilo" en="Deep dive · the profile" />
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Il profilo collega pseudonimo, telefono e codice cliente alla stessa persona" en="The profile links pseudonym, phone number and customer number to one person" />
-        <T as="p" class="im-ado-l" it="Giulia è uno pseudonimo sul sito, un codice pratica dalla simulazione, un telefono alla Filiale Digitale e un NDG alla firma. Il profilo li collega." en="Giulia is a pseudonym on the site, an application code from the simulation, a phone number at the Filiale Digitale and a customer number at signing. The profile links them." />
-
-        <div class="im-bv im-cat">
-          {PROFILO.map((c, i) => (
-            <>
-              <section class="im-bv-i">
-                <FiguraCap segno={c.fig} />
-                <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
-                <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
-              </section>
-              {i < PROFILO.length - 1 && <span class="im-bv-op im-cat-op" aria-hidden="true">→</span>}
-            </>
-          ))}
-        </div>
-
-        {/* La scelta di disegno. Due strade, entrambe legittime: è la
-            domanda che il loro IT fa per primo, e arrivarci prima di
-            loro vale più che rispondere dopo. */}
-        <div class="im-scelta">
-          <T as="p" class="im-scelta-k" it="Una scelta di progetto, da fare insieme" en="One design choice, to make together" />
-          <div class="im-scelta-g">
-            {SCELTA_PROFILO.map((o) => (
-              <section class="im-scelta-i">
-                <T as="span" class="im-scelta-t" it={o.t.it} en={o.t.en} />
-                <T as="span" class="im-scelta-d" it={o.d.it} en={o.d.en} />
-                <T as="span" class="im-scelta-q" it={o.q.it} en={o.q.en} />
-              </section>
-            ))}
-          </div>
-        </div>
-
-        <p class="im-fonte-riga">
-          <span data-lang-it>La seconda strada è </span><span data-lang-en>The second route is </span>
-          <a href="https://experienceleague.adobe.com/en/docs/federated-audience-composition/using/overview" target="_blank" rel="noopener">Federated Audience Composition</a><span
-            data-lang-it>: un modulo a parte di Real-Time Activation e Journey Optimizer. Lavora solo su un elenco chiuso di database (Redshift, Synapse, Databricks, BigQuery, Fabric, Oracle, Snowflake, Teradata, Vertica). Il mutuo vuole la prima strada: riconoscimento in sessione, decisione a evento. Fonte: </span>
-          <span data-lang-en>: a separate module of Real-Time Activation and Journey Optimizer. It works only on a closed list of databases (Redshift, Synapse, Databricks, BigQuery, Fabric, Oracle, Snowflake, Teradata, Vertica). For the mortgage case the first route is needed (in-session recognition, event-driven decision). Source: </span>
-          <a href="https://experienceleague.adobe.com/en/docs/federated-audience-composition/using/connections/home" target="_blank" rel="noopener"><span data-lang-it>database supportati</span><span data-lang-en>supported databases</span></a>
-          <a class="im-torna" href={TORNA}><span data-lang-it>← Torna ai quattro componenti</span><span data-lang-en>← Back to the four components</span></a>
-        </p>
-      </div>
-    </Slide>
+    <IngaggioProfilo />
 
     {/* ── La regia · Journey Optimizer ─────────────────────────────── */}
-    <Slide id="slide-ingaggio-regia" bg="inverse" align="left">
-      <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="p" class="im-ado-occ" it="Approfondimento · la regia" en="Deep dive · orchestration" />
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Tre modi di eseguire la stessa decisione" en="Three ways to execute the same decision" />
-        <T as="p" class="im-ado-l" it="La decisione si configura una volta. Dove viene eseguita è una scelta, e le tre strade convivono." en="The decision is configured once. Where it runs is a choice, and the three routes coexist." />
-
-        <div class="im-esec">
-          {ESEC.map((e) => (
-            <section class="im-esec-i">
-              <FiguraCap segno={e.fig} class="im-esec-fig" />
-              <T as="span" class="im-bv-t" it={e.t.it} en={e.t.en} />
-              <T as="span" class="im-esec-chi" it={e.chi.it} en={e.chi.en} />
-              <T as="span" class="im-bv-d" it={e.d.it} en={e.d.en} />
-            </section>
-          ))}
-        </div>
-
-        <div class="im-csc-conf im-csc-conf--eng">
-          <T as="span" class="im-csc-conf-t" it="Il terzo modo è la risposta a «e quello che abbiamo già?»" en="The third route answers “what about what we already have?”" />
-          <T as="span" class="im-csc-conf-d" it="L’orchestrazione può restare dove è oggi: cambia solo chi decide quale offerta esce. La regola resta vostra. Due contatori: il limite per offerta si valuta quando si decide; il tetto per persona e per canale si applica all’invio (su web e app vale solo il primo). La vostra politica si mappa sul secondo, oppure arriva dal vostro sistema come attributo “contatti residui”: si sceglie in fase 0." en="The orchestration can stay where it is today: only who decides which offer goes out changes. The rule stays yours. Two counters: the per-offer limit is evaluated when deciding; the per-person, per-channel cap is applied at send (on web and app only the first holds). Your policy maps onto the second, or comes from your system as a “contacts remaining” attribute: this is chosen in phase 0." />
-        </div>
-
-        <p class="im-fonte-riga">
-          <span data-lang-it>Il limite per offerta si conta per identità al bordo e per profilo nel percorso. Per la funzione precedente (Offer Decisioning) la documentazione indica qualche minuto di ritardo sulla Decisioning API e fino a 30 minuti fra bordo e hub; per il nuovo Decisioning i tempi vanno riverificati. Documentazione pubblica, 11 nov 2026: </span><span data-lang-en>The per-offer limit counts per identity at the edge and per profile in the journey. For the previous capability (Offer Decisioning) the documentation gives a few minutes’ delay on the Decisioning API and up to 30 minutes between edge and hub; for the new Decisioning the timings need re-checking. Public documentation, 11 Nov 2026: </span>
-          <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/decisioning/experience-decisioning/gs-experience-decisioning" target="_blank" rel="noopener">Journey Optimizer · Decisioning</a><span> · </span>
-          <a href="https://experienceleague.adobe.com/en/docs/experience-cloud-kcs/kbarticles/ka-30469" target="_blank" rel="noopener">KB ka-30469</a><span> · </span>
-          <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/decisioning/offer-decisioning/managing-offers-in-the-offer-library/configure-offers/add-constraints" target="_blank" rel="noopener"><span data-lang-it>limiti per offerta</span><span data-lang-en>offer capping</span></a>
-          <a class="im-torna" href={TORNA}><span data-lang-it>← Torna ai quattro componenti</span><span data-lang-en>← Back to the four components</span></a>
-        </p>
-      </div>
-    </Slide>
+    <IngaggioRegia />
 
     {/* ── L'arbitro · Decisioning ───────────────────────────────── */}
     <IngaggioArbitro />

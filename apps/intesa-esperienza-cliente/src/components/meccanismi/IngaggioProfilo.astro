@@ -1,0 +1,220 @@
+---
+/**
+ * slide-ingaggio-profilo — «Il profilo collega pseudonimo, telefono e codice
+ * cliente alla stessa persona», disegnata.
+ *
+ * Il meccanismo: gli identificativi di Giulia arrivano uno dopo l'altro, a
+ * scala (sito, simulazione, Filiale Digitale, firma), e si cuciono in un
+ * profilo solo. Cinque passi: lo schema comune · lo stitching dei primi tre ·
+ * il grafo che si aggiorna quando arriva l'NDG · il consenso che entra dal
+ * registro · la scelta di progetto, con due pulsanti come quelli di
+ * `slide-domanda-consenso` (portare il dato / lasciarlo dov'è e interrogarlo).
+ *
+ * Contenuti: gli stessi della slide a schede (PROFILO e SCELTA_PROFILO in
+ * approfondimenti, il lead, la riga delle fonti). Le quattro descrizioni
+ * sono le didascalie dei passi 1-4; le due strade quelle del passo 5.
+ * ⚠️ Il limite della seconda strada (si ricompone a ogni esecuzione
+ * pianificata, non a evento) resta nella didascalia: si dichiara col pregio.
+ */
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+
+/* Gli identificativi, nell'ordine del lead. y = centro del nodo; s = dove entra nel profilo. */
+const ID = [
+  { k: '1', x: 210, y: 52, s: 110, m: { it: 'Sito', en: 'Website' }, n: { it: 'Pseudonimo', en: 'Pseudonym' } },
+  { k: '2', x: 400, y: 132, s: 160, m: { it: 'Simulazione', en: 'Simulation' }, n: { it: 'Codice pratica', en: 'Application code' } },
+  { k: '3', x: 590, y: 212, s: 210, m: { it: 'Filiale Digitale', en: 'Filiale Digitale' }, n: { it: 'Telefono', en: 'Phone number' } },
+  { k: '4', x: 780, y: 292, s: 262, m: { it: 'Firma', en: 'Signing' }, n: { it: 'NDG', en: 'Customer number' } },
+];
+const PASSI = [
+  { t: { it: 'Uno schema dati comune', en: 'One common data schema' },
+    d: { it: 'Eventi e attributi scritti nello stesso modo, da qualunque canale arrivino.', en: 'Events and attributes written the same way, whichever channel they come from.' } },
+  { t: { it: 'Gli identificativi si cuciono', en: 'Identifiers get stitched' },
+    d: { it: 'Pseudonimo del browser, ID dell’app, email, codice cliente: lo stitching li riporta alla stessa persona.', en: 'Browser pseudonym, app ID, email, customer number: stitching ties them back to one person.' } },
+  { t: { it: 'Il grafo si aggiorna da sé', en: 'The graph updates itself' },
+    d: { it: 'Si aggiorna man mano che i dati arrivano.', en: 'It updates as data arrives.' } },
+  { t: { it: 'Il consenso viene dal vostro registro', en: 'Consent comes from your register' },
+    d: { it: 'Il consenso resta nel vostro registro; la piattaforma lo riceve e lo applica. Una revoca in filiale arriva al profilo dal registro.', en: 'Consent stays in your register; the platform receives and applies it. A revocation in the branch reaches the profile from the register.' } },
+];
+const SCELTA = [
+  { k: 'copia', t: { it: 'Portare il dato in piattaforma', en: 'Bring the data into the platform' },
+    d: { it: 'Il profilo si costruisce qui: segmentazione libera e qualificazione nel momento in cui l’evento arriva.', en: 'The profile is built here: free segmentation and qualification the moment the event lands.' },
+    q: { it: 'Serve una copia del dato', en: 'A copy of the data is needed' } },
+  { k: 'federa', t: { it: 'Lasciarlo dov’è, e interrogarlo', en: 'Leave it where it is, and query it' },
+    d: { it: 'Le audience si compongono sul vostro data lake senza copiare il dato. Si ricompongono a ogni esecuzione pianificata, non a evento.', en: 'Audiences are composed on your data lake without copying the data. They recompose at each scheduled run, not on an event.' },
+    q: { it: 'Il dato regolamentato non si muove', en: 'Regulated data does not move' } },
+];
+const PX = 900; // il profilo
+---
+<Slide id="slide-ingaggio-profilo" bg="inverse" align="left" data-lettura-ritmo="3200">
+  <div slot="backdrop" class="im-bg-notte"></div>
+  <div class="im-ado-cap im-ado-cap--largo" data-reveal data-mc-scelta="copia">
+    <T as="p" class="im-ado-occ" it="Approfondimento · il profilo" en="Deep dive · the profile" />
+    <T as="h2" class="im-ado-t im-ado-t--stretto" it="Il profilo collega pseudonimo, telefono e codice cliente alla stessa persona" en="The profile links pseudonym, phone number and customer number to one person" />
+    <T as="p" class="im-ado-l mc-prof-lead" it="Giulia è uno pseudonimo sul sito, un codice pratica dalla simulazione, un&nbsp;telefono alla Filiale Digitale e un NDG alla firma. Il profilo li collega." en="Giulia is a pseudonym on the site, an application code from the simulation, a phone number at the Filiale Digitale and a customer number at signing. The profile links them." />
+    <i class="mc-prof-passo" data-substep data-p="1" aria-hidden="true"></i>
+    <i class="mc-prof-passo" data-substep data-p="2" aria-hidden="true"></i>
+    <i class="mc-prof-passo" data-substep data-p="3" aria-hidden="true"></i>
+    <i class="mc-prof-passo" data-substep data-p="4" aria-hidden="true"></i>
+    <i class="mc-prof-passo" data-substep data-p="5" aria-hidden="true"></i>
+    <figure class="mc-prof" data-mc-prof>
+      <div class="mc-prof-g" role="img" aria-label="Pseudonimo del sito, codice pratica della simulazione, telefono della Filiale Digitale e NDG della firma arrivano uno dopo l'altro e si cuciono in un profilo solo; il consenso entra dal registro dei consensi">
+        <svg class="mc-prof-svg" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+          {ID.map((c) => <path class="mc-prof-r" data-k={c.k} pathLength="1" d={`M${c.x + 14} ${c.y} C ${(c.x + PX) / 2 + 60} ${c.y}, ${(c.x + PX) / 2 + 60} ${c.s}, ${PX} ${c.s}`} />)}
+          <path class="mc-prof-cons" pathLength="1" d={`M604 355 C 780 355, 800 298, ${PX} 298`} />
+        </svg>
+        <svg class="mc-prof-nodi" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+          {ID.map((c) => <rect class="mc-prof-n" data-k={c.k} x={c.x} y={c.y - 22} width="14" height="44" />)}
+          <rect class="mc-prof-p" x={PX} y="80" width="16" height="240" />
+          <rect class="mc-prof-reg" x="590" y="335" width="14" height="40" />
+        </svg>
+        {ID.map((c) => (
+          <span class="mc-prof-l" data-k={c.k} style={`--x:${(c.x - 8) / 10}%;--y:${c.y / 4}%`}>
+            <T as="span" class="mc-prof-l-m" it={c.m.it} en={c.m.en} />
+            <T as="span" class="mc-prof-l-n" it={c.n.it} en={c.n.en} />
+          </span>
+        ))}
+        <span class="mc-prof-l mc-prof-l--p" style={`--x:${(PX + 8) / 10}%;--y:20%`}>
+          <T as="span" data-scelta-per="copia" it="Il profilo" en="The profile" />
+          <T as="span" data-scelta-per="federa" it="Il vostro data lake" en="Your data lake" />
+        </span>
+        <span class="mc-prof-l mc-prof-l--reg" style="--x:58.2%;--y:88.75%">
+          <T as="span" class="mc-prof-l-n" it="Registro dei consensi" en="Consent register" />
+        </span>
+      </div>
+    </figure>
+    <div class="mc-prof-banda">
+      <div class="mc-prof-didas">
+        {PASSI.map((p, i) => <p data-per={String(i + 1)}><T as="strong" it={p.t.it} en={p.t.en} /> <T as="span" it={p.d.it} en={p.d.en} /></p>)}
+        {/* La strada scelta è scritta sul pulsante acceso: qui la chiave della scelta, poi la strada. */}
+        {SCELTA.map((o) => <p data-per="5" data-scelta-per={o.k}><T as="strong" it="Una scelta di progetto, da fare insieme" en="One design choice, to make together" /> <T as="span" it={o.d.it} en={o.d.en} /> <T as="span" class="mc-prof-q" it={o.q.it} en={o.q.en} /></p>)}
+      </div>
+      <div class="mc-prof-scelta">
+        <div class="mc-prof-chips" role="group" aria-label="Una scelta di progetto, da fare insieme">
+          {SCELTA.map((o, i) => <button type="button" class="mc-prof-chip" data-mc-prof-scelta={o.k} aria-pressed={i === 0 ? 'true' : 'false'}><T as="span" it={o.t.it} en={o.t.en} /></button>)}
+        </div>
+      </div>
+    </div>
+    <p class="im-fonte-riga">
+      <span data-lang-it>La seconda strada è </span><span data-lang-en>The second route is </span>
+      <a href="https://experienceleague.adobe.com/en/docs/federated-audience-composition/using/overview" target="_blank" rel="noopener">Federated Audience Composition</a><span
+        data-lang-it>: un modulo a parte di Real-Time Activation e Journey Optimizer. Lavora solo su un elenco chiuso di database (Redshift, Synapse, Databricks, BigQuery, Fabric, Oracle, Snowflake, Teradata, Vertica). Il mutuo vuole la prima strada: riconoscimento in sessione, decisione a evento. Fonte: </span>
+      <span data-lang-en>: a separate module of Real-Time Activation and Journey Optimizer. It works only on a closed list of databases (Redshift, Synapse, Databricks, BigQuery, Fabric, Oracle, Snowflake, Teradata, Vertica). For the mortgage case the first route is needed (in-session recognition, event-driven decision). Source: </span>
+      <a href="https://experienceleague.adobe.com/en/docs/federated-audience-composition/using/connections/home" target="_blank" rel="noopener"><span data-lang-it>database supportati</span><span data-lang-en>supported databases</span></a>
+      <a class="im-torna" href="#slide-ingaggio-ciclo"><span data-lang-it>← Torna ai quattro componenti</span><span data-lang-en>← Back to the four components</span></a>
+    </p>
+  </div>
+</Slide>
+
+<script>
+  /* La scelta di progetto (passo 5): il pulsante cambia strada, i nastri si
+     ridisegnano e cambia la didascalia. Delegato su document: regge la
+     navigazione SPA senza ricollegarsi. */
+  document.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-mc-prof-scelta]');
+    if (!b) return;
+    const cap = b.closest<HTMLElement>('[data-mc-scelta]');
+    const fig = cap?.querySelector<HTMLElement>('[data-mc-prof]');
+    if (!cap || !fig || cap.dataset.mcScelta === b.dataset.mcProfScelta) return;
+    cap.dataset.mcScelta = b.dataset.mcProfScelta!;
+    cap.querySelectorAll<HTMLButtonElement>('[data-mc-prof-scelta]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    fig.removeAttribute('data-ridisegna'); void fig.offsetWidth; fig.setAttribute('data-ridisegna', '');
+  });
+</script>
+
+<style is:global>
+  /* ══ GLI IDENTIFICATIVI CHE SI CUCIONO (slide-ingaggio-profilo) ════════
+     Stato base: i quattro identificativi a vista e spenti, il profilo
+     accennato, niente nastri. Passo 1 li accende (lo schema comune), passo 2
+     cuce i primi tre, passo 3 arriva l'NDG e il profilo si allunga, passo 4
+     entra il consenso dal registro, passo 5 la scelta. */
+  #slide-ingaggio-profilo { --mp-v: #b9e6a3; --mp-nastro: rgba(185, 230, 163, 0.32); --mp-acc: #6cc04a; --mp-ease: cubic-bezier(0.16, 1, 0.3, 1); }
+  #slide-ingaggio-profilo .im-ado-t { max-width: none; }
+  .mc-prof-passo { position: absolute; width: 0; height: 0; overflow: hidden; }
+  .mc-prof { position: relative; margin: 0; }
+  .mc-prof-g { position: relative; height: clamp(11rem, calc(15 * var(--vu)), 28rem); margin-top: clamp(0.6rem, calc(0.8 * var(--vu)), 1.6rem); }
+  .mc-prof-svg, .mc-prof-nodi { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+
+  .mc-prof-svg path { fill: none; stroke: var(--mp-nastro); stroke-width: 10; vector-effect: non-scaling-stroke; stroke-linecap: butt;
+    stroke-dasharray: 3; stroke-dashoffset: 3; transition: stroke-dashoffset 1.2s var(--mp-ease), stroke 0.45s ease, stroke-width 0.3s ease, opacity 0.45s ease; }
+  .mc-prof-svg .mc-prof-cons { stroke: #9fd68a; stroke-width: 3; }
+  .mc-prof-n { fill: rgba(185, 230, 163, 0.28); transition: fill 0.45s ease; }
+  .mc-prof-p { fill: rgba(255, 255, 255, 0.28); transform-box: fill-box; transform-origin: 50% 0; transform: scaleY(0.75); transition: transform 0.9s var(--mp-ease), fill 0.45s ease, stroke 0.45s ease; }
+  .mc-prof-reg { fill: #ffffff; opacity: 0; transition: opacity 0.5s ease; }
+
+  .mc-prof-l { position: absolute; left: var(--x); top: var(--y); translate: -100% -50%; display: grid; text-align: right; line-height: 1.15; white-space: nowrap; opacity: 0.6; transition: opacity 0.45s ease; }
+  .mc-prof-l-m { font-size: clamp(0.76rem, calc(0.64 * var(--vu)), 1.42rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9fd68a; }
+  .mc-prof-l-n { font-size: clamp(0.92rem, calc(0.86 * var(--vu)), 1.85rem); font-weight: 700; color: #ffffff; }
+  .mc-prof-l--p { translate: -50% calc(-100% - 0.35rem); text-align: center; font-size: clamp(0.92rem, calc(0.86 * var(--vu)), 1.85rem); font-weight: 700; color: #ffffff; opacity: 0.6; }
+  .mc-prof-l--reg { opacity: 0; }
+
+  /* ── La fascia ── */
+  .mc-prof-banda { display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; column-gap: clamp(1.2rem, calc(2 * var(--vu)), 4rem);
+    margin: clamp(0.6rem, calc(0.9 * var(--vu)), 1.8rem) 0 0; padding: clamp(0.55rem, calc(0.75 * var(--vu)), 1.4rem) clamp(0.9rem, calc(1.2 * var(--vu)), 2.2rem);
+    border: 1px solid rgba(185, 230, 163, 0.34); border-radius: 8px; background: rgba(185, 230, 163, 0.09);
+    font-size: clamp(1.02rem, calc(1 * var(--vu)), 2.2rem); line-height: 1.38; color: #f2f8f0;
+    opacity: 0; visibility: hidden; transition: opacity 0.5s ease, visibility 0s linear 0.5s; }
+  .mc-prof-didas { display: grid; min-width: 0; }
+  .mc-prof-didas > p { grid-area: 1 / 1; margin: 0; max-width: none; opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0s linear 0.25s; }
+  .mc-prof-didas strong { color: #b9e6a3; margin-right: 0.35em; }
+  .mc-prof-q { display: block; margin-top: 0.2rem; font-weight: 700; color: #9fd68a; }
+  .mc-prof-scelta { display: none; gap: 0.4rem; justify-items: start; }
+  .mc-prof-chips { display: grid; gap: 0.4rem; }
+  .mc-prof-chip { font: inherit; font-size: clamp(0.88rem, calc(0.78 * var(--vu)), 1.7rem); font-weight: 600; cursor: pointer; white-space: nowrap; text-align: left;
+    min-height: 44px; padding: 0 1rem; border-radius: 999px; color: #f2f8f0; background: transparent; border: 1px solid rgba(185, 230, 163, 0.45);
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+  .mc-prof-chip:hover { border-color: #b9e6a3; }
+  .mc-prof-chip[aria-pressed='true'] { background: #b9e6a3; color: #0b1f06; border-color: #b9e6a3; }
+  .mc-prof-chip:focus-visible { outline: 2px solid #ffffff; outline-offset: 3px; }
+
+  /* La scelta: si vede solo ciò che appartiene alla strada scelta. */
+  [data-mc-scelta="copia"] [data-scelta-per]:not([data-scelta-per="copia"]),
+  [data-mc-scelta="federa"] [data-scelta-per]:not([data-scelta-per="federa"]) { display: none; }
+
+  /* ── Gli stati ── */
+  #slide-ingaggio-profilo:has(.mc-prof-passo[data-p="1"][data-substep-active]) .mc-prof-banda { opacity: 1; visibility: visible; transition: opacity 0.5s ease, visibility 0s; }
+  /* 1 · lo schema comune: gli identificativi si accendono tutti insieme */
+  #slide-ingaggio-profilo:has(.mc-prof-passo[data-p="1"][data-substep-active]) .mc-prof-n { fill: var(--mp-v); }
+  #slide-ingaggio-profilo:has(.mc-prof-passo[data-p="1"][data-substep-active]) .mc-prof-l:not(.mc-prof-l--reg) { opacity: 1; }
+  /* 2 · i primi tre si cuciono nel profilo */
+  #slide-ingaggio-profilo:has(.mc-prof-passo[data-p="2"][data-substep-active]) .mc-prof-r:not([data-k="4"]) { stroke-dashoffset: 0; stroke: var(--mp-v); }
+  #slide-ingaggio-profilo:has(.mc-prof-passo[data-p="2"][data-substep-active]) .mc-prof-p { fill: #ffffff; }
+  .mc-prof-r[data-k="2"] { transition-delay: 0.15s; } .mc-prof-r[data-k="3"] { transition-delay: 0.3s; }
+  /* 3 · arriva l'NDG: il grafo si aggiorna, il profilo si allunga */
+  #slide-ingaggio-profilo:has(.mc-prof-passo[data-p="3"][data-substep-active]) .mc-prof-r[data-k="4"] { stroke-dashoffset: 0; stroke: var(--mp-v); transition-delay: 0s; }
+  #slide-ingaggio-profilo:has(.mc-prof-passo[data-p="3"][data-substep-active]) .mc-prof-p { transform: scaleY(1); }
+  #slide-ingaggio-profilo:has(.mc-prof-passo[data-p="3"][data-substep-active]):not(:has(.mc-prof-passo[data-p="4"][data-substep-active])) .mc-prof-n[data-k="4"] { fill: var(--mp-acc); }
+  /* 4 · il consenso entra dal registro */
+  #slide-ingaggio-profilo:has(.mc-prof-passo[data-p="4"][data-substep-active]) .mc-prof-reg,
+  #slide-ingaggio-profilo:has(.mc-prof-passo[data-p="4"][data-substep-active]) .mc-prof-l--reg { opacity: 1; }
+  #slide-ingaggio-profilo:has(.mc-prof-passo[data-p="4"][data-substep-active]) .mc-prof-cons { stroke-dashoffset: 0; }
+  /* 5 · la scelta: i pulsanti prendono la colonna di destra della fascia */
+  #slide-ingaggio-profilo:has(.mc-prof-passo[data-p="5"][data-substep-active]) .mc-prof-scelta { display: grid; animation: mc-prof-entra 0.4s ease both; }
+  #slide-ingaggio-profilo:has(.mc-prof-passo[data-p="5"][data-substep-active]) .mc-prof-banda { grid-template-columns: minmax(0, 1fr) auto; }
+  @keyframes mc-prof-entra { from { opacity: 0; } to { opacity: 1; } }
+  /* Lasciarlo dov'è: niente copia. I nastri diventano tratteggi (si interroga),
+     il profilo è un contorno. */
+  #slide-ingaggio-profilo [data-mc-scelta="federa"] .mc-prof-r { stroke-width: 3; stroke-dasharray: 0.012 0.012; }
+  #slide-ingaggio-profilo [data-mc-scelta="federa"] .mc-prof-p { fill: rgba(255, 255, 255, 0.08); stroke: #ffffff; stroke-width: 2; vector-effect: non-scaling-stroke; }
+  .mc-prof[data-ridisegna] .mc-prof-svg { animation: mc-prof-ridisegna 0.9s var(--mp-ease) both; }
+  @keyframes mc-prof-ridisegna { from { clip-path: inset(-5% 100% -5% -5%); } to { clip-path: inset(-5% -5% -5% -5%); } }
+
+  /* Didascalie: il passo attivo è l'ultimo acceso. */
+  #slide-ingaggio-profilo:has(.mc-prof-passo[data-p="1"][data-substep-active]):not(:has(.mc-prof-passo[data-p="2"][data-substep-active])) .mc-prof-didas > [data-per="1"],
+  #slide-ingaggio-profilo:has(.mc-prof-passo[data-p="2"][data-substep-active]):not(:has(.mc-prof-passo[data-p="3"][data-substep-active])) .mc-prof-didas > [data-per="2"],
+  #slide-ingaggio-profilo:has(.mc-prof-passo[data-p="3"][data-substep-active]):not(:has(.mc-prof-passo[data-p="4"][data-substep-active])) .mc-prof-didas > [data-per="3"],
+  #slide-ingaggio-profilo:has(.mc-prof-passo[data-p="4"][data-substep-active]):not(:has(.mc-prof-passo[data-p="5"][data-substep-active])) .mc-prof-didas > [data-per="4"],
+  #slide-ingaggio-profilo:has(.mc-prof-passo[data-p="5"][data-substep-active]) .mc-prof-didas > [data-per="5"] { opacity: 1; visibility: visible; transition: opacity 0.35s ease 0.1s, visibility 0s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mc-prof-svg path, .mc-prof-n, .mc-prof-p, .mc-prof-reg, .mc-prof-l, .mc-prof-banda, .mc-prof-didas > p { transition: none !important; }
+    .mc-prof[data-ridisegna] .mc-prof-svg, #slide-ingaggio-profilo .mc-prof-scelta { animation: none !important; }
+  }
+  @media (max-height: 880px) {
+    .mc-prof-g { height: clamp(8.5rem, calc(10.5 * var(--vu)), 26rem); }
+  }
+  @media (max-width: 900px) {
+    .mc-prof-banda, #slide-ingaggio-profilo:has(.mc-prof-passo[data-p="5"][data-substep-active]) .mc-prof-banda { grid-template-columns: minmax(0, 1fr); row-gap: 0.6rem; }
+    .mc-prof-chip { white-space: normal; }
+  }
+</style>

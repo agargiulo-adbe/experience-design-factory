@@ -1,0 +1,201 @@
+---
+/**
+ * slide-ingaggio-ciclo — «Quattro componenti sullo stesso dato», disegnata.
+ *
+ * Al posto delle quattro schede, un giro sopra una base: Adobe Experience
+ * Platform in basso, e sopra i quattro componenti (misura → profilo → regia →
+ * arbitro) che si accendono uno per passo, ognuno legato alla base da un
+ * gambo. All'ultimo passo il gambo dell'arbitro scende alla base e quello
+ * della misura risale: il giro si chiude sullo stesso dato.
+ *
+ * Grammatica delle due domande del 19 novembre (`domande.css`) e del Sankey
+ * di «Dalla email allo sportello»: marcatori di passo invisibili, viewBox
+ * 1000×400 deformabile con tratti a spessore costante, etichette HTML in %
+ * (x/10, y/4) sopra il disegno, UNA didascalia per passo in una fascia.
+ *
+ * Contenuti: gli stessi della slide a schede (titolo, sottotitolo,
+ * descrizione e riga verde di ogni componente, la base, la riga delle
+ * fonti). Le descrizioni vanno nella didascalia del loro passo; la riga
+ * verde (ciò che succederebbe nel perimetro del cliente) resta verde.
+ * Le quattro etichette sono i link verso le slide di dettaglio, come prima.
+ */
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+
+const NODI = [
+  { n: '1', ancora: 'slide-ingaggio-dato', x: 40, t: { it: 'La misura', en: 'Measurement' },
+    s: { it: 'Analisi omnicanale', en: 'Omnichannel analytics' },
+    d: { it: 'Percorsi, funnel, coorti e attribuzione su dati a livello di evento, su tutti i canali.', en: 'Journeys, funnels, cohorts and attribution on event-level data, across every channel.' },
+    i: { it: 'Un solo dato per app, sito, Filiale Digitale e filiale, per Controllo di Gestione e Advanced Analytics.', en: 'One dataset across app, site, Filiale Digitale and branch, for management control and advanced analytics.' } },
+  { n: '2', ancora: 'slide-ingaggio-profilo', x: 290, t: { it: 'Il profilo', en: 'The profile' },
+    s: { it: 'Da audience a target', en: 'From audience to target' },
+    d: { it: 'Identità, consenso e segmenti attivabili su ogni canale, su Experience Platform.', en: 'Identity, consent and segments activatable on every channel, on Experience Platform.' },
+    i: { it: 'Riceve dal data lake e dagli eventi digitali, ed espone audience e attributi. Gli score del motore di targeting entrano in batch quando la persona è cliente; sui non‑clienti, se esistono, è la domanda della fase 0.', en: 'Fed by the data lake and digital events, and exposes audiences and attributes. The targeting engine’s scores come in by batch once the person is a customer: on a non-customer they do not exist yet.' } },
+  { n: '3', ancora: 'slide-ingaggio-regia', x: 540, t: { it: 'La regia', en: 'Orchestration' },
+    s: { it: 'In tempo reale', en: 'In real time' },
+    d: { it: 'Percorsi uno-a-uno su email, push, SMS, in-app e web, attivati da eventi, con consenso e regole di conformità.', en: 'One-to-one journeys over email, push, SMS, in-app and web, triggered by events, with consent and compliance rules.' },
+    i: { it: 'Governa i canali digitali e passa segnali e proposte al CRM di filiale, che resta vostro.', en: 'Runs the digital channels and passes signals and proposals to the branch CRM, which stays yours.' } },
+  { n: '4', ancora: 'slide-ingaggio-arbitro', x: 790, t: { it: 'L’arbitro', en: 'The arbiter' },
+    s: { it: 'L’ultimo strato decisionale', en: 'The last decision layer' },
+    d: { it: 'Regole e vincoli: per ogni contatto esce una proposta fra quelle ammesse.', en: 'Rules and constraints: for each contact one proposal goes out among those allowed.' },
+    /* Rimanda a `slide-serve`, non parafrasa: vedi il commento su CICLO in approfondimenti. */
+    i: { it: 'La regola di precedenza fra il vostro motore e Decisioning è una delle cinque cose da portare alla fase 0.', en: 'The precedence rule between your engine and Decisioning is one of the five things to bring to phase 0.' } },
+];
+/* Geometria: nodi larghi 170 a y=150, gambi al centro di ciascuno fino alla base (y=330). */
+const W = 170;
+const Y = 150;
+const BASE = 318;
+const BH = 36; // la base è una lastra, con il nome dentro
+const SOTTO = 378; // dove passa il ritorno, sotto la lastra
+---
+<Slide id="slide-ingaggio-ciclo" bg="inverse" align="left" data-lettura-ritmo="3200">
+  <div slot="backdrop" class="im-bg-notte"></div>
+  <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+    <T as="h2" class="im-ado-t im-ado-t--stretto" it="Quattro componenti sullo stesso dato" en="Four components on the same data" />
+    <i class="mc-ciclo-passo" data-substep data-p="1" aria-hidden="true"></i>
+    <i class="mc-ciclo-passo" data-substep data-p="2" aria-hidden="true"></i>
+    <i class="mc-ciclo-passo" data-substep data-p="3" aria-hidden="true"></i>
+    <i class="mc-ciclo-passo" data-substep data-p="4" aria-hidden="true"></i>
+    <i class="mc-ciclo-passo" data-substep data-p="5" aria-hidden="true"></i>
+    <figure class="mc-ciclo">
+      <div class="mc-ciclo-g">
+        <svg class="mc-ciclo-svg" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+          {/* i gambi: ogni componente legge e scrive la stessa base */}
+          {NODI.map((c) => <path class="mc-ciclo-gambo" data-k={c.n} pathLength="1" d={`M${c.x + W / 2} ${BASE} L${c.x + W / 2} ${Y + 16}`} />)}
+          {/* il giro: da un componente al successivo */}
+          {NODI.slice(0, -1).map((c, i) => <path class="mc-ciclo-giro" data-k={String(i + 2)} pathLength="1" d={`M${c.x + W} ${Y + 8} L${NODI[i + 1].x} ${Y + 8}`} />)}
+          {/* la chiusura: l'arbitro scende alla base, la base riporta alla misura */}
+          <path class="mc-ciclo-chiude" pathLength="1" d={`M${NODI[3].x + W / 2} ${BASE + BH} L${NODI[3].x + W / 2} ${SOTTO} L${NODI[0].x + W / 2} ${SOTTO} L${NODI[0].x + W / 2} ${BASE + BH}`} />
+        </svg>
+        <svg class="mc-ciclo-nodi" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+          <rect class="mc-ciclo-base" x="40" y={BASE} width="920" height={BH} />
+          {NODI.map((c) => <rect class="mc-ciclo-n" data-k={c.n} x={c.x} y={Y} width={W} height="16" />)}
+        </svg>
+        {NODI.map((c) => (
+          <a class="mc-ciclo-nodo" data-k={c.n} href={`#${c.ancora}`} style={`--x:${c.x / 10}%;--y:${Y / 4}%`}>
+            <span class="mc-ciclo-nodo-t"><span class="mc-ciclo-num">{c.n}</span><T as="span" it={c.t.it} en={c.t.en} /></span>
+            <T as="span" class="mc-ciclo-nodo-s" it={c.s.it} en={c.s.en} />
+            <span class="mc-ciclo-apri"><span data-lang-it>Apri il dettaglio →</span><span data-lang-en>Open the detail →</span></span>
+          </a>
+        ))}
+        <span class="mc-ciclo-l-base" style={`--x:50%;--y:${(BASE + BH / 2) / 4}%`}>Adobe Experience Platform</span>
+      </div>
+    </figure>
+    <div class="mc-ciclo-banda">
+      <div class="mc-ciclo-didas">
+        <p data-per="1"><T as="strong" it="Lo stesso dato" en="The same data" /> <T as="span" it="Sotto tutti e quattro, Adobe Experience Platform." en="Beneath all four, Adobe Experience Platform." /></p>
+        {NODI.map((c, i) => (
+          <p data-per={String(i + 2)}>
+            <strong>{c.n} · <T as="span" it={c.t.it} en={c.t.en} /></strong> <T as="span" it={c.d.it} en={c.d.en} />
+            <T as="span" class="mc-ciclo-vostro" it={c.i.it} en={c.i.en} />
+          </p>
+        ))}
+      </div>
+    </div>
+    <p class="im-fonte-riga">
+      <span data-lang-it>La riga verde è quello che succederebbe nel vostro perimetro, e va confermata con voi. </span><span data-lang-en>The green line is what would happen inside your perimeter, and is to be confirmed with you. </span>
+      <a href="#slide-ingaggio-casi"><span data-lang-it>Quattro casi d’uso →</span><span data-lang-en>Four use cases →</span></a>
+    </p>
+  </div>
+</Slide>
+
+<style is:global>
+  /* ══ IL GIRO SOPRA LA BASE (slide-ingaggio-ciclo) ══════════════════════
+     Stato base: nodi ed etichette a vista ma spenti, gambi e giro nascosti.
+     Passo 1: la base si accende, i gambi salgono tenui. Passi 2-5: un
+     componente per passo, con il tratto del giro che lo raggiunge. Al 5
+     il giro si chiude passando dalla base. */
+  #slide-ingaggio-ciclo { --cc-v: #b9e6a3; --cc-nastro: rgba(185, 230, 163, 0.32); --cc-acc: #6cc04a; --cc-ease: cubic-bezier(0.16, 1, 0.3, 1); }
+  #slide-ingaggio-ciclo .im-ado-cap { max-width: 86rem; }
+  .mc-ciclo-passo { position: absolute; width: 0; height: 0; overflow: hidden; }
+  .mc-ciclo { position: relative; margin: clamp(0.4rem, calc(0.6 * var(--vu)), 1.2rem) 0 0; }
+  .mc-ciclo-g { position: relative; height: clamp(12rem, calc(19 * var(--vu)), 34rem); margin-top: clamp(0.8rem, calc(1.2 * var(--vu)), 2.4rem); margin-bottom: clamp(0.4rem, calc(0.6 * var(--vu)), 1.2rem); }
+  .mc-ciclo-svg, .mc-ciclo-nodi { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+
+  .mc-ciclo-svg path { fill: none; stroke: var(--cc-nastro); stroke-width: 10; vector-effect: non-scaling-stroke; stroke-linecap: butt;
+    stroke-dasharray: 3; stroke-dashoffset: 3; transition: stroke-dashoffset 1s var(--cc-ease), stroke 0.45s ease, opacity 0.45s ease; }
+  .mc-ciclo-svg .mc-ciclo-giro { stroke-width: 4; }
+  .mc-ciclo-svg .mc-ciclo-chiude { stroke: var(--cc-v); stroke-width: 4; transition: stroke-dashoffset 1.6s var(--cc-ease) 0.5s, opacity 0.45s ease; }
+
+  .mc-ciclo-base { fill: rgba(255, 255, 255, 0.28); transition: fill 0.5s ease; }
+  .mc-ciclo-n { fill: rgba(185, 230, 163, 0.28); transition: fill 0.45s ease; }
+
+  /* Le etichette dei nodi: sono i link verso il dettaglio. */
+  .mc-ciclo-nodo { position: absolute; left: var(--x); top: var(--y); translate: 0 calc(-100% - 0.5rem);
+    display: grid; gap: 0.12rem; max-width: 22%; color: #ffffff; text-decoration: none; opacity: 0.6;
+    transition: opacity 0.45s ease; }
+  .mc-ciclo-nodo-t { display: flex; align-items: center; gap: 0.5rem; font-size: clamp(1.02rem, calc(1 * var(--vu)), 2.2rem); font-weight: 700; line-height: 1.15; white-space: nowrap; }
+  .mc-ciclo-num { flex: none; width: 1.55em; height: 1.55em; border-radius: 999px; display: grid; place-items: center;
+    font-size: 0.78em; line-height: 1; background: rgba(185, 230, 163, 0.28); color: #ffffff; transition: background-color 0.45s ease, color 0.45s ease; }
+  .mc-ciclo-nodo-s { font-size: clamp(0.92rem, calc(0.86 * var(--vu)), 1.85rem); font-weight: 500; line-height: 1.2; color: #d9e6d4; white-space: nowrap; }
+  .mc-ciclo-apri { font-size: clamp(0.82rem, calc(0.68 * var(--vu)), 1.5rem); font-weight: 700; color: #9fd68a; white-space: nowrap; text-decoration: underline; text-decoration-color: rgba(159, 214, 138, 0.5); text-underline-offset: 0.2em; }
+  .mc-ciclo-nodo:hover, .mc-ciclo-nodo:focus-visible { opacity: 1; }
+  .mc-ciclo-nodo:hover .mc-ciclo-apri, .mc-ciclo-nodo:focus-visible .mc-ciclo-apri { text-decoration-color: #9fd68a; }
+  .mc-ciclo-nodo:focus-visible { outline: 2px solid #ffffff; outline-offset: 4px; border-radius: 4px; }
+  .mc-ciclo-l-base { position: absolute; left: var(--x); top: var(--y); translate: -50% -50%; font-size: clamp(0.82rem, calc(0.74 * var(--vu)), 1.55rem); font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; color: #ffffff; white-space: nowrap; transition: color 0.45s ease; }
+
+  /* ── La fascia: una didascalia per passo ── */
+  .mc-ciclo-banda { margin: clamp(0.6rem, calc(0.9 * var(--vu)), 1.8rem) 0 0; padding: clamp(0.55rem, calc(0.75 * var(--vu)), 1.4rem) clamp(0.9rem, calc(1.2 * var(--vu)), 2.2rem);
+    border: 1px solid rgba(185, 230, 163, 0.34); border-radius: 8px; background: rgba(185, 230, 163, 0.09);
+    font-size: clamp(1.02rem, calc(1 * var(--vu)), 2.2rem); line-height: 1.38; color: #f2f8f0;
+    opacity: 0; visibility: hidden; transition: opacity 0.5s ease, visibility 0s linear 0.5s; }
+  .mc-ciclo-didas { display: grid; min-width: 0; }
+  .mc-ciclo-didas > p { grid-area: 1 / 1; margin: 0; max-width: none; opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0s linear 0.25s; }
+  .mc-ciclo-didas strong { color: #b9e6a3; margin-right: 0.35em; }
+  /* La riga verde: ciò che succederebbe nel vostro perimetro. */
+  .mc-ciclo-vostro { display: block; margin-top: 0.2rem; color: #b9e6a3; }
+
+  /* ── Gli stati ── */
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="1"][data-substep-active]) .mc-ciclo-banda { opacity: 1; visibility: visible; transition: opacity 0.5s ease, visibility 0s; }
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="1"][data-substep-active]) .mc-ciclo-base { fill: #ffffff; }
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="1"][data-substep-active]) .mc-ciclo-l-base { color: #0b1f06; }
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="1"][data-substep-active]) .mc-ciclo-gambo { stroke-dashoffset: 0; }
+  /* ogni componente: il suo gambo si fa forte, il tratto del giro lo raggiunge */
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="2"][data-substep-active]) .mc-ciclo-svg [data-k="1"],
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="3"][data-substep-active]) .mc-ciclo-svg [data-k="2"],
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="4"][data-substep-active]) .mc-ciclo-svg [data-k="3"],
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="5"][data-substep-active]) .mc-ciclo-svg [data-k="4"] { stroke: var(--cc-v); stroke-dashoffset: 0; }
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="2"][data-substep-active]) .mc-ciclo-n[data-k="1"],
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="3"][data-substep-active]) .mc-ciclo-n[data-k="2"],
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="4"][data-substep-active]) .mc-ciclo-n[data-k="3"],
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="5"][data-substep-active]) .mc-ciclo-n[data-k="4"] { fill: var(--cc-v); }
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="2"][data-substep-active]) .mc-ciclo-nodo[data-k="1"],
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="3"][data-substep-active]) .mc-ciclo-nodo[data-k="2"],
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="4"][data-substep-active]) .mc-ciclo-nodo[data-k="3"],
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="5"][data-substep-active]) .mc-ciclo-nodo[data-k="4"] { opacity: 1; }
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="2"][data-substep-active]) .mc-ciclo-nodo[data-k="1"] .mc-ciclo-num,
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="3"][data-substep-active]) .mc-ciclo-nodo[data-k="2"] .mc-ciclo-num,
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="4"][data-substep-active]) .mc-ciclo-nodo[data-k="3"] .mc-ciclo-num,
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="5"][data-substep-active]) .mc-ciclo-nodo[data-k="4"] .mc-ciclo-num { background: #b9e6a3; color: #0b1f06; }
+  /* Il componente del passo in corso porta l'accento. */
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="2"][data-substep-active]):not(:has(.mc-ciclo-passo[data-p="3"][data-substep-active])) .mc-ciclo-n[data-k="1"],
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="3"][data-substep-active]):not(:has(.mc-ciclo-passo[data-p="4"][data-substep-active])) .mc-ciclo-n[data-k="2"],
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="4"][data-substep-active]):not(:has(.mc-ciclo-passo[data-p="5"][data-substep-active])) .mc-ciclo-n[data-k="3"] { fill: var(--cc-acc); }
+  /* Passo 5: il giro si chiude sullo stesso dato. */
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="5"][data-substep-active]) .mc-ciclo-chiude { stroke-dashoffset: 0; }
+
+  /* Didascalie: il passo attivo è l'ultimo acceso. */
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="1"][data-substep-active]):not(:has(.mc-ciclo-passo[data-p="2"][data-substep-active])) .mc-ciclo-didas > [data-per="1"],
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="2"][data-substep-active]):not(:has(.mc-ciclo-passo[data-p="3"][data-substep-active])) .mc-ciclo-didas > [data-per="2"],
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="3"][data-substep-active]):not(:has(.mc-ciclo-passo[data-p="4"][data-substep-active])) .mc-ciclo-didas > [data-per="3"],
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="4"][data-substep-active]):not(:has(.mc-ciclo-passo[data-p="5"][data-substep-active])) .mc-ciclo-didas > [data-per="4"],
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="5"][data-substep-active]) .mc-ciclo-didas > [data-per="5"] { opacity: 1; visibility: visible; transition: opacity 0.35s ease 0.1s, visibility 0s; }
+  /* A giro acceso, passare su un componente ne richiama la didascalia
+     (chi legge da solo vede l'ultima; le altre restano a un passaggio). */
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="1"][data-substep-active]):has(.mc-ciclo-nodo:is(:hover, :focus-visible)) .mc-ciclo-didas > p { opacity: 0 !important; visibility: hidden !important; transition: none !important; }
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="1"][data-substep-active]):has(.mc-ciclo-nodo[data-k="1"]:is(:hover, :focus-visible)) .mc-ciclo-didas > [data-per="2"],
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="1"][data-substep-active]):has(.mc-ciclo-nodo[data-k="2"]:is(:hover, :focus-visible)) .mc-ciclo-didas > [data-per="3"],
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="1"][data-substep-active]):has(.mc-ciclo-nodo[data-k="3"]:is(:hover, :focus-visible)) .mc-ciclo-didas > [data-per="4"],
+  #slide-ingaggio-ciclo:has(.mc-ciclo-passo[data-p="1"][data-substep-active]):has(.mc-ciclo-nodo[data-k="4"]:is(:hover, :focus-visible)) .mc-ciclo-didas > [data-per="5"] { opacity: 1 !important; visibility: visible !important; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mc-ciclo-svg path, .mc-ciclo-base, .mc-ciclo-n, .mc-ciclo-nodo, .mc-ciclo-num, .mc-ciclo-l-base, .mc-ciclo-banda, .mc-ciclo-didas > p { transition: none !important; }
+  }
+  @media (max-height: 820px) {
+    .mc-ciclo-g { height: clamp(10rem, calc(15 * var(--vu)), 28rem); }
+  }
+  @media (max-width: 900px) {
+    .mc-ciclo-nodo-t, .mc-ciclo-nodo-s, .mc-ciclo-apri { white-space: normal; }
+  }
+</style>
