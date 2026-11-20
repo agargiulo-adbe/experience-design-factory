@@ -74,17 +74,17 @@ export const TAPPE = [
     sceglierne una di traffico vero per la prima prova. Le priorità ora stanno
     nella slide che le mette in ordine. */
 export const SERVONO = [
-  { a: 'L’IMS Org di Analytics e Target', r: 'Con quella Adobe attiva Coworker per la vostra organizzazione, entro il kickoff.', chi: 'Con chi amministra Analytics' },
-  { a: 'Le prime persone', r: 'Poche, con nome e utenza Adobe. Coworker vede quello che ciascuna vede già in Analytics.', chi: 'Oggi in sala, poi con chi amministra Analytics' },
-  { a: 'La report suite per la prima prova', r: 'Una con traffico vero, da salvare come preferenza: senza, Coworker la chiede a ogni conversazione.', chi: 'Con chi amministra Analytics' },
+  { a: 'L’IMS Org di Analytics e Target', r: 'Adobe la usa per attivare Coworker per la vostra organizzazione, entro il kickoff.', chi: 'Con chi amministra Analytics' },
+  { a: 'Il team di lavoro', r: 'Servono nome e utenza Adobe. In questa fase esplorativa è preferibile un team ristretto. Coworker accede ai dati a cui accede già ciascun utente.', chi: 'Oggi in sala, poi con chi amministra Analytics' },
+  { a: 'La report suite per la prima prova', r: 'Serve una report suite con traffico reale da salvare come preferenza: senza, Coworker chiede di indicarla a ogni conversazione.', chi: 'Con chi amministra Analytics' },
 ];
 
 /** Capitolo 04 — le altre due voci (panel del 17 nov 2026): come si dirà che
     ha funzionato, e chi serve dal team. Si cominciano a definire oggi, in sala,
     e si confermano con chi guida i canali (18 nov 2026). */
 export const SERVONO_2 = [
-  { a: 'Come si dice che ha funzionato', r: 'Due o tre misure da proporre oggi, per esempio il tempo per evadere una richiesta, le domande chiuse senza analista, le ore di report a mano risparmiate. Si confermano con chi guida i canali.', chi: 'Oggi in sala, poi con chi guida i canali' },
-  { a: 'Chi serve da voi', r: 'Un’analista Analytics, chi amministra Analytics e, per la seconda fase, chi possiede Target.', chi: 'Oggi in sala, poi con chi guida i canali' },
+  { a: 'Misurare il successo', r: 'Due o tre misure da proporre oggi, per esempio il tempo per evadere una richiesta, le domande chiuse senza analista, le ore di report a mano risparmiate. Si confermano con chi guida i canali.', chi: 'Oggi in sala, poi con chi guida i canali' },
+  { a: 'I ruoli necessari nel vostro team', r: 'Un’analista Analytics, chi amministra Analytics e, per la seconda fase, chi possiede Target.', chi: 'Oggi in sala, poi con chi guida i canali' },
 ];
 
 /** Capitolo 04 — la tavola delle priorità («Da dove vi piacerebbe partire?»),

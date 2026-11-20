@@ -26,20 +26,20 @@ export interface Chapter {
 
 export const CHAPTERS: Chapter[] = [
   {
-    slug: 'partenza', num: '01', title: 'Il quadro', breve: 'Il quadro',
-    punto: 'Novanta giorni con il team di prodotto Adobe, sui casi che si scelgono insieme a partire da oggi.',
+    slug: 'partenza', num: '01', title: 'Un programma di enablement', breve: 'Il programma',
+    punto: 'Usare Coworker per 90 giorni con il Product Team Adobe, su scenari definiti insieme.',
   },
   {
     slug: 'domanda-1', num: '02', title: 'Analytics', breve: 'Analytics',
-    punto: 'Si chiede in italiano, e Coworker risponde sui vostri dati di Analytics.',
+    punto: 'Coworker: un’interfaccia conversazionale per interrogare i vostri dati di Analytics.',
   },
   {
     slug: 'domanda-3', num: '03', title: 'Analytics e Target', breve: 'Analytics e Target',
-    punto: 'Ogni step esiste già. Farli lavorare in fila, nella stessa chat, si prova nel programma.',
+    punto: 'Il programma di enablement aiuta ad armonizzare dentro Coworker i singoli step già a vostra disposizione.',
   },
   {
     slug: 'casa', num: '04', title: 'Da dove si comincia', breve: 'Da dove si comincia',
-    punto: 'Il programma comincia da quello che ci dite oggi.',
+    punto: 'Oggi definiamo gli scenari di avvio del programma.',
   },
 ];
 
