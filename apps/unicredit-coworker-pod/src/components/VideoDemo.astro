@@ -21,8 +21,11 @@ import { join } from 'node:path';
 interface Props {
   /** id del riquadro, unico nella pagina */
   id: string;
-  /** `https://delivery-…/adobe/assets/urn:aaid:aem:<id>/play`, o '' */
+  /** `https://delivery-…/adobe/assets/urn:aaid:aem:<id>/play`, un `.mp4`
+      remoto (release `media` del repo), o '' */
   play: string;
+  /** poster del `.mp4` remoto, sotto `public/` */
+  poster?: string;
   /** ripiego locale sotto `public/`, se c'è */
   locale?: string;
   /** testo per i lettori di schermo */
@@ -30,14 +33,25 @@ interface Props {
   /** riga sotto il video; per legare le frasi, lo slot `didascalia` */
   didascalia?: string;
 }
-const { id, play, locale, etichetta, didascalia } = Astro.props;
+const { id, play, poster, locale, etichetta, didascalia } = Astro.props;
+/* 20 nov 2026: Dynamic Media non è attivo sull'istanza AEM a cui abbiamo
+   accesso, quindi le due demo stanno nella release `media` del repo, come i
+   video di Intesa: un `.mp4` remoto si proietta col player nativo. */
+const mp4 = /\.mp4(\?|$)/i.test(play);
 const asset = play.replace(/\/play$/, '');
 const b = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const conLocale = !!locale && existsSync(join(process.cwd(), 'public', locale));
 ---
 <div class="uc-video">
   <figure class="uc-video-fig">
-    {play ? (
+    {mp4 ? (
+      <div class="uc-video-box" id={id}>
+        <video controls preload="metadata" playsinline aria-label={etichetta}
+               poster={poster ? `${b}${poster}` : undefined}>
+          <source src={play} type="video/mp4" />
+        </video>
+      </div>
+    ) : play ? (
       <div class="uc-video-box uc-video-dm" id={id} data-asset={asset} data-play={play}
            role="region" aria-label={etichetta}></div>
     ) : (
