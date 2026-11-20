@@ -26,22 +26,14 @@ import type { AssetSlot } from '@edf/core/assets/types';
 //   aspect: '16:9', width: 2400, grade: 'none', seed, alt: '',
 // });
 
-/* 19 nov 2026, dopo «il design system è scarno» (owner): fotografie di
-   architettura e di lavoro, MAI del cliente (niente torre, niente marchio,
-   niente persone), nella palette di unicredit.it — petrolio, ardesia, bianco
-   caldo. Vanno nel campo di mezzo dei divisori (XD, `--foto`) e dietro la
-   copertina, sotto il velo petrolio: la sala vede un luogo, non un'icona. */
-const STILE = ', editorial architectural photograph, soft natural light, calm and quiet, generous negative space, cool palette of deep petrol teal, slate grey and warm white, fine film grain, realistic, high detail';
-const NO = 'people, person, faces, hands, crowd, text, letters, words, numbers, readable screen, logos, brand names, signage, bank logo, tower, skyscraper logo, neon, purple, oversaturated, harsh flash, cartoon, illustration, cgi, clutter';
-const foto = (id: string, prompt: string, seed: number): AssetSlot => ({
-  id, type: 'firefly', contentClass: 'photo', prompt: prompt + STILE, negativePrompt: NO,
-  aspect: '16:9', width: 2400, grade: 'none', seed, alt: '',
-});
-
-export const assets: AssetSlot[] = [
-  foto('copertina', 'Dawn over a quiet contemporary Italian city square of pale stone and glass facades, a long reflecting pool catching the first light, long soft shadows, empty', 5203),
-  foto('div-quadro', 'A calm modern office atrium seen from a high vantage point, layered white walkways and a single band of morning light crossing the stone floor, empty', 5203),
-  foto('div-analytics', 'Close view of a clean light oak desk, an open notebook with hand-drawn pencil bar charts and a small line graph, a ceramic cup of coffee, the edge of a closed laptop, soft morning window light', 5203),
-  foto('div-target', 'Two pale gravel paths in a minimalist garden of low clipped hedges converging into one, seen from above, soft early light, calm geometric composition', 5203),
-  foto('div-comincia', 'The first steps of a wide pale stone staircase rising into soft daylight, minimal contemporary architecture, quiet, empty', 5203),
-];
+/* 20 nov 2026 — LE FOTO NON SONO PIÙ GENERATE. Le cinque Firefly del 19 nov
+   (piazze e atri «di architettura», una scrivania con un grafico finto) erano
+   generiche e, nel campo stretto del divisore, illeggibili (owner: «brutta e
+   incomprensibile»). Ora sono FOTOGRAFIE VERE di Adobe Stock, licenziate, una
+   per capitolo e ognuna un gancio sul suo tema: il molo (da dove si parte), una
+   città dall'alto (il quadro), un attraversamento pedonale (dove si fermano le
+   persone), il testimone (gli step in fila), i sassi nel fiume (il primo passo).
+   Id, titolo e motivo in `src/assets/generated/bg/provenance.json`.
+   ⚠️ Questo manifest resta VUOTO: un `assets:build` con gli slot di ieri
+   riscriverebbe le foto Stock con le Firefly. */
+export const assets: AssetSlot[] = [];

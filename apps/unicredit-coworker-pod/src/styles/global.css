@@ -1074,7 +1074,7 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
       sotto un velo petrolio che tiene il contrasto del testo;
    3. ritmo: le domande alla sala su petrolio pieno, come il Customer POD. */
 .uc-bg-foto { position: absolute; inset: 0; background:
-  linear-gradient(90deg, rgba(4, 37, 45, 0.95) 0%, rgba(4, 37, 45, 0.9) 42%, rgba(4, 37, 45, 0.62) 100%),
+  linear-gradient(90deg, rgba(4, 37, 45, 0.95) 0%, rgba(4, 37, 45, 0.86) 40%, rgba(4, 37, 45, 0.42) 100%),
   var(--foto) center / cover no-repeat; }
 .uc-prova { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(1.4rem, 3vw, 4.5rem); align-items: center; width: 100%; }
 .uc-prova-dx { display: grid; gap: clamp(0.9rem, 2vh, 1.8rem); min-width: 0; }
@@ -1098,9 +1098,33 @@ html[data-lang="it"] [data-lang-en] { display: none !important; }
 .uc-integrale { margin: 0.8rem 0 0; font-size: clamp(0.9rem, 0.86vw, 1.8rem); color: var(--xd-dark-body); }
 .uc-integrale a { color: #ffffff; text-underline-offset: 0.2em; }
 @media (max-width: 900px) { .uc-prova { grid-template-columns: minmax(0, 1fr); } }
-/* Il divisore a tre campi, tarato su questo deck: il punto del capitolo è
-   lungo (una frase intera), quindi il pannello sale dal 32% al 36% e la foto
-   si stringe fra il titolo e il pannello, senza toccare il titolo. */
-.xd-div-bg:not([data-senza-foto])::before { inset: 0 36% 0 46%; }
-.xd-div-bg:not([data-senza-foto])::after { inset: 0 0 0 64%; }
-.xd-div:not([data-senza-foto]) { grid-template-columns: 64fr 36fr; }
+/* IL DIVISORE CON LA FOTOGRAFIA (20 nov 2026, ridisegno).
+   Prima: tre campi, e la foto stretta fra titolo e pannello in una fascia del
+   18% sfumata a sinistra — qualunque immagine diventava una striscia senza
+   soggetto (owner: «brutta e incomprensibile»). Ora due metà: il titolo sul
+   chiaro, e la fotografia a TUTTA ALTEZZA nella metà destra, intera, senza
+   maschera. Il punto del capitolo sta in basso sulla foto, sopra un velo
+   petrolio che sale dal fondo: è la didascalia della foto, e insieme la frase
+   del capitolo. Le foto sono ritagliate a 0,889:1 (metà di un 16:9) con il
+   soggetto in alto, perché il terzo basso è del testo.
+   ⚠️ Il confine della foto è il 50% del viewport e quello della colonna di
+   testo il 50% dell'area utile: coincidono solo perché i margini sono
+   simmetrici, e il padding-left della colonna è la tolleranza. */
+.xd-div-bg:not([data-senza-foto])::before {
+  inset: 0 0 0 50%; -webkit-mask-image: none; mask-image: none;
+  background-position: var(--fuoco, center top); filter: saturate(0.92);
+}
+.xd-div-bg:not([data-senza-foto])::after {
+  inset: 0 0 0 50%; box-shadow: none;
+  background: linear-gradient(180deg, rgba(4, 37, 45, 0) 0%, rgba(4, 37, 45, 0) 40%,
+    rgba(4, 37, 45, 0.74) 64%, rgba(4, 37, 45, 0.95) 100%);
+}
+.xd-div:not([data-senza-foto]) { grid-template-columns: 1fr 1fr; gap: 0; align-items: stretch; min-height: 74vh; }
+/* Il punto scende in fondo alla foto: la griglia è alta quanto il suo
+   contenuto, quindi senza `min-height` la colonna «in fondo» resta al centro,
+   proprio sopra il soggetto della fotografia. */
+.xd-div:not([data-senza-foto]) .xd-div-dx {
+  align-content: end; padding-left: clamp(1.6rem, 3.4vw, 4.6rem);
+  padding-bottom: clamp(0.4rem, 2.4vh, 2.6rem);
+}
+.xd-div:not([data-senza-foto]) .xd-div-l { max-width: 24ch; text-shadow: 0 1px 18px rgba(4, 37, 45, 0.45); }
