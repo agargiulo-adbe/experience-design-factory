@@ -21,6 +21,8 @@ import DettaglioVoce from '@edf/core/blocks/DettaglioVoce.astro';
 import { PASSAGGIO, DETTAGLI_PASSAGGIO } from '../data/passaggio';
 import { SERVE } from '../data/serve';
 import '../styles/domande.css';
+import IntegrazioniCrm from '../components/meccanismi/IntegrazioniCrm.astro';
+import BrandVisibility from '../components/meccanismi/BrandVisibility.astro';
 
 const base = import.meta.env.BASE_URL;
 const currentPath = Astro.url.pathname;
@@ -748,70 +750,10 @@ const SALA_O_VOI = EDIZIONE === 'lettura' ? 'da verificare con voi' : 'da correg
         (Group Technology) chiedeva quattro cose che sulla freccia non
         stavano: chi espone l'API, la chiave che riaggancia l'appuntamento al
         lead, la deduplica e che cosa succede se la chiamata fallisce. */}
-    <Slide id="slide-integrazioni-crm" bg="inverse" align="left">
-      <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="p" class="im-ado-occ" it="Approfondimento · la riga del CRM" en="Deep dive · the CRM line" />
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Il lead arriva al CRM di filiale, e quattro punti si fissano prima" en="The lead reaches the branch CRM, and four points are settled first" />
-        <T as="p" class="im-ado-l" it="Sulla freccia passano lead, appuntamento e simulazione." en="Lead, appointment and simulation travel on this arrow." />
-
-        <div class="im-esec im-esec--quattro">
-          {CRM.map((c) => (
-            <section class="im-esec-i">
-              <FiguraCap segno={c.fig} class="im-esec-fig" />
-              <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
-              <T as="span" class="im-esec-chi" it={c.chi.it} en={c.chi.en} />
-              <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
-            </section>
-          ))}
-        </div>
-
-        <p class="im-fonte-riga">
-          <span data-lang-it>Una proposta di progetto, da correggere con voi in fase 0. </span><span data-lang-en>A design proposal, to correct with you in phase 0. </span>
-          <a class="im-torna" href="#slide-integrazioni"><span data-lang-it>← Torna ai collegamenti</span><span data-lang-en>← Back to the connections</span></a>
-        </p>
-      </div>
-    </Slide>
+    <IntegrazioniCrm />
 
     {/* Il momento 01 ha mostrato l'assistente che la banca c'è o non c'è. Qui si guarda come lo si governa. */}
-    <Slide id="slide-brand-visibility" bg="inverse" align="left">
-      <div slot="backdrop" class="im-bg-notte"></div>
-      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
-        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Come si misura e si corregge il modo in cui comparite" en="How to measure and correct the way you show up" />
-        <T as="p" class="im-ado-l" it="Prima si misura come comparite nelle risposte generate, poi si interviene." en="First you measure how you show up in generated answers, then you act." />
-
-        {/* ⚠️ Gli operatori sono COLONNE della griglia, non figli in
-            posizione assoluta che sporgono dalla card: un figlio assoluto
-            con `right` negativo gonfia lo `scrollWidth` del genitore, e
-            il check `c` lo legge come overflow — un HARD. */}
-        <div class="im-bv">
-          {BV.map((c, i) => (
-            <>
-              <section class="im-bv-i" data-strato={c.strato}>
-                <FiguraCap segno={c.fig} />
-                <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
-                <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
-                {c.log && <T as="span" class="im-bv-d im-bv-log" it={c.log.it} en={c.log.en} />}
-              </section>
-              {i < BV.length - 1 && <span class="im-bv-op" aria-hidden="true">{i === 1 ? '=' : '+'}</span>}
-            </>
-          ))}
-        </div>
-
-        <div class="im-bv-strati">
-          <T as="span" class="im-bv-strato" data-strato="segnali" it="Strato dei segnali" en="Signal layer" />
-          <T as="span" class="im-bv-strato" data-strato="ottimizzazioni" it="Strato delle ottimizzazioni" en="Optimisation layer" />
-        </div>
-
-        <p class="im-fonte-riga">
-          <span data-lang-it>Regione e retention dei log restano da verificare con Adobe. Documentazione: </span><span data-lang-en>Log region and retention are still to be verified with Adobe. Documentation: </span>
-          <a href="https://experienceleague.adobe.com/en/docs/brand-visibility/using/essentials/overview" target="_blank" rel="noopener">Adobe Brand Visibility</a><span> · </span>
-          <a href="https://experienceleague.adobe.com/en/docs/brand-visibility/using/resources/optimize-at-edge/overview" target="_blank" rel="noopener">Optimize at Edge</a><span> · </span>
-          <a href="https://experienceleague.adobe.com/en/docs/brand-visibility/using/log-forwarding/log-forwarding-overview" target="_blank" rel="noopener">log forwarding</a><span> · </span>
-          <a href="https://experienceleague.adobe.com/en/docs/brand-visibility/using/dashboards/agentic-traffic" target="_blank" rel="noopener"><span data-lang-it>campi dei log</span><span data-lang-en>log fields</span></a>
-        </p>
-      </div>
-    </Slide>
+    <BrandVisibility />
 
     {/* Secondo approfondimento: la fabbrica di contenuti. Sta DOPO
         Brand Visibility perché è il blocco successivo nel giro di

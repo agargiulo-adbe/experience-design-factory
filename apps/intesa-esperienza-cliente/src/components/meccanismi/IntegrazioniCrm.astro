@@ -1,0 +1,174 @@
+---
+/**
+ * LA RIGA JOURNEY OPTIMIZER → CRM DI FILIALE, disegnata (20 nov 2026).
+ *
+ * Era quattro schede con un'icona piccola. Ora è un tragitto: le tre cose
+ * che viaggiano sulla freccia (lead, appuntamento, simulazione) partono da
+ * Journey Optimizer e incontrano quattro punti di controllo prima del CRM
+ * di filiale, uno per passo: chi espone l'API · la chiave del lead · i lead
+ * già aperti · se la chiamata fallisce. All'ultimo passo il tratto oltre il
+ * quarto punto si ferma in #ff8a5c e la mail non parte.
+ *
+ * Contenuti: gli stessi delle schede (panel dell'11 nov 2026, Group
+ * Technology), ridistribuiti: titolo e «chi» sul disegno, la frase nella
+ * didascalia del passo. Grammatica dei disegni a passi del deck
+ * (`domande.css`, `.im-flu-*`): marcatori invisibili, `:has()`, SVG
+ * 1000×400 senza testo, etichette HTML in %.
+ */
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+
+const PUNTI = [
+  { x: 220, t: { it: 'Chi espone l’API', en: 'Who exposes the API' },
+    chi: { it: 'Il CRM di filiale', en: 'The branch CRM' },
+    d: { it: 'Quale servizio, lo si identifica con il vostro Group Technology.', en: 'Which service is identified with your Group Technology.' } },
+  { x: 400, t: { it: 'La chiave del lead', en: 'The lead key' },
+    chi: { it: 'Scritta all’appuntamento', en: 'Written at the appointment' },
+    d: { it: 'Il CRM scrive l’identificativo del lead, e il ritorno si riaggancia lì.', en: 'The CRM writes the lead ID, and the return hooks back onto it.' } },
+  { x: 580, t: { it: 'I lead già aperti', en: 'Leads already open' },
+    chi: { it: 'Deduplica', en: 'Deduplication' },
+    d: { it: 'Con quelli che esistono si disegna in fase 0.', en: 'Against existing ones, designed in phase 0.' } },
+  { x: 760, t: { it: 'Se la chiamata fallisce', en: 'If the call fails' },
+    chi: { it: 'Nessun invio', en: 'No send' },
+    d: { it: 'Senza conferma del lead la mail non parte.', en: 'Without lead confirmation the email does not go out.' } },
+];
+/* Le tre corsie: le cose che passano sulla freccia, dalla riga d'apertura. */
+const CORSIE = [
+  { y: 140, it: 'lead', en: 'lead' },
+  { y: 205, it: 'appuntamento', en: 'appointment' },
+  { y: 270, it: 'simulazione', en: 'simulation' },
+];
+const X_JO = 0, X_CRM = 986, NW = 14, X_STOP = 760;
+---
+<Slide id="slide-integrazioni-crm" bg="inverse" align="left" data-lettura-ritmo="3200">
+  <div slot="backdrop" class="im-bg-notte"></div>
+  <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+    <T as="p" class="im-ado-occ" it="Approfondimento · la riga del CRM" en="Deep dive · the CRM line" />
+    <T as="h2" class="im-ado-t im-ado-t--stretto" it={'Il lead arriva al CRM di filiale, e\u00a0quattro punti si fissano prima'} en="The lead reaches the branch CRM, and four points are settled first" />
+    <T as="p" class="im-ado-l" it="Sulla freccia passano lead, appuntamento e simulazione." en="Lead, appointment and simulation travel on this arrow." />
+    {PUNTI.map((_, i) => <i class="mc-crm-passo" data-substep data-p={i + 1} aria-hidden="true"></i>)}
+    <figure class="mc-crm">
+      <div class="mc-crm-int" aria-hidden="true">
+        <span style="--x:0%">Journey Optimizer</span>
+        <T as="span" class="mc-crm-int-r" style={`--x:${(X_CRM + NW) / 10}%`} it="CRM di filiale" en="Branch CRM" />
+      </div>
+      <div class="mc-crm-g" role="img" aria-label="Lead, appuntamento e simulazione vanno da Journey Optimizer al CRM di filiale passando da quattro punti: chi espone l'API, la chiave del lead, la deduplica dei lead già aperti, e che cosa succede se la chiamata fallisce: senza conferma la mail non parte">
+        <svg class="mc-crm-svg mc-crm-va" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+          {CORSIE.map((c) => <path d={`M${X_JO + NW} ${c.y} L${X_STOP} ${c.y}`} />)}
+        </svg>
+        <svg class="mc-crm-svg" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+          <g class="mc-crm-ko">
+            {CORSIE.map((c) => <path d={`M${X_STOP} ${c.y} L${X_CRM} ${c.y}`} />)}
+            <path class="mc-crm-mail" d={`M${X_STOP} 300 C 860 300, 880 370, ${X_CRM} 370`} />
+          </g>
+        </svg>
+        <svg class="mc-crm-nodi" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true">
+          <rect class="mc-crm-n" x={X_JO} y="120" width={NW} height="168" />
+          <rect class="mc-crm-n mc-crm-n--crm" x={X_CRM} y="120" width={NW} height="168" />
+          <rect class="mc-crm-n mc-crm-n--mail" x={X_CRM} y="355" width={NW} height="30" />
+          {PUNTI.map((p, i) => <line class="mc-crm-pt" data-g={i + 1} x1={p.x} y1="105" x2={p.x} y2="300" />)}
+        </svg>
+        {CORSIE.map((c) => <T as="span" class="mc-crm-l mc-crm-l--corsia" style={`--x:${(X_JO + NW + 14) / 10}%;--y:${(c.y - 7) / 4}%`} it={c.it} en={c.en} />)}
+        {PUNTI.map((p, i) => (
+          <span class="mc-crm-et" data-g={i + 1} style={`--x:${p.x / 10}%;--y:${98 / 4}%`}>
+            <T as="span" class="mc-crm-et-chi" it={p.chi.it} en={p.chi.en} />
+            <T as="span" class="mc-crm-et-t" it={p.t.it} en={p.t.en} />
+          </span>
+        ))}
+        <svg class="mc-crm-x" style="--x:87.3%;--y:84%" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4 L16 16 M16 4 L4 16" /></svg>
+        <span class="mc-crm-l mc-crm-l--mail" style={`--x:100%;--y:${356 / 4}%`}>Email</span>
+      </div>
+    </figure>
+    <div class="mc-crm-banda">
+      <div class="mc-crm-didas">
+        {PUNTI.map((p, i) => <p data-per={i + 1}><T as="strong" it={p.t.it} en={p.t.en} /> <T as="span" it={p.d.it} en={p.d.en} /></p>)}
+      </div>
+    </div>
+    <p class="im-fonte-riga">
+      <span data-lang-it>Una proposta di progetto, da correggere con voi in fase 0. </span><span data-lang-en>A design proposal, to correct with you in phase 0. </span>
+      <a class="im-torna" href="#slide-integrazioni"><span data-lang-it>← Torna ai collegamenti</span><span data-lang-en>← Back to the connections</span></a>
+    </p>
+  </div>
+</Slide>
+
+<style is:global>
+  .mc-crm { --mc-n: #b9e6a3; --mc-nastro: rgba(185, 230, 163, 0.32); --mc-ko: #ff8a5c; --mc-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative; margin: clamp(0.4rem, calc(0.6 * var(--vu)), 1.2rem) 0 0; }
+  .mc-crm-passo { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+  .mc-crm-int { position: relative; height: 1.6em; font-size: clamp(0.8rem, calc(0.74 * var(--vu)), 1.55rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #c9dcc2; }
+  .mc-crm-int > span { position: absolute; left: var(--x); white-space: nowrap; }
+  .mc-crm-int > .mc-crm-int-r { translate: -100% 0; }
+
+  .mc-crm-g { position: relative; height: clamp(12rem, calc(15.5 * var(--vu)), 30rem); margin-top: clamp(0.4rem, calc(0.6 * var(--vu)), 1.2rem); }
+  .mc-crm-svg, .mc-crm-nodi { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+
+  /* Le corsie: nastri a spessore costante. Si scoprono fino al punto del passo. */
+  .mc-crm-svg path { fill: none; stroke: var(--mc-nastro); stroke-width: 10; vector-effect: non-scaling-stroke; transition: stroke 0.45s ease; }
+  .mc-crm-va { clip-path: inset(-5% 100% -5% -5%); transition: clip-path 1.2s var(--mc-ease); }
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="1"][data-substep-active]) .mc-crm-va { clip-path: inset(-5% 76.5% -5% -5%); }
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="2"][data-substep-active]) .mc-crm-va { clip-path: inset(-5% 58.5% -5% -5%); }
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="3"][data-substep-active]) .mc-crm-va { clip-path: inset(-5% 40.5% -5% -5%); }
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="4"][data-substep-active]) .mc-crm-va { clip-path: inset(-5% 24% -5% -5%); }
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="4"][data-substep-active]) .mc-crm-va path { stroke: rgba(185, 230, 163, 0.5); }
+
+  /* Oltre il quarto punto: la chiamata fallita. Corsie spezzate in arancio, la mail che non parte. */
+  .mc-crm-ko { opacity: 0; transition: opacity 0.5s ease 0.6s; }
+  .mc-crm-ko path { stroke: var(--mc-ko); stroke-width: 3; stroke-dasharray: 7 7; }
+  .mc-crm-ko .mc-crm-mail { stroke-width: 4; }
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="4"][data-substep-active]) .mc-crm-ko { opacity: 1; }
+
+  /* I nodi e i quattro punti. */
+  .mc-crm-n { fill: var(--mc-n); transition: opacity 0.45s ease; }
+  .mc-crm-n--crm { fill: #ffffff; }
+  .mc-crm-n--mail { fill: var(--mc-ko); opacity: 0; transition: opacity 0.5s ease 0.6s; }
+  .mc-crm-pt { stroke: #9fd68a; stroke-width: 2; stroke-dasharray: 4 6; vector-effect: non-scaling-stroke; opacity: 0.28; transition: opacity 0.45s ease, stroke 0.45s ease, stroke-width 0.45s ease; }
+
+  .mc-crm-l { position: absolute; left: var(--x); top: var(--y); font-size: clamp(0.8rem, calc(0.68 * var(--vu)), 1.5rem); font-weight: 500; line-height: 1.15; color: #c9dcc2; white-space: nowrap; translate: 0 -100%; transition: opacity 0.45s ease; }
+  .mc-crm-l--corsia { opacity: 0; translate: 0 calc(-100% - 0.2rem); }
+  .mc-crm-l--mail { translate: -100% -100%; font-size: clamp(0.92rem, calc(0.86 * var(--vu)), 1.85rem); font-weight: 700; color: var(--mc-ko); text-decoration: line-through; text-decoration-thickness: 2px; opacity: 0; transition: opacity 0.5s ease 0.6s; }
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="1"][data-substep-active]) .mc-crm-l--corsia { opacity: 1; }
+
+  /* L'etichetta di ogni punto: chi, poi il titolo, sopra la sua linea. */
+  .mc-crm-et { position: absolute; left: var(--x); top: var(--y); translate: -50% -100%; display: grid; justify-items: center; gap: 0.2rem; width: 16%; text-align: center; opacity: 0.28; transition: opacity 0.45s ease; }
+  .mc-crm-et-chi { font-size: clamp(0.72rem, calc(0.6 * var(--vu)), 1.36rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9fd68a; line-height: 1.2; }
+  .mc-crm-et-t { font-size: clamp(0.92rem, calc(0.86 * var(--vu)), 1.85rem); font-weight: 700; line-height: 1.15; color: #ffffff; text-wrap: balance; }
+
+  /* Un punto acceso resta acceso; quello del passo corrente è pieno. */
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="1"][data-substep-active]) [data-g="1"],
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="2"][data-substep-active]) [data-g="2"],
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="3"][data-substep-active]) [data-g="3"],
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="4"][data-substep-active]) [data-g="4"] { opacity: 1; }
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="1"][data-substep-active]):not(:has(.mc-crm-passo[data-p="2"][data-substep-active])) .mc-crm-pt[data-g="1"],
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="2"][data-substep-active]):not(:has(.mc-crm-passo[data-p="3"][data-substep-active])) .mc-crm-pt[data-g="2"],
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="3"][data-substep-active]):not(:has(.mc-crm-passo[data-p="4"][data-substep-active])) .mc-crm-pt[data-g="3"] { stroke: var(--mc-n); stroke-width: 4; stroke-dasharray: none; }
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="4"][data-substep-active]) .mc-crm-pt[data-g="4"] { stroke: var(--mc-ko); stroke-width: 4; stroke-dasharray: none; }
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="4"][data-substep-active]) .mc-crm-et[data-g="4"] .mc-crm-et-chi { color: var(--mc-ko); }
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="4"][data-substep-active]) :is(.mc-crm-n--mail, .mc-crm-l--mail, .mc-crm-x) { opacity: 1; }
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="4"][data-substep-active]) .mc-crm-n--crm { opacity: 0.35; }
+
+  .mc-crm-x { position: absolute; left: var(--x); top: var(--y); width: clamp(1.1rem, calc(1.2 * var(--vu)), 2.4rem); height: auto; translate: -50% -50%; overflow: visible; opacity: 0; transition: opacity 0.5s ease 0.8s; }
+  .mc-crm-x path { fill: none; stroke: var(--mc-ko); stroke-width: 3.2; stroke-linecap: round; }
+
+  /* La fascia: una didascalia per passo. */
+  .mc-crm-banda { margin: clamp(0.6rem, calc(0.9 * var(--vu)), 1.8rem) 0 0; padding: clamp(0.55rem, calc(0.75 * var(--vu)), 1.4rem) clamp(0.9rem, calc(1.2 * var(--vu)), 2.2rem);
+    border: 1px solid rgba(185, 230, 163, 0.34); border-radius: 8px; background: rgba(185, 230, 163, 0.09);
+    font-size: clamp(1.02rem, calc(1 * var(--vu)), 2.2rem); line-height: 1.38; color: #f2f8f0;
+    opacity: 0; visibility: hidden; transition: opacity 0.5s ease, visibility 0s linear 0.5s; }
+  .mc-crm-didas { display: grid; min-width: 0; }
+  .mc-crm-didas > p { grid-area: 1 / 1; margin: 0; max-width: none; opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0s linear 0.25s; }
+  .mc-crm-didas strong { color: #b9e6a3; margin-right: 0.35em; }
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="1"][data-substep-active]) .mc-crm-banda { opacity: 1; visibility: visible; transition: opacity 0.5s ease, visibility 0s; }
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="1"][data-substep-active]):not(:has(.mc-crm-passo[data-p="2"][data-substep-active])) .mc-crm-didas > [data-per="1"],
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="2"][data-substep-active]):not(:has(.mc-crm-passo[data-p="3"][data-substep-active])) .mc-crm-didas > [data-per="2"],
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="3"][data-substep-active]):not(:has(.mc-crm-passo[data-p="4"][data-substep-active])) .mc-crm-didas > [data-per="3"],
+  #slide-integrazioni-crm:has(.mc-crm-passo[data-p="4"][data-substep-active]) .mc-crm-didas > [data-per="4"] { opacity: 1; visibility: visible; transition: opacity 0.35s ease 0.1s, visibility 0s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mc-crm-va, .mc-crm-ko, .mc-crm-svg path, .mc-crm-n, .mc-crm-pt, .mc-crm-l, .mc-crm-et, .mc-crm-x, .mc-crm-banda, .mc-crm-didas > p { transition: none !important; }
+  }
+  @media (max-height: 820px) {
+    .mc-crm-g { height: clamp(11rem, calc(15 * var(--vu)), 28rem); }
+    .mc-crm-banda { margin-top: 0.45rem; padding-block: 0.45rem; }
+  }
+</style>
