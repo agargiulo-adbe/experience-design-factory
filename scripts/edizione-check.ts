@@ -1,12 +1,13 @@
 /**
  * Le verifiche dell'edizione «lettura» (spec 2026-11-19-edizione-lettura).
- * Uso: LETTURA_URL=<origin+base lettura> SALA_URL=<origin+base sala> npx tsx scripts/edizione-check.ts [nome…]
+ * Uso: LETTURA_URL=<origin+base lettura> SALA_URL=<origin+base sala> [INSIEME_URL=<origin+base versione B>] npx tsx scripts/edizione-check.ts [nome…]
  * Ogni controllo stampa OK o FAIL con il motivo; esce con 1 se uno fallisce.
  */
 import { chromium, type Browser } from 'playwright';
 
 const LETTURA = (process.env.LETTURA_URL ?? '').replace(/\/?$/, '/');
 const SALA = (process.env.SALA_URL ?? '').replace(/\/?$/, '/');
+const INSIEME = (process.env.INSIEME_URL ?? '').replace(/\/?$/, '/');
 const fallimenti: string[] = [];
 const ok = (nome: string, cond: boolean, motivo = '') => {
   console.log(`${cond ? 'OK  ' : 'FAIL'} ${nome}${cond ? '' : ' — ' + motivo}`);
@@ -199,7 +200,57 @@ export async function checkAnello(b: Browser) {
   }
 }
 
-const CHECKS: Record<string, (b: Browser) => Promise<void>> = { autoreveal: checkAutoreveal, parliamone: checkParliamone, telefono: checkTelefono, rete: checkRete, sala: checkSala, comefunziona: checkComeFunziona, ritmo: checkRitmo, anello: checkAnello };
+export async function checkInsieme(b: Browser) {
+  // La versione A non ha né modulo né riepilogo.
+  const a = await b.newPage({ viewport: { width: 1366, height: 768 } });
+  await a.goto(LETTURA + 'momenti/', { waitUntil: 'load' }); await a.waitForTimeout(1200);
+  ok('A: nessun modulo e nessun «Chiedeteci di questo»', (await a.locator('dialog[data-edf-contributo], .edf-mc-chiedi').count()) === 0, '');
+  const r404 = await a.goto(LETTURA + 'riepilogo/');
+  ok('A: il riepilogo non esiste', r404?.status() === 404, `status=${r404?.status()}`);
+  await a.close();
+  if (INSIEME === '/') { console.log('—    versione B saltata (manca INSIEME_URL)'); return; }
+
+  // B, computer: prima di un invio verso Supabase va solo il contatore.
+  const c = await b.newContext({ viewport: { width: 1366, height: 768 } });
+  const rich: { url: string; metodo: string; corpo: string | null }[] = [];
+  c.on('request', (x) => { if (x.url().includes('.supabase.co')) rich.push({ url: x.url(), metodo: x.method(), corpo: x.postData() }); });
+  // L'invio non deve scrivere nel database vero: la rotta risponde da sé.
+  await c.route('**/rest/v1/contributi', (x) => x.fulfill({ status: 201, body: '' }));
+  const p = await c.newPage();
+  for (const r of ['', 'momenti/', 'parliamone/']) { await p.goto(INSIEME + r, { waitUntil: 'load' }); await p.waitForTimeout(1200); }
+  ok('B: prima dell\'invio verso Supabase solo il contatore', rich.length === 1 && rich[0].url.endsWith('/rest/v1/aperture'), rich.map((x) => `${x.metodo} ${x.url}`).join(' | '));
+  ok('B: il contatore conta la versione B', JSON.parse(rich[0]?.corpo ?? '{}').progetto === 'intesa-storia-insieme', rich[0]?.corpo ?? '');
+  await p.goto(INSIEME + 'momenti/', { waitUntil: 'load' }); await p.waitForTimeout(1500);
+  await p.locator('.edf-mc-chiedi').click();
+  const sez = await p.inputValue('dialog[data-edf-contributo] input[name=sezione]');
+  ok('B: «Chiedeteci di questo» precompila capitolo e slide, in italiano', sez.includes(' · ') && !/[Ss]he |the /.test(sez), sez);
+  const i0 = await p.evaluate(() => (window as any).__edfDeck.index);
+  await p.locator('dialog[data-edf-contributo] textarea').focus();
+  await p.keyboard.type('Come si collega al nostro CRM? ');
+  await p.keyboard.press('ArrowRight');
+  ok('B: scrivere nel modulo non muove il deck', (await p.evaluate(() => (window as any).__edfDeck.index)) === i0, '');
+  await p.selectOption('dialog[data-edf-contributo] select[name=funzione]', 'dati');
+  const prima = rich.length;
+  await p.locator('[data-edf-mc-invia]').click(); await p.waitForTimeout(600);
+  const inv = rich.slice(prima).filter((x) => x.url.endsWith('/rest/v1/contributi'));
+  const chiavi = inv.length ? Object.keys(JSON.parse(inv[0].corpo ?? '{}')).sort().join() : '';
+  ok('B: l\'invio porta solo i sei campi anonimi', chiavi === 'funzione,livello,ok_riepilogo,progetto,sezione,testo', chiavi);
+  ok('B: la casella del riepilogo parte spenta', inv.length === 1 && JSON.parse(inv[0].corpo ?? '{}').ok_riepilogo === false, inv[0]?.corpo ?? '');
+  ok('B: dopo l\'invio, la conferma', await p.locator('[data-edf-mc-fatto]').isVisible(), '');
+  await c.close();
+
+  // Il riepilogo: senza token nessuna chiamata, e dal telefono non rimanda alla pagina breve.
+  const t = await b.newContext(telefono(390, 844));
+  const rt: string[] = [];
+  t.on('request', (x) => { if (x.url().includes('.supabase.co')) rt.push(x.url()); });
+  const q = await t.newPage();
+  await q.goto(INSIEME + 'riepilogo/', { waitUntil: 'load' }); await q.waitForTimeout(1200);
+  ok('B: il riepilogo dal telefono resta il riepilogo', q.url().endsWith('/riepilogo/'), q.url());
+  ok('B: senza token, nessuna chiamata e un messaggio', rt.length === 0 && /link personale/.test(await q.textContent('[data-rp-msg]') ?? ''), rt.join(' '));
+  await t.close();
+}
+
+const CHECKS: Record<string, (b: Browser) => Promise<void>> = { autoreveal: checkAutoreveal, parliamone: checkParliamone, telefono: checkTelefono, rete: checkRete, sala: checkSala, comefunziona: checkComeFunziona, ritmo: checkRitmo, anello: checkAnello, insieme: checkInsieme };
 
 const scelti = process.argv.slice(2);
 const b = await chromium.launch();

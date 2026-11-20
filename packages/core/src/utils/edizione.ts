@@ -18,3 +18,26 @@ export const EDIZIONE: Edizione = parseEdizione(
 export function inLettura(): boolean {
   return EDIZIONE === 'lettura';
 }
+
+/**
+ * La versione di un'edizione da distribuire (spec, «Le risposte dell'owner»):
+ * `leggere` (A) è la storia con i contatti e nient'altro; `insieme` (B)
+ * aggiunge il modulo anonimo, «Chiedeteci di questo» e il riepilogo per la
+ * banca. Si sceglie con `PUBLIC_EDF_VERSIONE=insieme` e vale solo in lettura:
+ * la sala non ha versioni.
+ */
+export type Versione = 'leggere' | 'insieme';
+
+export function parseVersione(raw: string | undefined, ed: Edizione): Versione {
+  if (ed !== 'lettura') return 'leggere';
+  return (raw ?? '').trim().toLowerCase() === 'insieme' ? 'insieme' : 'leggere';
+}
+
+export const VERSIONE: Versione = parseVersione(
+  (import.meta as unknown as { env?: Record<string, string | undefined> }).env?.PUBLIC_EDF_VERSIONE,
+  EDIZIONE,
+);
+
+export function conContributi(): boolean {
+  return VERSIONE === 'insieme';
+}

@@ -198,6 +198,20 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
     { name: 'risultati', route: '/experience-design-factory/intesa-storia/risultati/' },
     { name: 'parliamone', route: '/experience-design-factory/intesa-storia/parliamone/' },
   ],
+  /* La versione B dell'edizione da distribuire («Da costruire insieme»): le stesse
+     pagine della lettura, più il modulo anonimo nella barra dei comandi. */
+  'intesa-storia-insieme': [
+    { name: 'home', route: '/experience-design-factory/intesa-storia-insieme/' },
+    { name: 'adobe', route: '/experience-design-factory/intesa-storia-insieme/adobe/' },
+    { name: 'scenario', route: '/experience-design-factory/intesa-storia-insieme/scenario/' },
+    { name: 'persona', route: '/experience-design-factory/intesa-storia-insieme/persona/' },
+    { name: 'momenti', route: '/experience-design-factory/intesa-storia-insieme/momenti/' },
+    { name: 'messa-a-terra', route: '/experience-design-factory/intesa-storia-insieme/messa-a-terra/' },
+    { name: 'approfondimenti', route: '/experience-design-factory/intesa-storia-insieme/approfondimenti/' },
+    { name: 'coworker', route: '/experience-design-factory/intesa-storia-insieme/coworker/' },
+    { name: 'risultati', route: '/experience-design-factory/intesa-storia-insieme/risultati/' },
+    { name: 'parliamone', route: '/experience-design-factory/intesa-storia-insieme/parliamone/' },
+  ],
   'unipol-cinque-domande': [
     { name: 'home',      route: '/experience-design-factory/unipol-cinque-domande/' },
     { name: 'partenza',  route: '/experience-design-factory/unipol-cinque-domande/partenza/' },

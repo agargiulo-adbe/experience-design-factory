@@ -1,0 +1,191 @@
+---
+/**
+ * Il riepilogo per la banca — versione B dell'edizione da distribuire.
+ * Spec 2026-11-19, §8 e «Revisione del 19 nov sera».
+ *
+ * Il contenuto NON è nel bundle: arriva con `?t=<token>` dalla RPC
+ * `get_riepilogo` (0041), che applica le soglie nel database. Questa pagina
+ * non vede mai una funzione sotto 3, né un livello accanto a una frase, né le
+ * frasi finché hanno scritto meno di tre funzioni: le mostra soltanto.
+ *
+ * La voce è quella della banca: chi la riceve la deve poter presentare come
+ * sua. Adobe compare una volta, nel piè, come chi ha reso possibile la raccolta.
+ * Stampabile in PDF su carta bianca; finché non è approvata porta «Bozza».
+ */
+import { FUNZIONI } from '../../utils/contributi';
+interface Props {
+  /** titolo nella voce della banca */
+  titolo: string;
+  /** una riga che dice da dove vengono i contributi */
+  sottotitolo: string;
+  /** la riga discreta di Adobe nel piè */
+  piede: string;
+}
+const { titolo, sottotitolo, piede } = Astro.props;
+const URL_DB = (import.meta.env.PUBLIC_SUPABASE_URL ?? '').replace(/\/$/, '');
+const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+const ETICHETTE = Object.fromEntries(FUNZIONI.map((f) => [f.k, f.l]));
+---
+<main class="rp" data-rp data-url={URL_DB} data-chiave={CHIAVE} data-etichette={JSON.stringify(ETICHETTE)}>
+  <header class="rp-testa">
+    <p class="rp-occ">Riepilogo dei contributi</p>
+    <h1 class="rp-t">{titolo}</h1>
+    <p class="rp-sub">{sottotitolo}</p>
+  </header>
+
+  <p class="rp-msg" data-rp-msg>Caricamento…</p>
+
+  <section class="rp-stato" data-rp-stato hidden></section>
+  <section class="rp-ampiezza" data-rp-ampiezza hidden></section>
+  <div class="rp-aree" data-rp-aree></div>
+
+  <footer class="rp-piede">
+    <p>{piede}</p>
+    <button type="button" class="rp-pdf" data-rp-pdf hidden>Salva in PDF</button>
+  </footer>
+  <div class="rp-filigrana" data-rp-filigrana aria-hidden="true" hidden>Bozza</div>
+</main>
+
+<script>
+  type Voce = { area: string; funzione: string; testo: string; risposta: string | null; sezione: string };
+  type Riepilogo = {
+    stato: 'in_preparazione' | 'bozza' | 'approvato'; funzioni: number; totale: number | null;
+    livelli: { livelli: string[]; n: number }[]; voci: Voce[]; approvato_il: string | null; aperto: boolean;
+  };
+  const PLURALI: Record<string, string> = { operativo: 'operativi', responsabile: 'responsabili', dirigente: 'dirigenti' };
+
+  function el(tag: string, cls: string, testo?: string): HTMLElement {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (testo !== undefined) e.textContent = testo;
+    return e;
+  }
+  const unisci = (xs: string[]) => xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} e ${xs[xs.length - 1]}`;
+  const numero = (n: number, uno: string, molti: string) => `${n} ${n === 1 ? uno : molti}`;
+
+  async function carica() {
+    const root = document.querySelector<HTMLElement>('[data-rp]');
+    if (!root) return;
+    const msg = root.querySelector<HTMLElement>('[data-rp-msg]')!;
+    const token = new URLSearchParams(location.search).get('t') ?? '';
+    if (!/^[0-9a-f-]{36}$/i.test(token)) { msg.textContent = 'Questa pagina si apre solo con il link personale che vi abbiamo mandato.'; return; }
+    let r: Riepilogo | null = null;
+    try {
+      const res = await fetch(`${root.dataset.url}/rest/v1/rpc/get_riepilogo`, {
+        method: 'POST', credentials: 'omit', referrerPolicy: 'no-referrer',
+        headers: { apikey: root.dataset.chiave!, Authorization: `Bearer ${root.dataset.chiave}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p_token: token }),
+      });
+      if (res.ok) r = await res.json();
+    } catch { /* sotto */ }
+    if (!r) { msg.textContent = 'Il link non è valido, o il riepilogo non è più disponibile. Scriveteci e ve ne mandiamo uno nuovo.'; return; }
+    msg.hidden = true;
+    disegna(root, r);
+  }
+
+  function disegna(root: HTMLElement, r: Riepilogo) {
+    const ETI: Record<string, string> = JSON.parse(root.dataset.etichette ?? '{}');
+    const etichetta = (f: string) => f === 'altre' ? 'Altre funzioni' : f === 'non_indicata' ? 'Funzione non indicata' : (ETI[f] ?? f);
+
+    const stato = root.querySelector<HTMLElement>('[data-rp-stato]')!;
+    stato.hidden = false;
+    stato.dataset.stato = r.stato;
+    if (r.stato === 'in_preparazione') {
+      stato.append(el('p', 'rp-stato-t', 'La raccolta è aperta.'));
+      stato.append(el('p', 'rp-stato-l', r.funzioni > 0
+        ? `Finora hanno scritto ${numero(r.funzioni, 'funzione', 'funzioni')}. Il riepilogo si compone quando le funzioni sono almeno tre: prima, una raccolta così piccola direbbe poco e renderebbe riconoscibile chi ha scritto.`
+        : 'Il riepilogo si compone quando hanno scritto almeno tre funzioni: prima, una raccolta così piccola direbbe poco e renderebbe riconoscibile chi ha scritto.'));
+      return;
+    }
+    if (r.stato === 'bozza') {
+      stato.append(el('p', 'rp-stato-t', 'Bozza da approvare'));
+      stato.append(el('p', 'rp-stato-l', 'L’abbiamo preparata noi a partire dai contributi; prima di condividerla, diteci se va bene così o che cosa cambiare.'));
+      root.querySelector<HTMLElement>('[data-rp-filigrana]')!.hidden = false;
+    } else {
+      const d = r.approvato_il ? new Date(r.approvato_il).toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+      stato.append(el('p', 'rp-stato-l', d ? `Versione approvata il ${d}.` : 'Versione approvata.'));
+    }
+
+    const amp = root.querySelector<HTMLElement>('[data-rp-ampiezza]')!;
+    amp.hidden = false;
+    amp.append(el('p', 'rp-num', `${numero(r.totale ?? 0, 'contributo', 'contributi')} da ${numero(r.funzioni, 'funzione', 'funzioni')}`));
+    if (r.livelli.length) {
+      const parti = r.livelli.map((g) => g.livelli.length === 1
+        ? `${g.n} ${PLURALI[g.livelli[0]] ?? g.livelli[0]}`
+        : `${g.n} fra ${unisci(g.livelli.map((l) => PLURALI[l] ?? l))}`);
+      amp.append(el('p', 'rp-liv', `Per livello: ${unisci(parti)}.`));
+    }
+
+    const aree = root.querySelector<HTMLElement>('[data-rp-aree]')!;
+    const perArea = new Map<string, Voce[]>();
+    r.voci.forEach((v) => perArea.set(v.area, [...(perArea.get(v.area) ?? []), v]));
+    perArea.forEach((voci, area) => {
+      const s = el('section', 'rp-area');
+      s.append(el('h2', 'rp-area-t', area));
+      const ul = el('ul', 'rp-voci');
+      voci.forEach((v) => {
+        const li = el('li', 'rp-voce');
+        li.append(el('p', 'rp-voce-f', etichetta(v.funzione)));
+        li.append(el('p', 'rp-voce-t', v.testo));
+        if (v.risposta) {
+          const ri = el('div', 'rp-risp');
+          ri.append(el('p', 'rp-risp-e', 'Risposta di Adobe'));
+          ri.append(el('p', 'rp-risp-t', v.risposta));
+          li.append(ri);
+        }
+        li.append(el('p', 'rp-voce-s', `Sulla parte: ${v.sezione}`));
+        ul.append(li);
+      });
+      s.append(ul);
+      aree.append(s);
+    });
+    const pdf = root.querySelector<HTMLButtonElement>('[data-rp-pdf]')!;
+    pdf.hidden = false;
+    pdf.addEventListener('click', () => window.print());
+  }
+  carica();
+</script>
+
+<style is:global>
+  .rp {
+    --rp-col: 44rem;
+    max-width: var(--rp-col); margin: 0 auto;
+    padding: clamp(2rem, 6vw, 4.5rem) 1rem 3rem;
+    font-family: var(--font-body, system-ui); color: var(--ink-primary, CanvasText);
+    font-size: 1.0625rem; line-height: 1.6; position: relative;
+  }
+  .rp-occ { text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.85rem; color: var(--ink-secondary, inherit); margin: 0 0 0.75rem; }
+  .rp-t { font-family: var(--font-display, inherit); font-size: clamp(1.9rem, 5vw, 2.8rem); line-height: 1.12; margin: 0 0 0.75rem; text-wrap: balance; }
+  .rp-sub { margin: 0 0 2rem; color: var(--ink-secondary, inherit); max-width: 38rem; }
+  .rp-msg { padding: 1.25rem 0; }
+  .rp-stato { border-left: 3px solid var(--accent-primary, currentColor); padding: 0.4rem 0 0.4rem 1rem; margin: 0 0 2rem; }
+  .rp-stato[data-stato='approvato'] { border-left-color: var(--line-default, currentColor); }
+  .rp-stato-t { font-weight: 700; margin: 0 0 0.25rem; }
+  .rp-stato-l { margin: 0; color: var(--ink-secondary, inherit); }
+  .rp-ampiezza { padding: 1.25rem 0; border-top: 1px solid var(--line-subtle, currentColor); border-bottom: 1px solid var(--line-subtle, currentColor); margin: 0 0 2.5rem; }
+  .rp-num { font-family: var(--font-display, inherit); font-size: clamp(1.4rem, 3.5vw, 1.8rem); margin: 0; }
+  .rp-liv { margin: 0.35rem 0 0; color: var(--ink-secondary, inherit); }
+  .rp-area { margin: 0 0 2.75rem; break-inside: auto; }
+  .rp-area-t { font-family: var(--font-display, inherit); font-size: clamp(1.3rem, 3vw, 1.6rem); margin: 0 0 1rem; }
+  .rp-voci { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.5rem; }
+  .rp-voce { break-inside: avoid; padding-left: 1rem; border-left: 1px solid var(--line-default, currentColor); }
+  .rp-voce-f { margin: 0 0 0.2rem; font-size: 0.9rem; font-weight: 700; letter-spacing: 0.02em; color: var(--ink-accent, inherit); }
+  .rp-voce-t { margin: 0; }
+  .rp-risp { margin: 0.75rem 0 0; padding: 0.75rem 1rem; background: var(--surface-secondary, transparent); border-radius: 8px; }
+  .rp-risp-e { margin: 0 0 0.2rem; font-size: 0.85rem; font-weight: 700; color: var(--ink-secondary, inherit); }
+  .rp-risp-t { margin: 0; }
+  .rp-voce-s { margin: 0.5rem 0 0; font-size: 0.9rem; color: var(--ink-tertiary, inherit); }
+  .rp-piede { margin-top: 3rem; padding-top: 1.25rem; border-top: 1px solid var(--line-subtle, currentColor); font-size: 0.95rem; color: var(--ink-tertiary, inherit); display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .rp-piede p { margin: 0; }
+  .rp-pdf { font: inherit; font-weight: 600; min-height: 44px; padding: 0.5rem 1.2rem; border-radius: 999px; cursor: pointer; background: transparent; color: var(--ink-primary, inherit); border: 1px solid var(--line-strong, currentColor); }
+  .rp-filigrana { position: fixed; inset: 0; display: grid; place-items: center; pointer-events: none; font-family: var(--font-display, inherit); font-size: clamp(5rem, 18vw, 12rem); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-primary, CanvasText); opacity: 0.05; transform: rotate(-24deg); }
+  .rp-filigrana[hidden] { display: none; }
+  @media print {
+    @page { margin: 18mm 16mm; }
+    body { background: white !important; }
+    .rp { color: black; max-width: none; padding: 0; font-size: 11pt; }
+    .rp-pdf, .edf-madewith, nav, header.site { display: none !important; }
+    .rp-filigrana { opacity: 0.08; color: black; }
+    .rp-risp { background: none; border: 1px solid #bbb; } /* core-contract-ignore — carta stampata */
+  }
+</style>

@@ -1,0 +1,255 @@
+---
+/**
+ * Il modulo dei contributi — versione B («Da costruire insieme») dell'edizione
+ * da distribuire. Spec 2026-11-19, «Revisione del 19 nov sera».
+ *
+ * ANONIMO PER COSTRUZIONE: sezione, testo, funzione e livello facoltativi, una
+ * sola casella («nel riepilogo per la banca») spenta. Niente nome, niente
+ * contatto, niente cookie o memoria nel browser. Prima del clic su «Invia» non
+ * parte nessuna chiamata di rete.
+ *
+ * Come si apre:
+ *  - con `pulsante`, il componente posa «Chiedeteci di questo» nella barra dei
+ *    comandi del deck (fuori dalle slide, quindi fuori da audit:deck) e
+ *    precompila la sezione con «capitolo · titolo della slide attiva»;
+ *  - qualunque elemento `[data-contributo-apri]` lo apre, con la sezione di
+ *    `data-sezione` se c'è.
+ * Il pulsante nasce da JS: gli stili che lo toccano stanno in `is:global`
+ * (memoria astro-scoped-css-runtime-dom).
+ */
+import { FUNZIONI, LIVELLI, LIMITI } from '../../utils/contributi';
+interface Props {
+  /** riga di `riepiloghi` (es. `intesa-storia-insieme`) */
+  progetto: string;
+  /** il titolo del capitolo della pagina, per precompilare la sezione */
+  capitolo?: string;
+  /** posa «Chiedeteci di questo» nella barra del deck */
+  pulsante?: boolean;
+}
+const { progetto, capitolo = '', pulsante = false } = Astro.props;
+const URL_DB = (import.meta.env.PUBLIC_SUPABASE_URL ?? '').replace(/\/$/, '');
+const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+---
+<dialog
+  class="edf-mc"
+  data-edf-contributo
+  data-progetto={progetto}
+  data-capitolo={capitolo}
+  data-pulsante={pulsante ? '' : undefined}
+  data-url={URL_DB}
+  data-chiave={CHIAVE}
+  aria-labelledby="edf-mc-t"
+>
+  <form method="dialog" class="edf-mc-f" novalidate data-edf-mc-form>
+    <div class="edf-mc-testa">
+      <h2 id="edf-mc-t" class="edf-mc-t">Scriveteci una domanda o uno spunto</h2>
+      <button type="button" class="edf-mc-x" data-edf-mc-chiudi aria-label="Chiudi">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <p class="edf-mc-l">Il modulo è anonimo: non chiede nome né contatto. Per una risposta personale scriveteci per email o su WhatsApp, da «Parliamone».</p>
+
+    <div data-edf-mc-campi>
+      <label class="edf-mc-c">
+        <span class="edf-mc-e">Su quale parte</span>
+        <input type="text" name="sezione" maxlength={LIMITI.sezione} autocomplete="off" />
+      </label>
+      <label class="edf-mc-c">
+        <span class="edf-mc-e">La domanda o lo spunto</span>
+        <textarea name="testo" rows="5" maxlength={LIMITI.testo} required></textarea>
+      </label>
+      <div class="edf-mc-due">
+        <label class="edf-mc-c">
+          <span class="edf-mc-e">Funzione <span class="edf-mc-fac">facoltativa</span></span>
+          <select name="funzione">
+            <option value="">Preferisco non dirlo</option>
+            {FUNZIONI.map((f) => <option value={f.k}>{f.l}</option>)}
+          </select>
+        </label>
+        <label class="edf-mc-c">
+          <span class="edf-mc-e">Livello <span class="edf-mc-fac">facoltativo</span></span>
+          <select name="livello">
+            <option value="">Preferisco non dirlo</option>
+            {LIVELLI.map((l) => <option value={l.k}>{l.l}</option>)}
+          </select>
+        </label>
+      </div>
+      <label class="edf-mc-ok">
+        <input type="checkbox" name="ok" />
+        <span>Potete usarlo nel riepilogo per la banca. <span class="edf-mc-fac">Il riepilogo mette insieme domande e spunti per funzione, senza nomi; il livello compare solo nei totali.</span></span>
+      </label>
+      <p class="edf-mc-err" data-edf-mc-err role="alert" hidden></p>
+      <div class="edf-mc-az">
+        <button type="button" class="edf-mc-b edf-mc-b--2" data-edf-mc-chiudi>Annulla</button>
+        <button type="submit" class="edf-mc-b" data-edf-mc-invia>Invia</button>
+      </div>
+    </div>
+
+    <div class="edf-mc-fatto" data-edf-mc-fatto hidden>
+      <p class="edf-mc-t2">Ricevuto, grazie.</p>
+      <p class="edf-mc-l">Lo leggiamo noi, nel team Adobe dell'account. Se volete una risposta diretta, scriveteci per email o su WhatsApp.</p>
+      <div class="edf-mc-az">
+        <button type="button" class="edf-mc-b edf-mc-b--2" data-edf-mc-altro>Scrivine un altro</button>
+        <button type="button" class="edf-mc-b" data-edf-mc-chiudi>Chiudi</button>
+      </div>
+    </div>
+  </form>
+</dialog>
+
+<script>
+  import { rigaContributo, sezioneDa } from '../../utils/contributi';
+
+  const dlg = () => document.querySelector<HTMLDialogElement>('dialog[data-edf-contributo]');
+
+  function sezioneAttiva(d: HTMLDialogElement): string {
+    const cap = d.dataset.capitolo ?? '';
+    const s = document.querySelector<HTMLElement>('[data-deck] [data-slide]:not([aria-hidden])');
+    const h = s?.querySelector<HTMLElement>('h1, h2, h3');
+    // innerText e non textContent: un titolo bilingue (<T en it>) porta le due
+    // lingue nel DOM, e solo quella visibile è la sezione giusta.
+    return sezioneDa(cap, h?.innerText ?? '');
+  }
+
+  function apri(sezione?: string) {
+    const d = dlg();
+    if (!d) return;
+    const f = d.querySelector<HTMLFormElement>('[data-edf-mc-form]')!;
+    stato(d, 'campi');
+    (f.elements.namedItem('sezione') as HTMLInputElement).value = sezione ?? sezioneAttiva(d);
+    d.showModal();
+    (f.elements.namedItem('testo') as HTMLTextAreaElement).focus();
+  }
+
+  function stato(d: HTMLDialogElement, s: 'campi' | 'fatto') {
+    d.querySelector<HTMLElement>('[data-edf-mc-campi]')!.hidden = s !== 'campi';
+    d.querySelector<HTMLElement>('[data-edf-mc-fatto]')!.hidden = s !== 'fatto';
+    errore(d, '');
+  }
+
+  function errore(d: HTMLDialogElement, msg: string) {
+    const e = d.querySelector<HTMLElement>('[data-edf-mc-err]')!;
+    e.textContent = msg;
+    e.hidden = !msg;
+  }
+
+  async function invia(d: HTMLDialogElement) {
+    const f = d.querySelector<HTMLFormElement>('[data-edf-mc-form]')!;
+    const v = (n: string) => (f.elements.namedItem(n) as HTMLInputElement).value;
+    const esito = rigaContributo(d.dataset.progetto ?? '', {
+      sezione: v('sezione'), testo: v('testo'), funzione: v('funzione'), livello: v('livello'),
+      okRiepilogo: (f.elements.namedItem('ok') as HTMLInputElement).checked,
+    });
+    if (!esito.ok) { errore(d, esito.errore); return; }
+    const url = d.dataset.url, chiave = d.dataset.chiave;
+    if (!url || !chiave) { errore(d, 'Il modulo non è collegato. Scriveteci per email, da «Parliamone».'); return; }
+    const b = d.querySelector<HTMLButtonElement>('[data-edf-mc-invia]')!;
+    b.disabled = true;
+    try {
+      const r = await fetch(`${url}/rest/v1/contributi`, {
+        method: 'POST', credentials: 'omit', referrerPolicy: 'no-referrer',
+        headers: { apikey: chiave, Authorization: `Bearer ${chiave}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+        body: JSON.stringify(esito.riga),
+      });
+      if (!r.ok) throw new Error(String(r.status));
+      f.reset();
+      stato(d, 'fatto');
+    } catch {
+      errore(d, 'Non è partito. Riprovate fra poco, o scriveteci per email da «Parliamone».');
+    } finally {
+      b.disabled = false;
+    }
+  }
+
+  function posaPulsante() {
+    const d = dlg();
+    if (!d || !('pulsante' in d.dataset)) return;
+    const barra = document.querySelector<HTMLElement>('[data-deck] [data-deck-controls]');
+    if (!barra || barra.querySelector('.edf-mc-chiedi')) return;
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'deck-btn edf-mc-chiedi';
+    b.setAttribute('data-contributo-apri', '');
+    b.setAttribute('aria-label', 'Chiedeteci di questo: apre il modulo con questa parte già indicata');
+    b.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" stroke-linejoin="round"/></svg><span class="edf-mc-chiedi-l">Chiedeteci di questo</span>';
+    barra.appendChild(b);
+  }
+
+  function collega() {
+    const d = dlg();
+    if (!d || d.dataset.collegato) return;
+    d.dataset.collegato = '1';
+    // Dentro il modulo la tastiera è del modulo: senza, lo spazio e le frecce
+    // nel testo farebbero avanzare il deck (che ascolta su window).
+    d.addEventListener('keydown', (e) => { if (e.key !== 'Escape') e.stopPropagation(); });
+    d.addEventListener('click', (e) => {
+      const t = e.target as HTMLElement;
+      if (t === d || t.closest('[data-edf-mc-chiudi]')) d.close();
+      if (t.closest('[data-edf-mc-altro]')) stato(d, 'campi');
+    });
+    d.querySelector('[data-edf-mc-form]')!.addEventListener('submit', (e) => { e.preventDefault(); invia(d); });
+    posaPulsante();
+  }
+
+  document.addEventListener('click', (e) => {
+    const a = (e.target as HTMLElement).closest<HTMLElement>('[data-contributo-apri]');
+    if (!a) return;
+    e.preventDefault();
+    apri(a.dataset.sezione);
+  });
+  collega();
+  document.addEventListener('astro:page-load', collega);
+</script>
+
+<style is:global>
+  .edf-mc {
+    /* Il reset di Tailwind azzera il margine di <dialog>: lo si rimette al centro. */
+    position: fixed; inset: 0; margin: auto; height: fit-content;
+    width: min(40rem, calc(100vw - 2rem));
+    max-height: calc(100dvh - 2rem);
+    padding: 0;
+    border: 1px solid var(--line-default, currentColor);
+    border-radius: 14px;
+    background: var(--surface-primary, Canvas);
+    color: var(--ink-primary, CanvasText);
+    font-family: var(--font-body, system-ui);
+    overflow: auto;
+  }
+  .edf-mc::backdrop { background: color-mix(in srgb, var(--surface-inverse, CanvasText) 62%, transparent); }
+  .edf-mc-f { padding: clamp(1.25rem, 3vw, 2rem); display: grid; gap: 1rem; }
+  .edf-mc-testa { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+  .edf-mc-t { font-family: var(--font-display, inherit); font-size: clamp(1.35rem, 2vw, 1.6rem); line-height: 1.2; margin: 0; }
+  .edf-mc-t2 { font-family: var(--font-display, inherit); font-size: 1.4rem; margin: 0; }
+  .edf-mc-l { margin: 0; font-size: 1rem; line-height: 1.5; color: var(--ink-secondary, inherit); }
+  .edf-mc-x { background: none; border: 0; color: inherit; padding: 0.6rem; margin: -0.6rem -0.6rem 0 0; cursor: pointer; min-width: 44px; min-height: 44px; }
+  [data-edf-mc-campi] { display: grid; gap: 1rem; }
+  .edf-mc-c { display: grid; gap: 0.35rem; }
+  .edf-mc-e { font-size: 0.95rem; font-weight: 600; }
+  .edf-mc-fac { font-weight: 400; color: var(--ink-tertiary, inherit); }
+  .edf-mc input[type='text'], .edf-mc textarea, .edf-mc select {
+    font: inherit; font-size: 1rem; color: inherit;
+    background: var(--surface-secondary, transparent);
+    border: 1px solid var(--line-default, currentColor);
+    border-radius: 8px; padding: 0.65rem 0.75rem; min-height: 44px; width: 100%;
+  }
+  .edf-mc textarea { resize: vertical; min-height: 7.5rem; line-height: 1.5; }
+  .edf-mc :focus-visible { outline: 2px solid var(--accent-primary, Highlight); outline-offset: 2px; }
+  .edf-mc-due { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+  .edf-mc-ok { display: grid; grid-template-columns: auto 1fr; gap: 0.6rem; align-items: start; font-size: 0.95rem; line-height: 1.45; }
+  .edf-mc-ok input { width: 1.25rem; height: 1.25rem; margin-top: 0.1rem; accent-color: var(--accent-primary, auto); }
+  .edf-mc-ok .edf-mc-fac { display: block; margin-top: 0.2rem; }
+  .edf-mc-err { margin: 0; color: var(--ink-accent, inherit); font-weight: 600; }
+  .edf-mc-az { display: flex; justify-content: flex-end; gap: 0.75rem; flex-wrap: wrap; }
+  .edf-mc-b {
+    font: inherit; font-weight: 600; cursor: pointer; min-height: 44px; padding: 0.6rem 1.3rem; border-radius: 999px;
+    background: var(--accent-primary, CanvasText); color: var(--color-on-accent, Canvas); border: 1px solid transparent;
+  }
+  .edf-mc-b--2 { background: transparent; color: inherit; border-color: var(--line-strong, currentColor); }
+  .edf-mc-b:disabled { opacity: 0.55; cursor: progress; }
+
+  /* «Chiedeteci di questo» nella barra del deck: eredita colore e auto-hide del
+     chrome da `.deck-btn`; l'etichetta si vede dove c'è spazio. */
+  [data-deck] .deck-btn.edf-mc-chiedi { width: auto; gap: 0.5rem; padding: 0 0.85rem; border-radius: 999px; display: inline-flex; align-items: center; }
+  .edf-mc-chiedi-l { font-size: 0.95rem; letter-spacing: 0.01em; white-space: nowrap; }
+  @media (max-width: 899px) { .edf-mc-chiedi-l { display: none; } [data-deck] .deck-btn.edf-mc-chiedi { padding: 0; } }
+  @media print { .edf-mc, .edf-mc-chiedi { display: none !important; } }
+</style>

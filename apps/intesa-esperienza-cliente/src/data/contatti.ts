@@ -4,6 +4,7 @@
  * repo e il sito sono pubblici. WhatsApp solo per chi l'ha dato.
  * Ruoli come in `adobe.astro`, tranne l'owner: «Product Sales Specialist».
  */
+import { conContributi } from '@edf/core/utils/edizione';
 import gordiani from '../assets/team/gordiani.png';
 import ellena from '../assets/team/ellena.png';
 import gargiulo from '../assets/team/gargiulo.png';
@@ -18,3 +19,7 @@ export const CONTATTI: Contatto[] = [
 
 export const OGGETTO_EMAIL = 'Adobe × Intesa Sanpaolo · una domanda';
 export const TESTO_WHATSAPP = 'Buongiorno, ho letto la storia Adobe × Intesa Sanpaolo e ho una domanda.';
+
+/** Il nome con cui l'edizione si conta (`aperture`) e raccoglie (`contributi`):
+ *  A e B si contano a parte, così si vede quale delle due circola. */
+export const PROGETTO_EDIZIONE = conContributi() ? 'intesa-storia-insieme' : 'intesa-storia';

@@ -20,7 +20,8 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CoBrand from '../components/CoBrand.astro';
-import { CONTATTI, OGGETTO_EMAIL, TESTO_WHATSAPP } from '../data/contatti';
+import { CONTATTI, OGGETTO_EMAIL, TESTO_WHATSAPP, PROGETTO_EDIZIONE } from '../data/contatti';
+import { conContributi } from '@edf/core/utils/edizione';
 import { linkWhatsApp } from '@edf/core/utils/contatti';
 import ContaAperture from '@edf/core/blocks/immersive/ContaAperture.astro';
 import { TITOLO_INCONTRO } from '../data/agenda';
@@ -153,6 +154,12 @@ const CAPACITA: Record<string, string> = {
           </li>
         ))}
       </ul>
+      {/* Versione B: il modulo anonimo, per chi non vuole scrivere a una persona. */}
+      {conContributi() && (
+        <p class="br-anon">
+          <button type="button" class="br-per-a br-anon-b" data-contributo-apri data-sezione="La storia in breve">Lascia una domanda senza firmarti</button>
+        </p>
+      )}
     </section>
 
     {/* IL PIEDE: chi l'ha preparata, da dove vengono le immagini, che cosa si conta. */}
@@ -162,10 +169,11 @@ const CAPACITA: Record<string, string> = {
       <dl class="br-piede-dl">
         <div><dt>Immagini</dt><dd>Le scene sono generate con Adobe Firefly. Il ritratto di Giulia è una foto di repertorio.</dd></div>
         <div><dt>Misura</dt><dd>Contiamo quante volte questa pagina viene aperta, giorno per giorno. Non registriamo chi la apre.</dd></div>
+        {conContributi() && <div><dt>Modulo</dt><dd>Non chiede nome né contatto. Quello che scrivete lo legge il team Adobe dell’account.</dd></div>}
       </dl>
     </footer>
   </main>
-  <ContaAperture progetto="intesa-storia" pagina="breve" />
+  <ContaAperture progetto={PROGETTO_EDIZIONE} pagina="breve" />
 </BaseLayout>
 
 <script is:inline>
@@ -359,6 +367,8 @@ const CAPACITA: Record<string, string> = {
     display: inline-flex; align-items: center; min-height: 40px; padding: 0 0.95rem; border-radius: 999px;
     border: 1.5px solid rgb(255 255 255 / 0.5); color: var(--color-paper); font-size: 0.95rem; font-weight: 600; text-decoration: none;
   }
+  .br-anon { margin: 1rem auto 0; padding: 0 1.25rem; width: 100%; max-width: 34rem; }
+  .br-anon-b { background: none; font-family: inherit; cursor: pointer; min-height: 44px; }
 
   /* ── Il piede: un footer vero, piccolo e separato ───────────── */
   .br-piede {
