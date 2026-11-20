@@ -1,0 +1,120 @@
+---
+/**
+ * 03 · TRE IDEE DA DISCUTERE — una pagina d'insieme, poi una slide per idea.
+ *
+ * Le idee vengono dal dossier interno (verificate su Fluffy e sulle fonti
+ * pubbliche il 15 nov 2026) e qui sono scritte per il cliente: ognuna è
+ * un'ancora, una riga, un disegno di come funziona, i prodotti nominati con
+ * discrezione e UNA domanda. È un primo incontro: le idee servono ad aprire
+ * la conversazione, non a chiuderla.
+ *
+ * ⚠️ Vincoli, dal dossier:
+ *   - il dato sanitario NON entra in Experience Platform in Europa: l'idea
+ *     sul rimborso lavora su eventi di servizio, e la slide lo dice;
+ *   - Brand Visibility si nomina con i motori che copre davvero (ChatGPT,
+ *     Gemini, Google AI Overviews, Copilot, Perplexity), nient'altro;
+ *   - un tema infrastrutturale resta fuori perimetro (decisione dell'owner, 17 nov 2026);
+ *   - nessun paragone con altri assicuratori.
+ *
+ * ⚠️ PENSATA PER DIVENTARE UN .pptx: ogni movimento è una comparsa
+ * (`data-reveal`, `data-stagger`) che in PowerPoint diventa un'animazione
+ * d'entrata, in ordine. Niente scene di meccanismo, niente 3D.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import Divisore from '../components/Divisore.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { IDEE } from '../data/idee';
+import fondo from '../assets/generated/div/div-idee.webp';
+
+const SLUG = 'idee';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="secondary" align="left">
+      <div slot="backdrop" class="im-div-bg" style={`--foto: url('${fondo.src}'); --fuoco: center 50%`}></div>
+      <Divisore num={ch.num} tIt={ch.title.it} tEn={ch.title.en} />
+    </Slide>
+
+    <Slide id="slide-tre" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Quello che vediamo da fuori" en="What we see from the outside" />
+        <T as="h2" class="im-ado-t" it="Tre idee, per capire se colgono nel segno" en="Three ideas, to see whether they hit the mark" />
+        <T as="p" class="im-ado-l" it="Nascono da materiale pubblico: il vostro sito, le app <span class='ins-coda'>e le recensioni negli store.</span> Ci dite voi quali contano." en="They come from public material: your site, the apps and the store reviews. You tell us which ones matter." />
+        <ol class="ins-tre" data-stagger="0.15">
+          {IDEE.map((i) => (
+            <li class="ins-tre-i">
+              <a class="ins-tre-a" href={`${href(base, '/' + SLUG)}#${i.slide}`}>
+                <span class="ins-tre-n">{i.n}</span>
+                <T as="span" class="ins-tre-tag" it={i.tag.it} en={i.tag.en} />
+                <T as="span" class="ins-tre-t" it={i.titolo.it} en={i.titolo.en} />
+                <T as="span" class="ins-tre-d" it={i.riga.it} en={i.riga.en} />
+                <span class="ins-tre-p">{i.prodotti.join(' · ')}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </Slide>
+
+    {IDEE.map((i) => (
+      <Slide id={i.slide} bg="inverse" align="left">
+        <div slot="backdrop" class="im-bg-notte"></div>
+        <div class="im-ado-cap im-ado-cap--largo ins-idea" data-reveal>
+          <p class="im-ado-occ"><span data-lang-it>Idea {i.n} · {i.tag.it}</span><span data-lang-en>Idea {i.n} · {i.tag.en}</span></p>
+          <T as="h2" class="im-ado-t" it={i.titolo.it} en={i.titolo.en} />
+          <T as="p" class="im-ado-l" it={i.lead.it} en={i.lead.en} />
+
+          <ol class="ins-flusso" data-stagger="0.12" style={`--passi: ${i.passi.length}`}>
+            {i.passi.map((p, k) => (
+              <li class:list={['ins-passo', i.fuoco === k && 'ins-passo--fuoco']}>
+                <span class="ins-passo-n">{String(k + 1).padStart(2, '0')}</span>
+                <T as="span" class="ins-passo-t" it={p.t.it} en={p.t.en} />
+                <T as="span" class="ins-passo-d" it={p.d.it} en={p.d.en} />
+              </li>
+            ))}
+          </ol>
+
+          <ul class="ins-strati" data-stagger="0.15">
+            {i.strati.map((s) => (
+              <li class="ins-strato">
+                <span class="ins-strato-p">{s.p}</span>
+                <T as="span" class="ins-strato-d" it={s.d.it} en={s.d.en} />
+              </li>
+            ))}
+          </ul>
+
+          <div class="ins-piede" data-reveal data-reveal-delay="0.5">
+            {i.confine && (
+              <T as="p" class="ins-confine" it={i.confine.it} en={i.confine.en} />
+            )}
+            <p class="ins-domanda">
+              <span class="ins-domanda-k"><span data-lang-it>La domanda per voi</span><span data-lang-en>Our question for you</span></span>
+              <T as="em" class="ins-domanda-t" it={i.domanda.it} en={i.domanda.en} />
+            </p>
+          </div>
+          {i.fonte && (
+            <p class="im-fonte-riga">
+              <span data-lang-it>Documentazione: </span><span data-lang-en>Documentation: </span>
+              {i.fonte.map((f, k) => <>{k > 0 && ' · '}<a href={f.url} target="_blank" rel="noopener">{f.nome}</a></>)}
+            </p>
+          )}
+        </div>
+      </Slide>
+    ))}
+
+  </DeckContainer>
+</BaseLayout>

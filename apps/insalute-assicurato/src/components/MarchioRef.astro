@@ -1,0 +1,42 @@
+---
+/**
+ * MarchioRef — il marchio di una banca citata come referenza.
+ *
+ * ⚠️ DUE REGOLE, E NESSUNA È UNA SCELTA ESTETICA.
+ *
+ * 1 · Un logo non si ricostruisce e non si prende dal web. Vale la stessa
+ *     regola del co-brand: solo l'SVG ufficiale che il titolare
+ *     distribuisce. Un marchio rifatto a mano è wrong-brand imagery, che
+ *     la Quality Bar vieta.
+ * 2 · Il diritto di usarlo è CONTRATTUALE. Adobe ha una clausola apposta
+ *     nel Sales Order — le «NASCAR» logo slides — con cui il cliente
+ *     concede nome e logo su materiale esterno senza doverlo richiedere
+ *     ogni volta; fuori da lì si concorda caso per caso. Che una certa
+ *     banca l'abbia, non lo decide chi compone la slide.
+ *
+ * Quindi: se in `src/assets/loghi/<slug>.svg` c'è il file ufficiale, lo
+ * usa. Se non c'è, scrive il nome in carattere display — lo stesso
+ * ripiego che il co-brand usa per i clienti senza SVG. Mettere il file
+ * basta: non si tocca il codice.
+ */
+interface Props { slug: string; nome: string; class?: string }
+const { slug, nome, class: className } = Astro.props;
+
+/* `eager` perché la presenza del file si deve sapere in compilazione:
+   il ripiego non deve apparire e poi essere sostituito a pagina viva. */
+const UFFICIALI = import.meta.glob('../assets/loghi/*.svg', {
+  eager: true, query: '?url', import: 'default',
+}) as Record<string, string>;
+const file = UFFICIALI[`../assets/loghi/${slug}.svg`];
+/* Il marchio che il titolare pubblica SOLO in negativo non si ricolora: lo si posa
+   sul fondo dove lo mette lui. Unipol su unipol.it è bianco sulla testata navy
+   #001c35 (il suo colore di sistema), e così sta qui. */
+const PIASTRA: Record<string, string> = { unipol: '#001c35' };
+const piastra = PIASTRA[slug];
+---
+{/* Senza il file ufficiale non si scrive il nome: sulla slide è già
+    nell'occhiello e nel titolo, e il ripiego lo ripeteva una terza volta
+    senza dare riconoscibilità (owner, 14 nov 2026). Il posto resta: basta
+    mettere l'SVG in `src/assets/loghi/<slug>.svg`. */}
+{file && !piastra && <img class:list={['im-marchio', className]} src={file} alt={nome} loading="lazy" decoding="async" />}
+{file && piastra && <span class:list={['im-marchio-piastra', className]} style={`--piastra:${piastra}`}><img class="im-marchio" src={file} alt={nome} loading="lazy" decoding="async" /></span>}

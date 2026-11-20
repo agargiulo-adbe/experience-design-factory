@@ -1,0 +1,215 @@
+---
+/**
+ * LA MODALITÀ PRESENTATORE (team e owner, 16 nov 2026).
+ *
+ * Due cose, per chi presenta e solo per lui:
+ *
+ * 1. LE SLIDE DI RISERVA. Una slide con `data-riserva` esce dal percorso delle
+ *    frecce: non si conta, non si vede, non si raggiunge per sbaglio. Resta nel
+ *    deck, pronta. Ci si arriva in due modi: dal pannello qui sotto (un link con
+ *    la sua ancora la tiene accesa), o accendendo «Riserve nel percorso», che le
+ *    rimette tutte in fila per la sessione. Accese, portano il bollino «Riserva».
+ *    Lo stesso meccanismo del gating della Console (`DeckContainer`): la slide
+ *    perde `data-slide` PRIMA che il motore conti le slide.
+ *
+ * 2. IL PANNELLO «VAI A…» (tasto G). Tutte le slide del deck, capitolo per
+ *    capitolo, comprese le riserve e gli approfondimenti fuori percorso: un clic
+ *    e si è lì. Si filtra scrivendo. Esc o G lo chiudono. Mentre è aperto il
+ *    deck non sente le frecce.
+ *
+ * Non c'è nessun pulsante in pagina: in sala nessuno lo vede.
+ */
+import { PAGE_REGISTRY } from '../data/slides';
+import { SITE } from '../data/site';
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const PROJECT_SLUG = SITE.slug;
+const NASCOSTE = new Set(['admin', 'relatore', 'analytics', 'circolo', 'risultati-old']);
+const GRUPPI = PAGE_REGISTRY.filter((p) => !NASCOSTE.has(p.slug)).map((p) => ({
+  slug: p.slug,
+  label: p.label,
+  url: p.slug === 'index' ? base : `${base}${p.slug}/`,
+  slides: p.slides,
+}));
+/* IL PIANO B: la versione breve, in testa al pannello. Non sta nel registro della
+   Console (non è un capitolo): la si elenca qui, slide per slide. */
+GRUPPI.unshift({
+  slug: 'dieci-minuti',
+  label: 'Piano B · la versione breve («In breve»)',
+  url: `${base}dieci-minuti/`,
+  slides: [
+    { id: 'slide-cover', label: 'Copertina della versione breve' },
+    { id: 'slide-giro', label: 'Giulia diventa cliente in sette momenti: il giro' },
+    { id: 'slide-prima', label: 'I momenti 01–03, prima dell’email' },
+    { id: 'slide-dopo', label: 'I momenti 04–07, dopo email e consenso' },
+    { id: 'slide-prova', label: 'La prova: un caso' },
+    { id: 'slide-accanto', label: 'Accanto a quello che avete' },
+    { id: 'slide-firma', label: 'La firma' },
+  ],
+});
+---
+<dialog class="mr" data-mr data-progetto={PROJECT_SLUG} aria-label="Vai a una slide" data-deck-nochrome>
+  <div class="mr-in">
+    <header class="mr-testa">
+      <p class="mr-k">Modalità presentatore</p>
+      <h2 class="mr-t">Vai a…</h2>
+      <input class="mr-filtro" type="search" placeholder="Scrivi per cercare una slide" aria-label="Cerca una slide" data-mr-filtro />
+      <label class="mr-riserve"><input type="checkbox" data-mr-riserve /> <span>Riserve nel percorso</span></label>
+      <button type="button" class="mr-x" data-mr-chiudi aria-label="Chiudi">×</button>
+    </header>
+    <div class="mr-lista">
+      {GRUPPI.map((g) => (
+        <section class="mr-g" data-mr-g>
+          <h3>{g.label}</h3>
+          <ol>
+            {g.slides.map((sl, k) => (
+              <li data-mr-voce data-testo={`${g.label} ${sl.label}`.toLowerCase()}>
+                <a href={`${g.url}#${sl.id}`} data-mr-slug={g.slug} data-mr-id={sl.id} data-riserva={sl.riserva ? '' : null}>
+                  <span class="mr-n">{k + 1}</span>
+                  <span class="mr-l">{sl.label}</span>
+                  {sl.riserva && <span class="mr-badge">Riserva</span>}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))}
+    </div>
+    <p class="mr-piede">G apre e chiude · scrivi per filtrare · Invio apre la prima voce</p>
+  </div>
+</dialog>
+
+<script is:inline define:vars={{ PROJECT_SLUG }}>
+(function () {
+  /* Le riserve escono dal percorso PRIMA che il motore conti le slide. Questo
+     script sta in fondo al body, dopo le slide e prima dei moduli del deck. */
+  var KEY = 'edf:riserve:' + PROJECT_SLUG;
+  function tutte() { try { return sessionStorage.getItem(KEY) === 'on'; } catch (e) { return false; } }
+  function applica() {
+    var ancora = decodeURIComponent((location.hash || '').slice(1));
+    document.querySelectorAll('[data-riserva][data-slide], [data-riserva][data-riserva-fuori]').forEach(function (el) {
+      if (el.tagName === 'A') return;
+      var accesa = tutte() || (ancora && el.id === ancora);
+      if (accesa) {
+        el.setAttribute('data-riserva-on', '');
+        return;
+      }
+      el.removeAttribute('data-slide');
+      el.setAttribute('data-riserva-fuori', '');
+      el.setAttribute('aria-hidden', 'true');
+      el.setAttribute('inert', '');
+      el.style.display = 'none';
+    });
+  }
+  applica();
+  if (!window.__edfRiserveBound) {
+    window.__edfRiserveBound = true;
+    document.addEventListener('astro:after-swap', applica);
+  }
+})();
+</script>
+
+<script>
+  /* Il pannello. Delega sul documento: regge ai cambi di capitolo del ClientRouter. */
+  const pannello = () => document.querySelector<HTMLDialogElement>('dialog[data-mr]');
+  const deck = () => document.querySelector<HTMLElement>('[data-deck]');
+  const chiave = () => 'edf:riserve:' + (pannello()?.dataset.progetto ?? '');
+  function filtra(q: string) {
+    const d = pannello(); if (!d) return;
+    const t = q.trim().toLowerCase();
+    d.querySelectorAll<HTMLElement>('[data-mr-voce]').forEach((li) => { li.hidden = !!t && !(li.dataset.testo ?? '').includes(t); });
+    d.querySelectorAll<HTMLElement>('[data-mr-g]').forEach((g) => { g.hidden = !g.querySelector('[data-mr-voce]:not([hidden])'); });
+  }
+  function apri() {
+    const d = pannello(); if (!d || d.open) return;
+    const qui = decodeURIComponent(location.hash.slice(1));
+    const slug = location.pathname.replace(/\/+$/, '').split('/').pop() ?? '';
+    d.querySelectorAll<HTMLAnchorElement>('a[data-mr-id]').forEach((a) => {
+      const corrente = a.dataset.mrId === qui && (a.dataset.mrSlug === slug || (a.dataset.mrSlug === 'index' && !slug.length));
+      if (corrente) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
+    });
+    const cb = d.querySelector<HTMLInputElement>('[data-mr-riserve]');
+    if (cb) { try { cb.checked = sessionStorage.getItem(chiave()) === 'on'; } catch { cb.checked = false; } }
+    const f = d.querySelector<HTMLInputElement>('[data-mr-filtro]');
+    if (f) { f.value = ''; filtra(''); }
+    deck()?.setAttribute('data-deck-lock', '');
+    d.showModal();
+    f?.focus();
+    d.querySelector('[aria-current]')?.scrollIntoView({ block: 'center' });
+  }
+  function chiudi() {
+    const d = pannello(); if (d?.open) d.close();
+  }
+  document.addEventListener('close', (e) => {
+    if ((e.target as HTMLElement)?.matches?.('dialog[data-mr]')) deck()?.removeAttribute('data-deck-lock');
+  }, true);
+  document.addEventListener('keydown', (e) => {
+    const t = e.target as HTMLElement;
+    const d = pannello();
+    if (d?.open && e.key === 'Enter' && t.matches('[data-mr-filtro]')) {
+      const primo = d.querySelector<HTMLAnchorElement>('[data-mr-voce]:not([hidden]) a');
+      if (primo) { e.preventDefault(); primo.click(); }
+      return;
+    }
+    if (e.key !== 'g' && e.key !== 'G') return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (t.matches('input, textarea, select, [contenteditable]')) return;
+    if (document.querySelector('dialog.pp[open]')) return;
+    e.preventDefault(); e.stopPropagation();
+    if (d?.open) chiudi(); else apri();
+  }, true);
+  document.addEventListener('input', (e) => {
+    const t = e.target as HTMLInputElement;
+    if (t.matches?.('[data-mr-filtro]')) filtra(t.value);
+  });
+  document.addEventListener('change', (e) => {
+    const t = e.target as HTMLInputElement;
+    if (!t.matches?.('[data-mr-riserve]')) return;
+    try { if (t.checked) sessionStorage.setItem(chiave(), 'on'); else sessionStorage.removeItem(chiave()); } catch { /* sessione non disponibile */ }
+    location.reload();
+  });
+  document.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    if (t.closest('[data-mr-chiudi]')) { chiudi(); return; }
+    const a = t.closest<HTMLAnchorElement>('a[data-mr-id]');
+    if (!a) return;
+    e.preventDefault();
+    chiudi();
+    // Sempre un caricamento vero: così una riserva si accende e il motore la conta.
+    const url = new URL(a.href);
+    if (url.pathname === location.pathname) { location.hash = url.hash; location.reload(); }
+    else location.assign(url.href);
+  });
+</script>
+
+<style>
+  dialog.mr { width: min(1180px, 94vw); max-height: 88vh; padding: 0; border: 0; border-radius: 18px; background: #101521; color: #f2f3f6;
+    box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.7), inset 0 0 0 1.5px rgba(180, 190, 213, 0.25); font-family: var(--font-body); }
+  dialog.mr::backdrop { background: rgba(4, 6, 11, 0.72); backdrop-filter: blur(3px); }
+  .mr-in { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; max-height: 88vh; }
+  .mr-testa { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; grid-template-areas: 'k k k x' 't f r x'; align-items: center; gap: 0.35rem 1.2rem;
+    padding: 1.1rem 1.4rem 1rem; border-bottom: 1px solid rgba(180, 190, 213, 0.18); }
+  .mr-k { grid-area: k; margin: 0; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #b4bed5; }
+  .mr-t { grid-area: t; margin: 0; font-family: var(--font-display); font-size: 1.6rem; color: #fff; }
+  .mr-filtro { grid-area: f; min-width: 0; height: 2.6rem; padding: 0 0.9rem; border: 1.5px solid rgba(180, 190, 213, 0.35); border-radius: 10px; background: rgba(255, 255, 255, 0.06); color: #fff; font: inherit; font-size: 1rem; }
+  .mr-filtro:focus-visible { outline: 2px solid #b4bed5; outline-offset: 2px; }
+  .mr-riserve { grid-area: r; display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.95rem; font-weight: 600; white-space: nowrap; cursor: pointer; }
+  .mr-riserve input { width: 1.1rem; height: 1.1rem; accent-color: #687aa3; }
+  .mr-x { grid-area: x; align-self: start; width: 2.6rem; height: 2.6rem; border: 1.5px solid rgba(180, 190, 213, 0.35); border-radius: 50%; background: none; color: #fff; font-size: 1.4rem; cursor: pointer; }
+  .mr-lista { overflow-y: auto; padding: 1rem 1.4rem 1.2rem; columns: 3 18rem; column-gap: 1.6rem; }
+  .mr-g { break-inside: avoid; margin-bottom: 1.1rem; }
+  .mr-g h3 { margin: 0 0 0.35rem; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #b4bed5; }
+  .mr-g ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+  .mr-g a { display: grid; grid-template-columns: 1.6rem minmax(0, 1fr) auto; align-items: baseline; gap: 0.4rem; padding: 0.38rem 0.5rem; border-radius: 8px; color: #e3e9f4; text-decoration: none; font-size: 0.92rem; line-height: 1.3; }
+  .mr-g a:hover, .mr-g a:focus-visible { background: rgba(180, 190, 213, 0.14); color: #fff; outline: none; }
+  .mr-g a[aria-current] { background: #3e5a96; color: #fff; }
+  .mr-n { font-variant-numeric: tabular-nums; font-weight: 700; color: rgba(180, 190, 213, 0.75); }
+  .mr-badge { padding: 0.05rem 0.45rem; border-radius: 999px; border: 1px solid #c6d4f2; color: #c6d4f2; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+  .mr-g a[data-riserva] .mr-l { font-style: italic; }
+  .mr-piede { margin: 0; padding: 0.7rem 1.4rem; border-top: 1px solid rgba(180, 190, 213, 0.18); font-size: 0.8rem; color: rgba(227, 233, 244, 0.7); }
+  @media (max-width: 760px) { .mr-testa { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'k x' 't x' 'f f' 'r r'; } }
+
+  /* Il bollino di una riserva accesa: chi presenta sa dove si trova. */
+  :global([data-slide][data-riserva-on])::after { content: 'Riserva'; position: absolute; top: calc(var(--deck-chrome-safe, 80px) * 0.55); right: 1.4rem; z-index: 40; padding: 0.15rem 0.6rem;
+    border-radius: 999px; border: 1.5px solid #c6d4f2; color: #c6d4f2; font: 700 0.78rem/1.4 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; pointer-events: none; }
+</style>

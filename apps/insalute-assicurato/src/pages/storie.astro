@@ -1,0 +1,49 @@
+---
+/**
+ * 02 · CHI L'HA GIÀ FATTO — due storie di clienti, una slide ciascuna.
+ *
+ * Una referenza Adobe su un gestore di prestazioni sanitarie non è
+ * pubblicata: si portano i due casi più vicini, con la pagina che li regge.
+ * Inail per moduli e comunicazioni verso assicurati e aziende; CSS, un
+ * assicuratore malattia svizzero, per la conferma a ogni passo. Grammatica e
+ * componente sono quelli delle referenze del riferimento Intesa
+ * (components/Caso.astro). Cifre in `data/referenze.ts`, fonte unica.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import Divisore from '../components/Divisore.astro';
+import Caso from '../components/Caso.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { CASI } from '../data/referenze';
+import fondo from '../assets/generated/div/div-storie.webp';
+
+const SLUG = 'storie';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="secondary" align="left">
+      <div slot="backdrop" class="im-div-bg" style={`--foto: url('${fondo.src}'); --fuoco: center 50%`}></div>
+      <Divisore num={ch.num} tIt={ch.title.it} tEn={ch.title.en} />
+    </Slide>
+
+    <Slide id="slide-inail" bg="secondary" align="left">
+      <Caso caso={CASI.inail} />
+    </Slide>
+
+    <Slide id="slide-css" bg="secondary" align="left">
+      <Caso caso={CASI.css} />
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

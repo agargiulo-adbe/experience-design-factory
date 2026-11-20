@@ -1,0 +1,84 @@
+---
+/**
+ * Figura — i micro-diagrammi che stanno dentro un «Scopri come».
+ *
+ * Questo file è il VOCABOLARIO di questa experience: solo geometria. Lo
+ * spessore del tratto, la regola dell'accento e la curva dell'animazione
+ * arrivano dal motore (`@edf/core/blocks/Dettaglio.astro`), così due deck non
+ * disegnano con due mani diverse.
+ *
+ * Come si aggiunge un disegno:
+ *  1. un nome nel tipo `k` che dica il MECCANISMO, non la forma — `tetto`,
+ *     non `linea-con-barre`: il nome va letto fra sei mesi;
+ *  2. un ramo qui sotto, nello stesso viewBox 120 × 72;
+ *  3. niente parole dentro l'SVG. L'ancora sotto la figura la nomina, e un
+ *     testo dentro un disegno non cresce con la radice: sulla parete
+ *     diventa illeggibile (famiglia `S` di `audit:ritmo`).
+ *
+ * Le classi del motore, in breve:
+ *   `fg-s` tratto neutro (eredita `currentColor`, si ribalta col fondo)
+ *   `fg-f` / `fg-f-soft` pieno neutro · `fg-d` / `fg-d-fine` tratteggio
+ *   `fg-a` / `fg-a-f` / `fg-a-f-soft` l'ACCENTO — solo sull'elemento che
+ *       porta il significato, mai su tutto il disegno
+ *   movimento: `fg-draw` (si disegna) · `fg-in` (entra) · `fg-rise` (cresce
+ *       dal basso) · `fg-grow` (cresce da sinistra) · `fg-drop` (cade
+ *       dall'alto) · `fg-slide` (scorre) · `style="--i:N"` per lo sfasamento
+ *
+ * I cinque qui sotto sono i meccanismi che tornano in quasi ogni blueprint.
+ * Si tengono, si rinominano, si sostituiscono: sono un punto di partenza.
+ */
+interface Props {
+  k: 'due-non-legati' | 'una-esce' | 'tetto' | 'prima-dopo' | 'una-via';
+}
+const { k } = Astro.props;
+---
+{/* aria-hidden: l'ancora e la riga sotto dicono la stessa cosa a parole. */}
+<svg class="fg dett-fig" viewBox="0 0 120 72" aria-hidden="true">
+  {k === 'due-non-legati' && (
+    <g>
+      {/* Due cose che esistono e non si parlano: il difetto più comune. */}
+      {[10, 20, 30, 40, 50, 60].map((y, i) => (<circle class="fg-a-f fg-in" style={`--i:${i}`} cx="22" cy={y + 3} r="3.4" />))}
+      <circle class="fg-f" cx="98" cy="25" r="3.4" /><circle class="fg-f" cx="98" cy="47" r="3.4" />
+      <path class="fg-s" d="M32 36 H48" /><path class="fg-s" d="M72 36 H88" />
+      <path class="fg-s fg-d" d="M56 20 V52" /><path class="fg-s fg-d" d="M64 20 V52" />
+    </g>
+  )}
+  {k === 'una-esce' && (
+    <g>
+      {/* Tante candidate entrano, una esce: arbitrato, scelta, priorità. */}
+      {[8, 29, 50].map((y, i) => (<rect class="fg-s fg-in" style={`--i:${i}`} x="8" y={y} width="34" height="14" rx="3" />))}
+      <path class="fg-s" d="M46 14 C58 14, 56 30, 64 36" /><path class="fg-s" d="M46 36 H64" />
+      <path class="fg-s" d="M46 58 C58 58, 56 42, 64 36" />
+      <rect class="fg-s fg-a" x="64" y="22" width="9" height="28" rx="4" />
+      <path class="fg-s fg-a fg-draw" style="--i:4" d="M77 36 H112" />
+    </g>
+  )}
+  {k === 'tetto' && (
+    <g>
+      {/* Un limite che rifiuta: tetto di contatto, quota, capacità. */}
+      {[[14, 30], [38, 36], [62, 33]].map(([x, h], i) => (
+        <rect class="fg-f-soft fg-rise" style={`--i:${i}`} x={x} y={64 - h} width="17" height={h} rx="2" />
+      ))}
+      <rect class="fg-s fg-a fg-d fg-rise" style="--i:3" x="86" y="8" width="17" height="56" rx="2" />
+      <path class="fg-s fg-a" d="M6 28 H112" />
+    </g>
+  )}
+  {k === 'prima-dopo' && (
+    <g>
+      {/* Un aggregato contro un dettaglio: prima e dopo, grosso e fine. */}
+      <rect class="fg-f-soft fg-rise" x="16" y="16" width="20" height="48" rx="2" />
+      <path class="fg-s fg-d" d="M56 10 V64" />
+      {[[70, 30], [86, 44], [102, 20]].map(([x, h], i) => (
+        <rect class="fg-a-f fg-rise" style={`--i:${i + 1}`} x={x} y={64 - h} width="12" height={h} rx="2" />
+      ))}
+    </g>
+  )}
+  {k === 'una-via' && (
+    <g>
+      {/* Più ingressi, un percorso solo: omnicanalità, consolidamento. */}
+      {[14, 36, 58].map((y, i) => (<path class="fg-s fg-draw" style={`--i:${i}`} d={`M10 ${y} C34 ${y}, 38 36, 56 36`} />))}
+      <circle class="fg-s" cx="64" cy="36" r="7" />
+      <path class="fg-s fg-a fg-draw" style="--i:4" d="M72 36 H112" />
+    </g>
+  )}
+</svg>

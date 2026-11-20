@@ -1,0 +1,91 @@
+---
+/**
+ * 04 · PARTIAMO DA VOI — la metà dell'ora che conta di più.
+ *
+ * Primo incontro: prima di proporre si ascolta. Sei domande raggruppate per
+ * tema, poi tre passi possibili fra cui scegliere, poi la firma. Domande e
+ * passi in `data/confronto.ts`.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import T from '@edf/core/blocks/i18n/T.astro';
+import Divisore from '../components/Divisore.astro';
+import CoBrand from '../components/CoBrand.astro';
+import { href } from '@edf/core/utils/url.js';
+import { CHAPTERS, prevSlug, nextSlug } from '../data/chapters';
+import { TITOLO_INCONTRO } from '../data/agenda';
+import { DOMANDE, PASSI, CHIUSURA } from '../data/confronto';
+import fondo from '../assets/generated/div/div-confronto.webp';
+import fotoFirma from '../assets/generated/div/cover.webp';
+
+const SLUG = 'confronto';
+const ch = CHAPTERS.find((c) => c.slug === SLUG)!;
+const base = import.meta.env.BASE_URL;
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout title={ch.title.it}>
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <Navigation currentPath={currentPath} base={base} />
+  </div>
+
+  <DeckContainer nextHref={href(base, nextSlug(SLUG))} prevHref={href(base, prevSlug(SLUG))}>
+
+    <Slide id="slide-cover" bg="secondary" align="left">
+      <div slot="backdrop" class="im-div-bg" style={`--foto: url('${fondo.src}'); --fuoco: center 40%`}></div>
+      <Divisore num={ch.num} tIt={ch.title.it} tEn={ch.title.en} />
+    </Slide>
+
+    <Slide id="slide-domande" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Prima di tutto, ascoltare" en="Listening first" />
+        <T as="h2" class="im-ado-t" it="Sei domande per conoscervi meglio" en="Six questions to get to know you" />
+        <ul class="ins-dom" data-stagger="0.1">
+          {DOMANDE.map((q) => (
+            <li class="ins-dom-i">
+              <T as="span" class="ins-dom-k" it={q.tema.it} en={q.tema.en} />
+              <T as="em" class="ins-dom-t" it={q.d.it} en={q.d.en} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Slide>
+
+    <Slide id="slide-passo" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Dopo oggi" en="After today" />
+        <T as="h2" class="im-ado-t" it="Un passo possibile, scelto da voi" en="A possible next step, chosen by you" />
+        <T as="p" class="im-ado-l" it="Le tre strade si possono fare anche una alla volta, <span class='ins-coda'>nell’ordine che preferite.</span>" en="The three paths can also be taken one at a time, in whatever order you prefer." />
+        <ol class="ins-passi" data-stagger="0.15">
+          {PASSI.map((p) => (
+            <li class="ins-passi-i">
+              <span class="ins-tre-n">{p.n}</span>
+              <T as="span" class="ins-passi-t" it={p.t.it} en={p.t.en} />
+              <T as="span" class="ins-passi-d" it={p.d.it} en={p.d.en} />
+            </li>
+          ))}
+        </ol>
+        <p class="ins-domanda" data-reveal data-reveal-delay="0.5">
+          <span class="ins-domanda-k"><span data-lang-it>Per chiudere</span><span data-lang-en>To close</span></span>
+          <T as="em" class="ins-domanda-t" it={CHIUSURA.domanda.it} en={CHIUSURA.domanda.en} />
+        </p>
+      </div>
+    </Slide>
+
+    <Slide id="slide-firma" bg="inverse" align="center">
+      <div slot="backdrop" class="ins-cop-bg ins-cop-bg--firma" style={`--foto: url('${fotoFirma.src}')`}></div>
+      <div class="im-firma" data-reveal>
+        <CoBrand variant="hero" class="im-cov-lockup edf-cobrand--on-dark" />
+        <T as="h2" class="im-firma-t" it={TITOLO_INCONTRO.t.it} en={TITOLO_INCONTRO.t.en} data-reveal data-reveal-delay="0.14" />
+        <T as="p" class="im-firma-l" it="Grazie del tempo. Il prossimo passo lo scegliamo insieme." en="Thank you for your time. We will choose the next step together." data-reveal data-reveal-delay="0.2" />
+        <a href={href(base, '/')} class="edf-sig-cta">
+          <span data-lang-it>Torna all’inizio</span><span data-lang-en>Back to the start</span>
+        </a>
+      </div>
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>

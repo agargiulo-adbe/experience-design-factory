@@ -1,0 +1,41 @@
+---
+/**
+ * CoBrand (InSalute Servizi) — wrapper sottile sul componente condiviso.
+ *
+ * Il motore (`@edf/core/blocks/CoBrand.astro`) porta la regola: ordine Adobe ×
+ * Brand non invertibile, firma fissa su ogni slide, lockup grande su prima e
+ * ultima slide. Qui si dichiara solo CHI è il brand.
+ *
+ * MARCHIO UFFICIALE. `src/assets/brand/insalute-servizi.png` è il logotipo
+ * che il cliente pubblica sul proprio sito (insaluteservizi.com →
+ * /documents/36545191/43119669/logo.png, scaricato il 17 novembre 2026). È un
+ * PNG bianco a un colore solo: non esiste una versione SVG distribuita.
+ * Per farlo ribaltare con la superficie lo si usa come MASCHERA, riempita di
+ * `currentColor`: la forma resta quella del file, nessun ridisegno (la Quality
+ * Bar vieta i marchi ricostruiti a mano). Proporzioni del file: 324 × 103.
+ */
+import Core from '@edf/core/blocks/CoBrand.astro';
+import logo from '../assets/brand/insalute-servizi.png';
+
+interface Props {
+  variant?: 'chrome' | 'hero';
+  class?: string;
+  [key: string]: unknown;
+}
+const props = Astro.props as Props;
+---
+<Core brand="InSalute Servizi" {...props}>
+  <span slot="brand" class="ins-marchio" role="img" aria-label="InSalute Servizi" style={`--logo: url('${logo.src}')`}></span>
+</Core>
+
+<style is:global>
+  .ins-marchio {
+    display: block;
+    aspect-ratio: 324 / 103;
+    height: 1.35rem;
+    background: currentColor;
+    -webkit-mask: var(--logo) center / contain no-repeat;
+            mask: var(--logo) center / contain no-repeat;
+  }
+  .edf-cobrand--hero .ins-marchio { height: clamp(2.6rem, 4vw, 4.2rem); }
+</style>

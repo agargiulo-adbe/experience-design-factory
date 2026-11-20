@@ -1,0 +1,164 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Adobe × InSalute Servizi — le parti nuove, sopra la pelle ripresa da Intesa.
+
+   IL DESIGN SYSTEM È QUELLO DI INSALUTE, letto il 17 nov 2026 dalla home di
+   insaluteservizi.com (pagina resa, non solo CSS: il foglio di produzione è
+   Bootstrap di Liferay e `brand:tokens` vedeva solo i default):
+     #4c6aac  l'UNICO colore di marca — icone, filetto delle card, bottone
+              dell'area riservata. Colore di sistema e marchio insieme.
+     #f6f6f6 · #e5e3df  neutri caldi delle superfici
+     #323232  grafite del testo e della testata
+     Open Sans (Light nei titoli del sito) — distribuibile, nessuna sostituta.
+   La «notte» del riferimento Intesa (verde #0d2901) diventa blu notte
+   #0e1a33, la stessa tinta del marchio portata al buio.
+
+   ⚠️ PENSATO PER DIVENTARE UN .pptx: ogni blocco è una scatola rettangolare
+   con testo vero, niente maschere o disegni che PowerPoint non sa rifare.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Copertina e firma: la foto a destra, velo blu notte a sinistra ───── */
+.ins-cop-bg { position: absolute; inset: 0; background: #0e1a33; }
+.ins-cop-bg::before {
+  content: ''; position: absolute; inset: 0 0 0 30%;
+  background: var(--foto) center 45% / cover no-repeat;
+}
+.ins-cop-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, #0e1a33 0%, #0e1a33 34%, rgba(14, 26, 51, 0.86) 52%, rgba(14, 26, 51, 0.55) 100%);
+}
+.ins-cop-bg--firma::before { inset: 0; }
+.ins-cop-bg--firma::after { background: rgba(14, 26, 51, 0.86); }
+
+/* ── Le tre idee in una pagina ─────────────────────────────────────── */
+.ins-tre {
+  list-style: none; margin: 0.6rem 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem;
+}
+.ins-tre-i { margin: 0; min-width: 0; }
+.ins-tre-a {
+  display: grid; align-content: start; gap: 0.5rem; height: 100%;
+  padding: 1.2rem 1.3rem 1.3rem; border-radius: 12px; text-decoration: none;
+  background: #ffffff; color: #1b1d21;
+  border-bottom: 5px solid #4c6aac; /* il filetto delle card del sito InSalute */
+}
+.ins-tre-n {
+  display: inline-grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 50%;
+  background: #4c6aac; color: #ffffff; font-weight: 700;
+  font-size: clamp(1.05rem, calc(1 * var(--vu)), 2.2rem);
+}
+.ins-tre-tag {
+  font-size: clamp(0.78rem, calc(0.64 * var(--vu)), 1.44rem); font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: #3e5a96;
+}
+.ins-tre-t {
+  font-family: var(--font-display); font-weight: 700; line-height: 1.15;
+  font-size: clamp(1.3rem, calc(1.4 * var(--vu)), 3rem); color: #1b1d21;
+}
+.ins-tre-d { font-size: clamp(1rem, calc(0.92 * var(--vu)), 2.05rem); line-height: 1.45; color: #3a3d44; }
+.ins-tre-p { margin-top: 0.3rem; font-size: clamp(0.85rem, calc(0.72 * var(--vu)), 1.6rem); font-weight: 600; color: #3e5a96; }
+
+/* ── Una slide per idea: il flusso, gli strati, il piede ───────────── */
+.ins-idea { gap: 0.9rem; }
+.ins-flusso {
+  list-style: none; margin: 0.5rem 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(var(--passi), minmax(0, 1fr)); gap: 0.25rem;
+}
+/* I passi sono FRECCE: la forma è un clip-path (non sporge dal riquadro, quindi
+   niente scorrimento nascosto), lo stesso segno della catena «Comprendere →
+   Attivare» del capitolo Adobe. In PowerPoint diventa la forma nativa
+   «freccia pentagonale / gallone». Il primo passo non ha la tacca a sinistra. */
+.ins-passo {
+  margin: 0; min-width: 0;
+  display: grid; align-content: start; gap: 0.3rem;
+  padding: 0.9rem 1.9rem 1rem 1.7rem;
+  background: rgba(255, 255, 255, 0.12);
+  clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 50%, calc(100% - 1rem) 100%, 0 100%, 1rem 50%);
+}
+.ins-passo:first-child { padding-left: 1.1rem; clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 50%, calc(100% - 1rem) 100%, 0 100%); }
+.ins-passo--fuoco { background: #4c6aac; }
+.ins-passo-n { font-size: clamp(0.78rem, calc(0.64 * var(--vu)), 1.44rem); font-weight: 700; letter-spacing: 0.1em; color: #c6d4f2; }
+.ins-passo-t { font-weight: 700; font-size: clamp(1.1rem, calc(1.08 * var(--vu)), 2.4rem); line-height: 1.2; color: #ffffff; }
+.ins-passo-d { font-size: clamp(0.95rem, calc(0.86 * var(--vu)), 1.95rem); line-height: 1.4; color: #e3e9f4; }
+.ins-passo--fuoco .ins-passo-n, .ins-passo--fuoco .ins-passo-d { color: #ffffff; }
+
+.ins-strati { list-style: none; margin: 0.2rem 0 0; padding: 0; display: grid; gap: 0.5rem; }
+.ins-strato {
+  margin: 0; display: grid; grid-template-columns: minmax(14rem, auto) minmax(0, 1fr); align-items: baseline; gap: 1rem;
+  padding: 0.7rem 1rem; border-radius: 10px; background: #ffffff;
+}
+.ins-strato-p { font-weight: 700; font-size: clamp(1rem, calc(0.95 * var(--vu)), 2.1rem); color: #3e5a96; }
+.ins-strato-d { font-size: clamp(1rem, calc(0.92 * var(--vu)), 2.05rem); line-height: 1.4; color: #1b1d21; }
+
+.ins-piede { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem; margin-top: 0.2rem; }
+.ins-confine {
+  margin: 0; max-width: none; padding: 0.8rem 1rem; border-radius: 10px;
+  border-left: 4px solid #c6d4f2; background: rgba(255, 255, 255, 0.06);
+  font-size: clamp(1rem, calc(0.92 * var(--vu)), 2.05rem); line-height: 1.45; color: #f2f3f6;
+}
+.ins-domanda {
+  margin: 0; max-width: none; display: grid; gap: 0.3rem;
+  padding: 0.8rem 1rem; border-radius: 10px; background: #e5e3df; /* il neutro caldo del sito */
+}
+.ins-domanda-k { font-size: clamp(0.78rem, calc(0.64 * var(--vu)), 1.44rem); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #3e5a96; }
+.ins-domanda-t { font-style: italic; font-size: clamp(1.05rem, calc(1 * var(--vu)), 2.2rem); line-height: 1.4; color: #1b1d21; }
+
+/* ── Le domande per conoscervi ─────────────────────────────────────── */
+.ins-dom {
+  list-style: none; margin: 0.6rem 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem;
+}
+.ins-dom-i {
+  margin: 0; min-width: 0; display: grid; align-content: start; gap: 0.45rem;
+  padding: 1rem 1.1rem 1.1rem; border-radius: 12px; background: #ffffff; border-bottom: 5px solid #4c6aac;
+}
+.ins-dom-k { font-size: clamp(0.78rem, calc(0.64 * var(--vu)), 1.44rem); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #3e5a96; }
+.ins-dom-t { font-style: italic; font-size: clamp(1.08rem, calc(1.02 * var(--vu)), 2.25rem); line-height: 1.4; color: #1b1d21; }
+
+/* ── Il passo possibile ────────────────────────────────────────────── */
+.ins-passi {
+  list-style: none; margin: 0.4rem 0 0.4rem; padding: 0;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem;
+}
+.ins-passi-i {
+  margin: 0; min-width: 0; display: grid; align-content: start; gap: 0.5rem;
+  padding: 1.1rem 1.2rem 1.2rem; border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.22);
+}
+.ins-passi-t { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.2rem, calc(1.25 * var(--vu)), 2.7rem); line-height: 1.2; color: #ffffff; }
+.ins-passi-d { font-size: clamp(1rem, calc(0.92 * var(--vu)), 2.05rem); line-height: 1.45; color: #e3e9f4; }
+
+/* ── La firma: titolo del documento, poi il saluto ─────────────────── */
+.im-firma-t {
+  margin: 0; max-width: 46rem; font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(2rem, calc(2.9 * var(--vu)), 5.6rem); line-height: 1.12;
+  color: #ffffff; text-align: center; text-wrap: balance;
+}
+#slide-firma .im-firma-l {
+  margin: 0; max-width: 44rem; font-family: var(--font-body); font-weight: 400;
+  font-size: clamp(1.15rem, calc(1.35 * var(--vu)), 2.7rem); line-height: 1.45; color: #e3e9f4;
+}
+
+/* La coda di una frase non va a capo da sola: inline-block, non spazio
+   unificatore, che a una larghezza stretta sborderebbe (memoria `coda-di-frase-orfana`). */
+.ins-coda { display: inline-block; }
+
+/* ── Telefono e tablet: le griglie si impilano ─────────────────────── */
+@media (max-width: 900px) {
+  .ins-tre, .ins-dom, .ins-passi, .ins-piede { grid-template-columns: minmax(0, 1fr); }
+  .ins-flusso { grid-template-columns: minmax(0, 1fr); }
+  .ins-passo, .ins-passo:first-child { clip-path: none; padding: 0.8rem 1rem; border-radius: 10px; }
+  .ins-strato { grid-template-columns: minmax(0, 1fr); gap: 0.2rem; }
+}
+
+/* Il marchio CSS è quasi quadrato (viewBox 68 × 29): alla stessa altezza degli
+   altri occupa il doppio e spinge la slide fuori dall'area sicura in alto. */
+#slide-css .im-caso-marchio .im-marchio { height: clamp(2.2rem, calc(2.6 * var(--vu)), 5rem); }
+
+/* IL TEAM È DI TRE (in sala il 24 novembre). La griglia del riferimento è
+   tarata su sette: tre colonne su sette lasciavano due terzi di slide vuoti.
+   Qui tre colonne larghe, ritratti più grandi, nome e ruolo più leggibili. */
+#slide-team .im-team { max-width: 62rem; gap: clamp(1.4rem, calc(2.4 * var(--vu)), 4.4rem); }
+#slide-team .im-team-ft { width: clamp(7rem, calc(11 * var(--vu)), 21rem); }
+#slide-team .im-team-n { font-size: clamp(1.2rem, calc(1.3 * var(--vu)), 2.8rem); }
+#slide-team .im-team-r { font-size: clamp(1rem, calc(0.95 * var(--vu)), 2.1rem); }
+

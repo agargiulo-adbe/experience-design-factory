@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdminConsole from '@edf/core/blocks/admin/AdminConsole.astro';
+import { href } from '@edf/core/utils/url.js';
+import { SITE } from '../data/site';
+import { PAGE_REGISTRY } from '../data/slides';
+
+const base = import.meta.env.BASE_URL;
+const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+interface SolutionEntry {
+  id: string; name: string; shortName: string;
+  pillar: string; description: string; appearsIn: string[];
+}
+
+// Segnaposto: il deck generato non ha slide gated. Sostituire con le soluzioni
+// Adobe che l'experience propone davvero (nomi verificati, vedi memoria
+// adobe-product-naming-2026) e marcare le slide con `data-solution="<id>"`.
+const SOLUTIONS: SolutionEntry[] = [
+  { id: 'piattaforma', name: 'Adobe Experience Cloud — segnaposto', shortName: 'Adobe', pillar: 'piattaforma',
+    description: 'Sostituire con i prodotti Adobe che il deck propone, uno per voce, con il nome per esteso.', appearsIn: ['Scenario', 'La persona', 'I momenti della storia', 'Il motore dietro la storia', 'Risultati'] },
+];
+
+const PILLAR_LABELS: Record<string, string> = { piattaforma: 'Piattaforma' };
+const PILLAR_ORDER = ['piattaforma'];
+const PILLAR_COLORS: Record<string, string> = { piattaforma: '#4c6aac' };
+
+const solutionGroups = PILLAR_ORDER
+  .map((pillar) => ({ pillar, label: PILLAR_LABELS[pillar], color: PILLAR_COLORS[pillar], solutions: SOLUTIONS.filter((s) => s.pillar === pillar) }))
+  .filter((g) => g.solutions.length > 0);
+
+const allSolutionIds = SOLUTIONS.map((s) => s.id);
+const deckHref = href(base, '/');
+// I dossier che preparano QUESTA stanza. La console è il posto dove chi
+// presenta trova il deck e il documento che gli dice chi ha davanti.
+//
+// ⚠️ L'ETICHETTA DICE CHE COSA SI TROVA DENTRO, non come si chiama il
+// file. I due dossier vivono dentro altre experience e portano il nome di
+// quelle — «Dove ci innestiamo», «Su scala umana» — che a chi apre questa
+// console non dice niente: non sa se è il documento del suo incontro o di
+// un altro. Qui contano la data e il contenuto, e il motore ci mette già
+// sopra «I dossier di questa experience», quindi la parola «dossier» non
+// si ripete.
+//
+// ⚠️ Il link è CROSS-APP: si costruisce dalla radice del sito, non dal
+// `base` di questa experience (è il caso che il motore chiama «Trenitalia
+// Sales»). Restano gated: il link non li apre a chi non ha accesso, lo
+// porta al login.
+//
+// ⚠️ Nelle etichette NIENTE NOMI DI PERSONE: questo file è tracciato e il
+// repo è pubblico. Chi c'è in sala sta dentro il dossier, che è protetto
+// da RLS e non entra mai nel bundle statico.
+const siteRoot = base.replace(/[^/]+\/?$/, '');
+const DOSSIERS = [
+  { href: href(base, '/relatore'), label: 'Note per chi presenta, slide per slide' },
+  { href: href(siteRoot, '/intesa-innesto/dossier'), label: 'Chi c’è in sala il 5 novembre, e come si convince' },
+  { href: href(siteRoot, '/intesa-scala-umana/dossier'), label: 'L’incontro del 22 ottobre, che lo precede' },
+];
+---
+<BaseLayout title={`Console — ${SITE.name} · ${SITE.client}`}>
+  <AdminConsole
+    projectSlug={SITE.slug}
+    projectName={SITE.name}
+    clientLabel={`Adobe × ${SITE.client}`}
+    deckHref={deckHref}
+    dossiers={DOSSIERS}
+    pages={PAGE_REGISTRY}
+    solutionGroups={solutionGroups}
+    allSolutionIds={allSolutionIds}
+    supabaseUrl={SUPABASE_URL}
+    supabaseAnonKey={SUPABASE_ANON_KEY}
+  />
+</BaseLayout>

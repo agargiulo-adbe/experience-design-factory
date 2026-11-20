@@ -434,6 +434,26 @@ export const EXPERIENCES: Experience[] = [
       it: 'Sessione di lavoro su Coworker con Adobe Analytics e Adobe Target: tutto il Customer POD su una mappa, poi un approfondimento per ciascuno.',
     },
   },
+  {
+    slug: 'insalute-assicurato',
+    name: 'Dalla parte dell\'assicurato',
+    client: 'InSalute Servizi',
+    type: 'prospettiva',
+    brandLabel: 'InSalute Servizi',
+    url: `${LIVE}/insalute-assicurato/`,
+    shot: 'shots/insalute-assicurato.webp',
+    accent: '#4c6aac',
+    sections: 4,
+    defaultPublished: false,
+    tag: {
+      en: '4 chapters · IT · first meeting',
+      it: '4 capitoli · IT · primo incontro',
+    },
+    desc: {
+      en: 'A first meeting with a health-benefits administrator: who we are, two customer stories, three ideas to discuss and the questions to get to know them. Built to become the team’s editable PowerPoint.',
+      it: 'Un primo incontro con un gestore di prestazioni sanitarie: chi siamo, due storie di clienti, tre idee da discutere e le domande per conoscerli. Nata per diventare il PowerPoint modificabile del team.',
+    },
+  },
 ];
 
 /** Le experience mostrate quando lo stato remoto non è leggibile (fail-closed). */

@@ -1,0 +1,88 @@
+---
+/**
+ * Navigation — UNA barra: marchio a sinistra, rail dei capitoli al centro (nowrap,
+ * scorre se non entra), cluster destro (lingua + Admin). Mai su due righe.
+ */
+import { href } from '@edf/core/utils/url.js';
+import LangToggle from '@edf/core/blocks/i18n/LangToggle.astro';
+import { VOCI_NAV } from '../data/chapters';
+import { SITE } from '../data/site';
+
+interface Props {
+  currentPath: string;
+  base: string;
+}
+const { currentPath, base } = Astro.props;
+/** Il bottone «In breve» nel cluster destro: spento finché l'owner non lo rivede. */
+const IN_BREVE = false;
+
+function isActive(pagine: string[]) {
+  const ultimo = currentPath.replace(/\/+$/, '').split('/').pop() ?? '';
+  return pagine.includes(ultimo);
+}
+---
+<nav class="ex-nav flex items-center justify-between px-6 py-3" aria-label="Navigazione">
+  <a href={href(base, '/')} class="flex items-center gap-2.5 no-underline group flex-shrink-0" aria-label={`Home — ${SITE.name}`}>
+    <span class="ex-mark" aria-hidden="true">
+      {/* Lo stesso segno del favicon: una cosa sola vista da due parti —
+          metà piena (il lato della cliente), metà di contorno (il lato di
+          chi prepara). Va tenuto in pari col favicon a mano: `brand:icons`
+          rende le icone DAL favicon e non tocca questo SVG. */}
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <rect width="32" height="32" rx="7" fill="var(--color-accent)"/>
+        <path d="M15.1 6.9a9.1 9.1 0 0 0 0 18.2z" fill="var(--color-on-accent)"/>
+        <path d="M16.9 6.9a9.1 9.1 0 0 1 0 18.2" fill="none" stroke="var(--color-on-accent)" stroke-width="2.6" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <span class="text-sm font-bold text-[var(--ink-primary)] group-hover:text-[var(--ink-accent)] transition-colors whitespace-nowrap">
+      {SITE.name}
+    </span>
+    {/* ⚠️ Prima qui c'era «Adobe × <cliente>», che ripeteva il nome del
+        documento ora che il documento SI CHIAMA «Adobe × Intesa
+        Sanpaolo». Al suo posto la data: è l'informazione che manca a chi
+        riapre il link, e che il titolo da solo non dà. */}
+    <span class="hidden 2xl:inline text-[0.6rem] font-bold tracking-widest uppercase text-[var(--ink-note)] ml-1 whitespace-nowrap">
+      {SITE.sottotitolo}
+    </span>
+  </a>
+
+  <ol class="hidden md:flex flex-nowrap items-center gap-0.5 min-w-0 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" role="list">
+    {VOCI_NAV.map((c) => (
+      <li role="listitem" class="flex-shrink-0">
+        <a
+          href={`${href(base, '/' + c.slug)}${c.ancora ? `#${c.ancora}` : ''}`}
+          class:list={['ex-nav-link block whitespace-nowrap px-2.5 py-1.5 text-xs font-medium rounded-sm transition-colors no-underline', isActive(c.pagine) && 'ex-nav-link--active']}
+          aria-current={isActive(c.pagine) ? 'page' : undefined}
+        >
+          <span class="text-[var(--ink-note)] mr-1 tabular-nums">{c.n}</span>
+          <span data-lang-it>{c.it}</span><span data-lang-en>{c.en}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+
+  <div class="flex items-center gap-3 flex-shrink-0">
+    {/* La versione breve non è un capitolo: non entra nel rail, sta nel cluster
+        destro. Sotto `lg` sparisce, perché la barra resta UNA riga.
+        ⚠️ SPENTO il 17 nov 2026 (owner: «depubblica il bottone In breve, lo
+        rivediamo dopo»). La pagina /dieci-minuti/ resta e si raggiunge dal link
+        diretto; per riaccendere il bottone basta rimettere IN_BREVE a true. */}
+    {IN_BREVE && (
+      <a
+        href={href(base, '/dieci-minuti')}
+        class:list={['ex-nav-link hidden lg:block whitespace-nowrap px-2.5 py-1.5 text-xs font-semibold rounded-sm border border-[rgba(255,255,255,0.22)] transition-colors no-underline', isActive(['dieci-minuti']) && 'ex-nav-link--active']}
+        aria-current={isActive(['dieci-minuti']) ? 'page' : undefined}
+      >
+        In breve
+      </a>
+    )}
+    {SITE.langs.length > 1 && <LangToggle langs={SITE.langs} />}
+    <a
+      href={href(base, '/admin')}
+      class="text-[0.7rem] font-semibold tracking-wider uppercase px-3 py-1.5 border border-[rgba(255,255,255,0.22)] text-[var(--ink-note)] hover:text-[var(--ink-accent)] hover:border-[var(--color-accent)] rounded-sm transition-colors no-underline"
+      data-admin-only
+    >
+      Admin
+    </a>
+  </div>
+</nav>
