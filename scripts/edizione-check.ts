@@ -250,7 +250,47 @@ export async function checkInsieme(b: Browser) {
   await t.close();
 }
 
-const CHECKS: Record<string, (b: Browser) => Promise<void>> = { autoreveal: checkAutoreveal, parliamone: checkParliamone, telefono: checkTelefono, rete: checkRete, sala: checkSala, comefunziona: checkComeFunziona, ritmo: checkRitmo, anello: checkAnello, insieme: checkInsieme };
+export async function checkFunzioni(b: Browser) {
+  // Le card per funzione: ogni tappa esiste e porta il titolo della sua slide;
+  // `?f=` dà il nome al pulsante della barra e segna la tappa corrente.
+  const { CARD_FUNZIONI } = await import('../apps/intesa-esperienza-cliente/src/data/funzioni.ts');
+  const p = await b.newPage({ viewport: { width: 1366, height: 768 } });
+  const titoli = new Map<string, string>();
+  for (const pagina of [...new Set(CARD_FUNZIONI.flatMap((c) => c.tappe.map((t) => t.href.split('#')[0])))]) {
+    await p.goto(LETTURA + pagina, { waitUntil: 'load' });
+    const t = await p.evaluate(() => [...document.querySelectorAll('[data-slide]')].map((s) => {
+      const h = s.querySelector('h1, h2, h3'); if (!h) return [s.id, ''];
+      const c = h.cloneNode(true) as HTMLElement; c.querySelectorAll('[data-lang-en]').forEach((x) => x.remove());
+      return [s.id, (c.textContent ?? '').replace(/\s+/g, ' ').trim()];
+    }));
+    for (const [id, tt] of t) titoli.set(`${pagina}#${id}`, tt);
+  }
+  const sbagliate = CARD_FUNZIONI.flatMap((c) => c.tappe.filter((t) => titoli.get(t.href) !== t.t).map((t) => `${c.k}: ${t.href} → «${titoli.get(t.href) ?? 'slide assente'}»`));
+  ok('funzioni: ogni tappa esiste e ha il titolo della sua slide', sbagliate.length === 0, sbagliate.join(' | '));
+  const comuni = CARD_FUNZIONI.flatMap((a, i) => CARD_FUNZIONI.slice(i + 1).map((c) => [a.k, c.k, a.tappe.filter((t) => c.tappe.some((u) => u.href === t.href)).length] as const)).filter((x) => x[2] > 1);
+  ok('funzioni: due card non condividono più di una tappa', comuni.length === 0, JSON.stringify(comuni));
+  await p.goto(LETTURA, { waitUntil: 'load' }); await p.waitForTimeout(800);
+  await p.click('.im-libro-funz');
+  ok('funzioni: la copertina apre le card', await p.locator('dialog[data-edf-funzioni][open]').isVisible(), '');
+  ok('A: nelle card niente «Chiedeteci da qui»', (await p.locator('.edf-cf-chiedi').count()) === 0, '');
+  await p.click('.edf-cf-c[data-k="dati"] .edf-cf-a >> nth=1'); await p.waitForTimeout(2500);
+  const st = await p.evaluate(() => ({ attiva: document.querySelector('[data-deck] [data-slide]:not([aria-hidden])')?.id, btn: document.querySelector('.edf-cf-btn')?.textContent }));
+  ok('funzioni: la tappa apre la slide giusta e il pulsante prende il nome', st.attiva === 'slide-cja-banca' && st.btn === 'Dati e analisi', JSON.stringify(st));
+  await p.click('.edf-cf-btn'); await p.waitForTimeout(400);
+  const cur = await p.evaluate(() => [...document.querySelectorAll('.edf-cf-a[aria-current="step"]')].map((a) => a.textContent));
+  ok('funzioni: la tappa corrente è segnata', cur.length === 1 && cur[0]!.startsWith('Quattro domande'), JSON.stringify(cur));
+  await p.close();
+  if (INSIEME !== '/') {
+    const q = await b.newPage({ viewport: { width: 1366, height: 768 } });
+    await q.goto(INSIEME, { waitUntil: 'load' }); await q.waitForTimeout(800);
+    await q.click('.im-libro-funz'); await q.click('.edf-cf-c[data-k="rete"] .edf-cf-chiedi'); await q.waitForTimeout(300);
+    const v = await q.evaluate(() => ({ f: (document.querySelector('dialog[data-edf-contributo] select[name=funzione]') as HTMLSelectElement).value, s: (document.querySelector('dialog[data-edf-contributo] input[name=sezione]') as HTMLInputElement).value, cf: (document.querySelector('dialog[data-edf-funzioni]') as HTMLDialogElement).open }));
+    ok('B: «Chiedeteci da qui» apre il modulo con la funzione già scelta', v.f === 'rete' && v.s.includes('Rete e filiali') && !v.cf, JSON.stringify(v));
+    await q.close();
+  }
+}
+
+const CHECKS: Record<string, (b: Browser) => Promise<void>> = { autoreveal: checkAutoreveal, parliamone: checkParliamone, telefono: checkTelefono, rete: checkRete, sala: checkSala, comefunziona: checkComeFunziona, ritmo: checkRitmo, anello: checkAnello, insieme: checkInsieme, funzioni: checkFunzioni };
 
 const scelti = process.argv.slice(2);
 const b = await chromium.launch();

@@ -13,7 +13,8 @@
  *    comandi del deck (fuori dalle slide, quindi fuori da audit:deck) e
  *    precompila la sezione con «capitolo · titolo della slide attiva»;
  *  - qualunque elemento `[data-contributo-apri]` lo apre, con la sezione di
- *    `data-sezione` se c'è.
+ *    `data-sezione` e la funzione di `data-funzione` se ci sono (le card per
+ *    funzione, `CardFunzioni.astro`).
  * Il pulsante nasce da JS: gli stili che lo toccano stanno in `is:global`
  * (memoria astro-scoped-css-runtime-dom).
  */
@@ -121,12 +122,14 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     return sezioneDa(cap, h ? testoNellaLingua(h) : '');
   }
 
-  function apri(sezione?: string) {
+  function apri(sezione?: string, funzione?: string) {
     const d = dlg();
     if (!d) return;
     const f = d.querySelector<HTMLFormElement>('[data-edf-mc-form]')!;
     stato(d, 'campi');
     (f.elements.namedItem('sezione') as HTMLInputElement).value = sezione ?? sezioneAttiva(d);
+    // Da una card per funzione la funzione arriva già scelta (si può cambiare).
+    if (funzione) (f.elements.namedItem('funzione') as HTMLSelectElement).value = funzione;
     d.showModal();
     (f.elements.namedItem('testo') as HTMLTextAreaElement).focus();
   }
@@ -205,7 +208,7 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
     const a = (e.target as HTMLElement).closest<HTMLElement>('[data-contributo-apri]');
     if (!a) return;
     e.preventDefault();
-    apri(a.dataset.sezione);
+    apri(a.dataset.sezione, a.dataset.funzione);
   });
   collega();
   document.addEventListener('astro:page-load', collega);
@@ -260,6 +263,8 @@ const CHIAVE = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
   /* «Chiedeteci di questo» nella barra del deck: eredita colore e auto-hide del
      chrome da `.deck-btn`; l'etichetta si vede dove c'è spazio. */
   [data-deck] .deck-btn.edf-mc-chiedi { width: auto; gap: 0.5rem; padding: 0 0.85rem; border-radius: 999px; display: inline-flex; align-items: center; }
+  /* L'icona non si stringe: in un pulsante flex con l'etichetta lunga finiva a 6 px. */
+  [data-deck] .deck-btn.edf-mc-chiedi svg { flex: none; width: 22px; height: 22px; }
   .edf-mc-chiedi-l { font-size: 0.95rem; letter-spacing: 0.01em; white-space: nowrap; }
   @media (max-width: 899px) { .edf-mc-chiedi-l { display: none; } [data-deck] .deck-btn.edf-mc-chiedi { padding: 0; } }
   @media print { .edf-mc, .edf-mc-chiedi { display: none !important; } }

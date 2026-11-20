@@ -199,6 +199,41 @@ const DATI = [
     dove: { it: 'A Brand Visibility vanno pagina, user agent, esito, referrer e orario: nessun dato personale', en: 'Brand Visibility gets page, user agent, status, referrer and time: no personal data' },
     tempo: { it: 'Regione e retention da verificare con Adobe', en: 'Region and retention to verify with Adobe' } },
 ];
+/* LE DUE DOMANDE DEL 19 NOVEMBRE (spec 2026-11-20-funzioni-e-domande).
+   Riformulate, mai riportate alla lettera. Fatti riletti su Experience League
+   il 20 nov 2026: consent policies solo con Privacy & Security Shield o
+   Healthcare Shield; opt-out rispettato da Journey Optimizer di base; consenso
+   nelle definizioni di audience; export dei dataset (RTCDP Prime/Ultimate, AJO,
+   CJA); Federated Audience Composition come componente aggiuntivo; Marketing
+   Campaign Analytics (ex Mix Modeler) su Experience Platform, MMM + MTA. */
+const CONSENSO = [
+  { fig: 'grafo', t: { it: 'Comanda il vostro registro', en: 'Your register leads' },
+    chi: { it: 'Come nella storia di Giulia', en: 'As in Giulia’s story' },
+    d: { it: 'Consensi e revoche arrivano dal registro e si applicano. L’email di una fiera si unisce al profilo del sito.', en: 'Consents and withdrawals come from the register and are applied. An email from a fair joins the website profile.' } },
+  { fig: 'flusso', t: { it: 'Raccoglie la piattaforma, voi avete la copia', en: 'The platform collects, you keep a copy' },
+    chi: { it: 'Export dei dataset', en: 'Dataset export' },
+    d: { it: 'Il sito scrive il consenso sul profilo; l’export dei dataset lo riporta nel vostro storage.', en: 'The website writes consent on the profile; dataset export brings it back to your storage.' } },
+  { fig: 'archivio', t: { it: 'Il dato resta nel vostro data warehouse', en: 'The data stays in your warehouse' },
+    chi: { it: 'Componente aggiuntivo', en: 'Add-on' },
+    d: { it: 'Con Federated Audience Composition le audience nascono sul data warehouse, senza copiarlo.', en: 'With Federated Audience Composition, audiences are built on the warehouse, without copying it.' } },
+];
+const FERMA = [
+  { t: { it: 'Sempre', en: 'Always' },
+    d: { it: 'Journey Optimizer non scrive a chi ha revocato; nelle audience il consenso è una regola, verso terzi decidono le etichette d’uso.', en: 'Journey Optimizer does not write to anyone who opted out; in audiences consent is a rule, towards third parties usage labels decide.' } },
+  { t: { it: 'Con Privacy & Security Shield', en: 'With Privacy & Security Shield' },
+    d: { it: 'Le regole di consenso si applicano da sole, chiunque abbia costruito l’audience. È un componente aggiuntivo: lo precisiamo rispetto alla sala.', en: 'Consent rules apply by themselves, whoever built the audience. It is an add-on: a correction to what we said in the room.' } },
+];
+const MISURA = [
+  { fig: 'misura', t: { it: 'Per persona', en: 'Per person' },
+    chi: { it: 'Customer Journey Analytics', en: 'Customer Journey Analytics' },
+    d: { it: 'Ogni contatto tracciato, dal sito alla filiale. I modelli di attribuzione si confrontano sugli stessi dati.', en: 'Every tracked touch, from the website to the branch. Attribution models are compared on the same data.' } },
+  { fig: 'serie', t: { it: 'Per canale, anche offline', en: 'Per channel, offline too' },
+    chi: { it: 'Marketing Campaign Analytics', en: 'Marketing Campaign Analytics' },
+    d: { it: 'Unisce marketing mix modeling e attribuzione multi-touch: l’effetto incrementale di ogni canale, TV e affissioni comprese.', en: 'It joins marketing mix modelling and multi-touch attribution: the incremental effect of every channel, TV and billboards included.' } },
+  { fig: 'esito', t: { it: 'Dove spostare il budget', en: 'Where to move the budget' },
+    chi: { it: 'Piani a confronto', en: 'Plans side by side' },
+    d: { it: 'Mette a confronto piani di budget alternativi e ne stima il ritorno, canale per canale.', en: 'It compares alternative budget plans and estimates their return, channel by channel.' } },
+];
 const CRM = [
   { fig: 'canali', t: { it: 'Chi espone l’API', en: 'Who exposes the API' },
     chi: { it: 'Il CRM di filiale', en: 'The branch CRM' },
@@ -800,6 +835,84 @@ const SALA_O_VOI = EDIZIONE === 'lettura' ? 'da verificare con voi' : 'da correg
         <p class="im-fonte-riga">
           <span data-lang-it>I quattro passi sono uno schema nostro. Il controllo sul marchio è documentato: </span><span data-lang-en>The four steps are our own framing. Brand checking is documented: </span>
           <a href="https://experienceleague.adobe.com/en/docs/genstudio-for-performance-marketing/user-guide/guidelines/brand-validation" target="_blank" rel="noopener">GenStudio for Performance Marketing · brand validation</a>
+        </p>
+      </div>
+    </Slide>
+
+    {/* LA DOMANDA SUL CONSENSO (19 nov). Tre modi di organizzarlo e che cosa
+        ferma un invio. La riga su Shield corregge, dichiarandolo, una
+        semplificazione fatta in sala: le consent policy non sono incluse. */}
+    <Slide id="slide-domanda-consenso" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Ci avete chiesto il 19 novembre · il consenso" en="You asked us on 19 November · consent" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Il consenso di chi non è ancora cliente: dove sta, chi lo governa" en="Consent from people who are not yet customers: where it sits, who governs it" />
+        <T as="p" class="im-ado-l" it="Tre modi di organizzarlo, e che cosa ferma un invio." en="Three ways to organise it, and what stops a send." />
+
+        <div class="im-esec">
+          {CONSENSO.map((c) => (
+            <section class="im-esec-i">
+              <FiguraCap segno={c.fig} class="im-esec-fig" />
+              <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
+              <T as="span" class="im-esec-chi" it={c.chi.it} en={c.chi.en} />
+              <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
+            </section>
+          ))}
+        </div>
+
+        <div class="im-ferma">
+          {FERMA.map((f) => (
+            <div class="im-ferma-i">
+              <T as="span" class="im-ferma-t" it={f.t.it} en={f.t.en} />
+              <T as="span" class="im-ferma-d" it={f.d.it} en={f.d.en} />
+            </div>
+          ))}
+        </div>
+
+        <p class="im-fonte-riga">
+          <span data-lang-it>Documentazione (20 nov 2026): </span><span data-lang-en>Documentation (20 Nov 2026): </span>
+          <a href="https://experienceleague.adobe.com/en/docs/experience-platform/data-governance/policies/user-guide" target="_blank" rel="noopener">consent policies</a><span> · </span>
+          <a href="https://experienceleague.adobe.com/en/docs/journey-optimizer/using/privacy/consent/opt-out" target="_blank" rel="noopener">opt-out</a><span> · </span>
+          <a href="https://experienceleague.adobe.com/en/docs/experience-platform/segmentation/tutorials/consents" target="_blank" rel="noopener"><span data-lang-it>consenso nelle audience</span><span data-lang-en>consent in audiences</span></a><span> · </span>
+          <a href="https://experienceleague.adobe.com/en/docs/experience-platform/destinations/ui/activate/export-datasets" target="_blank" rel="noopener"><span data-lang-it>export dei dataset</span><span data-lang-en>dataset export</span></a><span> · </span>
+          <a href="https://experienceleague.adobe.com/en/docs/federated-audience-composition/using/start/access-prerequisites" target="_blank" rel="noopener">Federated Audience Composition</a>
+        </p>
+      </div>
+    </Slide>
+
+    {/* LA DOMANDA SULLA MISURA (19 nov). Per persona con CJA, per canale con
+        Marketing Campaign Analytics. Che un modello giri senza costi NON si
+        scrive: da confermare con uno specialist. */}
+    <Slide id="slide-domanda-misura" bg="inverse" align="left">
+      <div slot="backdrop" class="im-bg-notte"></div>
+      <div class="im-ado-cap im-ado-cap--largo" data-reveal>
+        <T as="p" class="im-ado-occ" it="Ci avete chiesto il 19 novembre · la misura dei canali" en="You asked us on 19 November · measuring channels" />
+        <T as="h2" class="im-ado-t im-ado-t--stretto" it="Dalla persona al budget: quanto vale ogni canale, anche offline" en="From the person to the budget: what each channel is worth, offline too" />
+        <T as="p" class="im-ado-l" it="Due strumenti per due domande, sulle stesse conversioni." en="Two tools for two questions, on the same conversions." />
+
+        <div class="im-esec">
+          {MISURA.map((c) => (
+            <section class="im-esec-i">
+              <FiguraCap segno={c.fig} class="im-esec-fig" />
+              <T as="span" class="im-bv-t" it={c.t.it} en={c.t.en} />
+              <T as="span" class="im-esec-chi" it={c.chi.it} en={c.chi.en} />
+              <T as="span" class="im-bv-d" it={c.d.it} en={c.d.en} />
+            </section>
+          ))}
+        </div>
+
+        <div class="im-ferma im-ferma--uno">
+          <div class="im-ferma-i">
+            <T as="span" class="im-ferma-t" it="Che cosa entra" en="What goes in" />
+            <T as="span" class="im-ferma-d" it="Uscite e volumi di ogni canale, i costi e le conversioni, vendite in filiale comprese. Ritorno e piani si calcolano sui costi. Marketing Campaign Analytics è un’applicazione a sé, su Experience Platform." en="Each channel’s placements and volumes, its costs and the conversions, branch sales included. Return and plans are computed on costs. Marketing Campaign Analytics is an application of its own, on Experience Platform." />
+          </div>
+        </div>
+
+        <p class="im-fonte-riga">
+          <span data-lang-it>Documentazione (20 nov 2026): </span><span data-lang-en>Documentation (20 Nov 2026): </span>
+          <a href="https://experienceleague.adobe.com/en/docs/marketing-campaign-analytics/using/get-started/about" target="_blank" rel="noopener">Marketing Campaign Analytics</a><span> · </span>
+          <a href="https://experienceleague.adobe.com/en/docs/marketing-campaign-analytics/using/models/overview" target="_blank" rel="noopener"><span data-lang-it>i modelli</span><span data-lang-en>models</span></a>
+          <a class="im-torna" href={href(base, '/messa-a-terra/#slide-attribuzione')}><span data-lang-it>← L’attribuzione per persona</span><span data-lang-en>← Attribution per person</span></a>
         </p>
       </div>
     </Slide>

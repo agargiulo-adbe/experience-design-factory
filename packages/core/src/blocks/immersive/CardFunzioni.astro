@@ -1,0 +1,178 @@
+---
+/**
+ * Le card per funzione — l'edizione da distribuire (spec
+ * 2026-11-20-funzioni-e-domande). Un indice filtrato, non un percorso: per ogni
+ * funzione una riga e tre o quattro slide che esistono già. Nessun capitolo si
+ * sposta, nessuna memoria nel browser, nessuna chiamata di rete.
+ *
+ * Come si apre: da qualunque `[data-funzioni-apri]` (la riga in copertina) e da
+ * «Per funzione» nella barra dei comandi del deck, che il componente posa da sé.
+ * Per non perdersi: ogni tappa porta `?f=<funzione>`; su una pagina aperta così
+ * il pulsante della barra prende il nome della funzione e la card si apre con la
+ * tappa corrente segnata.
+ * Con `conModulo` (versione B) ogni card chiude con «Chiedeteci da qui», che apre
+ * il modulo dei contributi con la funzione già scelta.
+ * Il pulsante nasce da JS: gli stili che lo toccano stanno in `is:global`.
+ */
+import { FUNZIONI } from '../../utils/contributi';
+
+export interface TappaFunzione { href: string; t: string }
+export interface CardFunzione { k: string; riga: string; tappe: TappaFunzione[] }
+interface Props {
+  funzioni: CardFunzione[];
+  /** `import.meta.env.BASE_URL` dell'app */
+  base: string;
+  conModulo?: boolean;
+}
+const { funzioni, base, conModulo = false } = Astro.props;
+const radice = base.replace(/\/?$/, '/');
+const etichetta = (k: string) => FUNZIONI.find((f) => f.k === k)?.l ?? k;
+// 'messa-a-terra/#slide-chiave' → '<base>messa-a-terra/?f=dati#slide-chiave'
+const link = (h: string, k: string) => {
+  const [pagina, ancora = ''] = h.split('#');
+  return `${radice}${pagina}?f=${k}${ancora ? '#' + ancora : ''}`;
+};
+const ETICHETTE = Object.fromEntries(funzioni.map((f) => [f.k, etichetta(f.k)]));
+---
+<dialog class="edf-cf" data-edf-funzioni data-etichette={JSON.stringify(ETICHETTE)} aria-labelledby="edf-cf-t">
+  <div class="edf-cf-in">
+    <div class="edf-cf-testa">
+      <div>
+        <h2 id="edf-cf-t" class="edf-cf-t">Da dove partire, per funzione</h2>
+        <p class="edf-cf-l">Ogni scheda porta alle pagine che contano per quel lavoro. La storia intera resta a un clic.</p>
+      </div>
+      <button type="button" class="edf-cf-x" data-edf-cf-chiudi aria-label="Chiudi">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="edf-cf-griglia">
+      {funzioni.map((f) => (
+        <section class="edf-cf-c" data-k={f.k}>
+          <h3 class="edf-cf-n">{etichetta(f.k)}</h3>
+          <p class="edf-cf-r">{f.riga}</p>
+          <ol class="edf-cf-tappe">
+            {f.tappe.map((t) => (
+              <li><a class="edf-cf-a" href={link(t.href, f.k)} data-tappa={t.href}>{t.t}</a></li>
+            ))}
+          </ol>
+          {conModulo && (
+            <button type="button" class="edf-cf-chiedi" data-contributo-apri data-funzione={f.k} data-sezione={`Per funzione · ${etichetta(f.k)}`} data-edf-cf-chiudi>Chiedeteci da qui</button>
+          )}
+        </section>
+      ))}
+    </div>
+  </div>
+</dialog>
+
+<script>
+  const dlg = () => document.querySelector<HTMLDialogElement>('dialog[data-edf-funzioni]');
+  const etichette = (d: HTMLDialogElement): Record<string, string> => JSON.parse(d.dataset.etichette ?? '{}');
+  const scelta = (d: HTMLDialogElement) => {
+    const f = new URLSearchParams(location.search).get('f') ?? '';
+    return f in etichette(d) ? f : '';
+  };
+
+  function apri() {
+    const d = dlg();
+    if (!d) return;
+    const f = scelta(d);
+    const qui = location.pathname.replace(/\/?$/, '/');
+    const slide = document.querySelector<HTMLElement>('[data-deck] [data-slide]:not([aria-hidden])')?.id ?? '';
+    d.querySelectorAll<HTMLElement>('.edf-cf-c').forEach((c) => c.toggleAttribute('data-scelta', c.dataset.k === f));
+    d.querySelectorAll<HTMLAnchorElement>('.edf-cf-a').forEach((a) => {
+      const u = new URL(a.href);
+      const corrente = u.pathname === qui && u.hash.slice(1) === slide;
+      if (corrente) a.setAttribute('aria-current', 'step'); else a.removeAttribute('aria-current');
+    });
+    d.showModal();
+    (d.querySelector<HTMLElement>('.edf-cf-c[data-scelta]') ?? d.querySelector<HTMLElement>('.edf-cf-c'))?.scrollIntoView({ block: 'nearest' });
+  }
+
+  function posaPulsante() {
+    const d = dlg();
+    const barra = document.querySelector<HTMLElement>('[data-deck] [data-deck-controls]');
+    if (!d || !barra || barra.querySelector('.edf-cf-btn')) return;
+    const f = scelta(d);
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'deck-btn edf-cf-btn';
+    b.setAttribute('data-funzioni-apri', '');
+    const nome = f ? etichette(d)[f] : 'Per funzione';
+    b.setAttribute('aria-label', f ? `${nome}: le tappe della vostra funzione` : 'Per funzione: da dove partire');
+    b.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg><span class="edf-cf-btn-l"></span>';
+    b.querySelector('.edf-cf-btn-l')!.textContent = nome;
+    if (f) b.setAttribute('data-scelta', '');
+    const chiedi = barra.querySelector('.edf-mc-chiedi');
+    if (chiedi) barra.insertBefore(b, chiedi); else barra.appendChild(b);
+  }
+
+  function collega() {
+    const d = dlg();
+    if (!d) return;
+    if (!d.dataset.collegato) {
+      d.dataset.collegato = '1';
+      // La tastiera resta nel pannello: le frecce non devono muovere il deck dietro.
+      d.addEventListener('keydown', (e) => { if (e.key !== 'Escape') e.stopPropagation(); });
+      d.addEventListener('click', (e) => {
+        const t = e.target as HTMLElement;
+        if (t === d || t.closest('[data-edf-cf-chiudi]') || t.closest('.edf-cf-a')) d.close();
+      });
+    }
+    posaPulsante();
+  }
+
+  document.addEventListener('click', (e) => {
+    const a = (e.target as HTMLElement).closest<HTMLElement>('[data-funzioni-apri]');
+    if (!a) return;
+    e.preventDefault();
+    apri();
+  });
+  // In un modulo i <script> partono una volta sola, quindi il pulsante va
+  // ripresentato a ogni cambio di pagina della navigazione SPA.
+  collega();
+  document.addEventListener('astro:page-load', collega);
+</script>
+
+<style is:global>
+  .edf-cf {
+    position: fixed; inset: 0; margin: auto; height: fit-content;
+    width: min(76rem, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem);
+    padding: 0; border: 1px solid var(--line-default, currentColor); border-radius: 16px;
+    background: var(--surface-primary, Canvas); color: var(--ink-primary, CanvasText);
+    font-family: var(--font-body, system-ui); overflow: auto;
+  }
+  .edf-cf::backdrop { background: color-mix(in srgb, var(--surface-inverse, CanvasText) 62%, transparent); }
+  .edf-cf-in { padding: clamp(1.25rem, 2.6vw, 2.25rem); display: grid; gap: 1.25rem; }
+  .edf-cf-testa { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+  .edf-cf-t { font-family: var(--font-display, inherit); font-size: clamp(1.4rem, 2.1vw, 1.9rem); line-height: 1.15; margin: 0; }
+  .edf-cf-l { margin: 0.4rem 0 0; font-size: 1rem; line-height: 1.5; color: var(--ink-secondary, inherit); }
+  .edf-cf-x { background: none; border: 0; color: inherit; padding: 0.6rem; margin: -0.6rem -0.6rem 0 0; cursor: pointer; min-width: 44px; min-height: 44px; }
+  .edf-cf-griglia { display: grid; gap: 0.9rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); }
+  .edf-cf-c {
+    display: flex; flex-direction: column; gap: 0.5rem;
+    padding: 1rem 1.1rem 1.1rem; border-radius: 12px;
+    background: var(--surface-secondary, transparent); border: 1px solid var(--line-subtle, currentColor);
+  }
+  .edf-cf-c[data-scelta] { order: -1; border-color: var(--accent-primary, currentColor); box-shadow: inset 4px 0 0 var(--accent-primary, currentColor); }
+  .edf-cf-n { margin: 0; font-size: 1.1rem; line-height: 1.25; }
+  .edf-cf-r { margin: 0; font-size: 1rem; line-height: 1.45; color: var(--ink-secondary, inherit); }
+  .edf-cf-tappe { margin: 0.25rem 0 0; padding: 0 0 0 1.3rem; display: grid; gap: 0.35rem; }
+  .edf-cf-tappe li::marker { color: var(--ink-tertiary, currentColor); font-variant-numeric: tabular-nums; }
+  .edf-cf-a { color: inherit; font-size: 1rem; line-height: 1.4; text-decoration: underline; text-decoration-color: var(--line-strong, currentColor); text-underline-offset: 0.2em; }
+  .edf-cf-a:hover { text-decoration-color: var(--accent-primary, currentColor); }
+  .edf-cf-a[aria-current='step'] { font-weight: 700; text-decoration-color: var(--accent-primary, currentColor); }
+  .edf-cf-a[aria-current='step']::after { content: ' · sei qui'; font-weight: 400; color: var(--ink-tertiary, inherit); }
+  .edf-cf :focus-visible { outline: 2px solid var(--accent-primary, Highlight); outline-offset: 2px; }
+  .edf-cf-chiedi {
+    margin-top: auto; align-self: flex-start; font: inherit; font-weight: 600; cursor: pointer;
+    min-height: 44px; padding: 0.5rem 1.1rem; border-radius: 999px;
+    background: transparent; color: inherit; border: 1px solid var(--line-strong, currentColor);
+  }
+
+  /* «Per funzione» nella barra del deck: eredita colore e auto-hide da `.deck-btn`. */
+  [data-deck] .deck-btn.edf-cf-btn { width: auto; gap: 0.5rem; padding: 0 0.85rem; border-radius: 999px; display: inline-flex; align-items: center; }
+  [data-deck] .deck-btn.edf-cf-btn svg { flex: none; width: 20px; height: 20px; }
+  .edf-cf-btn-l { font-size: 0.95rem; white-space: nowrap; }
+  @media (max-width: 899px) { .edf-cf-btn-l { display: none; } [data-deck] .deck-btn.edf-cf-btn { padding: 0; } }
+  @media print { .edf-cf, .edf-cf-btn { display: none !important; } }
+</style>
