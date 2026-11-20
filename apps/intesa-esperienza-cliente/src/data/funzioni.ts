@@ -8,7 +8,19 @@
  */
 import type { CardFunzione } from '@edf/core/blocks/immersive/CardFunzioni.astro';
 
-export const CARD_FUNZIONI: CardFunzione[] = [
+/** Il capitolo di una tappa, letto dalla pagina: lo vede chi sceglie, sopra il titolo. */
+const CAPITOLO: Record<string, string> = {
+  momenti: 'Giulia',
+  'messa-a-terra': 'Dove ci innestiamo',
+  approfondimenti: 'Approfondimento',
+  risultati: 'Referenze',
+  adobe: 'Adobe, chi siamo',
+  coworker: 'Coworker',
+};
+/** 'messa-a-terra/#slide-chiave' → 'messa-a-terra--slide-chiave.jpg' (scripts/funzioni-miniature.ts). */
+export const nomeMiniatura = (href: string) => href.replace('/#', '--') + '.jpg';
+
+const TAPPE_GREZZE: CardFunzione[] = [
   { k: 'direzione', riga: 'Che cosa cambia nei risultati, e chi l’ha già fatto.', tappe: [
     { href: 'risultati/#slide-credit-agricole', t: 'Crédit Agricole Italia: +15% al primo acquisto' },
     { href: 'messa-a-terra/#slide-attribuzione', t: 'Quanto vale ogni canale, anche in filiale' },
@@ -51,3 +63,8 @@ export const CARD_FUNZIONI: CardFunzione[] = [
     { href: 'approfondimenti/#slide-ingaggio-profilo', t: 'Il profilo collega pseudonimo, telefono e codice cliente alla stessa persona' },
   ] },
 ];
+
+export const CARD_FUNZIONI: CardFunzione[] = TAPPE_GREZZE.map((c) => ({
+  ...c,
+  tappe: c.tappe.map((t) => ({ ...t, cap: CAPITOLO[t.href.split('/')[0]] ?? '', img: `miniature/funzioni/${nomeMiniatura(t.href)}` })),
+}));

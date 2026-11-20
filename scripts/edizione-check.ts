@@ -272,18 +272,21 @@ export async function checkFunzioni(b: Browser) {
   await p.goto(LETTURA, { waitUntil: 'load' }); await p.waitForTimeout(800);
   await p.click('.im-libro-funz');
   ok('funzioni: la copertina apre le card', await p.locator('dialog[data-edf-funzioni][open]').isVisible(), '');
+  ok('funzioni: ogni tappa ha la sua miniatura', (await p.evaluate(() => [...document.querySelectorAll('.edf-cf-img img')].every((i) => (i as HTMLImageElement).getAttribute('src')))) , '');
   ok('A: nelle card niente «Chiedeteci da qui»', (await p.locator('.edf-cf-chiedi').count()) === 0, '');
+  await p.click('.edf-cf-voce[data-k="dati"]');
   await p.click('.edf-cf-c[data-k="dati"] .edf-cf-a >> nth=1'); await p.waitForTimeout(2500);
   const st = await p.evaluate(() => ({ attiva: document.querySelector('[data-deck] [data-slide]:not([aria-hidden])')?.id, btn: document.querySelector('.edf-cf-btn')?.textContent }));
   ok('funzioni: la tappa apre la slide giusta e il pulsante prende il nome', st.attiva === 'slide-cja-banca' && st.btn === 'Dati e analisi', JSON.stringify(st));
   await p.click('.edf-cf-btn'); await p.waitForTimeout(400);
-  const cur = await p.evaluate(() => [...document.querySelectorAll('.edf-cf-a[aria-current="step"]')].map((a) => a.textContent));
-  ok('funzioni: la tappa corrente è segnata', cur.length === 1 && cur[0]!.startsWith('Quattro domande'), JSON.stringify(cur));
+  const cur = await p.evaluate(() => [...document.querySelectorAll('.edf-cf-a[aria-current="step"] .edf-cf-tt')].map((a) => a.textContent));
+  const aperta = await p.evaluate(() => document.querySelector('.edf-cf-voce[aria-selected="true"]')?.getAttribute('data-k'));
+  ok('funzioni: la tappa corrente è segnata, nella funzione giusta', cur.length === 1 && cur[0]!.startsWith('Quattro domande') && aperta === 'dati', JSON.stringify({ cur, aperta }));
   await p.close();
   if (INSIEME !== '/') {
     const q = await b.newPage({ viewport: { width: 1366, height: 768 } });
     await q.goto(INSIEME, { waitUntil: 'load' }); await q.waitForTimeout(800);
-    await q.click('.im-libro-funz'); await q.click('.edf-cf-c[data-k="rete"] .edf-cf-chiedi'); await q.waitForTimeout(300);
+    await q.click('.im-libro-funz'); await q.click('.edf-cf-voce[data-k="rete"]'); await q.click('.edf-cf-c[data-k="rete"] .edf-cf-chiedi'); await q.waitForTimeout(300);
     const v = await q.evaluate(() => ({ f: (document.querySelector('dialog[data-edf-contributo] select[name=funzione]') as HTMLSelectElement).value, s: (document.querySelector('dialog[data-edf-contributo] input[name=sezione]') as HTMLInputElement).value, cf: (document.querySelector('dialog[data-edf-funzioni]') as HTMLDialogElement).open }));
     ok('B: «Chiedeteci da qui» apre il modulo con la funzione già scelta', v.f === 'rete' && v.s.includes('Rete e filiali') && !v.cf, JSON.stringify(v));
     await q.close();
