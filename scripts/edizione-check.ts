@@ -215,6 +215,8 @@ export async function checkInsieme(b: Browser) {
   ok('A: nessun modulo e nessun «Fateci una domanda»', (await a.locator('dialog[data-edf-contributo], .edf-mc-chiedi').count()) === 0, '');
   const r404 = await a.goto(LETTURA + 'riepilogo/');
   ok('A: il riepilogo non esiste', r404?.status() === 404, `status=${r404?.status()}`);
+  const c404 = await a.goto(LETTURA + 'contatti/');
+  ok('A: la pagina dei contatti non esiste', c404?.status() === 404, `status=${c404?.status()}`);
   await a.close();
   if (INSIEME === '/') { console.log('—    versione B saltata (manca INSIEME_URL)'); return; }
 
@@ -247,9 +249,23 @@ export async function checkInsieme(b: Browser) {
   await p.locator('[data-edf-mc-invia]').click(); await p.waitForTimeout(600);
   const inv = rich.slice(prima).filter((x) => x.url.endsWith('/rest/v1/contributi'));
   const chiavi = inv.length ? Object.keys(JSON.parse(inv[0].corpo ?? '{}')).sort().join() : '';
-  ok('B: l\'invio porta solo i sei campi anonimi', chiavi === 'funzione,livello,ok_riepilogo,progetto,sezione,testo', chiavi);
+  ok('B: senza email, l\'invio porta solo i sei campi anonimi', chiavi === 'funzione,livello,ok_riepilogo,progetto,sezione,testo', chiavi);
   ok('B: la casella del riepilogo parte spenta', inv.length === 1 && JSON.parse(inv[0].corpo ?? '{}').ok_riepilogo === false, inv[0]?.corpo ?? '');
   ok('B: dopo l\'invio, la conferma', await p.locator('[data-edf-mc-fatto]').isVisible(), '');
+  // Con l'email: un'email rotta si dice e non parte; una buona parte normalizzata.
+  await p.locator('[data-edf-mc-altro]').click();
+  ok('B: «Un\'altra domanda» ritrova la sezione', (await p.inputValue('dialog[data-edf-contributo] input[name=sezione]')) === sez, '');
+  await p.fill('dialog[data-edf-contributo] textarea', 'Si può vedere sui nostri dati?');
+  await p.fill('dialog[data-edf-contributo] input[name=contatto]', 'mario@');
+  const prima2 = rich.length;
+  await p.locator('[data-edf-mc-invia]').click(); await p.waitForTimeout(400);
+  ok('B: un\'email rotta si dice e non parte', rich.slice(prima2).length === 0 && /email/i.test(await p.textContent('[data-edf-mc-err]') ?? ''), await p.textContent('[data-edf-mc-err]') ?? '');
+  await p.fill('dialog[data-edf-contributo] input[name=contatto]', ' Mario.Rossi@Esempio.it ');
+  await p.locator('[data-edf-mc-invia]').click(); await p.waitForTimeout(600);
+  const inv2 = rich.slice(prima2).filter((x) => x.url.endsWith('/rest/v1/contributi'));
+  ok('B: con l\'email, parte normalizzata e la conferma la ripete', inv2.length === 1 && JSON.parse(inv2[0].corpo ?? '{}').contatto === 'mario.rossi@esempio.it'
+    && /mario\.rossi@esempio\.it/.test(await p.textContent('[data-edf-mc-fatto]') ?? ''), inv2[0]?.corpo ?? '');
+  ok('B: il modulo non si dice più anonimo né rimanda a Parliamone per rispondere', !/è anonimo|WhatsApp/.test(await p.textContent('dialog[data-edf-contributo]') ?? ''), '');
   await c.close();
 
   // Il riepilogo: senza token nessuna chiamata, e dal telefono non rimanda alla pagina breve.
@@ -260,6 +276,9 @@ export async function checkInsieme(b: Browser) {
   await q.goto(INSIEME + 'riepilogo/', { waitUntil: 'load' }); await q.waitForTimeout(1200);
   ok('B: il riepilogo dal telefono resta il riepilogo', q.url().endsWith('/riepilogo/'), q.url());
   ok('B: senza token, nessuna chiamata e un messaggio', rt.length === 0 && /link personale/.test(await q.textContent('[data-rp-msg]') ?? ''), rt.join(' '));
+  await q.goto(INSIEME + 'contatti/', { waitUntil: 'load' }); await q.waitForTimeout(1200);
+  ok('B: i contatti dal telefono restano i contatti, senza token nessuna chiamata', q.url().endsWith('/contatti/') && rt.length === 0 && /link personale/.test(await q.textContent('[data-cp-msg]') ?? ''), q.url());
+  ok('B: i contatti non portano né modulo né card', (await q.locator('dialog[data-edf-contributo], dialog[data-edf-funzioni]').count()) === 0, '');
   await t.close();
 }
 

@@ -23,7 +23,7 @@ export default defineConfig({
     edizioneIntegration({
       soloSala: ['relatore', 'presentatore', 'admin', 'analytics', 'circolo', 'risultati-old', 'dieci-minuti', 'prossimi-passi'],
       soloLettura: ['parliamone', 'breve'],
-      soloInsieme: ['riepilogo'],
+      soloInsieme: ['riepilogo', 'contatti'],
     }),
   ],
   vite: {
