@@ -8,6 +8,9 @@
 ### 2026-11-22 · Console: Contributi leggibile e barra su telefono (`0b719399`, `3199c77d`)
 Pagina Contributi rifatta (riepilogo, aperture, domande filtrate, curatela) e nav mobile su due righe senza scorrimento orizzontale. Dettaglio in §42.38, Parte 25.
 
+### 2026-11-22 notte · Un cookie di un altro dominio non si legge da `document.cookie`
+Data per assente `s_vi` leggendo i cookie della pagina: un cookie del dominio di raccolta non è mai visibile lì. Si legge dal contesto del browser (`page.context().cookies(url)` in Playwright). Dettaglio in §43 (Parte 23).
+
 ### 2026-11-22 sera · Panel a due giri su un documento d'account, e una premessa smentita alla fonte
 Il workflow `panel-review` gira con `scriptPath` solo dentro la directory di lavoro: copiato lo script nella cartella del verdetto. Il fact-checker ha letto le librerie Tags pubbliche e smentito un fatto del 12 nov (niente ECID Service sul sito d'acquisto del cliente): una premessa d'architettura si riverifica sulla libreria in produzione, non sugli appunti. Dettaglio in §43 (Parte 23).
 
