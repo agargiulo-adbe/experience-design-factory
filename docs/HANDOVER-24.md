@@ -266,4 +266,6 @@ Fuori per decisione dell'owner: un tema infrastrutturale che resta fuori perimet
 
 **Gate** (17 nov): `copy-audit` 0/0, `audit:wrap` PULITO, `audit:deck` **0 HARD** (44 SOFT di posizione/copertura su copertina, divisori e firma, ariosi per scelta), `audit:ink` PULITO, `audit:fonti` 0 HARD (i link business.adobe.com si aprono a mano; Inail e CSS aperti), `audit:docs` PULITO.
 
-⚠️ **Resta**: panel mai lanciato; commit; seed `0039` non applicato; `.pptx` da depositare nella cartella Teams; riga in CLAUDE.md «Experiences today» (la scrive l'owner). Backlog nella Parte 2.
+**Committata il 22 nov 2026** (`4c1c4403`, pushata, deploy su `/insalute-assicurato/`): prima del commit è stata ripristinata la voce TIM dello showcase, sovrascritta per errore da una sostituzione del 17, e un commento pubblico in `idee.astro` che nominava il tema escluso è stato reso neutro.
+
+⚠️ **Resta**: panel mai lanciato; seed `0039` non applicato; `.pptx` da depositare nella cartella Teams; riga in CLAUDE.md «Experiences today» (la scrive l'owner). Backlog nella Parte 2.

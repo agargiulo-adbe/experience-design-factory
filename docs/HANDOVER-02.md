@@ -7,13 +7,13 @@
 
 > Ordinato per priorità (P0 blocca/adesso · P1 prossimo · P2 dopo/nice-to-have). Questa è la
 > fonte di verità **persistente** delle cose da fare; `/handover` la mantiene e ne proietta le
-> voci P0/P1 nella task list di sessione (effimera). Aggiornato **2026-11-20**: 21 P0 e 43 P1 qui,
+> voci P0/P1 nella task list di sessione (effimera). Aggiornato **2026-11-22**: 21 P0 e 43 P1 qui,
 > più 32 P1 di fondo nella Parte 10 e 50 P2 con le note nella Parte 22 (scorporata l'11 nov).
 > Le voci chiuse non restano qui: diventano una riga nel change log datato (§11).
 
 **P0 — adesso**
 
-- **[P0] `insalute-assicurato` — panel review mai lanciata, e niente è committato** (gate 3.4) — §44 (Parte 24) · experience e `.pptx` nati il 17 nov; il team Adobe vuole la PPT prima del 20, check interno il 23, cliente il 24. `/panel-review apps/insalute-assicurato` prima del 23; poi commit (`apps/insalute-assicurato/**`, `scripts/deck-replica.ts`, `scripts/pptx/replica.py`, root, hub, showcase, deploy, `0039`), **senza** i file aperti di `intesa-esperienza-cliente` (agg. 2026-11-17)
+- **[P0] `insalute-assicurato` — panel review mai lanciata, e il deck è già online** (gate 3.4) — §44 (Parte 24) · committata il 22 nov (`4c1c4403`): `/insalute-assicurato/` risponde a chiunque abbia l'URL, card nell'hub. Check interno il 23, cliente il 24: `/panel-review apps/insalute-assicurato` prima del check, poi `/preflight-sala insalute-assicurato` (agg. 2026-11-22)
 - **[P0] `trenitalia-ciascuno-conta` — panel review mancante per lo stato corrente (gate 3.4)** — `/panel-review apps/trenitalia-ciascuno-conta` · nessun giro dal 12 nov; il 17 nov il deck è rifatto in 11 slide (`4aaa054`, `59ba33c`, strato v7) e va rivisto **con il token in sessione** (`DECK_SESSION`): senza si vede solo la copertina (agg. 2026-11-17)
 - **[P0] `intesa-esperienza-cliente` — prima del 19: le risposte che il panel del 12 nov ha lasciato all'AE e al Solutions Consulting** — §42.15 (Parte 19) · mesi dal sì al primo invio e dal sì all'estensione; licenza di fase 1 (prodotti, Decisioning come componente aggiuntivo di Journey Optimizer, uscita a fine trimestre, chi paga la fase 0, data della stima di costo); squadra di fase 0; ruoli dei 14 invitati senza funzione nota; presenza o ibrido. Non si inventano: se mancano il 19, la slide dice quando arrivano (agg. 2026-11-12)
 - **[P1] Intesa, edizione da distribuire — giro 2 del panel e i 7 rilievi `audit:deck`** — §42.33-37 (Parte 25) · versione B approvata dall'owner il 20 nov; giro 1 del 20 nov applicato (10 P0, 20 P1; ⚠️ DERIVED PERSONAS, seggio Group Technology); aperti P1 #6, #13, #18; +7 rilievi «testo troppo in alto» su slide più dense (ingaggio-mappa, m-03, m-05, m-07, integrazioni, integrazioni-dati, coworker-video) (agg. 2026-11-20)
