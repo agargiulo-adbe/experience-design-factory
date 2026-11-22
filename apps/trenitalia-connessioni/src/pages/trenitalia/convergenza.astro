@@ -46,10 +46,24 @@ const verifica = [
   { k: 'Che cosa si legge già', v: 'Dove si perdono le vendite fra ricerca e acquisto, letto in aggregato.' },
 ];
 
+const catena = [
+  { k: 'Adobe Analytics', v: 'raccoglie come oggi, sui due siti' },
+  { k: 'Il connettore', v: 'porta i dati in Experience Platform', nuovo: true },
+  { k: 'Customer Journey Analytics', v: 'legge il viaggio e costruisce il pubblico', nuovo: true },
+  { k: 'La destinazione Target', v: 'passa il pubblico a Target; si abilita nella proposta', nuovo: true },
+  { k: 'Adobe Target', v: 'su trenitalia.com, dalle visite successive' },
+];
+
+const catenaNote = [
+  { k: 'Ogni quanto si aggiorna', v: 'Il pubblico si aggiorna a intervalli di ore, non in tempo reale: da confermare per ogni caso.' },
+  { k: 'Dove stanno i dati', v: 'Residenza e conservazione si fissano con FS Technology prima di accendere.' },
+  { k: 'Come si spegne', v: 'Ogni attività ha un interruttore in Target, senza un rilascio sul sito.' },
+];
+
 const crm = [
-  { k: 'Entra', v: 'Pochi attributi: il livello del cliente, l’abbonamento, una sintesi degli acquisti.' },
-  { k: 'Resta dov’è', v: 'Il profilo, il consenso e le esclusioni restano in Salesforce, che li governa.' },
-  { k: 'Prima serve', v: 'Il parere del DPO. Per questo il CRM è un passo a sé, e non il primo.' },
+  { k: 'Entra', v: 'Pochi attributi: lo status, dal CRM e dal programma fedeltà; una sintesi degli acquisti, dal sistema di vendita.' },
+  { k: 'Resta dov’è', v: 'Il profilo resta in Salesforce; consenso ed esclusioni restano dove li governate oggi.' },
+  { k: 'Prima serve', v: 'Il parere del DPO sugli attributi personali. Per questo il CRM è un passo a sé.' },
 ];
 
 const letture = [
@@ -124,10 +138,10 @@ const letture = [
         style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal data-reveal-delay="0.08"
       >
-        Il primo passo usa quello che avete già.
+        Si parte dai due Analytics e da Target, e si aggiunge Customer Journey Analytics.
       </h2>
       <p class="text-center fs-card-body max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.14">
-        Customer Journey Analytics legge i due siti insieme; Adobe Target cambia la proposta su trenitalia.com.
+        CJA legge i due siti insieme; Target cambia la proposta su trenitalia.com, dove oggi fa già la geolocalizzazione.
       </p>
       <div class="w-full" data-reveal data-reveal-delay="0.2">
         <DiagDisegno />
@@ -179,6 +193,46 @@ const letture = [
       <p class="text-center fs-card-body max-w-3xl mx-auto mt-6" data-reveal data-reveal-delay="0.3">
         L’esito dice quanto si legge persona per persona da subito, e quanto in aggregato.
       </p>
+    </Slide>
+
+    <!-- ── Come arriva un pubblico a Target ─────────────────────────────── -->
+    {/* Chiesta dal panel del 22 nov 2026: «Target lo riceve» taceva il come. Il
+        passaggio usa la destinazione Adobe Target di Experience Platform, che si
+        abilita nella proposta: al cliente non si propone una piattaforma da gestire.
+        La latenza e la residenza dei dati si dicono «da confermare» finché non lo sono. */}
+    <Slide id="slide-catena" bg="primary" align="center" data-solution="cja">
+      <div slot="backdrop" class="absolute inset-0">
+        <div class="fs-bg"></div>
+        <div class="fs-grid"></div>
+      </div>
+      <Sfondo slot="backdrop" id="tc-acciaio" forza="forte" />
+      <p class="fs-panel-tag text-center mb-3" data-reveal>COME ARRIVA UN PUBBLICO A TARGET</p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal data-reveal-delay="0.08"
+      >
+        La raccolta resta com’è; il pubblico passa da Experience Platform.
+      </h2>
+      <p class="text-center fs-card-body max-w-3xl mx-auto mb-7" data-reveal data-reveal-delay="0.14">
+        Un passo alla volta, dal dato raccolto alla proposta in pagina.
+      </p>
+      <ol class="cv-catena" data-reveal data-reveal-delay="0.2">
+        {catena.map((c, i) => (
+          <li class:list={['cv-anello', c.nuovo && 'cv-anello--nuovo']} data-substep={i > 0 ? '' : undefined}>
+            <span class="cv-anello-k">{c.k}</span>
+            <span class="cv-anello-v">{lega(c.v)}</span>
+          </li>
+        ))}
+      </ol>
+      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-5 mt-7" data-stagger>
+        {catenaNote.map((c) => (
+          <div class="fs-card text-left h-full">
+            <p class="fs-card-title mb-2" style="font-size: 1.05rem;">{c.k}</p>
+            <p class="fs-card-body">{lega(c.v)}</p>
+          </div>
+        ))}
+      </div>
     </Slide>
 
     <!-- ── Con il CRM ─────────────────────────────────────────────────── -->
@@ -260,7 +314,7 @@ const letture = [
         La domanda si fa in italiano.
       </h2>
       <p class="text-center fs-card-body max-w-3xl mx-auto mb-7" data-reveal data-reveal-delay="0.14">
-        Il pubblico, la prova su Target e la sua lettura si preparano a parole.
+        Coworker prepara il pubblico e la bozza della prova; la approva e la pubblica il team Target.
       </p>
       <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-5" data-stagger>
         <div class="fs-card text-left">
@@ -273,7 +327,7 @@ const letture = [
         </div>
       </div>
       <p class="fs-panel-src text-center mt-6" data-reveal data-reveal-delay="0.3">
-        Licenza propria, distribuito per gradi da luglio 2026 ·
+        Disponibile da giugno 2026; dentro CJA è ancora in prova limitata, e la risposta può mescolare l’inglese. I casi reggono anche senza ·
         <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-workspace/coworker" target="_blank" rel="noopener noreferrer">Coworker in Customer Journey Analytics</a>
       </p>
       <div class="mt-6 text-center" data-reveal data-reveal-delay="0.38">
@@ -301,6 +355,28 @@ const letture = [
     color: var(--ink-primary); cursor: pointer;
   }
   .cv-apri-b:hover { background: rgba(217, 24, 53, 0.22); }
+  .cv-catena {
+    list-style: none; margin: 0 auto; padding: 0; width: 100%; max-width: 76rem;
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(0.5rem, 1vw, 1rem);
+  }
+  .cv-anello {
+    position: relative; display: grid; gap: 0.3rem; align-content: start;
+    padding: 0.9rem 1rem; border-radius: 0.6rem;
+    border: 1.5px solid rgba(255, 255, 255, 0.5); background: rgba(255, 255, 255, 0.07); text-align: left;
+  }
+  .cv-anello--nuovo { border-color: rgba(79, 189, 180, 0.8); background: rgba(0, 102, 102, 0.26); }
+  .cv-anello:not(:first-child) { padding-left: 2rem; }
+  .cv-anello:not(:first-child)::before {
+    content: '→'; position: absolute; left: 0.6rem; top: 0.9rem;
+    color: var(--color-verde-chiaro); font-size: 1.1rem; line-height: 1.2;
+  }
+  .cv-anello-k { font-family: var(--font-display); font-weight: 600; font-size: clamp(1rem, 1.1vw, 1.2rem); line-height: 1.2; color: var(--ink-primary); }
+  .cv-anello-v { font-size: clamp(0.92rem, 0.98vw, 1.02rem); line-height: 1.4; color: var(--ink-secondary); }
+  @media (max-width: 900px) {
+    .cv-catena { grid-template-columns: minmax(0, 1fr); }
+    .cv-anello:not(:first-child)::before { display: none; }
+    .cv-anello:not(:first-child) { padding-left: 1rem; }
+  }
   .cv-ponte {
     width: 100%; max-width: 52rem; margin: 0 auto clamp(1.2rem, 3vh, 2rem);
     display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1rem;
