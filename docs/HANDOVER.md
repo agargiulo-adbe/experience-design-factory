@@ -18,7 +18,7 @@
 >
 > 🏦 **Il 13 novembre la Storia di Intesa passa un giorno di revisione con l'owner** (§42.16, Parte 19): deck in `--vu` per i 21:9, capitolo 01 e schema d'integrazione ridisegnati, verifiche su Fluffy. In `main` dal merge del 13.
 >
-> 🚄 **Il 17 novembre «Ciascuno conta» diventa l'iniziativa in undici slide** (§43, Parte 23): tre verbi, l'MVP con i servizi professionali Adobe e il partner, la riconciliazione fra i due siti come condizione per partire; pubblicato con lo strato v7 (`59ba33c`). Resta il panel (P0).
+> 🚄 **Dal 17 al 19 novembre «Ciascuno conta» diventa l'iniziativa, poi tredici slide con quattro salette** (§43, Parte 23): tre verbi, l'MVP, la riconciliazione fra i due siti come condizione; il 19 i prodotti a cerchi e la giornata in una pagina (`1147bce`, strato v8). Resta il panel (P0).
 >
 > 🚄 **Il 12 novembre nasce «Ciascuno conta»** (`apps/trenitalia-ciascuno-conta`, §43, Parte 23 · change log, Parte 3): la versione interna del percorso dopo la Direzione Sales, pubblicata con strato riservato gated. La sera è riprogettata per il leadership team come **deck a due livelli**: pubblico leggibile dal cliente, strato interno da Supabase con il token del dossier. Resta il panel (P0).
 >

@@ -5,6 +5,12 @@
 
 ## 11. Change log recente
 
+### 2026-11-22 · `.pptx` composti: dove si rende il PDF su questa macchina
+Per un documento tecnico d'account (git-ignorato) sul template Adobe: `python-pptx` non c'è nel Python di sistema, si lancia con `uv run --with python-pptx --with pillow --with lxml`. Installati via Homebrew **poppler** e **LibreOffice** (servono a `audit:pptx`). ⚠️ LibreOffice **non vede Adobe Clean** (font di Creative Cloud): rende in Helvetica/Libertine e il check `U` dà HARD **falsi**. Il PDF da consegnare si esporta da **PowerPoint** via AppleScript, aprendo il file da `~/Library/Containers/com.microsoft.Powerpoint/Data/Documents/`: da `docs/` PowerPoint chiede un permesso (errore −9074) e resta bloccato su un dialogo modale. Verifica: `pdffonts` deve elencare solo AdobeClean (+ Wingdings dei punti elenco).
+
+### 2026-11-19 · «Ciascuno conta» in tredici slide, quattro salette (`1147bce`, strato v8)
+Dopo la sessione col leadership team del 17: `slide-cerchi` (il cuore sui dati del cliente, il resto in demo) e `slide-marzo` (la giornata in una pagina) nel percorso principale; quarta saletta «Contenuti su scala»; pianta con plenaria in fascia e salette 2×2. Strato riservato v8 su Supabase. Dettaglio in §43 (Parte 23).
+
 ### 2026-11-18 sera e 11-19 · Storia di Intesa: la slide Forrester, la copia offline del 19, il video di Coworker, il momento 04
 `8196055` poi `1f3f16b`: «Servizi finanziari, la prima industry di Adobe» da occhiello a titolo, poi il 19 «FSI, la prima industry di Adobe» e lead senza punto (scelta dell'owner, senza fonte pubblica: ripiego nella nota). `b64f677` le dieci maggiori banche USA sotto il titolo. `dd39f08` `email.py`: la prima riga di tabella è intestazione solo se seguita da `|---|`. `10997d4` titolo «FSI». Zip offline rifatto su quel commit nella cartella OneDrive del meeting; script ora in `docs/Factory/pacchetto-offline/`. Il video di Coworker che «non parte» in Chrome: pausa dall'esterno con l'audio (cuffie Bluetooth), non il deck. `c97cd99` momento 04: le tre banche dell'assistente al posto di «altre due banche», tre buste paga e 30 giorni come nella guida di Intesa. `f2f38c9` testata dei momenti non più sotto la barra a 1512×982 (soglia 940 → 1040, `safe center`). §42.26 (Parte 25).
 
@@ -371,40 +377,3 @@ falso positivo («IT», codice di mercato in uno `<span>`) · `audit:deck` **0 H
 dichiarato col motivo** (la homepage di Unipol è davvero il posto dove quelle cifre stanno) ·
 `audit:og` PASS · `audit:docs` pulito · `pnpm build` verde su tutte le app · `astro check` 0.
 
-### Change log — `/umanizza` passa a quattro giri: il Giro 0 decide che cosa dice la slide (2026-11-05)
-
-**Un commit** (`de91557`), quattro file di metodo: il comando `.claude/commands/umanizza.md`,
-`CLAUDE.md`, `skills/experience-design/SKILL.md` e
-`skills/experience-design/references/umanizzazione.md`. Nessuna app toccata, nessun gate rilanciato
-(sono documenti).
-
-**Da dove viene.** La rielaborazione del testo della Prospettiva Sales (change log 2026-11-04,
-§37.14) era un giro di natura diversa dai tre dell'umanizzazione: non toglieva marcatori, cambiava
-**che cosa la slide dice** — gli slogan che nascondevano il dato che li reggeva, le frasi da
-rileggere due volte, le cause che la slide non dimostrava. Quel giro adesso ha un nome e sta nel
-comando: **Giro 0 — il messaggio**, e viene prima dei tre. Rifinire il ritmo di una frase che dice
-la cosa sbagliata è lavoro buttato.
-
-**La regola che cambia, ed è il motivo dell'allineamento.** Il vincolo di lunghezza **±10%** era
-scritto in quattro punti come se valesse sempre: ora vale **dai Giri 1-3** e si misura sul testo
-uscito dal Giro 0, dove invece **non c'è** — lì serve il testo giusto, non uno della stessa misura.
-Se il testo nuovo non entra si taglia, si cambia composizione o si divide la slide, **mai si
-rimpicciolisce il tipo** (contratto di leggibilità). Il Giro 0 **si committa a parte** dagli altri
-tre, e ciò che cambia una tesi, una promessa o l'ask **non si applica da soli**: va a chi possiede
-il contenuto, con la riscrittura pronta.
-
-**I quattro punti allineati**, che prima dicevano «tre giri» e «±10%» senza eccezioni: la voce di
-copia (riga 311) e la sezione «Umanizzare è un giro MISURATO» in `CLAUDE.md`; lo **Step 0-bis bis**
-e la voce di copia nella skill `experience-design`; il titolo dei giri, la nuova sezione del Giro 0
-e i vincoli di riscrittura in `references/umanizzazione.md`.
-
-🔒 **L'esempio prima/dopo dentro il comando è inventato, per scelta.** Il sorgente ne portava uno
-vero — nome del cliente, copia di tre slide e i numeri della misura — e il repo è pubblico: è stato
-sostituito da un esempio costruito che porta gli stessi tre difetti (lo slogan che nasconde il dato,
-la frase farraginosa con una causa non dimostrata, il confronto sepolto nel testo). Verificato riga
-per riga: sulle **124 righe aggiunte** non c'è un nome di cliente, una riga di slide o un dato di
-misura. La memoria `umanizzare-e-misurato` è stata riscritta sui quattro giri, e al suo interno è
-stato corretto lo slug morto `intesa-mutuo` → `intesa-esperienza-cliente`.
-
-⚠️ **I commit sono locali su indicazione dell'owner: niente push.** Dopo questo giro di handover
-`main` è **avanti di due** su `origin/main`.
