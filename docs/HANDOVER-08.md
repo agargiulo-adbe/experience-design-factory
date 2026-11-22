@@ -291,3 +291,36 @@ che è la forma onesta di dire «ci si arriva» senza venderlo adesso.
   che aveva chiesto i tagli più pesanti. È il **P0 nuovo** di §10, da chiudere prima del TTG
   (14-16 ott).
 
+
+### 36.10 Il piano dei casi su Target, in tre configurazioni — 22-23 novembre 2026 (`e4513ce4`, `fb45d8cc`, `29fb2a3c`)
+Il ramo Trenitalia diventa la risposta alla richiesta del responsabile dei canali digitali: un
+**piano di casi d'uso su Adobe Target**, da una base e in due aggiunte indipendenti.
+- **Le tre configurazioni** (`src/data/casi-duso.ts`, `CONFIG`): il primo passo (CJA sugli
+  Analytics di trenitalia.com e Le Frecce, Target su trenitalia.com) · con il CRM (dopo il DPO) ·
+  Target anche su Le Frecce e sull'app (con chi sviluppa quei canali). Ogni caso porta `config`,
+  `superfici` e `giudizio` (`chiude` / `aperta`: la misura se la verifica sui due siti chiude, e
+  il ripiego se resta aperta). Il vecchio dittico «perimetro ristretto / allargato» è uscito.
+- **Convergenza** riscritta: `DiagDisegno` (disegno d'insieme che si accende a sotto-passi,
+  marcatori `[data-substep]` letti con `:has()`), `ComeFunziona` (pop-in a sei passi, copiato da
+  `trenitalia-prospettiva-sales/ProdottoPop` con `styles/pop.css`), la verifica sui due siti come
+  valutazione in corso, `slide-catena` (connettore → CJA → destinazione Target → at.js 2, dalle
+  visite successive), il CRM come passo a sé. **Casi d'uso**: `DiagMatrice` a colonne per
+  configurazione, una colonna per ↓; cinque casi (geo, abbonamenti, status Oro, upgrade, dal
+  computer all'app); il mock mostra l'app solo dove Target agisce in app, e niente notifica push.
+  **Percorso** riscritto: tappe relative al sì, tre domande sul ricavo, licenze (CJA + abilitazione
+  della destinazione Target come voce a parte; Coworker facoltativo), chi fa che cosa per funzione.
+- `src/utils/lega.ts`: lega articoli e preposizioni alla parola dopo; si applica ai testi che
+  arrivano dai dati. `audit:wrap` sulle tre pagine: zero parole appese, restano code di frase.
+- **Panel a due giri** (git-ignorato in `docs/Ferrovie/`): cinque lettori ciechi, fact-checker,
+  arbitro. Medie giro 1 → 2: credibilità 3,0 → 4,0 · rilevanza 3,4 → 3,8 · chiarezza 4,0 ·
+  rischio 2,0 → 3,4 · azionabilità 3,0 → 3,6; tutti «sì, a condizione». Smentite alla fonte e
+  corrette: «il primo passo usa quello che avete già» (CJA non c'è), «un prodotto solo» (serve
+  l'abilitazione della destinazione Target), l'Oro «livello più alto» (sopra ci sono i Platino;
+  CartaFreccia prosegue dal 1° gen 2027), Coworker in CJA in prova limitata, Brightline senza
+  Target, Telmore e Santander fuori settore.
+- **Restano aperti** (per l'owner, non chiudibili con la copia): l'ordine di grandezza del costo e
+  una data indicativa dalla proposta vera; at.js e la geolocalizzazione in produzione da
+  confermare con il partner; la slide conversazionale nel capitolo dei casi (tenuta come scelta del
+  27 ott); il volume di Target per Le Frecce e app; il contact center come aggiunta possibile;
+  Le Frecce e app come una tappa sola anche nel disegno.
+- `audit:deck` sulle tre pagine a 3 viewport: nessun rilievo oltre i soliti `a`/`i` della pelle.

@@ -5,6 +5,9 @@
 
 ## 11. Change log recente
 
+### 2026-11-23 · «Connessioni Intelligenti»: il piano dei casi su Target, panel a due giri
+Tre capitoli del ramo Trenitalia riscritti in tre configurazioni; rischio da 2,0 a 3,4. Dettaglio in §36.10 (Parte 8).
+
 ### 2026-11-22 · Console: Contributi leggibile e barra su telefono (`0b719399`, `3199c77d`)
 Pagina Contributi rifatta (riepilogo, aperture, domande filtrate, curatela) e nav mobile su due righe senza scorrimento orizzontale. Dettaglio in §42.38, Parte 25.
 
