@@ -11,10 +11,12 @@
  * questo dice che cosa ci si fa: invertirli vorrebbe dire mostrare la macchina
  * a chi ha già detto di non volersi ritrovare lo strumento senza saperlo usare.
  *
- * I DUE PERIMETRI SONO UNA FIGURA SOLA, non due versioni del documento: la
- * matrice li tiene insieme e il dittico li confronta. Il perché sta in
- * `src/data/casi-duso.ts`.
+ * DAL 22 NOV 2026 I CASI SONO ORDINATI PER CONFIGURAZIONE: due dal primo passo,
+ * uno con il CRM, due con Target su Le Frecce e sull'app. La matrice lo fa vedere
+ * una colonna alla volta, e ogni caso porta in testa il passo da cui esiste. Il
+ * perché sta in `src/data/casi-duso.ts`.
  */
+import { lega } from '../../utils/lega';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Sfondo from '../../components/Sfondo.astro';
 import TreniNavigation from '../../components/TreniNavigation.astro';
@@ -26,14 +28,15 @@ import DiagMatrice from '../../components/diagrammi/DiagMatrice.astro';
 import MockCaso from '../../components/MockCaso.astro';
 import { href } from '@edf/core/utils/url.js';
 import { rotte } from '../../data/percorso';
-import { CASI, FONTI, RISTRETTO, dentroRistretto, RIFERIMENTO, FONTI_CAPITOLO } from '../../data/casi-duso';
+import { CASI, FONTI, CONFIG, RIFERIMENTO, FONTI_CAPITOLO } from '../../data/casi-duso';
 
 const base = import.meta.env.BASE_URL;
 const { next, prev } = rotte('trenitalia/casi-duso');
 const currentPath = Astro.url.pathname;
 
 const nomeFonte = (id: string) => FONTI.find((f) => f.id === id)?.nome ?? id;
-const interi = CASI.filter(dentroRistretto).length;
+const nomeConfig = (id: string) => CONFIG.find((k) => k.id === id)?.nome ?? id;
+const daVoi = CASI.filter((c) => c.origine === 'cliente').length;
 
 
 /**
@@ -44,13 +47,13 @@ const interi = CASI.filter(dentroRistretto).length;
  */
 const SFONDI: Record<string, string> = {
   geo: 'rl-alba',
-  upgrade: 'tc-acciaio',
-  ritorno: 'rl-binari',
+  interesse: 'rl-binari',
   oro: 'tc-quiete',
-  insieme: 'rl-pensilina',
+  upgrade: 'tc-acciaio',
+  app: 'rl-pensilina',
 };
 ---
-<BaseLayout title="Che cosa ci faccio — i casi d'uso">
+<BaseLayout title="Che cosa ci faccio — i casi d'uso" branch="trenitalia">
   <div class="fixed top-0 left-0 right-0 z-50">
     <TreniNavigation currentPath={currentPath} base={base} branch="trenitalia" />
   </div>
@@ -64,71 +67,74 @@ const SFONDI: Record<string, string> = {
         <div class="fs-grid"></div>
       </div>
       <CoverHero
-        eyebrow="Capitolo 04"
+        eyebrow="Capitolo 04 · Casi d’uso"
         numeral="04"
         title="Che cosa ci faccio"
-        lead="Cinque casi, e il lavoro che c’è dietro ciascuno."
+        lead="Cinque casi su Adobe Target, in ordine di passo."
         size="phase"
         signature={false}
       />
     </Slide>
 
-    <!-- ── La matrice, intera ─────────────────────────────────────────── -->
+    <!-- ── La matrice: una colonna alla volta ─────────────────────────── -->
+    {/* Il primo ↓ accende il primo passo, il secondo il CRM, il terzo Target su
+        Le Frecce e app. Il punto rosso dice da dove nasce il caso; il punto
+        chiaro che resta valido anche nelle configurazioni dopo. */}
     <Slide id="slide-matrice" bg="secondary" align="center">
       <div slot="backdrop" class="absolute inset-0">
         <div class="fs-bg-soft"></div>
         <div class="fs-grid"></div>
       </div>
       <Sfondo slot="backdrop" id="tc-strati" forza="forte" />
-      <p class="fs-panel-tag text-center mb-3" data-reveal>I CASI, E LE FONTI CHE CHIEDONO</p>
+      <p class="fs-panel-tag text-center mb-3" data-reveal>I CASI, PASSO PER PASSO</p>
       <h2
-        class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal data-reveal-delay="0.08"
       >
-        Due modi di vendere di più.
+        Due casi subito, gli altri un passo alla volta.
       </h2>
-      <div class="w-full" data-reveal data-reveal-delay="0.16">
+      <p class="text-center fs-card-body max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.14">
+        I casi del primo passo restano validi anche nei passi dopo.
+      </p>
+      <div class="w-full" data-reveal data-reveal-delay="0.2">
         <DiagMatrice casi={CASI} />
       </div>
-      <p class="fs-panel-src text-center mt-4" data-reveal data-reveal-delay="0.26">
-        Tre dei cinque casi li avete messi voi sul tavolo il 27 ottobre · scenari illustrativi
+      <p class="fs-panel-src text-center mt-5" data-reveal data-reveal-delay="0.26">
+        {daVoi} dei {CASI.length} casi li avete portati voi · scenari illustrativi, da scegliere insieme
       </p>
     </Slide>
 
-    <!-- ── La matrice, ristretta: lo stesso disegno, due fonti sole ───── -->
-    {/* Il dittico è il punto del capitolo. La figura non cambia: cambia quante
-        fonti sono accese. Chi ha ristretto il perimetro vede che cosa
-        guadagnerebbe allargando, chi l'ha allargato che cosa resta se non lo
-        fa — e nessuno dei due deve credere a una frase nostra. */}
-    <Slide id="slide-matrice-prima" bg="secondary" align="center">
+    <!-- ── Che cosa serve a ogni passo ─────────────────────────────────── -->
+    <Slide id="slide-configurazioni" bg="primary" align="center">
       <div slot="backdrop" class="absolute inset-0">
-        <div class="fs-bg-soft"></div>
+        <div class="fs-bg"></div>
         <div class="fs-grid"></div>
       </div>
-      <Sfondo slot="backdrop" id="tc-strati" forza="forte" />
-      <p class="fs-panel-tag text-center mb-3" data-reveal>SE SI PARTE DA DUE FONTI</p>
+      <Sfondo slot="backdrop" id="rl-binari" forza="forte" />
+      <p class="fs-panel-tag text-center mb-3" data-reveal>DA CHE COSA DIPENDE OGNI PASSO</p>
       <h2
-        class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal data-reveal-delay="0.08"
       >
-        {interi} casi su {CASI.length} restano interi.
+        Il CRM aspetta il DPO, Le Frecce chi sviluppa il sito.
       </h2>
-      <div class="w-full" data-reveal data-reveal-delay="0.16">
-        <DiagMatrice casi={CASI} perimetro="ristretto" />
-      </div>
-      <div class="fs-panel fs-panel--alt w-full max-w-5xl mx-auto text-left mt-5 !py-3.5" data-reveal data-reveal-delay="0.26">
-        <p class="fs-panel-body">
-          <strong class="text-[var(--ink-primary)]">La prima fase è {RISTRETTO.map(nomeFonte).join(' e ')}.</strong>
-          Due casi si fanno per intero, due a metà, uno aspetta. Non è un problema di
-          tecnologia: è il perimetro delle fonti, e si allarga una alla volta.
-        </p>
-        <p class="fs-panel-src mt-2.5">
-          C’è un tema trasversale che qui resta sullo sfondo. Ogni caso vive di varianti: una
-          per area di partenza, una per livello di carta. Chi le produce, e con quale ritmo, è
-          una conversazione a parte.
-        </p>
+      <p class="text-center fs-card-body max-w-3xl mx-auto mb-7" data-reveal data-reveal-delay="0.14">
+        Le due aggiunte non dipendono l’una dall’altra, ed entra prima quella pronta prima.
+      </p>
+      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-5" data-stagger>
+        {CONFIG.map((k, i) => (
+          <div class:list={['fs-card text-left h-full cs-cfg', i === 0 && 'cs-cfg--on']}>
+            <p class="cs-cfg-k">{i === 0 ? 'Si parte da qui' : 'Si aggiunge'}</p>
+            <p class="fs-card-title mb-3" style="font-size: 1.2rem;">{k.nome}</p>
+            <dl class="cs-cfg-l">
+              <dt>CJA legge</dt><dd>{lega(k.legge)}</dd>
+              <dt>Target agisce su</dt><dd>{lega(k.agisce)}</dd>
+              <dt>Serve</dt><dd>{lega(k.serve)}</dd>
+            </dl>
+          </div>
+        ))}
       </div>
     </Slide>
 
@@ -143,7 +149,7 @@ const SFONDI: Record<string, string> = {
         </div>
         <Sfondo slot="backdrop" id={SFONDI[c.id]} forza="forte" />
         <p class="fs-panel-tag text-center mb-3" data-reveal>
-          {c.leva === 'traffico' ? 'PIÙ PERSONE' : 'PIÙ CONVERSIONE'} · CASO {String(i + 1).padStart(2, '0')}
+          {nomeConfig(c.config).toUpperCase()} · CASO {String(i + 1).padStart(2, '0')}
         </p>
         <h2
           class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
@@ -153,7 +159,7 @@ const SFONDI: Record<string, string> = {
           {c.titolo}
         </h2>
         <p class="cs-caso-lead text-center fs-card-body max-w-3xl mx-auto mb-5" data-reveal data-reveal-delay="0.14">
-          {c.punto}
+          {lega(c.punto)}
         </p>
         <div class="w-full" data-reveal data-reveal-delay="0.2">
           <MockCaso caso={c} fonti={c.fonti.map(nomeFonte)} parte="come" />
@@ -181,7 +187,7 @@ const SFONDI: Record<string, string> = {
             stessa, quindi la riga è la stessa per costruzione. Marcata come un
             indice, se no la regola (c) la conta una volta per caso. */}
         <p class="cs-caso-lead text-center fs-card-body max-w-3xl mx-auto mb-6" data-audit-skip data-reveal data-reveal-delay="0.12">
-          Da dove parte il dato. Che cosa ci aggiunge Customer Journey Analytics, e come lo usa Adobe Target.
+          Da dove parte il dato. Che cosa ci aggiunge Customer Journey Analytics, e come lo usa Adobe Target.
         </p>
         <div class="w-full" data-reveal data-reveal-delay="0.16">
           <MockCaso caso={c} fonti={c.fonti.map(nomeFonte)} parte="dietro" />
@@ -192,15 +198,22 @@ const SFONDI: Record<string, string> = {
             <p class="cs-box-tag">Su che cosa agisce</p>
             <p class="cs-box-v">{c.kpi.join(' · ')}</p>
           </div>
+          {c.prova ? (
           <div class="cs-box cs-box--prova">
             <p class="cs-box-tag">L’ha già fatto</p>
             <p class="cs-box-v">
               <span class="cs-prova-v">{c.prova.v}</span>
-              <span class="cs-prova-l">{c.prova.l}</span>
+              <span class="cs-prova-l">{lega(c.prova.l)}</span>
               <a href={c.prova.url} target="_blank" rel="noopener noreferrer">{c.prova.chi}</a>
               <span class="cs-prova-s"> · {c.prova.settore}</span>
             </p>
           </div>
+          ) : (
+          <div class="cs-box cs-box--prova">
+            <p class="cs-box-tag">Come si giudica</p>
+            <p class="cs-box-v">Quanti del gruppo comprano su Le Frecce, rispetto a chi vede la home di oggi.</p>
+          </div>
+          )}
         </div>
       </Slide>
       </>
@@ -226,7 +239,7 @@ const SFONDI: Record<string, string> = {
         Poco traffico, e converte come nessun altro.
       </h2>
       <p class="text-center fs-card-body max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.14">
-        Due cose diverse, e conviene tenerle separate: come vi nominano, e con quale contesto
+        Due cose diverse, e conviene tenerle separate: come vi nominano, e con quale contesto
         rispondete.
       </p>
 
@@ -290,7 +303,7 @@ const SFONDI: Record<string, string> = {
               style="font-size: clamp(1.8rem, 2.8vw, 2.5rem); font-weight: 600; line-height: 1.04; letter-spacing: -0.03em;"
               data-display
             >{n.v}</p>
-            <p class="fs-card-body">{n.l}</p>
+            <p class="fs-card-body">{lega(n.l)}</p>
           </div>
         ))}
       </div>
@@ -303,7 +316,7 @@ const SFONDI: Record<string, string> = {
       <div class="fs-panel fs-panel--alt w-full max-w-5xl mx-auto text-left mt-4 !py-3.5" data-reveal data-reveal-delay="0.36">
         <p class="fs-panel-body">
           Di casi così ne abbiamo altri: una compagnia aerea e un operatore ferroviario
-          nordamericani, un portale di viaggi. Vivono in materiale riservato, quindi li
+          nordamericani, un portale di viaggi. Vivono in materiale riservato, quindi li
           raccontiamo a voce e senza il nome.
         </p>
         <p class="fs-panel-src mt-2.5">
@@ -330,6 +343,16 @@ const SFONDI: Record<string, string> = {
     font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
     color: var(--color-rosso-chiaro); margin-right: 0.4rem;
   }
+
+  /* ── Le tre configurazioni ───────────────────────────────────────── */
+  .cs-cfg--on { border-color: rgba(255, 141, 157, 0.6) !important; box-shadow: inset 0.28rem 0 0 var(--color-rosso); }
+  [data-slide] .cs-cfg-k {
+    margin: 0 0 0.4rem; font-size: clamp(0.8rem, 0.86vw, 0.92rem); font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-rosso-chiaro); text-align: left;
+  }
+  .cs-cfg-l { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.45rem 0.9rem; }
+  .cs-cfg-l dt { font-size: clamp(0.84rem, 0.9vw, 0.95rem); font-weight: 600; color: var(--ink-tertiary); }
+  .cs-cfg-l dd { margin: 0; font-size: clamp(0.95rem, 1vw, 1.05rem); line-height: 1.4; color: var(--ink-primary); }
 
   /* ── Che cosa muove il caso, e la prova ─────────────────────────── */
   /* Due riquadri distinti, uno per domanda: il verde di marca dove si misura,

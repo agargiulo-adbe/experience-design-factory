@@ -31,6 +31,7 @@
  * si sta parlando, senza ricostruire un'interfaccia falsa — che sarebbe la
  * wrong-brand imagery che la Quality Bar vieta.
  */
+import { lega } from '../utils/lega';
 import type { Caso } from '../data/casi-duso';
 
 interface Props {
@@ -48,8 +49,12 @@ interface Props {
   class?: string;
 }
 const { caso: c, fonti, parte, class: className } = Astro.props as Props;
+// L'app compare solo nei casi in cui Target agisce anche lì (terza configurazione):
+// negli altri il mock resta sul web, senza commutatore e senza notifica, se no
+// promette nel primo passo una superficie che il primo passo non ha.
+const conApp = c.superfici.includes('app');
 ---
-<div class:list={['mk', `mk--${parte}`, className]} data-vista="app">
+<div class:list={['mk', `mk--${parte}`, className]} data-vista={conApp ? 'app' : 'web'}>
 
   {parte === 'come' && (<>
   {/* ── 1 · Chi lo prepara: la sessione con Coworker ──────────────────── */}
@@ -57,7 +62,7 @@ const { caso: c, fonti, parte, class: className } = Astro.props as Props;
     <div class="mk-testa"><figcaption class="mk-tag">Chi lo prepara · Coworker</figcaption></div>
     <div class="mk-chat">
       {c.conversazione.map((b) => (
-        <p class="mk-bolla" data-substep data-side={b.chi === 'utente' ? 'out' : 'in'}>{b.t}</p>
+        <p class="mk-bolla" data-substep data-side={b.chi === 'utente' ? 'out' : 'in'}>{lega(b.t)}</p>
       ))}
     </div>
   </figure>
@@ -66,10 +71,12 @@ const { caso: c, fonti, parte, class: className } = Astro.props as Props;
   <figure class="mk-lato">
     <div class="mk-testa">
       <figcaption class="mk-tag">Chi viaggia</figcaption>
+      {conApp && (
       <div class="mk-sw" role="group" aria-label="Dispositivo">
         <button type="button" class="mk-sw-b" data-vista-b="app" aria-pressed="true">App</button>
         <button type="button" class="mk-sw-b" data-vista-b="web" aria-pressed="false">Web</button>
       </div>
+      )}
     </div>
 
     <div class="mk-dev">
@@ -86,7 +93,7 @@ const { caso: c, fonti, parte, class: className } = Astro.props as Props;
           <span class="mk-push-n">TRENITALIA</span>
           <span class="mk-push-o">ora</span>
         </div>
-        <p class="mk-push-c">{c.push}</p>
+        <p class="mk-push-c">{lega(c.push)}</p>
       </div>
       <div class="mk-cerca mk-solo-web" aria-hidden="true">
         <span class="mk-cerca-c">Da</span><span class="mk-cerca-c">A</span>
@@ -94,12 +101,12 @@ const { caso: c, fonti, parte, class: className } = Astro.props as Props;
       </div>
 
       <div class="mk-pagina">
-        <p class="mk-titolo">{c.schermo.titolo}</p>
+        <p class="mk-titolo">{lega(c.schermo.titolo)}</p>
         <div class="mk-var" data-substep>
           {c.varianti.map((v) => (
             <span class="perso-item" data-match={v.match ? '' : undefined}>
               <span class="mk-var-h">
-                <span class="mk-var-t">{v.t}</span>
+                <span class="mk-var-t">{lega(v.t)}</span>
                 {v.match && <span class="mk-var-badge">per questo profilo</span>}
               </span>
               <span class="mk-var-n">{v.n}</span>
@@ -142,8 +149,8 @@ const { caso: c, fonti, parte, class: className } = Astro.props as Props;
         <li class="mk-stadio" data-substep data-prod={i === 1 ? 'CJA' : i === 2 ? 'Target' : undefined}>
           <span class="mk-stadio-n" aria-hidden="true">{i + 1}</span>
           <span class="mk-stadio-k">{i === 0 ? `${st.k}: ${fonti.join(' · ')}` : st.k}</span>
-          {i !== 0 && <span class="mk-stadio-v">{st.v}</span>}
-          <span class="mk-stadio-e">{st.e}</span>
+          {i !== 0 && <span class="mk-stadio-v">{lega(st.v)}</span>}
+          <span class="mk-stadio-e">{lega(st.e)}</span>
         </li>
       ))}
     </ol>

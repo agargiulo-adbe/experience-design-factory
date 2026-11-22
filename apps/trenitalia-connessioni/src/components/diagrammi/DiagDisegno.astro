@@ -1,0 +1,146 @@
+---
+/**
+ * DiagDisegno — il disegno d'insieme che si costruisce in tre passi.
+ *
+ * PERCHÉ UN DISEGNO SOLO. Il piano ha tre configurazioni: il primo passo
+ * (Customer Journey Analytics sui due Analytics, Adobe Target su trenitalia.com),
+ * il CRM in aggiunta, Target anche su Le Frecce e sull'app. Tre architetture
+ * separate sarebbero tre deck; un disegno che si accende un pezzo alla volta dice
+ * «si parte da qui, e si aggiunge» con la forma. È anche il consiglio arrivato da
+ * chi in Adobe lavora su CJA: una vista sola in cui ogni soluzione risponde ai casi.
+ *
+ * Il CRM e Target su Le Frecce e app NON dipendono l'uno dall'altro: si sommano al
+ * primo passo nell'ordine in cui sono pronti. La figura li accende in sequenza
+ * perché chi presenta racconta in sequenza, ma le etichette non li numerano.
+ *
+ * I PASSI li decide chi presenta: due marcatori `[data-substep]` in fondo, nell'ordine
+ * del racconto, e la figura legge quale è attivo con `:has()`. Un pezzo non ancora
+ * entrato è assente (`visibility: hidden`), non trasparente. Con «Riduci movimento» o
+ * senza JavaScript è tutto acceso: lo stato base è quello finale.
+ */
+interface Props { class?: string }
+const { class: className } = Astro.props as Props;
+---
+<div class:list={['dd', className]} data-disegno role="img"
+     aria-label="Il disegno d'insieme. In basso raccolgono, come oggi, Adobe Analytics di trenitalia.com e di Le Frecce, e poi il CRM. Al centro Customer Journey Analytics li legge insieme. In alto Adobe Target agisce su trenitalia.com dal primo passo, poi anche su Le Frecce e sull'app.">
+
+  <div class="dd-fila" aria-hidden="true">
+    <p class="dd-k"><span>Agisce</span>Adobe Target</p>
+    <div class="dd-tess">
+      <span class="dd-t dd-t--on"><small>dal primo passo</small>trenitalia.com</span>
+      <span class="dd-t dd-c"><small>poi</small>Le Frecce</span>
+      <span class="dd-t dd-c"><small>poi</small>App Trenitalia</span>
+    </div>
+  </div>
+
+  <div class="dd-fili" aria-hidden="true"><i></i><i class="dd-c"></i><i class="dd-c"></i></div>
+
+  <div class="dd-fila dd-fila--cja" aria-hidden="true">
+    <p class="dd-k"><span>Legge</span>Customer Journey Analytics</p>
+    <p class="dd-cja">Un viaggio solo, dalla ricerca all’acquisto</p>
+  </div>
+
+  <div class="dd-fili" aria-hidden="true"><i></i><i></i><i class="dd-b"></i></div>
+
+  <div class="dd-fila" aria-hidden="true">
+    <p class="dd-k"><span>Raccolgono</span>come oggi</p>
+    <div class="dd-tess">
+      <span class="dd-t dd-t--gia"><small>Adobe Analytics</small>trenitalia.com</span>
+      <span class="dd-t dd-t--gia"><small>Adobe Analytics</small>Le Frecce, web e app</span>
+      <span class="dd-t dd-b"><small>poi</small>CRM e fedeltà</span>
+    </div>
+  </div>
+
+  <ul class="dd-leg" aria-hidden="true">
+    <li class="dd-l dd-l--on">Il primo passo</li>
+    <li class="dd-l dd-b">Con il CRM</li>
+    <li class="dd-l dd-c">Target anche su Le Frecce e app</li>
+  </ul>
+
+  <i class="dd-m" data-substep data-p="b" aria-hidden="true"></i>
+  <i class="dd-m" data-substep data-p="c" aria-hidden="true"></i>
+</div>
+
+<style is:global>
+  .dd {
+    width: 100%; max-width: 70rem; margin-inline: auto;
+    display: grid; gap: 0; text-align: left;
+  }
+  [data-slide] .dd p { margin: 0; max-width: none; text-align: left; }
+  .dd-fila {
+    display: grid; grid-template-columns: minmax(11rem, 0.9fr) minmax(0, 3fr);
+    gap: clamp(0.8rem, 1.6vw, 1.6rem); align-items: center;
+  }
+  .dd-k {
+    display: grid; gap: 0.15rem;
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.05rem, 1.25vw, 1.4rem); line-height: 1.2; color: var(--ink-primary);
+  }
+  .dd-k span {
+    font-family: var(--font-body); font-size: clamp(0.78rem, 0.84vw, 0.9rem); font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-rosso-chiaro);
+  }
+  .dd-tess { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.5rem, 1vw, 1rem); }
+  .dd-t {
+    display: grid; gap: 0.15rem; padding: clamp(0.7rem, 1.4vh, 1.1rem) clamp(0.8rem, 1vw, 1.1rem);
+    border-radius: 0.6rem; border: 1.5px dashed rgba(255, 255, 255, 0.42);
+    font-size: clamp(1rem, 1.1vw, 1.2rem); font-weight: 600; line-height: 1.25; color: var(--ink-primary);
+  }
+  .dd-t small {
+    font-size: clamp(0.8rem, 0.86vw, 0.92rem); font-weight: 500; color: var(--ink-tertiary);
+  }
+  .dd-t--gia { border-style: solid; border-color: rgba(255, 255, 255, 0.5); background: rgba(255, 255, 255, 0.07); }
+  .dd-t--on { border-style: solid; border-color: var(--color-rosso); background: rgba(217, 24, 53, 0.22); box-shadow: inset 0.28rem 0 0 var(--color-rosso); }
+  .dd-t--on small { color: var(--color-rosso-chiaro); }
+
+  .dd-fila--cja {
+    padding: clamp(0.9rem, 1.8vh, 1.3rem) 0;
+  }
+  .dd-cja {
+    padding: clamp(0.9rem, 1.8vh, 1.3rem) clamp(1rem, 1.4vw, 1.5rem);
+    border-radius: 0.7rem; background: rgba(0, 102, 102, 0.34); border: 1.5px solid rgba(79, 189, 180, 0.7);
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.1rem, 1.35vw, 1.5rem); line-height: 1.25; color: var(--ink-primary);
+  }
+
+  /* I fili: uno per colonna, sotto la tessera che alimentano. */
+  .dd-fili {
+    display: grid; grid-template-columns: minmax(11rem, 0.9fr) repeat(3, minmax(0, 1fr));
+    gap: 0 clamp(0.5rem, 1vw, 1rem); height: clamp(1rem, 3vh, 2rem);
+  }
+  .dd-fili::before { content: ''; }
+  .dd-fili i { justify-self: center; width: 2px; height: 100%; background: rgba(255, 255, 255, 0.5); }
+
+  .dd-leg {
+    list-style: none; margin: clamp(1rem, 2.4vh, 1.6rem) 0 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: 0.5rem 0.7rem; justify-content: center;
+  }
+  .dd-l {
+    padding: 0.35rem 0.8rem; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.4);
+    font-size: clamp(0.84rem, 0.9vw, 0.96rem); font-weight: 600; color: var(--ink-primary);
+  }
+  .dd-l--on { border-color: var(--color-rosso); background: rgba(217, 24, 53, 0.22); }
+  .dd-m { display: block; width: 0; height: 0; }
+
+  /* ── I passi ─────────────────────────────────────────────────────────── */
+  .dd .dd-b, .dd .dd-c {
+    opacity: 0; visibility: hidden;
+    transition: opacity 420ms ease, visibility 420ms;
+  }
+  .dd:has(.dd-m[data-p='b'][data-substep-active]) .dd-b,
+  .dd:has(.dd-m[data-p='c'][data-substep-active]) .dd-c { opacity: 1; visibility: visible; }
+  .dd:has(.dd-m[data-p='b'][data-substep-active]) .dd-l.dd-b,
+  .dd:has(.dd-m[data-p='c'][data-substep-active]) .dd-l.dd-c { border-color: var(--color-verde-chiaro); background: rgba(0, 102, 102, 0.3); }
+  .dd:has(.dd-m[data-p='b'][data-substep-active]) .dd-t.dd-b,
+  .dd:has(.dd-m[data-p='c'][data-substep-active]) .dd-t.dd-c { border-style: solid; border-color: var(--color-verde-chiaro); background: rgba(0, 102, 102, 0.22); }
+  @media (prefers-reduced-motion: reduce) {
+    .dd .dd-b, .dd .dd-c { opacity: 1; visibility: visible; transition: none; }
+  }
+  html:not(.js) .dd .dd-b, html:not(.js) .dd .dd-c { opacity: 1; visibility: visible; }
+
+  @media (max-width: 900px) {
+    .dd-fila { grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+    .dd-fili { display: none; }
+    .dd-fila--cja { padding: 0.8rem 0; }
+  }
+</style>

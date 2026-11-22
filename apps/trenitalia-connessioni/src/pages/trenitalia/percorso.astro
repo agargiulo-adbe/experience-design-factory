@@ -1,4 +1,26 @@
 ---
+/**
+ * Capitolo 05 — Percorso: da dicembre, un passo alla volta.
+ *
+ * RISCRITTO IL 22 NOV 2026. Prima il capitolo proponeva due fasi di prodotto
+ * (CJA, poi Real-Time CDP e Journey Optimizer) e un POC su dati simulati. Il piano
+ * di oggi è un altro: il primo passo in produzione su un volume limitato, una o due
+ * attività Target su trenitalia.com, la misura sul venduto. Poi il CRM e Target su
+ * Le Frecce e app, quando sono pronti.
+ *
+ * LE DATE SONO INDICATIVE, e lo si dice in pagina. Dipendono dall'esito della
+ * verifica sui due siti e dai rilasci. Un test su Target chiede qualche settimana di
+ * traffico: per questo la prima misura sta a febbraio e non a gennaio.
+ *
+ * I TRE OBIETTIVI (misurare, conoscere, condividere) vengono da un suggerimento
+ * interno del 16 nov: ognuno porta sotto la domanda a cui risponde, così il
+ * risultato del primo passo si dice in una frase.
+ *
+ * IL CONSENSO: il primo passo parte quando chi fissa le priorità in Trenitalia e chi
+ * presidia la piattaforma in FS Technology arrivano allo stesso sì. Si dice per
+ * ruolo, mai per nome.
+ */
+import { lega } from '../../utils/lega';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Sfondo from '../../components/Sfondo.astro';
 import SfondoLoop from '../../components/SfondoLoop.astro';
@@ -11,105 +33,33 @@ import { href } from '@edf/core/utils/url.js';
 import { rotte } from '../../data/percorso';
 
 const base = import.meta.env.BASE_URL;
-// Avanti e indietro vengono dal percorso, non scritti a mano: così spegnere
-// un capitolo non lascia una freccia che punta fuori dal percorso.
 const { next, prev } = rotte('trenitalia/percorso');
 const currentPath = Astro.url.pathname;
 
-// La tabella delle fasi vive QUI, in una copia sola per tutto il ramo: prodotto,
-// prerequisito, chi esegue, cosa si misura. Il capitolo «CJA» la richiama in
-// sintesi e non la ridisegna — due roadmap nello stesso ramo erano due piani
-// diversi per chiunque girasse il deck a un collega.
-//
-// La Fase 3 non è una fase di prodotto ma un orizzonte: niente prodotti e
-// nessuna cifra media, perché il budget media non è il perimetro di nessuno dei
-// cinque interlocutori di questo ramo e una baseline non c'è ancora.
-const roadmapPhases = [
-  {
-    fase: 'Fase 1',
-    label: 'Analisi',
-    colore: 'var(--accent-primary)',
-    headline: 'La vista unificata',
-    prodotti: ['Customer Journey Analytics', 'Adobe Analytics di trenitalia.com', 'gli attributi del CRM da Data Cloud'],
-    prerequisito: 'L\'istanza Analytics di trenitalia.com già attiva, un identificativo di persona condiviso con il CRM, e la scelta di quali attributi portare. Le Frecce e la piattaforma di invio restano fuori.',
-    chiEsegue: 'FSTechnology e chi presidia il CRM portano i dati, Adobe monta lo schema e CJA, Trenitalia porta le domande.',
-    misura: [
-      'Quota di chi cerca una tratta e ne compra un\'altra',
-      'Punti di caduta del percorso, letti per livello di carta',
-      'Copertura: quanti dei riconosciuti hanno un profilo nel CRM',
-    ],
-    attiva: true,
-  },
-  {
-    fase: 'Fase 2',
-    label: 'Attivazione',
-    colore: 'var(--accent-secondary)',
-    headline: 'Dal dato all\'azione',
-    prodotti: ['Adobe Real-Time CDP', 'Adobe Journey Optimizer'],
-    prerequisito: 'Lo schema dati della Fase 1, il perimetro dei consensi concordato con i DPO, e la voce di Real-Time CDP messa a contratto: senza quel passaggio i segmenti non escono verso Target in automatico.',
-    chiEsegue: 'Adobe sull\'orchestrazione, FSTechnology sulle destinazioni, Trenitalia sulle regole di contatto.',
-    misura: [
-      'Rinnovi prima della scadenza',
-      'Contatti evitati sui disservizi',
-      'Abbandono del funnel dopo il recupero',
-    ],
-    attiva: true,
-  },
-  {
-    fase: 'Fase 3',
-    label: 'Orizzonte',
-    colore: 'var(--color-grigio-300)',
-    headline: 'La spesa media',
-    orizzonte: 'L\'ottimizzazione della spesa media è un orizzonte, da aprire quando la prima fase ha una baseline.',
-    attiva: false,
-  },
+const tappe = [
+  { quando: 'Dicembre', cosa: 'Si scelgono i casi', dettaglio: 'Uno o due casi del primo passo, scelti insieme. Intanto si chiude la verifica sui due siti.' },
+  { quando: 'Gennaio', cosa: 'Il primo passo si accende', dettaglio: 'CJA in produzione su un volume limitato, e la prima attività Target su trenitalia.com.' },
+  { quando: 'Febbraio', cosa: 'La prima misura', dettaglio: 'Il confronto sul venduto fra chi vede la proposta e chi vede la home di oggi.' },
+  { quando: 'Poi', cosa: 'Si aggiunge il resto', dettaglio: 'Il CRM dopo il parere del DPO. Target su Le Frecce e app con chi sviluppa quel sito.' },
 ];
 
-// Le direttrici «da esplorare» dopo il caso pilota. Tre, non otto: undici cose
-// da fare sono zero cose da fare. I nomi sono gli stessi nella slide di sintesi,
-// parola per parola.
-const direttrici = [
-  {
-    n: '01',
-    label: 'Rinnovi e loyalty',
-    esempi: 'Retention sugli abbonati che si stanno spegnendo, prima della scadenza, e un seguito vero per chi risponde male al sondaggio.',
-  },
-  {
-    n: '02',
-    label: 'Loyalty e acquisizione',
-    esempi: 'X-GO, il programma fedeltà di Regionale e Intercity: dal carnet ripetuto all\'abbonamento, con un percorso che nasce in app.',
-  },
-  {
-    n: '03',
-    label: 'Ecosistema di Gruppo',
-    esempi: 'Chi viaggia per lavoro spesso e non ha una carta fedeltà, letto da CJA e portato su Trenitalia for Business. Il bundle porta-a-porta con i partner passa dalla clean room.',
-  },
+const obiettivi = [
+  { verbo: 'Misurare', domanda: 'Quale proposta fa vendere di più?' },
+  { verbo: 'Conoscere', domanda: 'Dove si perde la vendita, fra la ricerca e l’acquisto?' },
+  { verbo: 'Condividere', domanda: 'Un numero solo, che marketing, vendite e IT leggono allo stesso modo.' },
 ];
 
-// Il POC: perimetro, natura dei dati, settimane, chi fa che cosa, cosa esce,
-// quando si chiude e che fine fanno i dati. È il passo che il capitolo chiede
-// al cliente, e nel ramo Trenitalia non c'era.
-const pocPerimetro = [
-  'Primo passo su un ambiente Adobe, senza toccare i sistemi di Trenitalia',
-  'Lo schema ricostruito sui contenuti pubblici del sito e su attributi CRM simulati',
-  'Un caso pilota solo: chi cerca una tratta e ne compra un\'altra',
-  'Nessun dato personale, quindi nessun passaggio di sicurezza da aprire adesso',
-  'Il secondo passo, sui dati reali, si apre solo se il primo convince: lì servono il parere del DPO e un perimetro concordato',
-];
-
-const pocEsito = [
-  'Quattro settimane come proposta, tutte su ambiente Adobe',
-  'Trenitalia porta le domande a cui vuole vedere una risposta',
-  'Adobe monta lo schema, costruisce il caso e lo mostra funzionante',
-  'Alla fine si vede che cosa si legge davvero, e quali attributi del CRM servono',
-  'Da lì si decide se aprire il passo sui dati reali, con l\'elenco preciso di cosa chiedere a chi presidia il CRM',
-  'Se non convince, si chiude senza aver mosso un dato di Trenitalia',
+const serve = [
+  { cosa: 'Scegliere uno o due casi', chi: 'Trenitalia, con Adobe' },
+  { cosa: 'Chiudere la verifica sui due siti', chi: 'FS Technology, chi sviluppa i siti, Adobe' },
+  { cosa: 'Accendere CJA e i pubblici verso Target', chi: 'Adobe, nella proposta' },
+  { cosa: 'Il parere del DPO, prima del CRM', chi: 'Trenitalia e FS Technology' },
 ];
 ---
 <BaseLayout
-  title="Il percorso e la decisione"
-  description="La prima fase su trenitalia.com e il CRM, l'attivazione dopo, e un primo passo che non tocca i sistemi di Trenitalia."
-  pageSolutions={['rtcdp', 'ajo']}
+  title="Da dicembre, un passo alla volta"
+  description="Si scelgono i casi, si accende il primo passo su trenitalia.com e si misura sul venduto. Il CRM e Target su Le Frecce e app si aggiungono dopo."
+  pageSolutions={['cja']}
   branch="trenitalia"
 >
   <div class="fixed top-0 left-0 right-0 z-50">
@@ -121,413 +71,114 @@ const pocEsito = [
     prevHref={href(base, prev)}
   >
 
-    <!-- ── SLIDE 0: Cover ─────────────────────────────────────────── -->
-    <Slide id="slide-cover" bg="primary" align="center" data-solution="rtcdp">
+    <!-- ── Copertina ──────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg"></div>
       <Sfondo slot="backdrop" id="tr-tetto" forza="leggera" />
       <div slot="backdrop" class="fs-grid"></div>
       <CoverHero
-        eyebrow="Capitolo 04 · Percorso"
-        numeral="04"
-        title="Il percorso"
-        lead="Due fasi da perimetrare e un orizzonte. La prima parte da un POC su un pezzo stabile dell'ecosistema, la seconda si appoggia allo schema che ne esce. Nessun numero promesso prima di avere una baseline."
+        eyebrow="Capitolo 05 · Percorso"
+        numeral="05"
+        title="Da dicembre, un passo alla volta"
+        lead="A dicembre si scelgono i casi; la prima misura sul venduto arriva a febbraio."
         size="phase"
         tone="ink"
         signature={false}
       />
     </Slide>
 
-    <!-- ── SLIDE 1: Le 3 fasi ─────────────────────────────────────── -->
-    <Slide id="slide-3fasi" bg="primary" align="center" data-solution="rtcdp">
+    <!-- ── Le tappe ──────────────────────────────────────────────────── -->
+    {/* Una tappa per ↓: chi presenta racconta il calendario, non lo legge. */}
+    <Slide id="slide-tappe" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg"></div>
+      <Sfondo slot="backdrop" id="rl-binari" forza="forte" />
       <div slot="backdrop" class="fs-grid"></div>
-      <Sfondo slot="backdrop" id="tc-strati" forza="media" />
-      <p class="fs-panel-tag text-center mb-2" data-reveal>
-        L'ECOSISTEMA ADOBE PER FS · DUE FASI E UN ORIZZONTE
-      </p>
-      <h2
-        class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.5rem, 2.4vw, 2.1rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
-        data-reveal
-        data-reveal-delay="0.08"
-      >
-        Si comincia da quello che c'è, un passo per volta.
-      </h2>
-
-      <div class="relative w-full max-w-6xl mx-auto" data-reveal data-reveal-delay="0.18">
-        <span class="fs-line-h hidden md:block" style="top: 1.45rem; left: 16.6%; right: 16.6%;" aria-hidden="true"></span>
-        <div class="grid md:grid-cols-3 gap-4 relative items-stretch">
-          {roadmapPhases.map((phase, i) => (
-            <div class="flex flex-col items-center h-full">
-              <span
-                class="fs-node mb-3 relative z-10"
-                data-active={phase.attiva ? '' : undefined}
-                aria-hidden="true"
-              >
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <div class="fs-panel w-full text-left flex flex-col gap-2.5 h-full" style="padding: 1.2rem 1.3rem;">
-                <div>
-                  <div class="flex items-baseline gap-2.5 mb-1">
-                    <span class="fs-panel-tag" style={`color: ${phase.colore};`}>{phase.fase}</span>
-                    <span class="fs-node-label uppercase tracking-widest text-[0.72rem]">{phase.label}</span>
-                  </div>
-                  <p class="fs-panel-head" style="font-size: 1.28rem;">{phase.headline}</p>
-                </div>
-                {phase.prodotti && (
-                  <div>
-                    <p class="fs-panel-tag mb-1.5" style="margin-inline: 0; color: rgba(241, 243, 244, 0.78);">PRODOTTI</p>
-                    <ul class="space-y-1">
-                      {phase.prodotti.map((p) => (
-                        <li class="flex items-start gap-2.5 fs-card-body">
-                          <span class="w-1.5 h-1.5 mt-2 rounded-full flex-shrink-0" style={`background: ${phase.colore};`} aria-hidden="true"/>
-                          {p}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {phase.orizzonte && (
-                  <p class="fs-card-body" style="margin-inline: 0; color: rgba(241, 243, 244, 0.95);">{phase.orizzonte}</p>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <p class="mx-auto mt-3 text-center text-[var(--color-grigio-300)]" style="font-size: 0.85rem; line-height: 1.5; max-width: 52rem;" data-reveal data-reveal-delay="0.3">
-        Prerequisiti, chi esegue e cosa si misura stanno nella slide che segue, in una copia sola per tutto il ramo.
-      </p>
-    </Slide>
-
-    <!-- ── SLIDE 1b: La tabella delle fasi ───────────────────────── -->
-    <Slide id="slide-fasi-contratto" bg="secondary" align="center" data-solution="rtcdp">
-      <div slot="backdrop" class="fs-bg-soft"></div>
-      <Sfondo slot="backdrop" id="tc-acciaio" forza="media" />
-      <div slot="backdrop" class="fs-grid"></div>
-      <p class="fs-panel-tag text-center mb-3" data-reveal>
-        LA TABELLA DELLE FASI · UNA COPIA SOLA PER IL RAMO
-      </p>
+      <p class="fs-panel-tag text-center mb-3" data-reveal>LE TAPPE</p>
       <h2
         class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.5rem, 2.3vw, 2.1rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
-        data-reveal
-        data-reveal-delay="0.08"
+        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal data-reveal-delay="0.08"
       >
-        Cosa serve, chi la fa, cosa si guarda alla fine.
+        Dalla scelta dei casi alla prima misura.
       </h2>
-
-      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-2 gap-5 items-stretch" data-reveal data-reveal-delay="0.18">
-        {roadmapPhases.filter((p) => p.prerequisito).map((phase, i) => (
-          <div class:list={["fs-panel text-left flex flex-col gap-2.5 h-full", i === 1 && "fs-panel--alt"]}>
-            <div class="flex items-baseline gap-2.5">
-              <span class="fs-panel-tag" style={`color: ${phase.colore};`}>{phase.fase}</span>
-              <span class="fs-node-label uppercase tracking-widest text-[0.72rem]">{phase.label}</span>
-            </div>
-            <p class="fs-panel-body" style="margin-inline: 0;">
-              <strong class="font-semibold" style="color: rgba(241, 243, 244, 0.99);">Prerequisito: </strong>{phase.prerequisito}
-            </p>
-            <p class="fs-panel-body" style="margin-inline: 0;">
-              <strong class="font-semibold" style="color: rgba(241, 243, 244, 0.99);">Chi esegue: </strong>{phase.chiEsegue}
-            </p>
-            <div class="pt-2.5 mt-auto border-t border-[var(--line-subtle)]">
-              <p class="fs-panel-tag mb-1.5" style="margin-inline: 0; color: rgba(241, 243, 244, 0.78);">COSA SI MISURA</p>
-              <ul class="space-y-1">
-                {(phase.misura ?? []).map((m) => (
-                  <li class="flex items-start gap-2.5 fs-card-body">
-                    <span class="w-1.5 h-1.5 mt-2 rounded-full flex-shrink-0" style={`background: ${phase.colore};`} aria-hidden="true"/>
-                    {m}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <p class="mx-auto mt-4 text-center text-[var(--color-grigio-300)]" style="font-size: 0.85rem; line-height: 1.5; max-width: 54rem;" data-reveal data-reveal-delay="0.3">
-        Baseline da rilevare nel POC, target da fissare insieme: nessuno di questi numeri è nostro.
-        La Fase 3 resta un orizzonte, e si apre quando la baseline esiste.
+      <p class="text-center fs-card-body max-w-3xl mx-auto mb-8" data-reveal data-reveal-delay="0.14">
+        Le date sono indicative e dipendono dalla verifica sui due siti e dai rilasci.
       </p>
+      <ol class="pc-linea" data-reveal data-reveal-delay="0.2">
+        {tappe.map((t, i) => (
+          <li class:list={['pc-tappa', i === tappe.length - 1 && 'pc-tappa--poi']} data-substep={i > 0 ? '' : undefined}>
+            <span class="pc-punto" aria-hidden="true"></span>
+            <p class="pc-quando">{t.quando}</p>
+            <p class="pc-cosa">{lega(t.cosa)}</p>
+            <p class="pc-det">{lega(t.dettaglio)}</p>
+          </li>
+        ))}
+      </ol>
     </Slide>
 
-    <!-- ── SLIDE 2: Fase 1 Deep-dive · CJA ───────────────────────── -->
-    <Slide id="slide-fase1-cja" bg="secondary" align="center" data-solution="rtcdp">
-      <div slot="backdrop" class="fs-bg"></div>
-      <Sfondo slot="backdrop" id="tc-quiete" forza="forte" />
-      <div slot="backdrop" class="fs-grid"></div>
-      <div class="flex items-center justify-center gap-3 mb-3" data-reveal>
-        <span class="fs-node" data-active aria-hidden="true">01</span>
-        <p class="fs-panel-tag">FASE 1 · CUSTOMER JOURNEY ANALYTICS · SUBITO</p>
-      </div>
-      <h2
-        class="text-center text-[var(--ink-primary)] mb-7 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.5rem, 2.2vw, 2.1rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
-        data-reveal
-        data-reveal-delay="0.08"
-      >
-        Intelligence dal primo giorno,<br/>sul pezzo che non verrà rifatto.
-      </h2>
-
-      <div
-        class="w-full max-w-6xl mx-auto grid md:grid-cols-2 gap-5 items-stretch"
-        data-reveal
-        data-reveal-delay="0.18"
-      >
-        <!-- Cosa consegna Fase 1 -->
-        <div class="fs-panel text-left flex flex-col h-full">
-          <p class="fs-panel-tag mb-3" style="margin-inline: 0;">COSA CONSEGNA FASE 1</p>
-          <ul class="space-y-2.5">
-            {[
-              { label: 'Convergenza Analytics ×2', desc: 'Le due istanze Adobe Analytics unificate in CJA: la prima vista da capo a fondo sui canali diretti.' },
-              { label: 'Il caso pilota', desc: 'Infomobilità e recovery dopo il disservizio, misurati: il contatto evitato è l\'indicatore, e il disservizio è il primo generatore di volume di contatto.' },
-              { label: 'Workspace FS personalizzato', desc: 'Panel dedicati al percorso di Davide, segmenti CartaFreccia, cohort abbonamenti. I primi insight in settimane.' },
-              { label: 'Governance dei dati', desc: 'Classificazione dei campi, policy d\'uso, audit trail. L\'hashing degli identificativi sta a monte dell\'ingestione: è una scelta di implementazione.' },
-            ].map((item) => (
-              <li class="flex items-start gap-3">
-                <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"/>
-                <p class="fs-panel-body">
-                  <strong class="font-semibold text-[var(--ink-primary)]" style="color: rgba(241, 243, 244, 0.99);">{item.label}: </strong>{item.desc}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <!-- Perché ora -->
-        <div class="fs-panel fs-panel--alt text-left flex flex-col h-full">
-          <p class="fs-panel-tag mb-3" style="margin-inline: 0; color: rgba(var(--sig2-rgb), 0.98);">PERCHÉ INIZIARE ADESSO</p>
-          <ul class="space-y-2.5">
-            {[
-              { label: 'Adobe Analytics già attivo ×2', desc: 'La Fase 1 lavora su ciò che esiste; l\'unica raccolta nuova è il passaggio a Web SDK dove si vuole misurare il contenuto.' },
-              { label: 'Il perimetro è quello stabile', desc: 'La piattaforma di vendita è in rifacimento: si parte da app, area autenticata e letture di CRM. Lo schema dati sopravvive al cambio, la strumentazione si ricalibra.' },
-              { label: 'Integrazione già pronta', desc: 'Salesforce CRM ha un connettore AEP nativo; Data Cloud e la piattaforma email si collegano con connettori e SFTP. Data Cloud resta master del profilo e del consenso.' },
-              { label: 'La governance entra subito', desc: 'Classificazione dei campi, policy d\'uso e audit trail fanno parte della prima fase, non di una successiva.' },
-            ].map((item) => (
-              <li class="flex items-start gap-3">
-                <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"/>
-                <p class="fs-panel-body">
-                  <strong class="font-semibold text-[var(--ink-primary)]" style="color: rgba(241, 243, 244, 0.99);">{item.label}: </strong>{item.desc}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </Slide>
-
-    <!-- ── SLIDE 3: Real-Time CDP + AJO ──────────────────────────── -->
-    <Slide id="slide-rtcdp-ajo" bg="secondary" align="center" data-solution="rtcdp,ajo">
-      <div slot="backdrop" class="fs-bg"></div>
-      <Sfondo slot="backdrop" id="rl-quiete" forza="forte" />
-      <div slot="backdrop" class="fs-grid"></div>
-      <div class="flex items-center justify-center gap-3 mb-3" data-reveal>
-        <span class="fs-node" data-active aria-hidden="true">02</span>
-        <p class="fs-panel-tag" style="color: var(--accent-secondary);">FASE 2 · REAL-TIME CDP + ADOBE JOURNEY OPTIMIZER</p>
-      </div>
-      <h2
-        class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.5rem, 2.2vw, 2rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
-        data-reveal
-        data-reveal-delay="0.08"
-      >
-        Dal profilo al momento giusto, con le cadenze vere.
-      </h2>
-
-      <div
-        class="w-full max-w-6xl mx-auto grid md:grid-cols-2 gap-5 items-stretch"
-        data-reveal
-        data-reveal-delay="0.18"
-      >
-        <!-- Real-Time CDP -->
-        <div class="fs-panel text-left flex flex-col h-full">
-          <p class="fs-panel-tag mb-1.5" style="margin-inline: 0; color: var(--accent-secondary);">ADOBE REAL-TIME CDP</p>
-          <h3 class="fs-panel-head mb-2" style="font-size: 1.28rem;">Il profilo di esperienza</h3>
-          <p class="text-[0.95rem] text-emerald-400 font-semibold mb-3 leading-snug">
-            Salesforce Data Cloud resta master del dato CRM e del consenso; Real-Time CDP lavora sul profilo di esperienza e non duplica il profilo operativo.
-          </p>
-          <ul class="space-y-2.5">
-            {[
-              { label: 'Profilo unificato', desc: 'In tempo reale sui segnali web e app; le fonti CRM e di campagna entrano con la loro cadenza.' },
-              { label: 'Segmenti streaming', desc: 'Il segmento «in scadenza 30gg e attivo nei 14gg» si aggiorna man mano che i segnali arrivano.' },
-              { label: 'Governance', desc: 'Etichette, policy d\'uso e audit trail su ogni dato usato in campagna; le liste di soppressione restano in Data Cloud.' },
-              { label: 'Destinazione email in batch', desc: 'È profile-based: le finestre di consegna vanno dalle ore alla giornata, e la finestra vera si misura nel POC.' },
-            ].map((item) => (
-              <li class="flex items-start gap-3">
-                <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"/>
-                <p class="fs-panel-body">
-                  <strong class="font-semibold text-[var(--ink-primary)]" style="color: rgba(241, 243, 244, 0.99);">{item.label}: </strong>{item.desc}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <!-- AJO -->
-        <div class="fs-panel text-left flex flex-col h-full">
-          <p class="fs-panel-tag mb-1.5" style="margin-inline: 0; color: var(--accent-secondary);">ADOBE JOURNEY OPTIMIZER</p>
-          <h3 class="fs-panel-head mb-2" style="font-size: 1.28rem;">Il journey come esperienza</h3>
-          <p class="text-[0.95rem] text-emerald-400 font-semibold mb-3 leading-snug">
-            AJO orchestra SOPRA la piattaforma di esecuzione email, non la sostituisce: è il layer di decisione e timing.
-          </p>
-          <ul class="space-y-2.5">
-            {[
-              { label: 'Journey orchestration', desc: 'Canvas visuale: trigger da CJA, scelta del canale, esecuzione sulla piattaforma email, push app o AEM.' },
-              { label: 'Decisioni assistite', desc: 'L\'AI propone messaggio, canale e timing per ogni profilo; la regola di contatto resta vostra.' },
-              { label: 'Soppressione, dove funziona', desc: 'Chi ha già rinnovato non riceve la push: sui canali in streaming è immediato, sulle consegne in batch dipende dalla finestra.' },
-              { label: 'Adobe Target, a parte', desc: 'Estenderlo da poche superfici a funnel e app è lavoro di implementazione e di licenza su Target: non arriva come effetto di Real-Time CDP o AJO.' },
-            ].map((item) => (
-              <li class="flex items-start gap-3">
-                <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"/>
-                <p class="fs-panel-body">
-                  <strong class="font-semibold text-[var(--ink-primary)]" style="color: rgba(241, 243, 244, 0.99);">{item.label}: </strong>{item.desc}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </Slide>
-
-    <!-- ── SLIDE 4: Da esplorare — 3 direttrici ──────────────────── -->
-    <Slide id="slide-esplorare" bg="primary" align="center">
+    <!-- ── Che cosa vi portate a casa ─────────────────────────────────── -->
+    <Slide id="slide-obiettivi" bg="secondary" align="center">
       <div slot="backdrop" class="fs-bg-soft"></div>
-      <Sfondo slot="backdrop" id="rl-binari" forza="media" />
+      <Sfondo slot="backdrop" id="tc-quiete" forza="media" />
       <div slot="backdrop" class="fs-grid"></div>
-      <p class="fs-panel-tag text-center mb-3" data-reveal>
-        DOPO IL CASO PILOTA · TUTTE DA VALIDARE SUL CAMPO
-      </p>
+      <p class="fs-panel-tag text-center mb-3" data-reveal>DOPO IL PRIMO PASSO</p>
       <h2
-        class="text-center text-[var(--ink-primary)] mb-7 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.6rem, 2.6vw, 2.3rem); font-weight: 600; line-height: 1.05; letter-spacing: -0.02em;"
-        data-reveal
-        data-reveal-delay="0.08"
+        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal data-reveal-delay="0.08"
       >
-        Tre direttrici, non un catalogo.
+        Il secondo passo si decide con i numeri del primo.
       </h2>
-
-      <div class="w-full max-w-6xl mx-auto flex flex-col gap-3" data-reveal data-reveal-delay="0.16">
-        {direttrici.map((d) => (
-          <div class="fs-panel text-left grid md:grid-cols-[auto_16rem_1fr] gap-x-6 gap-y-2 items-center" style="padding-top: 1rem; padding-bottom: 1rem;">
-            <span class="fs-mark hidden md:inline-flex" aria-hidden="true">{d.n}</span>
-            <p class="fs-panel-head" style="font-size: 1.12rem; margin-inline: 0;">{d.label}</p>
-            <p class="fs-card-body" style="font-size: 0.98rem; margin-inline: 0;">{d.esempi}</p>
+      <p class="text-center fs-card-body max-w-3xl mx-auto mb-8" data-reveal data-reveal-delay="0.14">
+        Le domande a cui il primo passo risponde, sul venduto.
+      </p>
+      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-5" data-stagger>
+        {obiettivi.map((o, i) => (
+          <div class="fs-card text-left h-full pc-ob">
+            <p class="pc-ob-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</p>
+            <p class="pc-ob-v">{o.verbo}</p>
+            <p class="fs-card-body pc-ob-d">{lega(o.domanda)}</p>
           </div>
         ))}
       </div>
-
-      <p class="mx-auto mt-5 text-center text-[var(--color-grigio-300)]" style="font-size: 0.85rem; line-height: 1.5; max-width: 52rem;" data-reveal data-reveal-delay="0.26">
-        Tre direttrici oltre il caso pilota, illustrative e da validare con i team FS. Si apre la prima quando la Fase 1 ha una baseline.
-      </p>
     </Slide>
 
-    <!-- ── SLIDE 5: Il primo passo — POC ─────────────────────────── -->
-    <Slide id="slide-poc" bg="primary" align="center">
+    <!-- ── Che cosa serve per partire ─────────────────────────────────── -->
+    <Slide id="slide-serve" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg"></div>
       <Sfondo slot="backdrop" id="tc-acciaio" forza="media" />
       <div slot="backdrop" class="fs-grid"></div>
-      <p class="fs-panel-tag text-center mb-3" data-reveal>
-        IL PRIMO PASSO · PERIMETRARE LA PRIMA FASE
-      </p>
+      <p class="fs-panel-tag text-center mb-3" data-reveal>PER PARTIRE</p>
       <h2
-        class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.6rem, 2.6vw, 2.3rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-        data-reveal
-        data-reveal-delay="0.08"
+        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal data-reveal-delay="0.08"
       >
-        Un POC su dati simulati o campionati.
+        Per partire, chi fa che cosa.
       </h2>
-
-      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-2 gap-5 items-stretch" data-reveal data-reveal-delay="0.18">
-        <div class="fs-panel text-left flex flex-col h-full">
-          <p class="fs-panel-tag mb-3" style="margin-inline: 0;">IL PERIMETRO, E SU QUALI DATI</p>
-          <ul class="space-y-2">
-            {pocPerimetro.map((v) => (
-              <li class="flex items-start gap-3">
-                <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)]" aria-hidden="true"/>
-                {/* margin-inline: 0 — dentro una slide centrata il reset manda
-                    a spasso i <p> corti, e un elenco a bandiera esce storto. */}
-                <p class="fs-panel-body" style="margin-inline: 0;">{v}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div class="fs-panel fs-panel--alt text-left flex flex-col h-full">
-          <p class="fs-panel-tag mb-3" style="margin-inline: 0; color: rgba(var(--sig2-rgb), 0.98);">OTTO SETTIMANE, CHI FA CHE COSA, COSA RESTA</p>
-          <ul class="space-y-2">
-            {pocEsito.map((v) => (
-              <li class="flex items-start gap-3">
-                <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-[var(--accent-secondary)]" aria-hidden="true"/>
-                {/* margin-inline: 0 — dentro una slide centrata il reset manda
-                    a spasso i <p> corti, e un elenco a bandiera esce storto. */}
-                <p class="fs-panel-body" style="margin-inline: 0;">{v}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      <p class="mx-auto mt-4 text-center text-[var(--color-grigio-300)]" style="font-size: 0.85rem; line-height: 1.5; max-width: 54rem;" data-reveal data-reveal-delay="0.3">
-        Il perimetro è questo perché la piattaforma di vendita è in rifacimento: lo schema dati
-        sopravvive al cambio, la strumentazione del funnel si ricalibra dopo. Perimetro e settimane
-        da definire insieme.
+      <p class="text-center fs-card-body max-w-3xl mx-auto mb-7" data-reveal data-reveal-delay="0.14">
+        Si prepara a dicembre, mentre la verifica sui due siti si chiude.
+      </p>
+      <ul class="pc-serve" data-stagger>
+        {serve.map((s) => (
+          <li class="pc-serve-r">
+            <span class="pc-serve-c">{lega(s.cosa)}</span>
+            <span class="pc-serve-chi">{lega(s.chi)}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="fs-panel-src text-center mt-6" data-reveal data-reveal-delay="0.3">
+        Trenitalia sceglie i casi; FS Technology e i partner li portano a terra. Si parte con il sì di entrambi.
       </p>
     </Slide>
 
-    <!-- ── SLIDE 6: Sintesi + invito ─────────────────────────────── -->
-    <Slide id="slide-sintesi" bg="secondary" align="center">
-      <div slot="backdrop" class="fs-bg"></div>
-      <div slot="backdrop" class="fs-grid"></div>
-      <Sfondo slot="backdrop" id="tc-strati" forza="media" />
-
-      <div class="w-full max-w-5xl mx-auto text-center">
-        <p class="fs-panel-tag" data-reveal>Una fondazione, pochi casi alla volta</p>
-        <h2
-          class="fs-panel-head mt-2 mb-8"
-          style="font-size: clamp(1.9rem, 3.6vw, 3rem); margin-inline: auto; max-width: 60rem;"
-          data-reveal data-reveal-delay="0.08"
-        >
-          Un caso pilota, e tre direttrici dopo.
-        </h2>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" data-reveal data-reveal-delay="0.16">
-          {[
-            { n: '1', l: 'Caso pilota nella Fase 1', s: 'Infomobilità e recovery dopo il disservizio, con il contatto evitato come indicatore' },
-            { n: '3', l: 'Direttrici dopo il pilota', s: 'Rinnovi e loyalty · Loyalty e acquisizione · Ecosistema di Gruppo' },
-            { n: '1', l: 'Fondazione condivisa', s: 'Ogni direttrice riusa CJA e lo schema dati della Fase 1' },
-            { n: 'In chiaro: zero', l: 'Dati in chiaro scambiati fra le due società', s: 'Identificativi pseudonimizzati dentro i consensi raccolti; la conformità la valuta il DPO di ciascuna' },
-          ].map((m, mi) => (
-            <div class="fs-card text-left">
-              <p class="fs-stat-value mb-2" style={`font-size: clamp(1.9rem, 3vw, 2.6rem); ${mi === 0 ? 'color: rgba(var(--sig-rgb), 1);' : ''}`}>{m.n}</p>
-              <p class="fs-card-title mb-1" style="font-size: 1rem;">{m.l}</p>
-              {/* 0.75rem sbiadito non si legge in proiezione, e qui dentro c'è
-                  la cautela sul trattamento: sta al corpo minimo delle note. */}
-              <p class="text-[var(--color-grigio-300)]" style="font-size: 0.84rem; line-height: 1.5; margin-inline: 0;">{m.s}</p>
-            </div>
-          ))}
-        </div>
-
-        <div class="fs-quote inline-block text-left max-w-3xl mx-auto" data-reveal data-reveal-delay="0.24">
-          <p class="fs-panel-body" style="font-size: 1.02rem;">
-            Sono direttrici di ispirazione calate sul Gruppo FS, non promesse di numeri. Il passo
-            che chiediamo è uno: perimetrare il POC, rilevare la baseline e decidere da lì.
-            All'orizzonte resta l'altra metà del viaggio, quella che FS Park legge dall'auto alla
-            sbarra: una possibilità aperta, non un prerequisito.
-          </p>
-        </div>
-      </div>
-    </Slide>
-
-    <!-- ── SLIDE 7: Chiusura — solo visual ───────────────────────── -->
+    <!-- ── Chiusura ──────────────────────────────────────────────────── -->
     <Slide id="slide-chiusura" bg="primary" align="center" data-made-with="Firefly" data-made-with-for="clip">
       <div slot="backdrop" class="fs-bg"></div>
       <div slot="backdrop" class="fs-grid"></div>
       <SfondoLoop slot="backdrop" id="linea-chiusura" forza="media" />
       <div class="w-full max-w-4xl mx-auto text-center flex flex-col items-center gap-9">
-        <p class="fs-panel-tag" data-reveal>
-          LA METÀ SU ROTAIA
-        </p>
+        <p class="fs-panel-tag" data-reveal>LA METÀ SU ROTAIA</p>
         <h2
           class="font-[family-name:var(--font-display)] text-[var(--color-chiaro)]"
           style="font-size: clamp(2.4rem, 5vw, 4.4rem); font-weight: 600; line-height: 1.02; letter-spacing: -0.03em;"
@@ -537,7 +188,6 @@ const pocEsito = [
         >
           Il viaggio,<br/>finalmente per intero.
         </h2>
-
         <CoBrand brand="Trenitalia" variant="hero" data-reveal data-reveal-delay="0.28" />
         <a href={href(base, '/trenitalia/partenza')} class="edf-sig-cta" data-reveal data-reveal-delay="0.4">Rivedi il percorso →</a>
       </div>
@@ -545,3 +195,62 @@ const pocEsito = [
 
   </DeckContainer>
 </BaseLayout>
+
+<style is:global>
+  /* ── La linea delle tappe ─────────────────────────────────────────── */
+  .pc-linea {
+    list-style: none; margin: 0 auto; padding: 0;
+    width: 100%; max-width: 72rem;
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(0.8rem, 1.6vw, 1.6rem);
+    position: relative;
+  }
+  .pc-linea::before {
+    content: ''; position: absolute; left: 0.55rem; right: 0.55rem; top: 0.55rem;
+    height: 2px; background: rgba(255, 255, 255, 0.35);
+  }
+  .pc-tappa { position: relative; display: grid; align-content: start; gap: 0.35rem; margin-top: 2rem; padding: 1rem 1.1rem 1.1rem; text-align: left;
+    background: rgba(27, 34, 48, 0.62); border: 1px solid var(--line-subtle); border-radius: 0.6rem; }
+  [data-slide] .pc-tappa p { margin: 0; max-width: none; text-align: left; }
+  .pc-punto {
+    position: absolute; top: -2rem; left: 0; width: 1.1rem; height: 1.1rem; border-radius: 50%;
+    background: var(--color-rosso); box-shadow: 0 0 0 4px rgba(217, 24, 53, 0.25);
+  }
+  .pc-tappa--poi .pc-punto { background: transparent; box-shadow: inset 0 0 0 2px var(--color-verde-chiaro); }
+  .pc-quando {
+    font-size: clamp(0.84rem, 0.9vw, 0.96rem); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--color-rosso-chiaro);
+  }
+  .pc-tappa--poi .pc-quando { color: var(--color-verde-chiaro); }
+  .pc-cosa {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.15rem, 1.35vw, 1.45rem); line-height: 1.2; color: var(--ink-primary);
+  }
+  .pc-det { font-size: clamp(0.95rem, 1vw, 1.05rem); line-height: 1.5; color: var(--ink-secondary); }
+
+  /* ── I tre obiettivi ──────────────────────────────────────────────── */
+  [data-slide] .pc-ob p { text-align: left; margin-inline: 0; max-width: none; }
+  .pc-ob-n { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.12em; color: var(--color-rosso-chiaro); margin: 0 0 0.5rem; }
+  .pc-ob-v {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.6rem, 2.2vw, 2.2rem); line-height: 1.05; letter-spacing: -0.02em;
+    color: var(--ink-primary); margin: 0 0 0.7rem;
+  }
+  .pc-ob-d { font-size: clamp(1rem, 1.1vw, 1.15rem) !important; }
+
+  /* ── Che cosa serve ───────────────────────────────────────────────── */
+  .pc-serve { list-style: none; margin: 0 auto; padding: 0; width: 100%; max-width: 60rem; display: grid; gap: 0.6rem; }
+  .pc-serve-r {
+    display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 1.2rem; align-items: center;
+    padding: 0.9rem 1.2rem; border-radius: 0.6rem;
+    background: rgba(27, 34, 48, 0.6); border: 1px solid var(--line-subtle); text-align: left;
+  }
+  .pc-serve-c { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.05rem, 1.2vw, 1.3rem); line-height: 1.25; color: var(--ink-primary); }
+  .pc-serve-chi { font-size: clamp(0.95rem, 1vw, 1.05rem); line-height: 1.4; color: var(--ink-secondary); }
+
+  @media (max-width: 900px) {
+    .pc-linea { grid-template-columns: minmax(0, 1fr); }
+    .pc-linea::before { display: none; }
+    .pc-serve-r { grid-template-columns: minmax(0, 1fr); gap: 0.3rem; }
+  }
+</style>
