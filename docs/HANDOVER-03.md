@@ -5,6 +5,9 @@
 
 ## 11. Change log recente
 
+### 2026-11-22 sera · Panel a due giri su un documento d'account, e una premessa smentita alla fonte
+Il workflow `panel-review` gira con `scriptPath` solo dentro la directory di lavoro: copiato lo script nella cartella del verdetto. Il fact-checker ha letto le librerie Tags pubbliche e smentito un fatto del 12 nov (niente ECID Service sul sito d'acquisto del cliente): una premessa d'architettura si riverifica sulla libreria in produzione, non sugli appunti. Dettaglio in §43 (Parte 23).
+
 ### 2026-11-22 · `.pptx` composti: dove si rende il PDF su questa macchina
 Per un documento tecnico d'account (git-ignorato) sul template Adobe: `python-pptx` non c'è nel Python di sistema, si lancia con `uv run --with python-pptx --with pillow --with lxml`. Installati via Homebrew **poppler** e **LibreOffice** (servono a `audit:pptx`). ⚠️ LibreOffice **non vede Adobe Clean** (font di Creative Cloud): rende in Helvetica/Libertine e il check `U` dà HARD **falsi**. Il PDF da consegnare si esporta da **PowerPoint** via AppleScript, aprendo il file da `~/Library/Containers/com.microsoft.Powerpoint/Data/Documents/`: da `docs/` PowerPoint chiede un permesso (errore −9074) e resta bloccato su un dialogo modale. Verifica: `pdffonts` deve elencare solo AdobeClean (+ Wingdings dei punti elenco).
 
