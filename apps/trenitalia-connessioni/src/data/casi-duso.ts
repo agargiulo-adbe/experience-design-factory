@@ -16,20 +16,29 @@
  * TRE PASSI IN FILA (riordinati il 23 nov 2026, dopo la call con il partner)
  * Il piano per il responsabile dei canali digitali va per tappe, e ogni tappa
  * tiene quello che c'era prima:
- *   a · il primo passo: CJA su trenitalia.com e su un dato del CRM (lo status
- *       CartaFreccia, con un'estrazione), Adobe Target su trenitalia.com.
- *       Aspetta il DPO e la sicurezza IT, anche per un'estrazione;
- *   b · l'acquisto su Le Frecce: si lavora da subito, in parallelo. Si lega la
+ *   a · il primo passo: CJA su trenitalia.com, Adobe Target su trenitalia.com;
+ *   b · l'acquisto e lo status: si lavora da subito, in parallelo. Si lega la
  *       vendita alla ricerca sulla pagina di conferma, senza toccare la
- *       piattaforma di vendita. Aspetta la verifica con il partner e il DPO;
+ *       piattaforma di vendita, e la stessa pagina porta il codice cliente: è lì
+ *       che lo status CartaFreccia del CRM si lega al visitatore. Aspetta la
+ *       verifica con il partner, il DPO e la sicurezza IT;
  *   c · Le Frecce e l'app: il percorso intero su Le Frecce, e Target anche lì e
  *       sull'app. Aspetta il nuovo portale di vendita, che prima non rilascia.
  * Fino al 22 nov il primo passo leggeva i due Analytics e il CRM veniva dopo. La
  * call del 23 nov l'ha rovesciato: su Le Frecce il partner misura solo la pagina
  * di conferma, e la piattaforma di vendita non rilascia prima del nuovo portale.
  * Il dettaglio tecnico sta nel documento di riconciliazione, fuori dal deck.
- * Ogni caso dichiara il passo da cui esiste; il passo b non porta casi nuovi, porta
- * la misura sul venduto ai casi del primo.
+ * Ogni caso dichiara il passo da cui esiste; il passo b porta il caso Oro e la
+ * misura sul venduto ai casi del primo.
+ *
+ * IL CRM È SCESO AL SECONDO PASSO LA SERA DEL 23 NOV. Verificato in Chromium: su
+ * trenitalia.com non si fa login (area riservata e registrazione aprono
+ * lefrecce.it; il form di login nell'HTML sta in un modale che nulla apre). Senza
+ * una chiave sugli eventi del sito, lo status del CRM non si lega a nessuna visita.
+ * La chiave nasce sulla pagina di conferma, se porta la traccia del sito e il
+ * codice cliente. Altre chiavi possibili (l'email del riquadro «Cerca biglietto»,
+ * un parametro nei link delle email CartaFreccia) stanno nel documento di
+ * riconciliazione, come domande.
  *
  * Il caso «I clienti che avete in due» (clean room fra società) è uscito: non
  * è un caso su Target e sta nel capitolo «Metà invisibile», spento.
@@ -68,9 +77,9 @@ export interface Config {
   agisceL: string[];
 }
 export const CONFIG: Config[] = [
-  { id: 'a', nome: 'Il primo passo', quando: 'Si parte da qui', legge: 'trenitalia.com e lo status del cliente', agisce: 'trenitalia.com', serve: 'il parere del DPO e della sicurezza IT sull’estrazione dal CRM', breve: 'trenitalia.com e il CRM', leggeL: ['trenitalia.com', 'CRM e fedeltà'], agisceL: ['trenitalia.com'] },
-  { id: 'b', nome: 'L’acquisto su Le Frecce', quando: 'Da subito, in parallelo', legge: 'anche l’acquisto su Le Frecce', agisce: 'trenitalia.com', serve: 'la verifica con il partner e il parere del DPO', breve: 'si misura sul venduto', leggeL: ['trenitalia.com', 'CRM e fedeltà', 'Acquisto su Le Frecce'], agisceL: ['trenitalia.com'] },
-  { id: 'c', nome: 'Su Le Frecce e app', quando: 'Con il nuovo portale', legge: 'il percorso intero su Le Frecce e l’app', agisce: 'trenitalia.com, Le Frecce e app', serve: 'il nuovo portale di vendita, e chi sviluppa Le Frecce e l’app', breve: 'Target anche fuori dal sito', leggeL: ['trenitalia.com', 'CRM e fedeltà', 'Acquisto su Le Frecce', 'Le Frecce, il percorso', 'App Trenitalia'], agisceL: ['trenitalia.com', 'Le Frecce', 'App Trenitalia'] },
+  { id: 'a', nome: 'Il primo passo', quando: 'Si parte da qui', legge: 'trenitalia.com', agisce: 'trenitalia.com', serve: 'la scelta dei casi e CJA collegato ai dati del sito', breve: 'trenitalia.com', leggeL: ['trenitalia.com'], agisceL: ['trenitalia.com'] },
+  { id: 'b', nome: 'L’acquisto e lo status', quando: 'Da subito, in parallelo', legge: 'l’acquisto su Le Frecce e lo status del cliente', agisce: 'trenitalia.com', serve: 'la verifica con il partner, il parere del DPO e della sicurezza IT', breve: 'sul venduto, con lo status', leggeL: ['trenitalia.com', 'Acquisto su Le Frecce', 'CRM e fedeltà'], agisceL: ['trenitalia.com'] },
+  { id: 'c', nome: 'Su Le Frecce e app', quando: 'Con il nuovo portale', legge: 'il percorso intero su Le Frecce e l’app', agisce: 'trenitalia.com, Le Frecce e app', serve: 'il nuovo portale di vendita, e chi sviluppa Le Frecce e l’app', breve: 'Target anche fuori dal sito', leggeL: ['trenitalia.com', 'Acquisto su Le Frecce', 'CRM e fedeltà', 'Le Frecce, il percorso', 'App Trenitalia'], agisceL: ['trenitalia.com', 'Le Frecce', 'App Trenitalia'] },
 ];
 
 /** I passi sono in fila: un caso vale dal suo passo in poi. */
@@ -330,20 +339,23 @@ export const CASI: Caso[] = [
     origine: 'cliente',
   },
 
+  // ── L’acquisto e lo status, in parallelo ────────────────────────────
   {
     id: 'oro',
     leva: 'conversione',
-    config: 'a',
+    config: 'b',
     superfici: ['tcom'],
     // CartaFreccia prosegue dal 1° gen 2027 con la Nuova Operazione a Premi: status
     // Argento, Oro, Platino e Platino Infinito confermati, soglie nuove in punti
-    // status (Oro a 60.000). Verificato su trenitalia.com il 22 nov 2026. Dal 23 nov
-    // è il dato del CRM del primo passo, con un'estrazione.
-    titolo: 'Il cliente Oro, riconosciuto al login',
+    // status (Oro a 60.000). Verificato su trenitalia.com il 22 nov 2026. Dalla sera
+    // del 23 nov sta nel secondo passo: su trenitalia.com non c'è login, e lo status
+    // si lega al visitatore sulla pagina di conferma d'acquisto, che porta il codice
+    // cliente. Vale per chi ha comprato con il login, dallo stesso browser.
+    titolo: 'Il cliente Oro, riconosciuto al ritorno',
     punto: 'Lo status sta nel programma fedeltà, e alla pagina non arriva.',
     oggi: 'Chi ha lo status Oro, quando entra, vede la stessa pagina di chi viaggia una volta l’anno.',
-    viaggiatore: 'Al login trova i vantaggi compresi nel suo status, prima di uno sconto.',
-    marketer: 'Il livello arriva dal CRM con un’estrazione e decide che cosa si mostra, senza una campagna a parte.',
+    viaggiatore: 'Quando torna sul sito trova i vantaggi compresi nel suo status, prima di uno sconto.',
+    marketer: 'Il livello arriva dal CRM e si lega con l’acquisto: decide che cosa si mostra, senza una campagna a parte.',
     conversazione: [
       { chi: 'utente', t: 'Chi ha lo status Oro: mostragli i vantaggi del suo status, prima di uno sconto.' },
       { chi: 'coworker', t: 'Uso lo status come gruppo. Preparo la bozza dell’attività?' },
@@ -365,14 +377,14 @@ export const CASI: Caso[] = [
     oggiSchermo: { titolo: 'Le offerte del momento', nota: 'la stessa pagina di chi viaggia una volta l’anno' },
     arricchimento: 'lo status CartaFreccia, che arriva dal CRM',
     flusso: [
-      { k: 'Le fonti', v: 'trenitalia.com e il CRM', e: 'estrazione dal CRM: «status Oro»' },
+      { k: 'Le fonti', v: 'trenitalia.com, l’acquisto e il CRM', e: 'la conferma d’acquisto porta il codice cliente: «status Oro»' },
       { k: 'Customer Journey Analytics', v: 'porta lo status accanto al comportamento sul sito', e: 'status Oro · tratta abituale Roma → Milano' },
       { k: 'Adobe Target', v: 'riceve il gruppo e sceglie fra le varianti', e: 'mostra FrecciaLounge e Fast Track, prima di uno sconto' },
       { k: 'E torna indietro', v: 'il risultato si legge in CJA, nello stesso report', e: 'ritorno nel tempo, e clic sui vantaggi' },
     ],
     schermo: {
-      dove: 'trenitalia.com · area personale',
-      titolo: 'Riconosciuto al login',
+      dove: 'trenitalia.com · home',
+      titolo: 'I vantaggi dello status Oro',
       tessere: [
         { t: 'Ingresso FrecciaLounge', n: 'con lo status' },
         { t: 'Upgrade gratuiti', n: 'dell’anno' },
@@ -385,10 +397,9 @@ export const CASI: Caso[] = [
       { t: 'Che cosa vede: i servizi compresi', dove: 'Target', skill: 'target-design' },
       { t: 'La misura: ritorno e clic sui vantaggi', dove: 'CJA', skill: 'segmenti in Coworker Chat' },
     ],
-    kpi: ['Clic sui vantaggi compresi', 'Ritorno nel tempo', 'Ricavo per cliente, dal secondo passo'],
+    kpi: ['Clic sui vantaggi compresi', 'Ritorno nel tempo', 'Ricavo per cliente Oro'],
     giudizio: {
-      misura: 'Ritorno nel tempo dei clienti Oro esposti, contro un gruppo di controllo fisso.',
-      conAcquisto: 'Il ricavo per cliente Oro, dagli acquisti su Le Frecce.',
+      misura: 'Ritorno e ricavo dei clienti Oro esposti, dagli acquisti su Le Frecce, contro un gruppo di controllo fisso.',
     },
     origine: 'adobe',
   },

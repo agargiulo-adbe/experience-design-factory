@@ -42,14 +42,14 @@ const { next, prev } = rotte('trenitalia/convergenza');
 const currentPath = Astro.url.pathname;
 
 const verifica = [
-  { k: 'Che cosa si verifica', v: 'Come portare la traccia della ricerca fino alla conferma dell’acquisto, senza aspettare il nuovo portale di vendita.' },
-  { k: 'Chi si raggiunge', v: 'Chi passa da trenitalia.com a Le Frecce con il consenso. Chi arriva diretto su Le Frecce resta fuori: il legame nasce dal passaggio.' },
+  { k: 'Che cosa si verifica', v: 'Come portare la traccia della ricerca fino alla conferma dell’acquisto, insieme al codice cliente, senza aspettare il nuovo portale.' },
+  { k: 'Chi si raggiunge', v: 'Chi passa da trenitalia.com a Le Frecce con il consenso; lo status, se compra con il login. Chi arriva diretto su Le Frecce resta fuori.' },
   { k: 'Chi decide', v: 'Il partner e FS Technology sul come; il DPO e la sicurezza IT sul consenso e su chi vede i dati di Le Frecce.' },
 ];
 
 const catena = [
   { k: 'Adobe Analytics', v: 'raccoglie come oggi, su trenitalia.com' },
-  { k: 'Il connettore', v: 'porta in Experience Platform le visite e l’estrazione dal CRM', nuovo: true },
+  { k: 'Il connettore', v: 'porta in Experience Platform le visite del sito; poi l’acquisto e lo status', nuovo: true },
   { k: 'Customer Journey Analytics', v: 'legge il viaggio e costruisce il pubblico', nuovo: true },
   { k: 'La destinazione Target', v: 'passa il pubblico a Target; si abilita con una voce dedicata', nuovo: true },
   { k: 'Adobe Target', v: 'su trenitalia.com, dalle visite successive' },
@@ -57,14 +57,14 @@ const catena = [
 
 const catenaNote = [
   { k: 'Ogni quanto si aggiorna', v: 'Ogni qualche ora. Con at.js 2, che gira oggi sul sito, il pubblico vale dalle visite successive e la libreria non cambia.' },
-  { k: 'Le Frecce, dopo', v: 'L’acquisto su Le Frecce entra con il secondo passo, quando il legame fra i due siti è verificato.' },
+  { k: 'Le Frecce, dopo', v: 'L’acquisto e lo status entrano con il secondo passo, quando il legame fra i due siti è verificato.' },
   { k: 'Come si spegne', v: 'Ogni attività ha un interruttore in Target, e una soglia sui tempi di caricamento della home.' },
 ];
 
 const crm = [
-  { k: 'Entra', v: 'Un attributo, lo status CartaFreccia, con un’estrazione periodica. Si lega alle visite di chi fa login.' },
-  { k: 'Resta dov’è', v: 'Il profilo resta in Salesforce; consenso ed esclusioni restano dove li governate oggi.' },
-  { k: 'Prima serve', v: 'Il parere del DPO e della sicurezza IT, anche per un’estrazione. Il connettore si valuta dopo.' },
+  { k: 'Entra', v: 'Un attributo, lo status CartaFreccia, con un’estrazione periodica. Il profilo, il consenso e le esclusioni restano dove li governate oggi.' },
+  { k: 'Si lega', v: 'Sulla conferma d’acquisto, se porta insieme la traccia del sito e il codice cliente. Su trenitalia.com non si fa login.' },
+  { k: 'Prima serve', v: 'Il parere del DPO e della sicurezza IT, anche per un’estrazione. Si chiede da subito; il connettore si valuta dopo.' },
 ];
 
 const letture = [
@@ -75,7 +75,7 @@ const letture = [
 ---
 <BaseLayout
   title="Un disegno, tre passi"
-  description="Customer Journey Analytics legge trenitalia.com e lo status del cliente, Adobe Target agisce su trenitalia.com. L’acquisto su Le Frecce si lega in parallelo; Le Frecce e l’app arrivano con il nuovo portale."
+  description="Customer Journey Analytics legge trenitalia.com, Adobe Target agisce su trenitalia.com. In parallelo si lega l’acquisto su Le Frecce, e con lui lo status del cliente; Le Frecce e l’app arrivano con il nuovo portale."
   pageSolutions={['cja']}
   branch="trenitalia"
 >
@@ -99,7 +99,7 @@ const letture = [
         eyebrow="Capitolo 03 · Convergenza"
         numeral="03"
         title="Un disegno, tre passi"
-        lead="Si parte da trenitalia.com e dal CRM, con Adobe Target sul sito."
+        lead="Si parte da trenitalia.com, con Adobe Target sul sito."
         size="phase"
         tone="ink"
         signature={false}
@@ -110,11 +110,11 @@ const letture = [
         <div class="relative flex justify-between items-start px-[4%]">
           <div class="flex flex-col items-center gap-2.5 text-center">
             <span class="fs-node" data-active>AA</span>
-            <span class="fs-node-label">Il sito e il CRM</span>
+            <span class="fs-node-label">Il sito, come oggi</span>
           </div>
           <div class="flex flex-col items-center gap-2.5 text-center">
             <span class="fs-node fs-node--alt" data-active>CJA</span>
-            <span class="fs-node-label">Li legge insieme</span>
+            <span class="fs-node-label">Legge il viaggio</span>
           </div>
           <div class="flex flex-col items-center gap-2.5 text-center">
             <span class="fs-node" data-active>AT</span>
@@ -139,10 +139,10 @@ const letture = [
         style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal data-reveal-delay="0.08"
       >
-        Si parte da trenitalia.com e dal CRM, e&nbsp;si aggiunge Customer Journey Analytics.
+        Si parte da trenitalia.com, e&nbsp;si aggiunge Customer Journey Analytics.
       </h2>
       <p class="text-center fs-card-body max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.14">
-        CJA legge il sito e lo status del cliente; Target cambia la proposta su&nbsp;trenitalia.com, dove oggi c’è già una prima geolocalizzazione.
+        CJA legge il viaggio sul sito; Target cambia la proposta su&nbsp;trenitalia.com, dove oggi c’è già una prima geolocalizzazione. Lo status del cliente arriva con&nbsp;l’acquisto.
       </p>
       <div class="w-full" data-reveal data-reveal-delay="0.2">
         <DiagDisegno />
@@ -163,7 +163,7 @@ const letture = [
         <div class="fs-grid"></div>
       </div>
       <Sfondo slot="backdrop" id="tc-quiete" forza="media" />
-      <p class="fs-panel-tag text-center mb-3" data-reveal>IN PARALLELO · L’ACQUISTO SU LE FRECCE</p>
+      <p class="fs-panel-tag text-center mb-3" data-reveal>IN PARALLELO · L’ACQUISTO E LO STATUS</p>
       <h2
         class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
@@ -192,7 +192,7 @@ const letture = [
         ))}
       </div>
       <p class="text-center fs-card-body max-w-3xl mx-auto mt-6" data-reveal data-reveal-delay="0.3">
-        Finché il legame non c’è, l’acquisto su Le Frecce si legge in aggregato.
+        Finché il legame non c’è, l’acquisto su Le Frecce si legge in aggregato, e&nbsp;lo&nbsp;status non arriva al&nbsp;sito.
       </p>
     </Slide>
 
@@ -237,22 +237,25 @@ const letture = [
     </Slide>
 
     <!-- ── Con il CRM ─────────────────────────────────────────────────── -->
+    {/* Fino alla sera del 23 nov stava nel primo passo. Verificato in Chromium: su
+        trenitalia.com non si fa login, quindi lo status si lega sulla conferma
+        d'acquisto, ed entra con il secondo passo. */}
     <Slide id="slide-dove-sta-il-dato" bg="primary" align="center" data-solution="cja">
       <div slot="backdrop" class="absolute inset-0">
         <div class="fs-bg"></div>
         <div class="fs-grid"></div>
       </div>
       <Sfondo slot="backdrop" id="rl-quiete" forza="media" />
-      <p class="fs-panel-tag text-center mb-3" data-reveal>NEL PRIMO PASSO · IL CRM</p>
+      <p class="fs-panel-tag text-center mb-3" data-reveal>NEL SECONDO PASSO · IL CRM</p>
       <h2
         class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal data-reveal-delay="0.08"
       >
-        Il CRM resta in Salesforce; in CJA entra lo status del cliente.
+        Il CRM resta in Salesforce; lo status entra con&nbsp;l’acquisto.
       </h2>
       <p class="text-center fs-card-body max-w-3xl mx-auto mb-7" data-reveal data-reveal-delay="0.14">
-        È il dato che porta il livello del cliente nei casi su trenitalia.com.
+        Sul sito non si fa login: a dire chi era il visitatore è la conferma d’acquisto.
       </p>
       <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-5" data-stagger>
         {crm.map((c, i) => (
