@@ -124,6 +124,14 @@ export interface Caso {
    * mostrerebbe due cornici diverse attorno allo stesso contenuto.
    */
   push: string;
+  /**
+   * Come passa da CJA a Target. Nei casi con un pubblico è la destinazione Target;
+   * nel caso dell'area no: lì CJA dà le tratte, che diventano il contenuto, e l'area
+   * la riconosce Target da sé. La figura del flusso lo scrive sul filo fra i due.
+   */
+  ponte: string;
+  /** La pagina di oggi, nel mock: un titolo d'interfaccia e che cosa le manca. */
+  oggiSchermo: { titolo: string; nota: string };
   /** Che cosa aggiunge CJA fra la fonte grezza e l'attivazione. Una riga. */
   arricchimento: string;
   /**
@@ -216,6 +224,8 @@ export const CASI: Caso[] = [
       { t: 'Le tratte da Verona', n: 'Milano, Venezia, Roma', match: true },
     ],
     push: '',
+    ponte: 'le tratte più comprate diventano il contenuto',
+    oggiSchermo: { titolo: 'Le offerte del momento', nota: 'la stessa home in tutta Italia' },
     arricchimento: 'area di partenza e tratte più comprate da lì',
     flusso: [
       { k: 'Le fonti', v: 'trenitalia.com e Le Frecce', e: 'visita da Verona su trenitalia.com · acquisti partiti da Verona su Le Frecce' },
@@ -274,6 +284,8 @@ export const CASI: Caso[] = [
       { t: 'L’abbonamento sulla sua tratta', n: 'Bologna → Firenze', match: true },
     ],
     push: '',
+    ponte: 'il pubblico passa a Target, dalla visita successiva',
+    oggiSchermo: { titolo: 'La home di sempre', nota: 'dell’abbonamento aperto ieri non resta traccia' },
     arricchimento: 'il dettaglio aperto e la tratta cercata',
     flusso: [
       { k: 'Le fonti', v: 'trenitalia.com e Le Frecce', e: 'apertura del dettaglio «Abbonamento mensile» · ricerca Bologna → Firenze' },
@@ -335,6 +347,8 @@ export const CASI: Caso[] = [
       { t: 'Invito a iscriversi', n: 'già socio' },
     ],
     push: '',
+    ponte: 'il pubblico passa a Target, con lo status',
+    oggiSchermo: { titolo: 'Le offerte del momento', nota: 'la stessa pagina di chi viaggia una volta l’anno' },
     arricchimento: 'lo status CartaFreccia, che arriva dal CRM',
     flusso: [
       { k: 'Le fonti', v: 'trenitalia.com e il CRM', e: 'attributo del CRM: «status Oro»' },
@@ -394,9 +408,11 @@ export const CASI: Caso[] = [
       { t: 'Upgrade in Business', n: 'al prezzo fissato', match: true },
     ],
     push: '',
+    ponte: 'il pubblico passa a Target, su Le Frecce e in app',
+    oggiSchermo: { titolo: 'Passa in Business', nota: 'la stessa proposta a ogni viaggiatore' },
     arricchimento: 'frequenza di viaggio e classe abituale',
     flusso: [
-      { k: 'Le fonti', v: 'gli acquisti su Le Frecce e il feed delle offerte', e: 'biglietto «Standard, Roma → Milano, 14 ott» · upgrade prezzato dal revenue management' },
+      { k: 'Le fonti', v: 'gli acquisti su Le Frecce e il feed delle offerte', e: 'biglietti Standard su Roma → Milano · upgrade prezzato dal revenue management' },
       { k: 'Customer Journey Analytics', v: 'mette in fila gli acquisti e ricava l’abitudine', e: 'due viaggi al mese, sempre in Standard' },
       { k: 'Adobe Target', v: 'sceglie a chi mostrare l’offerta, su Le Frecce e in app', e: 'l’upgrade in Business, al prezzo del feed' },
       { k: 'Richiede in più', v: 'il feed delle offerte e il sì del revenue management', e: 'ricavo in più per posto-km, contro un gruppo di controllo' },
@@ -441,13 +457,15 @@ export const CASI: Caso[] = [
     profilo: [
       { k: 'Login', v: 'sì, sul web e in app' },
       { k: 'Cercava', v: 'Bologna → Firenze' },
-      { k: 'Dove', v: 'dal computer, giorni prima' },
+      { k: 'Dispositivo', v: 'computer, giorni prima' },
     ],
     varianti: [
       { t: 'La home di oggi', n: 'partenza vuota' },
       { t: 'La tratta cercata', n: 'Bologna → Firenze', match: true },
     ],
     push: '',
+    ponte: 'il pubblico passa a Target, nell’app',
+    oggiSchermo: { titolo: 'Dove vuoi andare?', nota: 'la ricerca riparte da capo' },
     arricchimento: 'la stessa persona sul web e sull’app, legata dal login',
     flusso: [
       { k: 'Le fonti', v: 'trenitalia.com e l’app Trenitalia', e: 'ricerca sul computer: «Bologna → Firenze»' },
@@ -457,7 +475,7 @@ export const CASI: Caso[] = [
     ],
     schermo: {
       dove: 'app Trenitalia',
-      titolo: 'Riprendi da dove eri', // copy-audit-ignore — etichetta d'interfaccia dentro il mock
+      titolo: 'Riprendi da dove\u00a0eri', // copy-audit-ignore — etichetta d'interfaccia dentro il mock
       tessere: [
         { t: 'Bologna → Firenze', n: 'cercata sul computer' },
         { t: 'Data che guardava', n: 'la stessa' },

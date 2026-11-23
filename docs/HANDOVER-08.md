@@ -324,3 +324,12 @@ Il ramo Trenitalia diventa la risposta alla richiesta del responsabile dei canal
   27 ott); il volume di Target per Le Frecce e app; il contact center come aggiunta possibile;
   Le Frecce e app come una tappa sola anche nel disegno.
 - `audit:deck` sulle tre pagine a 3 viewport: nessun rilievo oltre i soliti `a`/`i` della pelle.
+- **I casi ridisegnati (23 nov, `/impeccable`)**: ogni caso sta su due slide. La prima mette
+  affiancate la pagina di oggi e quella con il caso acceso, con «quello che si sa» in mezzo
+  (`components/casi/SchermoCaso.astro`). La seconda, `components/casi/FlussoCaso.astro`, mostra
+  il flusso Analytics → CJA → Target → chi viaggia: su ogni filo è scritto che cosa passa (campo
+  `ponte`), e un anello di ritorno porta la misura in CJA con il giudizio e i KPI. Cinque
+  sotto-passi letti con `:has()`; il nome di ogni prodotto si vede da subito. La conversazione con
+  Coworker passa in un pop-in (`ChatCaso.astro`). Sugli schermi bassi (≤1300 di larghezza o ≤940
+  di altezza) escono le righe descrittive e il ripiego del giudizio, ma il tipo non scende.
+  `MockCaso.astro` è stato rimosso.

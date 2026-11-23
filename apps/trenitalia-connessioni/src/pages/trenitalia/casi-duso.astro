@@ -25,7 +25,8 @@ import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import HowItWorks from '@edf/core/blocks/HowItWorks.astro';
 import DiagMatrice from '../../components/diagrammi/DiagMatrice.astro';
-import MockCaso from '../../components/MockCaso.astro';
+import SchermoCaso from '../../components/casi/SchermoCaso.astro';
+import FlussoCaso from '../../components/casi/FlussoCaso.astro';
 import { href } from '@edf/core/utils/url.js';
 import { rotte } from '../../data/percorso';
 import { CASI, FONTI, CONFIG, RIFERIMENTO, FONTI_CAPITOLO } from '../../data/casi-duso';
@@ -34,7 +35,6 @@ const base = import.meta.env.BASE_URL;
 const { next, prev } = rotte('trenitalia/casi-duso');
 const currentPath = Astro.url.pathname;
 
-const nomeFonte = (id: string) => FONTI.find((f) => f.id === id)?.nome ?? id;
 const nomeConfig = (id: string) => CONFIG.find((k) => k.id === id)?.nome ?? id;
 
 
@@ -160,8 +160,25 @@ const SFONDI: Record<string, string> = {
         <p class="cs-caso-lead text-center fs-card-body max-w-3xl mx-auto mb-5" data-reveal data-reveal-delay="0.14">
           {lega(c.punto)}
         </p>
-        <div class="w-full" data-reveal data-reveal-delay="0.2">
-          <MockCaso caso={c} fonti={c.fonti.map(nomeFonte)} parte="come" />
+        {/* Oggi, quello che si sa, e la pagina che ne esce: il caso si capisce da qui. */}
+        <div class="cx" data-reveal data-reveal-delay="0.2">
+          <figure class="cx-col">
+            <figcaption class="cx-k">Oggi</figcaption>
+            <SchermoCaso caso={c} versione="oggi" />
+            <p class="cx-cap">{lega(c.oggi)}</p>
+          </figure>
+          <div class="cx-mezzo" data-substep>
+            <p class="cx-prof-k">Quello che si sa</p>
+            <ul class="cx-prof">
+              {c.profilo.map((a) => <li><span>{a.k}</span><b>{a.v}</b></li>)}
+            </ul>
+            <span class="cx-freccia" aria-hidden="true"></span>
+          </div>
+          <figure class="cx-col cx-col--con" data-substep>
+            <figcaption class="cx-k cx-k--con">Con il caso</figcaption>
+            <SchermoCaso caso={c} versione="con" />
+            <p class="cx-cap">{lega(c.viaggiatore)}</p>
+          </figure>
         </div>
       </Slide>
 
@@ -173,39 +190,17 @@ const SFONDI: Record<string, string> = {
         </div>
         <Sfondo slot="backdrop" id={SFONDI[c.id]} forza="forte" />
         <p class="fs-panel-tag text-center mb-3" data-reveal>
-          CASO {String(i + 1).padStart(2, '0')} · CHE COSA SUCCEDE DIETRO
+          CASO {String(i + 1).padStart(2, '0')} · IL PERCORSO DEL DATO
         </p>
         <h2
-          class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
+          class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
           style="font-size: clamp(1.6rem, 2.5vw, 2.2rem); font-weight: 600; line-height: 1.08; letter-spacing: -0.02em;"
           data-reveal data-reveal-delay="0.08"
         >
           {c.titolo}
         </h2>
-        {/* Didascalia FISSA del ciclo sui casi: la struttura di ogni caso è la
-            stessa, quindi la riga è la stessa per costruzione. Marcata come un
-            indice, se no la regola (c) la conta una volta per caso. */}
-        <p class="cs-caso-lead text-center fs-card-body max-w-3xl mx-auto mb-6" data-audit-skip data-reveal data-reveal-delay="0.12">
-          Il dato, quello che fa CJA, quello che fa Target.
-        </p>
-        <div class="w-full" data-reveal data-reveal-delay="0.16">
-          <MockCaso caso={c} fonti={c.fonti.map(nomeFonte)} parte="dietro" />
-        </div>
-
-        <div class="cs-misura cs-misura--dietro" data-substep>
-          <div class="cs-box cs-box--kpi">
-            <p class="cs-box-tag">Su che cosa agisce</p>
-            <p class="cs-box-v">{lega(c.kpi.join(' · '))}</p>
-          </div>
-          <div class="cs-box cs-box--prova">
-            <p class="cs-box-tag">Come si giudica</p>
-            <p class="cs-box-v cs-giu">
-              {c.giudizio.aperta && <span class="cs-giu-k">Se la verifica sui due siti chiude</span>}
-              <span>{lega(c.giudizio.chiude)}</span>
-              {c.giudizio.aperta && <span class="cs-giu-k">Se resta aperta</span>}
-              {c.giudizio.aperta && <span>{lega(c.giudizio.aperta)}</span>}
-            </p>
-          </div>
+        <div class="w-full" data-reveal data-reveal-delay="0.14">
+          <FlussoCaso caso={c} />
         </div>
       </Slide>
       </>
@@ -328,6 +323,62 @@ const SFONDI: Record<string, string> = {
   .cs-oggi-k {
     font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
     color: var(--color-rosso-chiaro); margin-right: 0.4rem;
+  }
+
+
+  /* ── Il caso: oggi, quello che si sa, la pagina che ne esce ─────────── */
+  .cx {
+    width: 100%; max-width: 84rem; margin-inline: auto;
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.62fr) minmax(0, 1fr);
+    gap: clamp(0.9rem, 2vw, 2rem); align-items: start; text-align: left;
+  }
+  [data-slide] .cx p, [data-slide] .cx li, [data-slide] .cx span { text-align: left; max-width: none; margin: 0; }
+  .cx-col { margin: 0; display: grid; gap: 0.6rem; min-width: 0; }
+  .cx-k {
+    font-size: clamp(0.86rem, 0.92vw, 0.98rem); font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-tertiary);
+  }
+  .cx-k--con { color: var(--color-rosso-chiaro); }
+  .cx-cap { font-size: clamp(1rem, 1.08vw, 1.16rem); line-height: 1.45; color: var(--ink-secondary); }
+  .cx-col:not(.cx-col--con) .sc { filter: saturate(0.55); }
+  .cx-mezzo {
+    position: relative; align-self: center; display: grid; gap: 0.5rem;
+    padding: 0.9rem 1rem; border-radius: 0.65rem;
+    border: 1px solid rgba(79, 189, 180, 0.45); background: rgba(0, 102, 102, 0.22);
+  }
+  .cx-prof-k {
+    font-size: clamp(0.86rem, 0.92vw, 0.98rem); font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--color-verde-chiaro);
+  }
+  .cx-prof { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.45rem; }
+  .cx-prof li { display: grid; gap: 0.05rem; }
+  .cx-prof span { font-size: clamp(0.88rem, 0.92vw, 0.98rem); color: var(--ink-tertiary); }
+  .cx-prof b { font-size: clamp(1.02rem, 1.1vw, 1.18rem); font-weight: 600; color: var(--ink-primary); }
+  .cx-prof li { opacity: 0; transform: translateX(-8px); transition: opacity 360ms ease-out, transform 360ms ease-out; }
+  .cx-mezzo[data-substep-active] li { opacity: 1; transform: none; }
+  .cx-mezzo[data-substep-active] li:nth-child(2) { transition-delay: 0.16s; }
+  .cx-mezzo[data-substep-active] li:nth-child(3) { transition-delay: 0.32s; }
+  /* La freccia verso la pagina nuova: il verso del caso, senza una parola. */
+  .cx-col--con { position: relative; }
+  .cx-col--con::before {
+    content: ''; position: absolute; left: calc(-1 * clamp(0.9rem, 2vw, 2rem)); top: 50%;
+    width: calc(clamp(0.9rem, 2vw, 2rem) - 0.4rem); height: 2px; background: var(--color-verde-chiaro);
+  }
+  .cx-col--con::after {
+    content: ''; position: absolute; left: -0.55rem; top: calc(50% - 0.3rem);
+    border: 0.32rem solid transparent; border-left: 0.45rem solid var(--color-verde-chiaro); border-right: 0;
+  }
+  .cx-freccia { display: none; }
+  .cx-freccia::after {
+    content: ''; position: absolute; right: -0.1rem; top: -0.3rem;
+    border: 0.32rem solid transparent; border-left: 0.45rem solid var(--color-verde-chiaro); border-right: 0;
+  }
+  .cx-col--con .sc { box-shadow: 0 20px 44px rgba(6, 10, 18, 0.5), 0 0 0 2px var(--color-rosso); }
+  @media (prefers-reduced-motion: reduce) { .cx-prof li { opacity: 1; transform: none; transition: none; } }
+  html:not(.js) .cx-prof li { opacity: 1; transform: none; }
+  @media (max-width: 900px) {
+    .cx { grid-template-columns: minmax(0, 1fr); }
+    .cx-freccia { display: none; }
   }
 
   /* ── Le tre configurazioni ───────────────────────────────────────── */

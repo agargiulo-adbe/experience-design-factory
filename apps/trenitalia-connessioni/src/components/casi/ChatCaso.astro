@@ -1,0 +1,156 @@
+---
+/**
+ * ChatCaso — chi prepara il caso: la sessione con Coworker, in un pop-in.
+ *
+ * Fino al 23 nov 2026 la conversazione occupava metà della slide del caso, e la
+ * pagina che vede chi viaggia ne restava schiacciata. Qui si apre a richiesta:
+ * la domanda «e chi lo costruisce?» arriva sempre, ma dopo aver capito il caso.
+ * Le bolle entrano una alla volta con → o con «Avanti», come nel pop-in del primo
+ * passo in Convergenza; Esc chiude, e mentre è aperto i tasti non arrivano al deck.
+ */
+import { lega } from '../../utils/lega';
+import type { Caso } from '../../data/casi-duso';
+
+interface Props { caso: Caso }
+const { caso: c } = Astro.props as Props;
+const tot = c.conversazione.length;
+---
+<div class="cc-apri">
+  <button type="button" class="cc-apri-b" data-cc-open aria-haspopup="dialog">Come lo prepara il marketing, con Coworker →</button>
+  <dialog class="cc" data-tot={tot} data-passo="1" aria-label={`Come si prepara il caso «${c.titolo}» con Coworker`}>
+    <div class="cc-in">
+      <div class="cc-testa">
+        <p class="cc-k">Coworker in Customer Journey Analytics e in Target</p>
+        <p class="cc-h">{lega(c.titolo)}</p>
+        <button type="button" class="cc-x" data-cc-chiudi aria-label="Chiudi">×</button>
+      </div>
+      <div class="cc-chat">
+        {c.conversazione.map((b, i) => (
+          <p class="cc-bolla" data-side={b.chi === 'utente' ? 'out' : 'in'} data-i={i + 1}>
+            <small>{b.chi === 'utente' ? 'Il marketing' : 'Coworker'}</small>
+            {lega(b.t)}
+          </p>
+        ))}
+      </div>
+      <div class="cc-piede">
+        <p class="cc-nota">Coworker in CJA è in prova limitata e può rispondere in parte in inglese. Senza Coworker, gli stessi passi si fanno a mano.</p>
+        <button type="button" class="cc-next" data-cc-next>Avanti →</button>
+      </div>
+    </div>
+  </dialog>
+</div>
+
+<script>
+  const aperto = () => document.querySelector<HTMLDialogElement>('dialog.cc[open]');
+  function vai(d: HTMLDialogElement, n: number) {
+    const tot = Number(d.dataset.tot);
+    const p = Math.min(Math.max(1, n), tot);
+    d.dataset.passo = String(p);
+    d.querySelectorAll<HTMLElement>('[data-i]').forEach((el) => el.classList.toggle('cc-on', Number(el.dataset.i) <= p));
+    const nx = d.querySelector<HTMLButtonElement>('[data-cc-next]');
+    if (nx) nx.textContent = p === tot ? 'Chiudi' : 'Avanti →';
+  }
+  function avanti(d: HTMLDialogElement) {
+    const p = Number(d.dataset.passo);
+    if (p >= Number(d.dataset.tot)) d.close(); else vai(d, p + 1);
+  }
+  document.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    const op = t.closest<HTMLElement>('[data-cc-open]');
+    if (op) {
+      const d = op.parentElement?.querySelector<HTMLDialogElement>('dialog.cc');
+      if (d) {
+        e.preventDefault();
+        d.closest('[data-deck]')?.setAttribute('data-deck-lock', '');
+        d.showModal(); vai(d, 1);
+        d.querySelector<HTMLElement>('[data-cc-next]')?.focus();
+      }
+      return;
+    }
+    const d = t.closest<HTMLDialogElement>('dialog.cc');
+    if (!d) return;
+    if (t === d || t.closest('[data-cc-chiudi]')) d.close();
+    else if (t.closest('[data-cc-next]')) avanti(d);
+  });
+  document.addEventListener('close', (e) => {
+    const d = e.target as HTMLElement;
+    if (d.matches?.('dialog.cc')) d.closest('[data-deck]')?.removeAttribute('data-deck-lock');
+  }, true);
+  document.addEventListener('keydown', (e) => {
+    const d = aperto();
+    if (!d) return;
+    if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key)) {
+      e.preventDefault(); e.stopPropagation(); avanti(d);
+    } else if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) {
+      e.preventDefault(); e.stopPropagation(); vai(d, Number(d.dataset.passo) - 1);
+    } else if (e.key !== 'Escape' && e.key !== 'Tab') {
+      e.stopPropagation();
+    }
+  }, true);
+</script>
+
+<style is:global>
+  .cc-apri { margin-top: clamp(0.9rem, 2.2vh, 1.5rem); text-align: center; }
+  .cc-apri-b {
+    min-height: 2.75rem; padding: 0.55rem 1.3rem; border-radius: 0.4rem;
+    border: 1.5px solid var(--color-rosso-chiaro); background: transparent;
+    font-family: var(--font-display); font-weight: 600; font-size: clamp(1rem, 1.05vw, 1.12rem);
+    color: var(--ink-primary); cursor: pointer;
+  }
+  .cc-apri-b:hover { background: rgba(217, 24, 53, 0.22); }
+  .cc-apri-b:focus-visible, .cc-next:focus-visible, .cc-x:focus-visible { outline: 2px solid var(--color-bianco); outline-offset: 3px; }
+
+  dialog.cc {
+    position: fixed; inset: 0; margin: auto; padding: 0; border: 0;
+    width: min(92vw, 60rem); max-height: min(90vh, 52rem);
+    border-radius: 1rem; overflow: hidden;
+    background: var(--color-ardesia-notte); color: var(--color-bianco);
+    font-family: var(--font-body); text-align: left;
+    box-shadow: 0 30px 90px rgba(6, 10, 18, 0.6);
+  }
+  dialog.cc::backdrop { background: rgba(14, 19, 30, 0.76); backdrop-filter: blur(6px); }
+  dialog.cc[open] { animation: cc-entra 0.36s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  @keyframes cc-entra { from { opacity: 0; transform: translateY(1.2rem) scale(0.985); } to { opacity: 1; transform: none; } }
+  dialog.cc p { margin: 0; max-width: none; text-align: left !important; color: inherit; }
+  .cc-in { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; max-height: inherit; }
+  .cc-testa {
+    position: relative; display: grid; gap: 0.2rem;
+    padding: 1.1rem 3.6rem 1rem 1.6rem; background: var(--color-ardesia);
+  }
+  dialog.cc .cc-k { font-size: clamp(0.84rem, 0.86vw, 0.94rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-grigio-200); }
+  dialog.cc .cc-h { font-family: var(--font-display); font-size: clamp(1.4rem, 1.6vw, 1.9rem); font-weight: 700; line-height: 1.15; }
+  .cc-x {
+    position: absolute; top: 0.8rem; right: 0.9rem; width: 2.75rem; height: 2.75rem; border-radius: 50%;
+    border: 0; background: rgba(255, 255, 255, 0.1); color: var(--color-bianco); font-size: 1.6rem; cursor: pointer;
+  }
+  .cc-chat { display: flex; flex-direction: column; align-items: flex-start; gap: 0.6rem; padding: 1.3rem 1.6rem; overflow: auto; }
+  dialog.cc .cc-bolla {
+    width: fit-content !important; max-width: 78% !important; margin: 0 !important; padding: 0.65rem 0.9rem; border-radius: 0.6rem; text-wrap: pretty;
+    font-size: clamp(1.02rem, 1.1vw, 1.18rem); line-height: 1.5;
+    opacity: 0; transition: opacity 380ms ease-out, transform 480ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  dialog.cc .cc-bolla small { display: block; margin-bottom: 0.15rem; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.8; }
+  dialog.cc .cc-bolla[data-side='out'] {
+    align-self: flex-end; transform: translateX(22px);
+    background: rgba(217, 24, 53, 0.2); border: 1px solid rgba(255, 141, 157, 0.5);
+  }
+  dialog.cc .cc-bolla[data-side='in'] {
+    align-self: flex-start; transform: translateX(-22px);
+    background: rgba(0, 102, 102, 0.28); border: 1px solid rgba(79, 189, 180, 0.5);
+  }
+  dialog.cc .cc-bolla.cc-on { opacity: 1; transform: none; }
+  .cc-piede {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.2rem; align-items: center;
+    padding: 0.9rem 1.6rem 1.1rem; border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  dialog.cc .cc-nota { font-size: clamp(0.88rem, 0.9vw, 0.96rem); line-height: 1.4; color: var(--color-grigio-200); }
+  .cc-next {
+    min-height: 2.75rem; padding: 0.5rem 1.3rem; border-radius: 0.4rem; border: 0;
+    background: var(--color-rosso); color: var(--color-bianco); font-weight: 700; font-size: 1rem; cursor: pointer;
+  }
+  .cc-next:hover { background: var(--color-rosso-scuro); }
+  @media (prefers-reduced-motion: reduce) {
+    dialog.cc[open] { animation: none; }
+    dialog.cc .cc-bolla { transition: none; transform: none !important; }
+  }
+</style>
