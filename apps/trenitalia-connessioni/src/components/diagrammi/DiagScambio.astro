@@ -1,0 +1,176 @@
+---
+/**
+ * DiagScambio — le tre configurazioni come uno scambio ferroviario.
+ *
+ * PERCHÉ ESISTE (23 nov 2026). Le tre configurazioni stavano in tre schede di
+ * definizioni («CJA legge · Target agisce su · Serve»), lette in fila come un
+ * elenco. Ma il punto della slide è una forma: si parte da un binario solo, e
+ * da lì si aprono due rami che non dipendono l'uno dall'altro. Lo scambio lo
+ * dice senza una frase, e a Trenitalia non serve spiegarlo.
+ *
+ * Ogni stazione mostra in pastiglie che cosa legge CJA e dove agisce Target, e
+ * accende solo quello che si AGGIUNGE rispetto al primo passo: la differenza si
+ * vede invece di leggerla. Il semaforo dice che cosa il passo aspetta.
+ *
+ * I PASSI: due marcatori `[data-substep]`, uno per ramo, letti con `:has()`. Il
+ * ramo si disegna e la sua stazione entra. Con «Riduci movimento» o senza
+ * JavaScript è tutto acceso.
+ */
+import { lega } from '../../utils/lega';
+import { CONFIG, CASI } from '../../data/casi-duso';
+
+interface Props { class?: string }
+const { class: className } = Astro.props as Props;
+
+const base = CONFIG[0];
+const nCasi = (id: string) => CASI.filter((c) => c.config === id).length;
+const etichetta = CONFIG.map((k) =>
+  `${k.nome}: CJA legge ${k.leggeL.join(', ')}; Target agisce su ${k.agisceL.join(', ')}; serve ${k.serve}.`
+).join(' ') + ' Le due aggiunte non dipendono l’una dall’altra.';
+---
+<div class:list={['sw', className]} role="img" aria-label={etichetta}>
+  {CONFIG.map((k, i) => (
+    <div class:list={['sw-st', `sw-st--${k.id}`]} data-st={k.id} aria-hidden="true">
+      <p class="sw-k">{i === 0 ? 'Si parte da qui' : 'Si aggiunge, da solo'}</p>
+      <p class="sw-n">{k.nome}<span class="sw-c">{nCasi(k.id) === 1 ? '1 caso' : `${nCasi(k.id)} casi`}</span></p>
+      {[
+        { l: 'CJA legge', v: k.leggeL, b: base.leggeL, t: 'cja' },
+        { l: 'Target agisce su', v: k.agisceL, b: base.agisceL, t: 'tgt' },
+      ].map((r) => (
+        <div class="sw-riga">
+          <span class="sw-l">{r.l}</span>
+          <span class="sw-chips">
+            {i === 0
+              ? r.v.map((x) => <b class={`sw-chip sw-chip--${r.t}`}>{x}</b>)
+              : <>
+                  <b class="sw-chip sw-chip--come">come il primo passo</b>
+                  {r.v.filter((x) => !r.b.includes(x)).map((x) => <b class={`sw-chip sw-chip--${r.t} sw-nuovo`}>+ {x}</b>)}
+                </>}
+          </span>
+        </div>
+      ))}
+      <p class="sw-sem"><i></i><span><small>Aspetta</small>{lega(k.serve)}</span></p>
+    </div>
+  ))}
+
+  <svg class="sw-binari" viewBox="0 0 200 300" preserveAspectRatio="none" aria-hidden="true">
+    <g class="sw-trav">
+      <path d="M0 150 H70" />
+      <path class="sw-tr sw-tr--b" d="M70 150 C 130 150, 120 75, 200 75" />
+      <path class="sw-tr sw-tr--c" d="M70 150 C 130 150, 120 225, 200 225" />
+    </g>
+    <g class="sw-rot">
+      <path d="M0 150 H70" />
+      <path class="sw-ramo sw-ramo--b" d="M70 150 C 130 150, 120 75, 200 75" />
+      <path class="sw-ramo sw-ramo--c" d="M70 150 C 130 150, 120 225, 200 225" />
+    </g>
+    <circle class="sw-ago" cx="70" cy="150" r="6" />
+  </svg>
+
+  <i class="sw-m" data-substep data-p="b" aria-hidden="true"></i>
+  <i class="sw-m" data-substep data-p="c" aria-hidden="true"></i>
+</div>
+
+<style is:global>
+  .sw {
+    width: 100%; max-width: 86rem; margin-inline: auto; text-align: left;
+    display: grid; gap: 0.8rem 0;
+    grid-template-columns: minmax(0, 0.95fr) minmax(6rem, 0.36fr) minmax(0, 1.3fr);
+    grid-template-rows: auto auto;
+  }
+  [data-slide] .sw p, [data-slide] .sw span { text-align: left; max-width: none; margin: 0; }
+  .sw-st--a { grid-column: 1; grid-row: 1 / 3; align-self: center; }
+  .sw-st--b { grid-column: 3; grid-row: 1; }
+  .sw-st--c { grid-column: 3; grid-row: 2; }
+  .sw-binari { grid-column: 2; grid-row: 1 / 3; width: 100%; height: 100%; overflow: visible; }
+
+  .sw-st {
+    display: grid; gap: 0.55rem; padding: 0.95rem 1.1rem 1rem; border-radius: 0.7rem;
+    border: 1.5px solid rgba(255, 255, 255, 0.3); background: rgba(14, 19, 30, 0.78);
+    box-shadow: 0 14px 34px rgba(6, 10, 18, 0.4);
+  }
+  .sw-st--a { border-color: var(--color-rosso-chiaro); }
+  .sw-k {
+    font-size: clamp(0.84rem, 0.9vw, 0.96rem); font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--color-rosso-chiaro);
+  }
+  .sw-n {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 0.8rem;
+    font-family: var(--font-display); font-weight: 600; line-height: 1.15;
+    font-size: clamp(1.2rem, 1.4vw, 1.5rem); color: var(--ink-primary);
+  }
+  .sw-c {
+    flex: none; font-family: var(--font-body); font-weight: 600;
+    font-size: clamp(0.86rem, 0.9vw, 0.96rem); color: var(--ink-tertiary);
+  }
+  .sw-riga { display: grid; grid-template-columns: 9.6rem minmax(0, 1fr); gap: 0.6rem; align-items: baseline; }
+  .sw-l { font-size: clamp(0.9rem, 0.94vw, 1rem); font-weight: 600; color: var(--ink-tertiary); }
+  .sw-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+  .sw-chip {
+    padding: 0.18rem 0.55rem; border-radius: 0.35rem; font-weight: 500;
+    font-size: clamp(0.94rem, 0.98vw, 1.04rem); color: var(--ink-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.18); background: rgba(255, 255, 255, 0.06);
+  }
+  .sw-chip.sw-nuovo { font-weight: 700; color: var(--ink-primary); }
+  .sw-chip--come { border-style: dashed; color: var(--ink-tertiary); background: transparent; }
+  .sw-chip--cja.sw-nuovo { border-color: var(--color-verde-chiaro); background: rgba(0, 102, 102, 0.42); }
+  .sw-chip--tgt.sw-nuovo { border-color: var(--color-rosso-chiaro); background: rgba(217, 24, 53, 0.3); }
+  .sw-sem {
+    display: flex; align-items: flex-start; gap: 0.6rem; margin-top: 0.15rem !important;
+    padding-top: 0.6rem; border-top: 1px solid var(--line-subtle);
+    font-size: clamp(0.98rem, 1.02vw, 1.08rem); line-height: 1.4; color: var(--ink-primary);
+  }
+  .sw-sem small {
+    display: block; font-size: clamp(0.82rem, 0.86vw, 0.92rem); font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-tertiary);
+  }
+  /* Il semaforo: rosso finché il passo aspetta qualcuno. */
+  .sw-sem i {
+    flex: none; margin-top: 0.3rem; width: 0.8rem; height: 0.8rem; border-radius: 50%;
+    background: var(--color-rosso); box-shadow: 0 0 0 4px rgba(217, 24, 53, 0.25), 0 0 14px rgba(217, 24, 53, 0.6);
+  }
+
+  /* ── I binari ─────────────────────────────────────────────────────────── */
+  .sw-binari path { fill: none; vector-effect: non-scaling-stroke; }
+  .sw-trav path { stroke: rgba(255, 255, 255, 0.28); stroke-width: 14; stroke-dasharray: 2 9; }
+  .sw-rot path { stroke: var(--color-grigio-200); stroke-width: 3; stroke-linecap: round; }
+  .sw-rot .sw-ramo { stroke: var(--color-rosso-chiaro); }
+  .sw-ago { fill: var(--color-rosso); stroke: var(--color-bianco); stroke-width: 2; vector-effect: non-scaling-stroke; }
+
+  /* ── Un ramo alla volta ──────────────────────────────────────────────── */
+  .sw .sw-ramo { clip-path: inset(0 100% 0 0); transition: clip-path 900ms cubic-bezier(0.45, 0, 0.2, 1); }
+  .sw .sw-tr { clip-path: inset(0 100% 0 0); transition: clip-path 900ms cubic-bezier(0.45, 0, 0.2, 1); }
+  .sw .sw-st--b, .sw .sw-st--c {
+    opacity: 0; visibility: hidden; transform: translateX(14px);
+    transition: opacity 420ms ease 300ms, transform 600ms cubic-bezier(0.16, 1, 0.3, 1) 300ms, visibility 420ms 300ms;
+  }
+  .sw:has(.sw-m[data-p='b'][data-substep-active]) .sw-ramo--b,
+  .sw:has(.sw-m[data-p='c'][data-substep-active]) .sw-ramo--c { clip-path: inset(0 0 0 0); }
+  .sw:has(.sw-m[data-p='b'][data-substep-active]) .sw-tr--b,
+  .sw:has(.sw-m[data-p='c'][data-substep-active]) .sw-tr--c { clip-path: inset(0 0 0 0); }
+  .sw:has(.sw-m[data-p='b'][data-substep-active]) .sw-st--b,
+  .sw:has(.sw-m[data-p='c'][data-substep-active]) .sw-st--c { opacity: 1; visibility: visible; transform: none; }
+  .sw-m { display: block; width: 0; height: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sw .sw-ramo { clip-path: none; transition: none; }
+    .sw .sw-tr { clip-path: none; transition: none; }
+    .sw .sw-st--b, .sw .sw-st--c { opacity: 1; visibility: visible; transform: none; transition: none; }
+  }
+  html:not(.js) .sw .sw-ramo { clip-path: none; }
+  html:not(.js) .sw .sw-tr { clip-path: none; }
+  html:not(.js) .sw .sw-st--b, html:not(.js) .sw .sw-st--c { opacity: 1; visibility: visible; transform: none; }
+
+  @media (max-width: 1300px), (max-height: 940px) {
+    .sw-st { padding: 0.7rem 0.9rem 0.75rem; gap: 0.4rem; }
+    .sw-riga { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 0.6rem; }
+    .sw-chips { display: contents; }
+    .sw-st--b .sw-k, .sw-st--c .sw-k { display: none; }
+    .sw-sem { padding-top: 0.4rem; }
+  }
+  @media (max-width: 900px) {
+    .sw { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
+    .sw-st--a, .sw-st--b, .sw-st--c { grid-column: 1; grid-row: auto; }
+    .sw-binari { display: none; }
+  }
+</style>

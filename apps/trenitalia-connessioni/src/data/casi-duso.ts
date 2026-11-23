@@ -55,11 +55,14 @@ export interface Config {
   serve: string;
   /** Dove agisce Target, in breve: la testata della matrice. */
   breve: string;
+  /** Le stesse due cose in pastiglie, per lo scambio: che cosa legge CJA, dove agisce Target. */
+  leggeL: string[];
+  agisceL: string[];
 }
 export const CONFIG: Config[] = [
-  { id: 'a', nome: 'Il primo passo', legge: 'trenitalia.com e Le Frecce', agisce: 'trenitalia.com', serve: 'la verifica sui due siti e la valutazione privacy', breve: 'Target su trenitalia.com' },
-  { id: 'b', nome: 'Con il CRM', legge: 'anche il livello del cliente', agisce: 'trenitalia.com', serve: 'il parere del DPO', breve: 'più il livello del cliente' },
-  { id: 'c', nome: 'Su Le Frecce e app', legge: 'trenitalia.com, Le Frecce e l’App Trenitalia', agisce: 'trenitalia.com, Le Frecce e app', serve: 'chi sviluppa Le Frecce e l’app', breve: 'Target anche fuori dal sito' },
+  { id: 'a', nome: 'Il primo passo', legge: 'trenitalia.com e Le Frecce', agisce: 'trenitalia.com', serve: 'la verifica sui due siti e la valutazione privacy', breve: 'Target su trenitalia.com', leggeL: ['trenitalia.com', 'Le Frecce'], agisceL: ['trenitalia.com'] },
+  { id: 'b', nome: 'Con il CRM', legge: 'anche il livello del cliente', agisce: 'trenitalia.com', serve: 'il parere del DPO', breve: 'più il livello del cliente', leggeL: ['trenitalia.com', 'Le Frecce', 'CRM e fedeltà'], agisceL: ['trenitalia.com'] },
+  { id: 'c', nome: 'Su Le Frecce e app', legge: 'trenitalia.com, Le Frecce e l’App Trenitalia', agisce: 'trenitalia.com, Le Frecce e app', serve: 'chi sviluppa Le Frecce e l’app', breve: 'Target anche fuori dal sito', leggeL: ['trenitalia.com', 'Le Frecce', 'App Trenitalia'], agisceL: ['trenitalia.com', 'Le Frecce', 'App Trenitalia'] },
 ];
 
 /** Un caso del primo passo vale in tutte e tre; gli altri solo nella loro. */

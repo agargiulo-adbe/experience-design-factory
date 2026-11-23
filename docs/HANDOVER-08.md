@@ -333,3 +333,10 @@ Il ramo Trenitalia diventa la risposta alla richiesta del responsabile dei canal
   Coworker passa in un pop-in (`ChatCaso.astro`). Sugli schermi bassi (≤1300 di larghezza o ≤940
   di altezza) escono le righe descrittive e il ripiego del giudizio, ma il tipo non scende.
   `MockCaso.astro` è stato rimosso.
+- **Le due slide-muro del capitolo, 23 nov**: le configurazioni diventano uno scambio ferroviario
+  (`diagrammi/DiagScambio.astro`): un binario base e due rami indipendenti che si disegnano a passi,
+  pastiglie per che cosa legge CJA e dove agisce Target (sui rami solo quello che si aggiunge, campi
+  `leggeL`/`agisceL` in `CONFIG`), semaforo su che cosa aspetta. Il canale degli assistenti diventa
+  tre scene (`diagrammi/DiagAssistenti.astro`): come vi nominano, quanto pesa (il numero resta «?»,
+  è la domanda per i loro Analytics), con e senza contesto. Il drill-down `HowItWorks` esce: la nota
+  privacy resta come riga di fonte.
