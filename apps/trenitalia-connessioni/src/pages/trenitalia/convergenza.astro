@@ -3,20 +3,21 @@
  * Capitolo 03 — Convergenza: il disegno d'insieme, in tre passi.
  *
  * RISCRITTO IL 22 NOV 2026 per l'incontro con il responsabile dei canali digitali,
- * che ha chiesto un piano di casi d'uso su Adobe Target. Le configurazioni sono tre,
- * e tutte partono dalla stessa base:
- *   · il primo passo — CJA sugli Analytics di trenitalia.com e di Le Frecce, Target
- *     su trenitalia.com;
- *   · con il CRM — lo stesso, più il livello del cliente dal CRM;
- *   · Target anche su Le Frecce e sull'app.
- * Le due aggiunte non dipendono l'una dall'altra. Il CRM aspetta il parere del DPO;
- * Target su Le Frecce aspetta chi sviluppa quel sito.
+ * che ha chiesto un piano di casi d'uso su Adobe Target. RIORDINATO IL 23 NOV dopo la
+ * call con il partner. I passi sono tre, in fila:
+ *   · il primo passo — CJA su trenitalia.com e sullo status del cliente, estratto dal
+ *     CRM; Target su trenitalia.com. Aspetta il DPO e la sicurezza IT;
+ *   · l'acquisto su Le Frecce — si lavora da subito, in parallelo: lega la vendita
+ *     alla ricerca sulla pagina di conferma, senza toccare la piattaforma di vendita;
+ *   · Le Frecce e l'app — il percorso intero, e Target anche lì: con il nuovo portale.
+ * Il motivo del riordino: su Le Frecce il partner misura solo la pagina di conferma,
+ * e la piattaforma di vendita non rilascia prima del nuovo portale.
  *
- * IL LEGAME FRA I DUE SITI (due organizzazioni Adobe, due identità) è la verifica in
- * corso con FS Technology e con chi gestisce i siti. Qui si presenta per quello che è
- * per il cliente: una valutazione preliminare, con il ripiego che regge comunque (la
- * lettura in aggregato). Il dettaglio tecnico sta nel documento di riconciliazione e
- * non entra in questo deck.
+ * IL LEGAME FRA I DUE SITI (due organizzazioni Adobe, due identità) è il lavoro del
+ * secondo passo, con il partner, FS Technology e il DPO. Qui si dice per quello che è
+ * per il cliente: che cosa si verifica, quale pubblico si raggiunge e perché gli altri
+ * restano fuori, chi decide. I vincoli stanno come cose da decidere, senza numeri del
+ * partner. Il dettaglio tecnico sta nel documento di riconciliazione, fuori dal deck.
  *
  * Usciti dal capitolo: «CJA non è una CDP», «i casi in tabella» (stanno nel capitolo
  * dopo), Content Analytics (prodotto a parte, fuori dal piano) e la tabella a tre
@@ -41,14 +42,14 @@ const { next, prev } = rotte('trenitalia/convergenza');
 const currentPath = Astro.url.pathname;
 
 const verifica = [
-  { k: 'Che cosa si verifica', v: 'Come leggere insieme le due organizzazioni Adobe dei siti, e riconoscere la stessa persona fra ricerca e acquisto.' },
-  { k: 'Con chi', v: 'Con il partner che sviluppa i siti e con FS Technology, in sessioni tecniche dedicate.' },
-  { k: 'Che cosa si legge già', v: 'Dove si perdono le vendite fra ricerca e acquisto, letto in aggregato.' },
+  { k: 'Che cosa si verifica', v: 'Come portare la traccia della ricerca fino alla conferma dell’acquisto, senza aspettare il nuovo portale di vendita.' },
+  { k: 'Chi si raggiunge', v: 'Chi passa da trenitalia.com a Le Frecce con il consenso. Chi arriva diretto su Le Frecce resta fuori: il legame nasce dal passaggio.' },
+  { k: 'Chi decide', v: 'Il partner e FS Technology sul come; il DPO e la sicurezza IT sul consenso e su chi vede i dati di Le Frecce.' },
 ];
 
 const catena = [
-  { k: 'Adobe Analytics', v: 'raccoglie come oggi, sui due siti' },
-  { k: 'Il connettore', v: 'porta i dati in Experience Platform', nuovo: true },
+  { k: 'Adobe Analytics', v: 'raccoglie come oggi, su trenitalia.com' },
+  { k: 'Il connettore', v: 'porta in Experience Platform le visite e l’estrazione dal CRM', nuovo: true },
   { k: 'Customer Journey Analytics', v: 'legge il viaggio e costruisce il pubblico', nuovo: true },
   { k: 'La destinazione Target', v: 'passa il pubblico a Target; si abilita con una voce dedicata', nuovo: true },
   { k: 'Adobe Target', v: 'su trenitalia.com, dalle visite successive' },
@@ -56,25 +57,25 @@ const catena = [
 
 const catenaNote = [
   { k: 'Ogni quanto si aggiorna', v: 'Ogni qualche ora. Con at.js 2, che gira oggi sul sito, il pubblico vale dalle visite successive e la libreria non cambia.' },
-  { k: 'Due organizzazioni Adobe', v: 'trenitalia.com e Le Frecce si leggono insieme dopo una mappatura, approvata dagli admin di entrambe.' },
+  { k: 'Le Frecce, dopo', v: 'L’acquisto su Le Frecce entra con il secondo passo, quando il legame fra i due siti è verificato.' },
   { k: 'Come si spegne', v: 'Ogni attività ha un interruttore in Target, e una soglia sui tempi di caricamento della home.' },
 ];
 
 const crm = [
-  { k: 'Entra', v: 'Pochi attributi: lo status, dal CRM e dal programma fedeltà; una sintesi degli acquisti, dal sistema di vendita.' },
+  { k: 'Entra', v: 'Un attributo, lo status CartaFreccia, con un’estrazione periodica. Si lega alle visite di chi fa login.' },
   { k: 'Resta dov’è', v: 'Il profilo resta in Salesforce; consenso ed esclusioni restano dove li governate oggi.' },
-  { k: 'Prima serve', v: 'Il parere del DPO su entrambe le fonti. Per questo è un passo a sé.' },
+  { k: 'Prima serve', v: 'Il parere del DPO e della sicurezza IT, anche per un’estrazione. Il connettore si valuta dopo.' },
 ];
 
 const letture = [
   { metric: 'Cosa cerca', label: 'chi poi compra, e chi no', sub: 'La ricerca su un sito, l’acquisto sull’altro, nella stessa riga' },
   { metric: 'Dove si ferma', label: 'e quante volte torna', sub: 'Il percorso si legge per passaggi, non per pagine isolate' },
-  { metric: 'Su che cosa', label: 'si misura una proposta', sub: 'Sugli acquisti fatti su Le Frecce' },
+  { metric: 'Su che cosa', label: 'si misura una proposta', sub: 'Prima sui clic verso l’acquisto, poi sul venduto' },
 ];
 ---
 <BaseLayout
   title="Un disegno, tre passi"
-  description="Customer Journey Analytics legge i due Analytics, Adobe Target agisce su trenitalia.com. Il CRM e le altre superfici si aggiungono quando sono pronti."
+  description="Customer Journey Analytics legge trenitalia.com e lo status del cliente, Adobe Target agisce su trenitalia.com. L’acquisto su Le Frecce si lega in parallelo; Le Frecce e l’app arrivano con il nuovo portale."
   pageSolutions={['cja']}
   branch="trenitalia"
 >
@@ -98,7 +99,7 @@ const letture = [
         eyebrow="Capitolo 03 · Convergenza"
         numeral="03"
         title="Un disegno, tre passi"
-        lead="Si parte dai due Analytics e da Adobe Target su trenitalia.com."
+        lead="Si parte da trenitalia.com e dal CRM, con Adobe Target sul sito."
         size="phase"
         tone="ink"
         signature={false}
@@ -109,7 +110,7 @@ const letture = [
         <div class="relative flex justify-between items-start px-[4%]">
           <div class="flex flex-col items-center gap-2.5 text-center">
             <span class="fs-node" data-active>AA</span>
-            <span class="fs-node-label">Due siti, come oggi</span>
+            <span class="fs-node-label">Il sito e il CRM</span>
           </div>
           <div class="flex flex-col items-center gap-2.5 text-center">
             <span class="fs-node fs-node--alt" data-active>CJA</span>
@@ -124,8 +125,8 @@ const letture = [
     </Slide>
 
     <!-- ── Il disegno che si costruisce ─────────────────────────────── -->
-    {/* Il primo stato è il primo passo. Con ↓ entra il CRM, con ↓ ancora Target su
-        Le Frecce e sull'app. Il pulsante apre il «come funziona» a passi. */}
+    {/* Il primo stato è il primo passo. Con ↓ entra l'acquisto su Le Frecce, con ↓
+        ancora Le Frecce e l'app. Il pulsante apre il «come funziona» a passi. */}
     <Slide id="slide-disegno" bg="primary" align="center" data-solution="cja">
       <div slot="backdrop" class="absolute inset-0">
         <div class="fs-bg"></div>
@@ -138,10 +139,10 @@ const letture = [
         style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal data-reveal-delay="0.08"
       >
-        Si parte dai due Analytics e da Target, e si aggiunge Customer Journey Analytics.
+        Si parte da trenitalia.com e dal CRM, e&nbsp;si aggiunge Customer Journey Analytics.
       </h2>
       <p class="text-center fs-card-body max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.14">
-        CJA legge i due siti insieme; Target cambia la proposta su trenitalia.com, dove oggi c’è già una prima geolocalizzazione.
+        CJA legge il sito e lo status del cliente; Target cambia la proposta su&nbsp;trenitalia.com, dove oggi c’è già una prima geolocalizzazione.
       </p>
       <div class="w-full" data-reveal data-reveal-delay="0.2">
         <DiagDisegno />
@@ -152,26 +153,26 @@ const letture = [
       </div>
     </Slide>
 
-    <!-- ── La verifica in corso ──────────────────────────────────────── -->
-    {/* Calma, e con il ripiego in vista. Se il legame persona per persona non si
-        trova, i casi che lo richiedono si misurano in aggregato: è il messaggio che
-        il cliente deve portarsi via, senza il dettaglio tecnico. */}
+    <!-- ── Il secondo passo, in parallelo ────────────────────────────── -->
+    {/* Calma, e con il ripiego in vista. Il primo passo non aspetta il legame fra i
+        due siti; il pubblico raggiungibile si definisce insieme, e si dice perché gli
+        altri restano fuori. Nessun numero del partner: il consenso si misura. */}
     <Slide id="slide-verifica" bg="secondary" align="center" data-solution="cja">
       <div slot="backdrop" class="absolute inset-0">
         <div class="fs-bg-soft"></div>
         <div class="fs-grid"></div>
       </div>
       <Sfondo slot="backdrop" id="tc-quiete" forza="media" />
-      <p class="fs-panel-tag text-center mb-3" data-reveal>PRIMA DI COMINCIARE</p>
+      <p class="fs-panel-tag text-center mb-3" data-reveal>IN PARALLELO · L’ACQUISTO SU LE FRECCE</p>
       <h2
         class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal data-reveal-delay="0.08"
       >
-        Si sta verificando come leggere i due siti insieme.
+        Il legame fra ricerca e acquisto si prepara da subito.
       </h2>
       <p class="text-center fs-card-body max-w-3xl mx-auto mb-7" data-reveal data-reveal-delay="0.14">
-        Oggi trenitalia.com e Le Frecce si misurano ciascuno per conto suo.
+        Oggi i due siti si misurano ciascuno per conto suo. Il primo passo non aspetta il&nbsp;legame.
       </p>
       {/* Il ponte fra i due siti: tratteggiato, perché è quello che si verifica. */}
       <div class="cv-ponte" data-reveal data-reveal-delay="0.18" aria-hidden="true">
@@ -184,14 +185,14 @@ const letture = [
       </div>
       <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-5" data-stagger>
         {verifica.map((c, i) => (
-          <div class:list={['fs-card text-left h-full', i === 2 && 'cv-card--ok']}>
+          <div class:list={['fs-card text-left h-full', i === 1 && 'cv-card--ok']}>
             <p class="fs-card-title mb-2" style="font-size: 1.1rem;">{c.k}</p>
             <p class="fs-card-body">{lega(c.v)}</p>
           </div>
         ))}
       </div>
       <p class="text-center fs-card-body max-w-3xl mx-auto mt-6" data-reveal data-reveal-delay="0.3">
-        L’esito dice quanto si legge persona per persona da subito, e quanto in aggregato.
+        Finché il legame non c’è, l’acquisto su Le Frecce si legge in aggregato.
       </p>
     </Slide>
 
@@ -242,16 +243,16 @@ const letture = [
         <div class="fs-grid"></div>
       </div>
       <Sfondo slot="backdrop" id="rl-quiete" forza="media" />
-      <p class="fs-panel-tag text-center mb-3" data-reveal>CON IL CRM</p>
+      <p class="fs-panel-tag text-center mb-3" data-reveal>NEL PRIMO PASSO · IL CRM</p>
       <h2
         class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal data-reveal-delay="0.08"
       >
-        Il CRM resta in Salesforce; in CJA entrano pochi attributi.
+        Il CRM resta in Salesforce; in CJA entra lo status del cliente.
       </h2>
       <p class="text-center fs-card-body max-w-3xl mx-auto mb-7" data-reveal data-reveal-delay="0.14">
-        È il passo che porta il livello del cliente nei casi su trenitalia.com.
+        È il dato che porta il livello del cliente nei casi su trenitalia.com.
       </p>
       <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-5" data-stagger>
         {crm.map((c, i) => (
@@ -281,7 +282,7 @@ const letture = [
             Dalla ricerca all’acquisto, su una riga sola.
           </h2>
           <p class="text-center fs-card-body max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.14">
-            Le ricerche su trenitalia.com e gli acquisti su Le Frecce, nella stessa lettura.
+            Con il secondo passo, la ricerca su trenitalia.com e l’acquisto su Le&nbsp;Frecce stanno in una lettura sola.
           </p>
           <div class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-3 mb-4" data-stagger>
             {letture.map((m) => (

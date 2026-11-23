@@ -340,3 +340,15 @@ Il ramo Trenitalia diventa la risposta alla richiesta del responsabile dei canal
   tre scene (`diagrammi/DiagAssistenti.astro`): come vi nominano, quanto pesa (il numero resta «?»,
   è la domanda per i loro Analytics), con e senza contesto. Il drill-down `HowItWorks` esce: la nota
   privacy resta come riga di fonte.
+- **La sequenza si rovescia, 23 nov pomeriggio** (dopo la call con il partner): su Le Frecce il
+  partner misura solo la pagina di conferma, e la piattaforma di vendita non rilascia prima del
+  nuovo portale. I passi diventano **in fila** (`valeIn` cumulativo): **a** il primo passo,
+  trenitalia.com più lo status CartaFreccia estratto dal CRM, Target sul sito · **b** l'acquisto su
+  Le Frecce legato alla ricerca, da subito in parallelo, nessun caso nuovo ma la misura sul venduto
+  per i primi tre · **c** Le Frecce e app con il nuovo portale. Il caso Oro passa in **a**; geo e
+  abbonamenti si misurano su ricerche e clic verso l'acquisto (`giudizio.misura`), l'acquisto entra
+  con `giudizio.conAcquisto`. Lo scambio diventa una **linea a tre stazioni** (`DiagScambio`).
+  Allineati in coerenza Convergenza (disegno, pop-in, slide del secondo passo con il pubblico
+  raggiungibile e chi decide, CRM), Percorso, Fondamenta, Scenario (`fase1`: sito e CRM), home e
+  Admin. I vincoli in sala stanno come cose da decidere, **senza numeri del partner**; il dettaglio
+  tecnico sta nel documento di riconciliazione v1.2, fuori dal repo.

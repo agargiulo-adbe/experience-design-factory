@@ -35,7 +35,8 @@ const etichetta =
   `Customer Journey Analytics ${cja.v}: ${cja.e}. ` +
   `Poi ${c.ponte}. Adobe Target ${tgt.v}: ${tgt.e}. ` +
   `Chi viaggia vede: ${c.schermo.titolo}. ` +
-  `La misura torna in CJA: ${c.giudizio.chiude}`;
+  `La misura torna in CJA: ${c.giudizio.misura}` +
+  (c.giudizio.conAcquisto ? ` Con l’acquisto su Le Frecce: ${c.giudizio.conAcquisto}` : '');
 ---
 <div class:list={['fc', className]} data-flusso>
   <p class="sr-only">{etichetta}</p>
@@ -51,7 +52,7 @@ const etichetta =
       </div>
     </li>
 
-    <li class="fc-filo" data-f="2"><span class="fc-l">connettore Analytics</span><i class="fc-dot"></i></li>
+    <li class="fc-filo" data-f="2"><span class="fc-l">{conCrm ? 'connettore ed estrazione' : 'connettore Analytics'}</span><i class="fc-dot"></i></li>
 
     <li class="fc-n fc-n--cja" data-n="2">
       <p class="fc-p">Customer Journey Analytics</p>
@@ -88,9 +89,9 @@ const etichetta =
     <span class="fc-giro-filo" aria-hidden="true"><i class="fc-dot fc-dot--r"></i></span>
     <div class="fc-giro-b" aria-hidden="true">
       <p class="fc-giro-k">La misura torna in CJA</p>
-      <p class="fc-giro-v">{lega(c.giudizio.chiude)}</p>
-      {c.giudizio.aperta && (
-        <p class="fc-giro-a"><b>Se la verifica sui due siti resta aperta</b> {lega(c.giudizio.aperta)}</p>
+      <p class="fc-giro-v">{lega(c.giudizio.misura)}</p>
+      {c.giudizio.conAcquisto && (
+        <p class="fc-giro-a"><b>Con l’acquisto su Le Frecce</b> {lega(c.giudizio.conAcquisto)}</p>
       )}
       <ul class="fc-kpi">{c.kpi.map((k) => <li>{k}</li>)}</ul>
     </div>
