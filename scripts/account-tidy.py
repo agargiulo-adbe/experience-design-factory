@@ -78,7 +78,9 @@ NOME_OK = re.compile(
 # nome, non il contenuto: un file si classifica da come è stato chiamato, e
 # quando il nome non basta finisce in 03-analisi, che è il default onesto.
 REGOLE = [
-    ("_superato", lambda n: bool(re.search(r"\.pre\d|\.bak$|~$|\.old$", n))),
+    # `.bak` anche in mezzo al nome: `0037.18nov.bak.sql` è il backup di un seed e
+    # finiva fra le analisi con un nome nuovo (Ferrovie, 23 nov 2026).
+    ("_superato", lambda n: bool(re.search(r"\.pre\d|\.bak$|\.bak\.|~$|\.old$", n))),
     # Un accordo quadro non porta «signed» nel nome, e finiva fra le analisi —
     # cioè la fonte di primo livello di un account classificata come materiale
     # di lavoro. Visto su un account il 7 nov 2026.
@@ -100,6 +102,31 @@ REGOLE = [
                                          ".msg", ".txt", ".mp4", ".m4a"))),
     ("03-analisi", lambda n: True),
 ]
+
+
+# ── l'output di una pipeline ────────────────────────────────────────────────
+# Un file che un generatore dell'account scrive (o legge) per NOME resta dov'è:
+# spostarlo rompe la pipeline, e alla generazione dopo il file rinasce nel
+# percorso vecchio, accanto alla copia spostata. Visto il 23 nov 2026 su
+# Ferrovie: `strato-deck/genera.py` scrive `0037_seed_…_dossier.sql` in radice,
+# e il dossier dell'app lo cita lì. Si cercano i nomi nei sorgenti dell'account.
+SORGENTI = (".py", ".sh", ".mjs", ".js", ".ts", ".sql")
+NON_SCANDIRE = {".playwright-mcp", "node_modules", "_superato", "output", ".git"}
+
+
+def citati_da_generatori(base: pathlib.Path, nomi: list[str]) -> set[str]:
+    testi = []
+    for f in base.rglob("*"):
+        if f.suffix not in SORGENTI or not f.is_file() or f.parent == base:
+            continue
+        if any(parte in NON_SCANDIRE for parte in f.relative_to(base).parts):
+            continue
+        try:
+            testi.append(f.read_text(encoding="utf-8", errors="ignore"))
+        except OSError:
+            continue
+    tutto = "\n".join(testi)
+    return {n for n in nomi if n in tutto}
 
 
 def classifica(nome: str) -> str:
@@ -272,6 +299,8 @@ def giro(account: str, esegui: bool, tag: bool) -> int:
         f"  ·  Teams: {teams.name}" if teams else "  ·  Teams: non dichiarato"))
     sposta, rinomina, blu, divergenti, fermi = [], [], [], [], []
 
+    in_radice = [f.name for f in base.iterdir() if f.is_file()]
+    di_pipeline = citati_da_generatori(base, in_radice)
     for f in sorted(base.iterdir()):
         if f.name.startswith(".") or f.is_dir():
             continue
@@ -286,6 +315,9 @@ def giro(account: str, esegui: bool, tag: bool) -> int:
         # li richiama per percorso.
         if f.name in ("ACCOUNT.md", "CLAUDE.md") or f.name.startswith(
                 ("PANEL-", "CASO-")):
+            continue
+        if f.name in di_pipeline:
+            print(f"  {f.name[:46]:<46}   resta: lo cita un generatore dell'account")
             continue
         dest = classifica(f.name)
         if dest == "_superato":
