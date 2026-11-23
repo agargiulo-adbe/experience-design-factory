@@ -142,6 +142,22 @@ else
   fi
 fi
 
+# centralino-adobe: posta e Teams Adobe dal server, via Outlook web (dal 23 nov 2026 il
+# connettore Microsoft 365 non regge più il tenant Adobe). Qui NON si apre il browser:
+# il profilo Chrome regge un processo alla volta, e un server MCP acceso lo sta usando.
+# Si controlla che i pezzi ci siano; la sessione la dice `adobe_stato` dentro Claude.
+CA_BIN="$HOME/dev/centralino/.venv/bin/centralino-adobe"
+CA_PROFILO="$HOME/Library/Application Support/Centralino-Adobe/profilo"
+if [ ! -x "$CA_BIN" ]; then
+  bad 'centralino-adobe' "eseguibile assente ($CA_BIN): Outlook e Teams Adobe restano ciechi"
+elif ! grep -q '"centralino-adobe"' "$HOME/.claude.json" 2>/dev/null; then
+  bad 'centralino-adobe' 'non registrato in Claude Code (claude mcp add --scope user centralino-adobe -- … mcp)'
+elif [ ! -d "$CA_PROFILO/Default" ]; then
+  warn 'centralino-adobe' 'nessuna sessione salvata: eseguire `centralino-adobe login`'
+else
+  ok 'centralino-adobe' "registrato, sessione salvata il $(stat -f '%Sm' -t '%Y-%m-%d' "$CA_PROFILO/Default")"
+fi
+
 # ── Esito ──────────────────────────────────────────────────────────────────
 printf '\n'
 if [ "$ROSSI" -gt 0 ]; then

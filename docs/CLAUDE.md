@@ -237,7 +237,8 @@ All'inizio di una sessione su una cartella di account, **senza che te lo si chie
 1. leggi `ACCOUNT.md` (se non c'è, vai a «Il primo `ACCOUNT.md` di un account»);
 2. prendi la data di `aggiornato`;
 3. cerca **da quella data** in cinque fonti (dettaglio in `/account-open`): **Outlook** e
-   **Teams** — entrambi dal connettore Microsoft 365, non da Centralino — le
+   **Teams** — entrambi dal server MCP `centralino-adobe` (Outlook web, casella intera e
+   archivio; il connettore Microsoft 365 non regge più il tenant Adobe dal 23 nov 2026) — le
    **trascrizioni** nella cartella `/Plaud` su Dropbox, **WhatsApp** via Centralino
    (nell'account `whatsapp-personale`, perché quel numero è il numero di lavoro; si cerca
    per **nome di persona**, non di cliente), e la **cartella dell'account**;
@@ -391,12 +392,12 @@ La sezione «Chi è chi» non è una rubrica tenuta a mano: una rubrica a mano d
 settimane, come ogni cosa che dipende da chi si ricorda di aggiornarla. Si **ricava dalla
 posta e da WhatsApp**, una volta a settimana per account, e ogni riga porta la sua data.
 
-**Le tre ricerche** — due sulla posta (connettore Microsoft 365, `outlook_email_search`)
+**Le tre ricerche** — due sulla posta (`centralino-adobe`, `adobe_mail_search`)
 e una su WhatsApp, che non è un ripiego della posta ma una fonte sua:
 
-1. `sender: <dominio del cliente>` → **chi di quel cliente ha scritto in un thread tuo**,
+1. `from_addr: <dominio del cliente>` → **chi di quel cliente ha scritto in un thread tuo**,
    con data e tema dell'ultimo scambio. Questo è il grafo.
-2. `sender: <tuo indirizzo>` + `recipient: <indirizzo del contatto>` → i thread in cui
+2. `from_addr: <tuo indirizzo>` + `to_addr: <indirizzo del contatto>` → i thread in cui
    **tu hai scritto e lui c'era**. Serve a datare la tua ultima uscita verso quella persona.
 3. **WhatsApp** (Centralino, account `whatsapp-personale`), cercando **il nome di ogni
    contatto** del grafo e dei referenti che l'account nomina. Chi scrive lì è il contatto
@@ -410,7 +411,9 @@ e una su WhatsApp, che non è un ripiego della posta ma una fonte sua:
   condiviso un thread è **invisibile**, anche se l'AE lo sente ogni settimana. Il grafo dice
   «chi conosci tu», non «chi c'è»: da un grafo magro non si conclude «non conosciamo
   nessuno», si conclude «chiedi all'AE».
-- **Il filtro `recipient:` non distingue il destinatario diretto da chi era in copia.** Tre
+- **Il filtro `recipient:` non distingue il destinatario diretto da chi era in copia**
+  (misurato sul vecchio connettore; `to_addr` di `centralino-adobe` diventa il KQL `to:`, che
+  **non è ancora stato rimisurato**: fino ad allora vale la stessa prudenza). Tre
   contatti dello stesso cliente restituiscono gli stessi cinque messaggi di un thread di
   gruppo, il cui testo è indirizzato a un quarto. Quindi **«gli hai scritto tu» non è calcolabile** da
   questa fonte, e non va dichiarato: si dichiara la co-presenza, che è ciò che si misura.
