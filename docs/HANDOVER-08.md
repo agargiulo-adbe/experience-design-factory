@@ -352,3 +352,28 @@ Il ramo Trenitalia diventa la risposta alla richiesta del responsabile dei canal
   raggiungibile e chi decide, CRM), Percorso, Fondamenta, Scenario (`fase1`: sito e CRM), home e
   Admin. I vincoli in sala stanno come cose da decidere, **senza numeri del partner**; il dettaglio
   tecnico sta nel documento di riconciliazione v1.2, fuori dal repo.
+
+### 36.11 Lo status del CRM scende al secondo passo — 23 novembre 2026 sera (`41433c59`)
+Dopo una call interna sul perimetro, la verifica nel browser (Chromium, con il consenso accettato):
+- **su trenitalia.com non si fa login.** Area riservata e registrazione aprono lefrecce.it in una
+  scheda nuova; il form di login che si trova nell'HTML (`#modalLogin`) sta in un modale che nessun
+  elemento e nessuno script apre. Un'estrazione del CRM entrerebbe in CJA senza legarsi a nessuna
+  visita. ⚠️ Lezione: un elemento nell'HTML non è una funzione del sito, si guarda nel browser
+  (memoria `html-presente-non-raggiungibile`);
+- **trenitalia.com in produzione usa AppMeasurement 2.26, il Visitor ID Service e at.js 2.11.7**:
+  niente Web SDK né nella property Launch né nel GTM, anche con il consenso. Il partner sostiene il
+  contrario: è una domanda per la sessione tecnica, non un'affermazione del deck;
+- il riquadro «Cerca biglietto» della home (email e PNR) si compila su trenitalia.com e apre Le
+  Frecce con i due valori nell'URL: è una chiave possibile, debole, e un punto per la sicurezza IT.
+  Sta solo nel documento di riconciliazione, fuori dal repo.
+
+Il deck cambia di conseguenza: **a** il primo passo legge solo trenitalia.com (geo, abbonamenti) ·
+**b** «L'acquisto e lo status», da subito in parallelo: la pagina di conferma porta la traccia del
+sito e il codice cliente, e lì lo status si lega · **c** invariato. Il caso Oro passa in **b**,
+«riconosciuto al ritorno», senza l'area personale su trenitalia.com che non esiste; `giudizio`
+senza `conAcquisto`. Allineati `CONFIG`, `DiagDisegno`, `ComeFunziona`, Convergenza (slide del CRM
+«nel secondo passo»), matrice e dipendenze, Percorso, Fondamenta, Scenario, home e Admin. Gate:
+copy-audit 29 come prima, `audit:deck` solo `a`/`i`, a capo corretti dove introdotti. Il
+documento di riconciliazione è alla v1.3 (git-ignorato). ⚠️ Panel non rilanciato: P0 in Parte 2.
+Restano da applicare, se l'owner li vuole: nel disegno d'insieme meno peso al colore del passo
+finale e la fascia di CJA che cresce con i passi.
