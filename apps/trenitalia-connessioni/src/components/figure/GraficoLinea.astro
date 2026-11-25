@@ -1,0 +1,103 @@
+---
+/**
+ * GraficoLinea — FIGURA XD: il mockup di una linea del tempo di Customer Journey
+ * Analytics con più serie, la previsione tratteggiata e un'anomalia segnata.
+ *
+ * È un MOCKUP DI ANALISI, non di prodotto: mostra che cosa si legge, nel contesto
+ * del cliente, con curve d'ipotesi. Per questo l'asse delle ordinate non ha numeri
+ * e la didascalia lo dice («indice d'ipotesi, senza scala»): un numero in una
+ * figura o ha una fonte o diventa la domanda.
+ *
+ * I PASSI: un marcatore per serie oltre la prima, più uno per previsione e
+ * anomalia. Le linee entrano da sinistra con un `clip-path` che si apre: il
+ * tracciato con `pathLength` e `stroke-dashoffset` (il DrawSVG in CSS di Intesa)
+ * qui non regge, perché con `vector-effect: non-scaling-stroke` e l'SVG stirato
+ * Chromium sbaglia la lunghezza e lascia le linee a metà. Stato base: tutto
+ * disegnato.
+ */
+interface Serie { id: string; nome: string; p: string; valori: number[] }
+interface Props {
+  serie: Serie[];
+  previsione: number[];
+  anomalia: number;
+  etichettaAnomalia: string;
+  assi: string[];
+  class?: string;
+}
+const { serie, previsione, anomalia, etichettaAnomalia, assi, class: className } = Astro.props as Props;
+
+const W = 1000, H = 340, PADX = 24, PADY = 24;
+const n = serie[0].valori.length;
+const tot = n + previsione.length;
+const max = Math.max(...serie.flatMap((s) => s.valori), ...previsione) * 1.08;
+const x = (i: number) => PADX + (i * (W - 2 * PADX)) / (tot - 1);
+const y = (v: number) => H - PADY - (v / max) * (H - 2 * PADY);
+const tracciato = (vals: number[], da = 0) => vals.map((v, i) => `${i ? 'L' : 'M'}${x(i + da).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+const ultima = serie[serie.length - 1];
+const prev = tracciato([ultima.valori[n - 1], ...previsione], n - 1);
+const ax = x(anomalia);
+const passi = [...new Set(serie.map((s) => s.p).filter((p) => p !== 'a')), 'z'];
+const etichetta = `Esempio illustrativo su ${n} giorni: ${serie.map((s) => s.nome).join(', ')}, sulla stessa linea del tempo. ` +
+  `Dopo l'ultimo giorno, la previsione tratteggiata. Segnato il giorno ${anomalia + 1}: ${etichettaAnomalia}.`;
+---
+<figure class:list={['gl', className]} role="img" aria-label={etichetta}>
+  <ul class="gl-legenda" aria-hidden="true">
+    {serie.map((s) => <li class:list={[`gl-l-${s.id}`, s.p !== 'a' && `gl-${s.p}`]}><span></span>{s.nome}</li>)}
+    <li class="gl-l-prev gl-z"><span></span>Previsione</li>
+  </ul>
+  <svg class="gl-svg" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true">
+    {[0.25, 0.5, 0.75].map((f) => <line class="gl-griglia" x1={PADX} x2={W - PADX} y1={PADY + f * (H - 2 * PADY)} y2={PADY + f * (H - 2 * PADY)} />)}
+    <line class="gl-oggi" x1={x(n - 1)} x2={x(n - 1)} y1={PADY} y2={H - PADY} />
+    {serie.map((s) => (
+      <path class:list={['gl-serie', `gl-s-${s.id}`, s.p !== 'a' && `gl-${s.p}`]} d={tracciato(s.valori)} vector-effect="non-scaling-stroke" />
+    ))}
+    <path class="gl-prev gl-z" d={prev} vector-effect="non-scaling-stroke" />
+    <line class="gl-anom gl-z" x1={ax} x2={ax} y1={PADY} y2={H - PADY} vector-effect="non-scaling-stroke" />
+  </svg>
+  <p class="gl-nota-anom gl-z" aria-hidden="true" style={`--ax:${(ax / W) * 100}%`}>{etichettaAnomalia}</p>
+  <p class="gl-assi" aria-hidden="true">{assi.map((a) => <span>{a}</span>)}</p>
+  {passi.map((p) => <i class="gl-m" data-substep data-p={p} aria-hidden="true"></i>)}
+</figure>
+
+<style is:global>
+  .gl { position: relative; width: 100%; max-width: 72rem; margin: 0 auto; display: grid; gap: 0.5rem; }
+  [data-slide] .gl p { margin: 0; max-width: none; }
+  .gl-legenda { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem 1.4rem; justify-content: center; }
+  .gl-legenda li { display: flex; align-items: center; gap: 0.5rem; font-size: clamp(0.9rem, 0.96vw, 1.02rem); color: var(--ink-secondary); }
+  .gl-legenda span { width: 1.6rem; height: 0; border-top: 3px solid currentColor; }
+  .gl-l-ricerche { color: var(--color-rosso-chiaro) !important; }
+  .gl-l-arrivi { color: var(--ink-primary) !important; }
+  .gl-l-conferme { color: var(--color-verde-chiaro) !important; }
+  .gl-l-prev span { border-top-style: dashed; color: var(--color-verde-chiaro); }
+  .gl-svg { width: 100%; height: clamp(12rem, 30vh, 19rem); display: block; border-radius: 0.6rem; background: rgba(27, 34, 48, 0.5); border: 1px solid rgba(255, 255, 255, 0.14); }
+  .gl-griglia { stroke: rgba(255, 255, 255, 0.1); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .gl-oggi { stroke: rgba(255, 255, 255, 0.35); stroke-width: 1; stroke-dasharray: 3 4; vector-effect: non-scaling-stroke; }
+  .gl-serie { fill: none; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; clip-path: inset(0 0 0 0); transition: clip-path 1100ms ease; }
+  .gl-s-ricerche { stroke: var(--color-rosso-chiaro); }
+  .gl-s-arrivi { stroke: var(--ink-primary); }
+  .gl-s-conferme { stroke: var(--color-verde-chiaro); }
+  .gl-prev { fill: none; stroke: var(--color-verde-chiaro); stroke-width: 3; stroke-dasharray: 8 7; opacity: 0.85; }
+  .gl-anom { stroke: var(--color-rosso); stroke-width: 3; }
+  .gl-nota-anom {
+    position: absolute; left: var(--ax); top: 3.2rem; transform: translateX(-50%);
+    padding: 0.25rem 0.6rem; border-radius: 0.4rem; background: var(--color-rosso); color: #fff;
+    font-size: clamp(0.86rem, 0.92vw, 0.98rem); font-weight: 600; white-space: nowrap;
+  }
+  .gl-assi { display: flex; justify-content: space-between; padding: 0 0.4rem; font-size: clamp(0.82rem, 0.88vw, 0.94rem); color: var(--ink-tertiary); }
+  .gl-m { display: block; width: 0; height: 0; }
+
+  /* I passi: la serie entra disegnandosi, la legenda la segue. */
+  .gl path.gl-b, .gl path.gl-c { clip-path: inset(0 100% 0 0); }
+  .gl li.gl-b, .gl li.gl-c, .gl .gl-z { opacity: 0; visibility: hidden; transition: opacity 420ms ease, visibility 420ms; }
+  .gl:has(.gl-m[data-p='b'][data-substep-active]) path.gl-b,
+  .gl:has(.gl-m[data-p='c'][data-substep-active]) path.gl-c { clip-path: inset(0 0 0 0); }
+  .gl:has(.gl-m[data-p='b'][data-substep-active]) li.gl-b,
+  .gl:has(.gl-m[data-p='c'][data-substep-active]) li.gl-c,
+  .gl:has(.gl-m[data-p='z'][data-substep-active]) .gl-z { opacity: 1; visibility: visible; }
+  @media (prefers-reduced-motion: reduce) {
+    .gl path.gl-b, .gl path.gl-c { clip-path: inset(0 0 0 0); transition: none; }
+    .gl li.gl-b, .gl li.gl-c, .gl .gl-z { opacity: 1; visibility: visible; transition: none; }
+  }
+  html:not(.js) .gl path.gl-b, html:not(.js) .gl path.gl-c { clip-path: inset(0 0 0 0); }
+  html:not(.js) .gl li.gl-b, html:not(.js) .gl li.gl-c, html:not(.js) .gl .gl-z { opacity: 1; visibility: visible; }
+</style>

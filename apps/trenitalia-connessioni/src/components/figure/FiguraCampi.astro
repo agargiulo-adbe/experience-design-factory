@@ -1,0 +1,92 @@
+---
+/**
+ * FiguraCampi — FIGURA XD: lo stesso fatto scritto da due tag, e il campo che li
+ * rende uno. È la rimappatura fatta vedere, invece di nominarla.
+ *
+ * I valori sono quelli visti nei beacon di produzione (vedi `data/vista-unica.ts`):
+ * è la slide in cui il cliente riconosce il proprio tag, e per questo non si
+ * inventa niente. Le due colonne sono due cornici tratteggiate (due
+ * organizzazioni); il campo derivato è pieno (sta in Customer Journey Analytics).
+ *
+ * I PASSI: il primo accende Le Frecce, il secondo il campo derivato e l'avvertenza
+ * sullo stesso numero. Senza JavaScript o con «Riduci movimento» è tutto acceso.
+ */
+import { lega } from '../../utils/lega';
+
+interface Riga { k: string; v: string; es: string }
+interface Lato { dove: string; righe: Riga[] }
+interface Props {
+  sinistra: Lato;
+  destra: Lato;
+  derivato: { nome: string; es: string; nota: string };
+  attenzione: string;
+  class?: string;
+}
+const { sinistra, destra, derivato, attenzione, class: className } = Astro.props as Props;
+const etichetta = [sinistra, destra].map((l) => `${l.dove}: ${l.righe.map((r) => `${r.k} in ${r.v}`).join(', ')}.`).join(' ') +
+  ` In Customer Journey Analytics diventano un campo, ${derivato.nome}: ${derivato.es}. ${attenzione}`;
+---
+<div class:list={['fc', className]} role="img" aria-label={etichetta}>
+  <div class="fc-lati" aria-hidden="true">
+    {[sinistra, destra].map((l, i) => (
+      <div class:list={['fc-lato', i === 1 && 'fc-b']}>
+        <p class="fc-dove">{lega(l.dove)}</p>
+        <dl class="fc-righe">
+          {l.righe.map((r) => (
+            <div class="fc-riga">
+              <dt>{r.k}</dt>
+              <dd class="fc-var">{r.v}</dd>
+              <dd class="fc-es">{r.es}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    ))}
+  </div>
+
+  <div class="fc-derivato fc-c" aria-hidden="true">
+    <span class="fc-unione"></span>
+    <p class="fc-dnome">{derivato.nome}</p>
+    <p class="fc-des">{derivato.es}</p>
+    <p class="fc-dnota">{lega(derivato.nota)}</p>
+  </div>
+
+  <p class="fc-att fc-c" aria-hidden="true">{lega(attenzione)}</p>
+
+  <i class="fc-m" data-substep data-p="b" aria-hidden="true"></i>
+  <i class="fc-m" data-substep data-p="c" aria-hidden="true"></i>
+</div>
+
+<style is:global>
+  .fc { width: 100%; max-width: 70rem; margin-inline: auto; display: grid; gap: clamp(0.7rem, 1.4vh, 1rem); text-align: left; }
+  [data-slide] .fc p { margin: 0; max-width: none; text-align: left; }
+  .fc-lati { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(0.8rem, 1.6vw, 1.6rem); }
+  .fc-lato { padding: clamp(0.8rem, 1.5vh, 1.1rem) clamp(0.9rem, 1.2vw, 1.2rem); border: 2px dashed rgba(255, 255, 255, 0.5); border-radius: 0.8rem; background: rgba(255, 255, 255, 0.05); }
+  .fc-dove { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.05rem, 1.2vw, 1.3rem); color: var(--ink-primary); margin-bottom: 0.5rem !important; }
+  .fc-righe { margin: 0; display: grid; gap: 0.3rem; }
+  .fc-riga { display: grid; grid-template-columns: 7.5rem 5.2rem minmax(0, 1fr); gap: 0.6rem; align-items: baseline; padding: 0.3rem 0; border-top: 1px solid rgba(255, 255, 255, 0.14); }
+  .fc-riga dt { font-size: clamp(0.92rem, 0.98vw, 1.04rem); color: var(--ink-secondary); }
+  .fc-riga dd { margin: 0; }
+  .fc-var { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: clamp(0.92rem, 0.98vw, 1.04rem); font-weight: 600; color: var(--color-rosso-chiaro); }
+  .fc-b .fc-var { color: var(--color-verde-chiaro); }
+  .fc-es { font-size: clamp(0.92rem, 0.98vw, 1.04rem); color: var(--ink-primary); }
+
+  .fc-derivato {
+    position: relative; display: grid; grid-template-columns: auto auto minmax(0, 1fr); align-items: baseline; gap: 0.4rem 1rem;
+    padding: clamp(0.8rem, 1.5vh, 1.1rem) clamp(1rem, 1.3vw, 1.3rem);
+    border: 2px solid var(--color-verde-chiaro); border-radius: 0.8rem; background: rgba(0, 102, 102, 0.28);
+  }
+  .fc-unione { display: none; }
+  .fc-dnome { font-size: clamp(0.8rem, 0.86vw, 0.92rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-verde-chiaro); }
+  .fc-des { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.15rem, 1.35vw, 1.5rem); color: var(--ink-primary); }
+  .fc-dnota { font-size: clamp(0.9rem, 0.95vw, 1rem); color: var(--ink-secondary); }
+  .fc-att { font-size: clamp(0.95rem, 1vw, 1.05rem); line-height: 1.4; color: var(--ink-secondary); padding-left: 0.9rem; border-left: 3px solid var(--color-rosso-chiaro); }
+  .fc-m { display: block; width: 0; height: 0; }
+
+  .fc .fc-b, .fc .fc-c { opacity: 0; visibility: hidden; transition: opacity 420ms ease, visibility 420ms; }
+  .fc:has(.fc-m[data-p='b'][data-substep-active]) .fc-b,
+  .fc:has(.fc-m[data-p='c'][data-substep-active]) .fc-c { opacity: 1; visibility: visible; }
+  @media (prefers-reduced-motion: reduce) { .fc .fc-b, .fc .fc-c { opacity: 1; visibility: visible; transition: none; } }
+  html:not(.js) .fc .fc-b, html:not(.js) .fc .fc-c { opacity: 1; visibility: visible; }
+  @media (max-width: 900px) { .fc-lati { grid-template-columns: minmax(0, 1fr); } .fc-derivato { grid-template-columns: minmax(0, 1fr); } }
+</style>

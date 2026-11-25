@@ -49,6 +49,12 @@ export const TAPPE: Tappa[] = [
   { slug: 'trenitalia/casi-duso', kind: 'Capitolo', attiva: true, label: 'Casi d’uso',
     sub: 'Cinque casi su Target, passo per passo', solution: 'cja' },
 
+  // Nasce il 25 nov 2026: l'approfondimento della fase 0, che porta i due
+  // Analytics in CJA senza legare le persone. Sta dopo i casi d'uso perché ne
+  // dice la lettura che c'è dal primo giorno, e a chi serve oltre al digitale.
+  { slug: 'trenitalia/vista-unica', kind: 'Capitolo', attiva: true, label: 'Vista unica',
+    sub: 'La fase 0: due Analytics in una lettura sola', solution: 'cja' },
+
   // Tutto il capitolo poggia su FS Park e sulla clean room: segue il bivio.
   { slug: 'trenitalia/meta-invisibile', kind: 'Capitolo', attiva: false, label: 'Metà invisibile',
     sub: 'La collaborazione fra società, in una clean room', solution: 'data-collab' },

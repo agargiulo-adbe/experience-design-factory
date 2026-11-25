@@ -65,6 +65,7 @@ export const ROUTE_SETS: Record<string, Rotta[]> = {
     { name: 'trn-convergenza',     route: '/experience-design-factory/trenitalia-connessioni/trenitalia/convergenza/' },
     { name: 'trn-casi-duso',       route: '/experience-design-factory/trenitalia-connessioni/trenitalia/casi-duso/' },
     { name: 'trn-meta-invisibile', route: '/experience-design-factory/trenitalia-connessioni/trenitalia/meta-invisibile/' },
+    { name: 'trn-vista-unica',     route: '/experience-design-factory/trenitalia-connessioni/trenitalia/vista-unica/' },
     { name: 'trn-percorso',        route: '/experience-design-factory/trenitalia-connessioni/trenitalia/percorso/' },
   ],
   agos: [

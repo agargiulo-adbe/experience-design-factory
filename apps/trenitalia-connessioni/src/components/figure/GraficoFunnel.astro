@@ -1,0 +1,79 @@
+---
+/**
+ * GraficoFunnel — FIGURA XD: un funnel aggregato a più gradini, una riga per
+ * segmento (qui la tratta), con la lettura che dice a chi parlarne.
+ *
+ * Mockup di analisi: valori d'indice (il primo gradino vale 100), nessuna cifra
+ * assoluta. È aggregato per costruzione — gradini di siti diversi contano persone
+ * diverse — e la riga sotto la figura lo dice, sempre.
+ *
+ * I PASSI: secondo gradino, terzo gradino, poi le letture. Stato base: tutto acceso.
+ */
+import { lega } from '../../utils/lega';
+
+interface Riga { tratta: string; ricerche: number; arrivi: number; conferme: number; lettura?: string; chi?: string }
+interface Props { righe: Riga[]; gradini: [string, string, string]; avvertenza: string; class?: string }
+const { righe, gradini, avvertenza, class: className } = Astro.props as Props;
+const etichetta = `Esempio illustrativo, indice 100 sulle ricerche. ` + righe.map((r) =>
+  `${r.tratta}: ${gradini[1]} ${r.arrivi}, ${gradini[2]} ${r.conferme}${r.lettura ? `; ${r.lettura}, ne parla ${r.chi}` : ''}.`).join(' ') + ` ${avvertenza}`;
+---
+<figure class:list={['gf', className]} role="img" aria-label={etichetta}>
+  <ul class="gf-legenda" aria-hidden="true">
+    <li class="gf-k1"><span></span>{gradini[0]}</li>
+    <li class="gf-k2 gf-b"><span></span>{gradini[1]}</li>
+    <li class="gf-k3 gf-c"><span></span>{gradini[2]}</li>
+  </ul>
+  <div class="gf-righe" aria-hidden="true">
+    {righe.map((r) => (
+      <div class:list={['gf-riga', r.lettura && 'gf-segnata']}>
+        <p class="gf-tratta">{lega(r.tratta)}</p>
+        <div class="gf-barre">
+          <span class="gf-barra gf-k1" style={`--w:${r.ricerche}%`}></span>
+          <span class="gf-barra gf-k2 gf-b" style={`--w:${r.arrivi}%`}></span>
+          <span class="gf-barra gf-k3 gf-c" style={`--w:${r.conferme}%`}></span>
+        </div>
+        <p class="gf-lettura gf-d">{r.lettura ? <><strong>{lega(r.lettura)}</strong><span>se ne parla con {r.chi}</span></> : ''}</p>
+      </div>
+    ))}
+  </div>
+  <p class="gf-avv" aria-hidden="true">{lega(avvertenza)}</p>
+  <i class="gf-m" data-substep data-p="b" aria-hidden="true"></i>
+  <i class="gf-m" data-substep data-p="c" aria-hidden="true"></i>
+  <i class="gf-m" data-substep data-p="d" aria-hidden="true"></i>
+</figure>
+
+<style is:global>
+  .gf { width: 100%; max-width: 76rem; margin: 0 auto; display: grid; gap: 0.7rem; text-align: left; }
+  [data-slide] .gf p { margin: 0; max-width: none; text-align: left; }
+  .gf-legenda { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem 1.4rem; }
+  .gf-legenda li { display: flex; align-items: center; gap: 0.5rem; font-size: clamp(0.9rem, 0.96vw, 1.02rem); color: var(--ink-secondary); }
+  .gf-legenda span { width: 1rem; height: 0.7rem; border-radius: 2px; background: var(--c); }
+  .gf-k1 { --c: var(--color-rosso-chiaro); }
+  .gf-k2 { --c: rgba(255, 255, 255, 0.85); }
+  .gf-k3 { --c: var(--color-verde-chiaro); }
+  .gf-righe { display: grid; gap: 0.55rem; }
+  .gf-riga { display: grid; grid-template-columns: minmax(12rem, 17rem) minmax(0, 1fr) minmax(13rem, 19rem); gap: 1rem; align-items: center; padding: 0.55rem 0.8rem; border-radius: 0.6rem; background: rgba(27, 34, 48, 0.5); border: 1px solid rgba(255, 255, 255, 0.12); }
+  .gf-segnata { border-color: rgba(255, 141, 157, 0.55); }
+  .gf-tratta { font-weight: 600; font-size: clamp(0.95rem, 1.02vw, 1.08rem); color: var(--ink-primary); }
+  .gf-barre { display: grid; gap: 0.25rem; }
+  .gf-barra { display: block; height: 0.62rem; border-radius: 2px; background: var(--c); width: var(--w); transform-origin: left center; transition: transform 700ms ease, opacity 400ms; }
+  .gf-lettura { display: grid; gap: 0.1rem; font-size: clamp(0.9rem, 0.96vw, 1.02rem); line-height: 1.3; color: var(--ink-secondary); }
+  .gf-lettura strong { color: var(--ink-primary); font-weight: 600; }
+  .gf-avv { text-align: center !important; font-size: clamp(0.9rem, 0.96vw, 1.02rem); color: var(--ink-tertiary); }
+  .gf-m { display: block; width: 0; height: 0; }
+
+  .gf .gf-barra.gf-b, .gf .gf-barra.gf-c { transform: scaleX(0); opacity: 0; }
+  .gf li.gf-b, .gf li.gf-c, .gf .gf-d { opacity: 0; visibility: hidden; transition: opacity 420ms ease, visibility 420ms; }
+  .gf:has(.gf-m[data-p='b'][data-substep-active]) .gf-barra.gf-b,
+  .gf:has(.gf-m[data-p='c'][data-substep-active]) .gf-barra.gf-c { transform: scaleX(1); opacity: 1; }
+  .gf:has(.gf-m[data-p='b'][data-substep-active]) li.gf-b,
+  .gf:has(.gf-m[data-p='c'][data-substep-active]) li.gf-c,
+  .gf:has(.gf-m[data-p='d'][data-substep-active]) .gf-d { opacity: 1; visibility: visible; }
+  @media (prefers-reduced-motion: reduce) {
+    .gf .gf-barra.gf-b, .gf .gf-barra.gf-c { transform: none; opacity: 1; transition: none; }
+    .gf li.gf-b, .gf li.gf-c, .gf .gf-d { opacity: 1; visibility: visible; transition: none; }
+  }
+  html:not(.js) .gf .gf-barra.gf-b, html:not(.js) .gf .gf-barra.gf-c { transform: none; opacity: 1; }
+  html:not(.js) .gf li.gf-b, html:not(.js) .gf li.gf-c, html:not(.js) .gf .gf-d { opacity: 1; visibility: visible; }
+  @media (max-width: 900px) { .gf-riga { grid-template-columns: minmax(0, 1fr); } }
+</style>

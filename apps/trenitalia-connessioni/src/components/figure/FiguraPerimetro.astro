@@ -1,0 +1,108 @@
+---
+/**
+ * FiguraPerimetro — FIGURA XD: che cosa entra, da dove, e dove arriva.
+ *
+ * Prima delle «Figure XD» della Factory (25 nov 2026): nasce dentro il deck
+ * Trenitalia e si porta nel motore comune solo quando è provata in sala. La
+ * grammatica viene dal capitolo «dove ci innestiamo» di Intesa:
+ *   · il perimetro del cliente è una cornice TRATTEGGIATA, una per organizzazione;
+ *   · la piattaforma Adobe è una cornice PIENA, sotto;
+ *   · ogni freccia ha un NOME, scritto accanto: non esistono frecce mute;
+ *   · la riga «resta» dice che cosa NON cambia, ed è la frase che il cliente cerca.
+ *
+ * I PASSI: due marcatori `[data-substep]` letti con `:has()`. Il primo accende la
+ * seconda organizzazione, il secondo la piattaforma con le frecce. Con «Riduci
+ * movimento» o senza JavaScript è tutto acceso: lo stato base è quello finale.
+ */
+import { lega } from '../../utils/lega';
+
+interface Fonte { nome: string; dettaglio: string }
+interface Cornice { nome: string; sotto: string; fonti: Fonte[]; freccia: string }
+interface Props {
+  sinistra: Cornice;
+  destra: Cornice;
+  piattaforma: { nome: string; sotto: string; funzioni: string[] };
+  resta: string;
+  class?: string;
+}
+const { sinistra, destra, piattaforma, resta, class: className } = Astro.props as Props;
+const etichetta = `${sinistra.nome}, ${sinistra.sotto}: ${sinistra.fonti.map((f) => f.nome).join(', ')}. ` +
+  `${destra.nome}, ${destra.sotto}: ${destra.fonti.map((f) => f.nome).join(', ')}. ` +
+  `Entrambe arrivano in ${piattaforma.nome}, ${piattaforma.sotto}. ${resta}`;
+---
+<div class:list={['fp', className]} role="img" aria-label={etichetta}>
+  <div class="fp-alto" aria-hidden="true">
+    {[sinistra, destra].map((c, i) => (
+      <div class:list={['fp-cornice', i === 1 && 'fp-b']}>
+        <p class="fp-nome">{lega(c.nome)}</p>
+        <p class="fp-sotto">{lega(c.sotto)}</p>
+        <ul class="fp-fonti">
+          {c.fonti.map((f) => (
+            <li><span class="fp-fonte">{lega(f.nome)}</span><span class="fp-det">{lega(f.dettaglio)}</span></li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+
+  <div class="fp-frecce fp-c" aria-hidden="true">
+    {[sinistra, destra].map((c) => (
+      <div class="fp-freccia"><span class="fp-asta"></span><span class="fp-nome-f">{lega(c.freccia)}</span></div>
+    ))}
+  </div>
+
+  <div class="fp-piattaforma fp-c" aria-hidden="true">
+    <div>
+      <p class="fp-nome">{piattaforma.nome}</p>
+      <p class="fp-sotto">{lega(piattaforma.sotto)}</p>
+    </div>
+    <ul class="fp-funz">{piattaforma.funzioni.map((f) => <li>{f}</li>)}</ul>
+  </div>
+
+  <p class="fp-resta fp-c" aria-hidden="true">{lega(resta)}</p>
+
+  <i class="fp-m" data-substep data-p="b" aria-hidden="true"></i>
+  <i class="fp-m" data-substep data-p="c" aria-hidden="true"></i>
+</div>
+
+<style is:global>
+  .fp { width: 100%; max-width: 70rem; margin-inline: auto; display: grid; gap: 0; text-align: left; }
+  [data-slide] .fp p { margin: 0; max-width: none; text-align: left; }
+  .fp-alto { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(0.8rem, 1.6vw, 1.6rem); }
+  .fp-cornice {
+    padding: clamp(0.9rem, 1.6vh, 1.2rem) clamp(1rem, 1.3vw, 1.3rem);
+    border: 2px dashed rgba(255, 255, 255, 0.5); border-radius: 0.8rem; background: rgba(255, 255, 255, 0.05);
+    display: grid; gap: 0.35rem; align-content: start;
+  }
+  .fp-nome { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.1rem, 1.3vw, 1.4rem); line-height: 1.2; color: var(--ink-primary); }
+  .fp-sotto { font-size: clamp(0.86rem, 0.92vw, 0.98rem); color: var(--ink-tertiary); }
+  .fp-fonti { list-style: none; margin: 0.4rem 0 0; padding: 0; display: grid; gap: 0.4rem; }
+  .fp-fonti li { display: grid; gap: 0.1rem; padding: 0.5rem 0.7rem; border-radius: 0.5rem; background: rgba(27, 34, 48, 0.55); border-left: 3px solid var(--color-rosso-chiaro); }
+  .fp-b .fp-fonti li { border-left-color: var(--color-verde-chiaro); }
+  .fp-fonte { font-weight: 600; font-size: clamp(0.98rem, 1.04vw, 1.1rem); color: var(--ink-primary); }
+  .fp-det { font-size: clamp(0.9rem, 0.95vw, 1rem); color: var(--ink-secondary); }
+
+  .fp-frecce { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(0.8rem, 1.6vw, 1.6rem); }
+  .fp-freccia { display: flex; align-items: center; gap: 0.7rem; padding: 0.35rem 0 0.35rem 2rem; min-height: 3.2rem; }
+  /* Il tratteggio è il dato che viaggia, la punta dice il verso: la legenda di Intesa. */
+  .fp-asta { position: relative; width: 2px; align-self: stretch; background: repeating-linear-gradient(180deg, var(--ink-secondary) 0 6px, transparent 6px 11px); }
+  .fp-asta::after { content: ''; position: absolute; left: -5px; bottom: -2px; border: 6px solid transparent; border-top: 8px solid var(--ink-secondary); border-bottom: 0; }
+  .fp-nome-f { font-size: clamp(0.86rem, 0.92vw, 0.98rem); font-weight: 600; color: var(--ink-secondary); }
+
+  .fp-piattaforma {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.8rem 1.4rem;
+    padding: clamp(0.9rem, 1.6vh, 1.2rem) clamp(1rem, 1.3vw, 1.3rem);
+    border: 2px solid var(--color-verde-chiaro); border-radius: 0.8rem; background: rgba(0, 102, 102, 0.28);
+  }
+  .fp-funz { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .fp-funz li { padding: 0.3rem 0.7rem; border-radius: 999px; border: 1px solid rgba(79, 189, 180, 0.7); font-size: clamp(0.86rem, 0.9vw, 0.96rem); font-weight: 600; color: var(--ink-primary); }
+  .fp-resta { margin-top: clamp(0.7rem, 1.4vh, 1rem) !important; font-weight: 600; font-size: clamp(1rem, 1.08vw, 1.14rem); color: var(--ink-primary); }
+  .fp-m { display: block; width: 0; height: 0; }
+
+  .fp .fp-b, .fp .fp-c { opacity: 0; visibility: hidden; transition: opacity 420ms ease, visibility 420ms; }
+  .fp:has(.fp-m[data-p='b'][data-substep-active]) .fp-b,
+  .fp:has(.fp-m[data-p='c'][data-substep-active]) .fp-c { opacity: 1; visibility: visible; }
+  @media (prefers-reduced-motion: reduce) { .fp .fp-b, .fp .fp-c { opacity: 1; visibility: visible; transition: none; } }
+  html:not(.js) .fp .fp-b, html:not(.js) .fp .fp-c { opacity: 1; visibility: visible; }
+  @media (max-width: 900px) { .fp-alto, .fp-frecce { grid-template-columns: minmax(0, 1fr); } }
+</style>

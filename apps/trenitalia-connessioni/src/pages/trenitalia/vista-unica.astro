@@ -1,0 +1,281 @@
+---
+/**
+ * Capitolo 05 — Vista unica del funnel: la fase 0.
+ *
+ * NASCE IL 25 NOV 2026, dopo la call interna sui casi d'uso. Prima di ogni legame
+ * fra le persone c'è una fase che non tocca né i siti né le identità: si portano
+ * in Customer Journey Analytics gli Analytics di trenitalia.com e quelli di Le
+ * Frecce (che contengono anche l'app) e li si legge su una linea del tempo sola.
+ * Le attività prima sono tre: la mappatura fra le due organizzazioni, i
+ * connettori, la rimappatura dei campi.
+ *
+ * STA DOPO I CASI D'USO perché ne è l'approfondimento: i casi dicono che cosa si
+ * fa su Target, questo capitolo che cosa si legge dal primo giorno, e a chi
+ * serve oltre al digitale. È scritto per il responsabile dei canali digitali e
+ * il suo team: le altre direzioni si nominano per la leva che governano, e la
+ * leva resta loro.
+ *
+ * Le figure sono le prime «Figure XD» della Factory (`components/figure/`): nate
+ * qui, si portano nel motore comune quando sono provate. I dati e le tre regole
+ * (nessuna cifra assoluta, nessuna persona legata, campi visti nei beacon) stanno
+ * in `src/data/vista-unica.ts`.
+ */
+import { lega } from '../../utils/lega';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Sfondo from '../../components/Sfondo.astro';
+import TreniNavigation from '../../components/TreniNavigation.astro';
+import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
+import Slide from '@edf/core/blocks/immersive/Slide.astro';
+import CoverHero from '@edf/core/blocks/CoverHero.astro';
+import DiagFasi from '../../components/diagrammi/DiagFasi.astro';
+import FiguraPerimetro from '../../components/figure/FiguraPerimetro.astro';
+import FiguraCampi from '../../components/figure/FiguraCampi.astro';
+import GraficoLinea from '../../components/figure/GraficoLinea.astro';
+import GraficoFunnel from '../../components/figure/GraficoFunnel.astro';
+import { href } from '@edf/core/utils/url.js';
+import { rotte } from '../../data/percorso';
+import { FONTI, TEMPI, CAMPI, SERIE, LINEE, TRATTE, ANALISI, DESTINATARI, CICLO } from '../../data/vista-unica';
+
+const base = import.meta.env.BASE_URL;
+const { next, prev } = rotte('trenitalia/vista-unica');
+const currentPath = Astro.url.pathname;
+
+const serie = LINEE.map((l) => ({ ...l, valori: SERIE[l.id] }));
+const assi = ['settimana 1', 'settimana 2', 'settimana 3', 'settimana 4', 'previsione'];
+const h2 = 'font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;';
+---
+<BaseLayout title="Vista unica del funnel — la fase 0" branch="trenitalia"
+  description="La fase 0: gli Analytics di trenitalia.com e di Le Frecce, app compresa, in una lettura sola. Che cosa si legge dal primo giorno, a chi serve, e come diventa un test su Target.">
+  <div class="fixed top-0 left-0 right-0 z-50">
+    <TreniNavigation currentPath={currentPath} base={base} branch="trenitalia" />
+  </div>
+
+  <DeckContainer nextHref={href(base, next)} prevHref={href(base, prev)}>
+
+    <!-- ── Copertina ──────────────────────────────────────────────────── -->
+    <Slide id="slide-cover" bg="primary" align="center" data-solution="cja">
+      <div slot="backdrop" class="absolute inset-0">
+        <Sfondo id="rl-binari" forza="media" />
+        <div class="fs-grid"></div>
+      </div>
+      <CoverHero
+        eyebrow="Capitolo 05 · La fase 0"
+        numeral="05"
+        title="Vista unica del funnel"
+        lead="Gli Analytics di trenitalia.com e di Le Frecce, app compresa, letti insieme. Senza toccare i siti."
+        size="phase"
+        signature={false}
+      />
+    </Slide>
+
+    <!-- ── Che cosa entra ─────────────────────────────────────────────── -->
+    {/* Primo ↓ la seconda organizzazione, secondo ↓ la piattaforma e le frecce. */}
+    <Slide id="slide-entra" bg="secondary" align="center" data-solution="cja">
+      <div slot="backdrop" class="absolute inset-0"><div class="fs-bg-soft"></div><div class="fs-grid"></div></div>
+      <Sfondo slot="backdrop" id="tc-quiete" forza="forte" />
+      <p class="fs-panel-tag text-center mb-3" data-reveal>LA FASE 0 · CHE COSA ENTRA</p>
+      <h2 class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]" style={h2} data-reveal data-reveal-delay="0.08">
+        I due Analytics entrano come sono, l’app&nbsp;compresa.
+      </h2>
+      <p class="vu-lead text-center fs-card-body max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.14">
+        Ognuno resta nella sua organizzazione, con le sue regole. In Customer Journey Analytics si leggono&nbsp;insieme.
+      </p>
+      <div class="w-full" data-reveal data-reveal-delay="0.2">
+        <FiguraPerimetro sinistra={FONTI.gruppo} destra={FONTI.frecce} piattaforma={FONTI.cja} resta={FONTI.resta} />
+      </div>
+    </Slide>
+
+    <!-- ── In quanto tempo ────────────────────────────────────────────── -->
+    <Slide id="slide-tempi" bg="primary" align="center" data-solution="cja">
+      <div slot="backdrop" class="absolute inset-0"><div class="fs-bg-soft"></div><div class="fs-grid"></div></div>
+      <Sfondo slot="backdrop" id="tc-acciaio" forza="forte" />
+      <p class="fs-panel-tag text-center mb-3" data-reveal>LA FASE 0 · IN QUANTO TEMPO</p>
+      <h2 class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]" style={h2} data-reveal data-reveal-delay="0.08">
+        Circa sei settimane dal via, se la mappatura arriva&nbsp;subito.
+      </h2>
+      <p class="vu-lead text-center fs-card-body max-w-3xl mx-auto mb-7" data-reveal data-reveal-delay="0.14">
+        {lega('Il lavoro sta tutto sul lato dei dati: nessun rilascio su trenitalia.com, su Le Frecce o sull’app.')}
+      </p>
+      <div class="w-full max-w-6xl mx-auto" data-reveal data-reveal-delay="0.2">
+        <DiagFasi fasi={TEMPI.map((t) => ({ ...t, esito: lega(t.esito) }))} />
+      </div>
+      <p class="fs-panel-src text-center mt-5" data-reveal data-reveal-delay="0.3">
+        Ipotesi di Adobe, da confermare con voi e con chi governa Le Frecce. La mappatura fra organizzazioni si chiede ad Adobe; il connettore porta fino a 13&nbsp;mesi di storico.
+      </p>
+    </Slide>
+
+    <!-- ── La rimappatura, in concreto ────────────────────────────────── -->
+    <Slide id="slide-campi" bg="secondary" align="center" data-solution="cja">
+      <div slot="backdrop" class="absolute inset-0"><div class="fs-bg-soft"></div><div class="fs-grid"></div></div>
+      <Sfondo slot="backdrop" id="rl-pensilina" forza="forte" />
+      <p class="fs-panel-tag text-center mb-3" data-reveal>LA RIMAPPATURA, IN CONCRETO</p>
+      <h2 class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]" style={h2} data-reveal data-reveal-delay="0.08">
+        La stessa tratta è scritta due volte, con nomi&nbsp;diversi.
+      </h2>
+      <p class="vu-lead text-center fs-card-body max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.14">
+        L’abbiamo vista nei vostri tag, cercando Roma Termini – Milano Centrale dalla home di&nbsp;trenitalia.com.
+      </p>
+      <div class="w-full" data-reveal data-reveal-delay="0.2">
+        <FiguraCampi sinistra={CAMPI.tcom} destra={CAMPI.frecce} derivato={CAMPI.derivato} attenzione={CAMPI.attenzione} />
+      </div>
+    </Slide>
+
+    <!-- ── Una linea del tempo sola ───────────────────────────────────── -->
+    <Slide id="slide-linea" bg="primary" align="center" data-solution="cja">
+      <div slot="backdrop" class="absolute inset-0"><div class="fs-bg-soft"></div><div class="fs-grid"></div></div>
+      <Sfondo slot="backdrop" id="tr-tetto" forza="forte" />
+      <p class="fs-panel-tag text-center mb-3" data-reveal>LA PRIMA LETTURA · UNA LINEA SOLA</p>
+      <h2 class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]" style={h2} data-reveal data-reveal-delay="0.08">
+        Ricerche, arrivi e conferme sulla stessa linea del&nbsp;tempo.
+      </h2>
+      <p class="vu-lead text-center fs-card-body max-w-3xl mx-auto mb-5" data-reveal data-reveal-delay="0.14">
+        Il giorno in cui le conferme calano e le ricerche no si vede il giorno&nbsp;stesso.
+      </p>
+      <div class="w-full" data-reveal data-reveal-delay="0.2">
+        <GraficoLinea serie={serie} previsione={SERIE.previsione} anomalia={SERIE.anomalia}
+          etichettaAnomalia="il giorno che non torna" assi={assi} />
+      </div>
+      <p class="fs-panel-src text-center mt-4" data-reveal data-reveal-delay="0.3">
+        Esempio illustrativo: curve d’ipotesi, senza scala. Non sono le stesse persone, sono gli stessi&nbsp;giorni.
+      </p>
+    </Slide>
+
+    <!-- ── Per tratta ─────────────────────────────────────────────────── -->
+    <Slide id="slide-tratte" bg="secondary" align="center" data-solution="cja">
+      <div slot="backdrop" class="absolute inset-0"><div class="fs-bg-soft"></div><div class="fs-grid"></div></div>
+      <Sfondo slot="backdrop" id="rl-alba" forza="forte" />
+      <p class="fs-panel-tag text-center mb-3" data-reveal>LA SECONDA LETTURA · TRATTA PER TRATTA</p>
+      <h2 class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]" style={h2} data-reveal data-reveal-delay="0.08">
+        Dove si perde la vendita dice anche a chi&nbsp;parlarne.
+      </h2>
+      <p class="vu-lead text-center fs-card-body max-w-3xl mx-auto mb-5" data-reveal data-reveal-delay="0.14">
+        {lega('Un calo nel passaggio fra i siti è un tema d’acquisto; un calo dopo il prezzo è un tema di prezzo.')}
+      </p>
+      <div class="w-full" data-reveal data-reveal-delay="0.2">
+        <GraficoFunnel righe={TRATTE}
+          gradini={['Ricerche su trenitalia.com', 'Arrivi su Le Frecce', 'Conferme d’acquisto']}
+          avvertenza="Esempio illustrativo: indice 100 sulle ricerche di ogni tratta. Tratte vere, valori d’ipotesi; gradini di siti diversi contano persone diverse." />
+      </div>
+    </Slide>
+
+    <!-- ── Che cosa cambia rispetto a oggi ────────────────────────────── -->
+    <Slide id="slide-analisi" bg="primary" align="center" data-solution="cja">
+      <div slot="backdrop" class="absolute inset-0"><div class="fs-bg-soft"></div><div class="fs-grid"></div></div>
+      <Sfondo slot="backdrop" id="tc-quiete" forza="forte" />
+      <p class="fs-panel-tag text-center mb-3" data-reveal>CHE COSA CAMBIA RISPETTO A OGGI</p>
+      <h2 class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]" style={h2} data-reveal data-reveal-delay="0.08">
+        Cinque analisi che oggi chiedono due report&nbsp;affiancati.
+      </h2>
+      <div class="vu-analisi" data-stagger>
+        {ANALISI.map((a) => (
+          <div class="vu-an">
+            <p class="vu-an-f">{a.funzione}</p>
+            <p class="vu-an-n">{lega(a.nome)}</p>
+            <p class="vu-an-d">{lega(a.domanda)}</p>
+            <p class="vu-an-r"><span>Oggi</span>{lega(a.oggi)}</p>
+            <p class="vu-an-r vu-an-con"><span>Con la vista unica</span>{lega(a.con)}</p>
+          </div>
+        ))}
+      </div>
+    </Slide>
+
+    <!-- ── A chi serve, oltre al digitale ─────────────────────────────── -->
+    {/* Primo ↓ le tre direzioni, secondo ↓ gli altri tre canali. */}
+    <Slide id="slide-a-chi" bg="secondary" align="center" data-solution="cja">
+      <div slot="backdrop" class="absolute inset-0"><div class="fs-bg-soft"></div><div class="fs-grid"></div></div>
+      <Sfondo slot="backdrop" id="rl-banchina" forza="forte" />
+      <p class="fs-panel-tag text-center mb-3" data-reveal>OLTRE IL DIGITALE</p>
+      <h2 class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]" style={h2} data-reveal data-reveal-delay="0.08">
+        La lettura la portate voi; la leva resta a chi la&nbsp;governa.
+      </h2>
+      <p class="vu-lead text-center fs-card-body max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.14">
+        {lega('Le domande che oggi arrivano al digitale da altre direzioni trovano qui la risposta.')}
+      </p>
+      <div class="vu-chi" role="img" aria-label={DESTINATARI.map((d) => `${d.chi}: legge ${d.legge}; la leva resta sua, ${d.leva}.`).join(' ')} data-reveal data-reveal-delay="0.2">
+        <div class="vu-chi-griglia" aria-hidden="true">
+          {DESTINATARI.map((d) => (
+            <div class:list={['vu-chi-c', d.p === 'b' && 'vu-chi-b']}>
+              <p class="vu-chi-n">{d.chi}</p>
+              <p class="vu-chi-l">{lega(d.legge)}</p>
+              <p class="vu-chi-v"><span>La leva resta sua</span>{lega(d.leva)}</p>
+            </div>
+          ))}
+        </div>
+        <i class="vu-chi-m" data-substep data-p="b" aria-hidden="true"></i>
+      </div>
+      <p class="fs-panel-src text-center mt-4" data-reveal data-reveal-delay="0.3">
+        {lega('E per FS Technology, una connessione che si riusa: altre report suite del Gruppo possono entrare dopo, con il parere del DPO.')}
+      </p>
+    </Slide>
+
+    <!-- ── Dalla lettura al test ──────────────────────────────────────── -->
+    <Slide id="slide-ciclo" bg="primary" align="center" data-solution="cja">
+      <div slot="backdrop" class="absolute inset-0"><div class="fs-bg-soft"></div><div class="fs-grid"></div></div>
+      <Sfondo slot="backdrop" id="rl-binari" forza="forte" />
+      <p class="fs-panel-tag text-center mb-3" data-reveal>DALLA LETTURA AL TEST</p>
+      <h2 class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]" style={h2} data-reveal data-reveal-delay="0.08">
+        Ogni lettura diventa un’ipotesi da provare su&nbsp;Target.
+      </h2>
+      <ol class="vu-ciclo" data-stagger>
+        {CICLO.map((c, i) => (
+          <li class="vu-st">
+            <p class="vu-st-n"><span>{i + 1}</span>{c.nome}</p>
+            <p class="vu-st-c">{lega(c.cosa)}</p>
+          </li>
+        ))}
+      </ol>
+      <p class="fs-panel-src text-center mt-5" data-reveal data-reveal-delay="0.3">
+        Un esempio d’ipotesi, non una misura. Finché non c’è il legame la variante si misura sul «Cerca», e l’acquisto si legge in&nbsp;aggregato.
+      </p>
+      <div class="fs-panel fs-panel--alt w-full max-w-5xl mx-auto text-left mt-4 !py-3.5" data-reveal data-reveal-delay="0.36">
+        <p class="fs-panel-src">
+          <strong>Che cosa la fase 0 non fa.</strong> {lega('Non lega le persone fra i due siti e non crea pubblici per Target: questo arriva con il legame sulla pagina di conferma, nel capitolo Convergenza.')}
+        </p>
+      </div>
+
+    </Slide>
+
+  </DeckContainer>
+</BaseLayout>
+
+<style is:global>
+  /* I lead vanno in righe pari: senza, la coda della frase resta sola sulla seconda riga. */
+  [data-slide] .vu-lead { text-wrap: balance; }
+  [data-slide] .gf-tratta { text-wrap: balance; }
+  [data-slide] .vu-analisi p, [data-slide] .vu-chi p, [data-slide] .vu-ciclo p { margin: 0; max-width: none; text-align: left; }
+
+  .vu-analisi { width: 100%; max-width: 84rem; margin-inline: auto; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(0.6rem, 1vw, 1rem); }
+  .vu-an { display: grid; grid-template-rows: auto auto 1fr auto auto; gap: 0.45rem; padding: 0.95rem 1rem; border-radius: 0.7rem; background: rgba(27, 34, 48, 0.6); border: 1px solid rgba(255, 255, 255, 0.16); }
+  .vu-an-f { justify-self: start; padding: 0.15rem 0.6rem; border-radius: 999px; border: 1px solid rgba(79, 189, 180, 0.7); font-size: clamp(0.78rem, 0.82vw, 0.88rem); font-weight: 700; letter-spacing: 0.04em; color: var(--color-verde-chiaro); }
+  .vu-an-n { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.05rem, 1.2vw, 1.3rem); line-height: 1.2; color: var(--ink-primary); }
+  .vu-an-d { font-size: clamp(0.92rem, 0.98vw, 1.04rem); line-height: 1.35; color: var(--ink-secondary); }
+  .vu-an-r { display: grid; gap: 0.1rem; padding-top: 0.45rem; border-top: 1px solid rgba(255, 255, 255, 0.16); font-size: clamp(0.9rem, 0.95vw, 1rem); line-height: 1.35; color: var(--ink-secondary); }
+  .vu-an-r span { font-size: clamp(0.76rem, 0.8vw, 0.86rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-tertiary); }
+  .vu-an-con { color: var(--ink-primary); }
+  .vu-an-con span { color: var(--color-verde-chiaro); }
+
+  .vu-chi { width: 100%; max-width: 80rem; margin-inline: auto; }
+  .vu-chi-griglia { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.6rem, 1vw, 1rem); }
+  .vu-chi-c { display: grid; grid-template-rows: auto 1fr auto; gap: 0.45rem; padding: 0.95rem 1.05rem; border-radius: 0.7rem; background: rgba(27, 34, 48, 0.6); border: 1px solid rgba(255, 255, 255, 0.16); box-shadow: inset 0.25rem 0 0 var(--color-rosso-chiaro); }
+  .vu-chi-b { box-shadow: inset 0.25rem 0 0 var(--color-verde-chiaro); }
+  .vu-chi-n { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.08rem, 1.22vw, 1.32rem); line-height: 1.2; color: var(--ink-primary); }
+  .vu-chi-l { font-size: clamp(0.95rem, 1vw, 1.06rem); line-height: 1.35; color: var(--ink-primary); }
+  .vu-chi-v { display: grid; gap: 0.1rem; padding-top: 0.45rem; border-top: 1px solid rgba(255, 255, 255, 0.16); font-size: clamp(0.9rem, 0.95vw, 1rem); color: var(--ink-secondary); }
+  .vu-chi-v span { font-size: clamp(0.76rem, 0.8vw, 0.86rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-tertiary); }
+  .vu-chi-m { display: block; width: 0; height: 0; }
+  .vu-chi .vu-chi-b { opacity: 0; visibility: hidden; transition: opacity 420ms ease, visibility 420ms; }
+  .vu-chi:has(.vu-chi-m[data-substep-active]) .vu-chi-b { opacity: 1; visibility: visible; }
+  @media (prefers-reduced-motion: reduce) { .vu-chi .vu-chi-b { opacity: 1; visibility: visible; transition: none; } }
+  html:not(.js) .vu-chi .vu-chi-b { opacity: 1; visibility: visible; }
+
+  .vu-ciclo { list-style: none; margin: 0 auto; padding: 0; width: 100%; max-width: 80rem; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 2rem); counter-reset: none; }
+  .vu-st { position: relative; display: grid; gap: 0.5rem; align-content: start; padding: 1rem 1.05rem; border-radius: 0.7rem; background: rgba(27, 34, 48, 0.6); border: 1px solid rgba(255, 255, 255, 0.16); }
+  .vu-st:not(:last-child)::after { content: '→'; position: absolute; right: 0.9rem; top: 1.05rem; font-size: 1.3rem; line-height: 1; color: var(--ink-tertiary); }
+  .vu-st:last-child { border-color: var(--color-verde-chiaro); }
+  .vu-st-n { display: flex; align-items: center; gap: 0.55rem; font-family: var(--font-display); font-weight: 600; font-size: clamp(1.08rem, 1.22vw, 1.32rem); color: var(--ink-primary); }
+  .vu-st-n span { display: inline-grid; place-items: center; width: 1.7rem; height: 1.7rem; border-radius: 50%; background: var(--color-rosso); color: #fff; font-size: 0.95rem; }
+  .vu-st-c { font-size: clamp(0.95rem, 1vw, 1.06rem); line-height: 1.4; color: var(--ink-secondary); }
+
+  @media (max-width: 1100px) { .vu-analisi { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 900px) { .vu-chi-griglia, .vu-ciclo, .vu-analisi { grid-template-columns: minmax(0, 1fr); } .vu-st::after { display: none; } }
+</style>
