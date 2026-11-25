@@ -1,0 +1,115 @@
+---
+/**
+ * DiagOrizzonti — i casi d'uso su una linea del tempo, in due gruppi.
+ *
+ * NASCE IL 25 NOV 2026, dopo le due call del 24: il responsabile dei canali
+ * digitali ha chiesto i casi d'uso nel perimetro che ha dato lui (gli Analytics
+ * dei due siti e il CRM). La forma è quella decisa con il Customer Success: prima
+ * i casi a valore, poi i due gruppi — quello che si fa senza toccare Le Frecce e
+ * quello che si sblocca quando Le Frecce entra nel disegno — poi i tempi. Niente
+ * date: l'unica di sistema è il nuovo portale, e la dice il cliente, non noi.
+ *
+ * I tre orizzonti corrispondono ai tre passi del deck (a · b · c), così la matrice
+ * del capitolo Casi d'uso e questa figura dicono la stessa cosa.
+ *
+ * I PASSI li decide chi presenta: due marcatori `[data-substep]` in fondo, e la
+ * figura legge quale è attivo con `:has()`. Una colonna non ancora entrata è
+ * assente (`visibility: hidden`), non trasparente. Con «Riduci movimento» o senza
+ * JavaScript è tutto acceso: lo stato base è quello finale.
+ */
+export interface Orizzonte {
+  id: 'a' | 'b' | 'c';
+  quando: string;
+  nome: string;
+  casi: string[];
+  serve: string;
+  muove: string;
+}
+interface Props { orizzonti: Orizzonte[]; class?: string }
+import { lega } from '../../utils/lega';
+const { orizzonti, class: className } = Astro.props as Props;
+const etichetta = orizzonti
+  .map((o) => `${o.quando}, ${o.nome}: ${o.casi.join('; ')}. Serve ${o.serve}. Chi muove: ${o.muove}.`)
+  .join(' ');
+---
+<div class:list={['do', className]} data-orizzonti role="img"
+     aria-label={`I casi d'uso nel tempo, in due gruppi. Senza toccare Le Frecce: le prime due colonne. Con Le Frecce nel disegno: la terza. ${etichetta}`}>
+
+  <div class="do-gruppi" aria-hidden="true">
+    <p class="do-g do-g--1"><span>Senza toccare Le Frecce</span></p>
+    <p class="do-g do-g--2 do-c"><span>Con Le Frecce nel disegno</span></p>
+  </div>
+
+  <div class="do-cols" aria-hidden="true">
+    {orizzonti.map((o) => (
+      <div class:list={['do-col', `do-col--${o.id}`, o.id !== 'a' && `do-${o.id}`]}>
+        <p class="do-quando">{o.quando}</p>
+        <p class="do-nome">{lega(o.nome)}</p>
+        <ul class="do-casi">
+          {o.casi.map((c) => <li>{lega(c)}</li>)}
+        </ul>
+        <dl class="do-meta">
+          <dt>Serve</dt><dd>{lega(o.serve)}</dd>
+          <dt>Chi muove</dt><dd>{lega(o.muove)}</dd>
+        </dl>
+      </div>
+    ))}
+  </div>
+
+  <p class="do-asse" aria-hidden="true"><span>oggi</span><span class="do-asse-l"></span><span>con il nuovo portale</span></p>
+
+  <i class="do-m" data-substep data-p="b" aria-hidden="true"></i>
+  <i class="do-m" data-substep data-p="c" aria-hidden="true"></i>
+</div>
+
+<style is:global>
+  .do { width: 100%; max-width: 76rem; margin-inline: auto; display: grid; gap: clamp(0.5rem, 1.2vh, 0.9rem); text-align: left; }
+  [data-slide] .do p { margin: 0; max-width: none; text-align: left; }
+
+  .do-gruppi { display: grid; grid-template-columns: 2fr 1fr; gap: clamp(0.6rem, 1.2vw, 1.2rem); }
+  .do-g {
+    padding-bottom: 0.45rem; border-bottom: 2px solid rgba(255, 255, 255, 0.55);
+    font-size: clamp(0.82rem, 0.88vw, 0.95rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--color-rosso-chiaro);
+  }
+  .do-g--2 { border-bottom-color: var(--color-verde-chiaro); color: var(--color-verde-chiaro); }
+
+  .do-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.6rem, 1.2vw, 1.2rem); }
+  .do-col {
+    display: grid; grid-template-rows: auto auto 1fr auto; gap: clamp(0.4rem, 0.9vh, 0.7rem);
+    padding: clamp(0.9rem, 1.8vh, 1.3rem) clamp(0.9rem, 1.1vw, 1.2rem);
+    border-radius: 0.7rem; border: 1.5px solid rgba(255, 255, 255, 0.45); background: rgba(255, 255, 255, 0.06);
+  }
+  .do-col--a { border-color: var(--color-rosso); background: rgba(217, 24, 53, 0.18); box-shadow: inset 0.28rem 0 0 var(--color-rosso); }
+  .do-col--c { border-style: dashed; border-color: rgba(79, 189, 180, 0.75); background: rgba(0, 102, 102, 0.2); }
+  .do-quando { font-size: clamp(0.8rem, 0.86vw, 0.92rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-tertiary); }
+  .do-nome { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.1rem, 1.3vw, 1.45rem); line-height: 1.2; color: var(--ink-primary); }
+  .do-casi { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; align-content: start; }
+  .do-casi li {
+    position: relative; padding-left: 1rem;
+    font-size: clamp(0.98rem, 1.04vw, 1.1rem); line-height: 1.3; color: var(--ink-primary);
+  }
+  .do-casi li::before { content: ''; position: absolute; left: 0; top: 0.5em; width: 0.42rem; height: 0.42rem; border-radius: 50%; background: var(--color-rosso-chiaro); }
+  .do-col--c .do-casi li::before { background: var(--color-verde-chiaro); }
+  .do-meta { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.25rem 0.6rem; padding-top: 0.6rem; border-top: 1px solid rgba(255, 255, 255, 0.25); }
+  .do-meta dt { font-size: clamp(0.78rem, 0.82vw, 0.88rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-tertiary); padding-top: 0.12em; }
+  .do-meta dd { margin: 0; font-size: clamp(0.95rem, 1vw, 1.05rem); line-height: 1.3; color: var(--ink-secondary); }
+
+  .do-asse { display: flex; align-items: center; gap: 0.7rem; font-size: clamp(0.82rem, 0.88vw, 0.95rem); font-weight: 600; color: var(--ink-tertiary); }
+  .do-asse-l { flex: 1; height: 2px; background: linear-gradient(90deg, var(--color-rosso), var(--color-verde-chiaro)); }
+  .do-m { display: block; width: 0; height: 0; }
+
+  /* ── I passi ─────────────────────────────────────────────────────────── */
+  .do .do-b, .do .do-c { opacity: 0; visibility: hidden; transition: opacity 420ms ease, visibility 420ms; }
+  .do:has(.do-m[data-p='b'][data-substep-active]) .do-b,
+  .do:has(.do-m[data-p='c'][data-substep-active]) .do-c { opacity: 1; visibility: visible; }
+  @media (prefers-reduced-motion: reduce) {
+    .do .do-b, .do .do-c { opacity: 1; visibility: visible; transition: none; }
+  }
+  html:not(.js) .do .do-b, html:not(.js) .do .do-c { opacity: 1; visibility: visible; }
+
+  @media (max-width: 900px) {
+    .do-gruppi { display: none; }
+    .do-cols { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
