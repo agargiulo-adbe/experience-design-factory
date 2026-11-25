@@ -60,9 +60,17 @@ const SOLO_CROSS = process.argv.includes('--cross');
 const SOLO_APERTURA = process.argv.includes('--apertura');
 const DEPOSITA = process.argv.includes('--deposita');
 const I_DECIDI = process.argv.indexOf('--decidi');
+/* --labrador: quali renewal brief di Labrador rinfrescare, e NIENTE se non serve. Labrador
+   (MCP interno Adobe) risponde un account alla volta — la vista sul book intero non la dà,
+   provato il 25 nov 2026 — e ha un budget di chiamate condiviso: quindi qui si SCEGLIE, a
+   zero token, e le chiamate le fa `/accounts rinfresca` in sessione. Criterio: un rinnovo
+   entro 120 gg e un brief assente o più vecchio di 30 gg. */
+const SOLO_LABRADOR = process.argv.includes('--labrador');
 const GIORNI_FERMO = 21;
 const GIORNI_RINNOVO = 120;
 const GIORNI_SNAPSHOT_VECCHIO = 45;
+const GIORNI_BRIEF = 30;               // un renewal brief di Labrador oltre un mese si rifà
+const MAX_BRIEF_GIRO = 6;             // chiamate per giro: il budget di Labrador è condiviso
 const GIORNI_RINNOVO_NOTIFICA = 30;   // nella notifica si guarda vicino, non a 120 gg
 const GIORNI_EVENTO = 14;             // un evento entro due settimane
 const GIORNI_ISCRIZIONE = 3;          // una scadenza d'isciizione è più urgente dell'evento
@@ -358,6 +366,32 @@ if (radar.presente) {
     }
   } else radar.avvisi.push('manca Panorama_AAAAMMGG.md: niente rinnovi');
 }
+
+/* ── la cache di Labrador ──────────────────────────────────────────────────────
+   `Radar/Labrador/<account del book>_AAAAMMGG-<tipo>.md`, una risposta grezza per file.
+   Qui si legge solo l'ETÀ: il contenuto è testo di un agente, e un parser su un formato
+   che non controlliamo è il modo più rapido di stampare numeri sbagliati con sicurezza. */
+const LABRADOR = join(RADAR, 'Labrador');
+const brief = new Map<string, Date>();   // norm(account) → data del brief più recente
+const subId = new Map<string, string>(); // norm(account) → Sub ID risolto
+if (existsSync(LABRADOR)) {
+  for (const f of readdirSync(LABRADOR)) {
+    const m = f.match(/^(.+)_(\d{4})(\d{2})(\d{2})-brief\.md$/);
+    if (!m) continue;
+    const d = new Date(+m[2], +m[3] - 1, +m[4]);
+    const k = norm(m[1]);
+    if (!brief.has(k) || +brief.get(k)! < +d) brief.set(k, d);
+  }
+  const sub = join(LABRADOR, 'sub_id.md');
+  if (existsSync(sub)) for (const r of readFileSync(sub, 'utf8').split('\n')) {
+    const m = r.match(/^(.+?)\s*=\s*(\d+)\s*·/);
+    if (m) subId.set(norm(m[1]), m[2]);
+  }
+}
+const etaBrief = (account: string): number | undefined => {
+  const d = brief.get(norm(account));
+  return d ? giorni(d) : undefined;
+};
 
 /* ── gli eventi ───────────────────────────────────────────────────────────────
    `Radar/eventi.md`: una tabella `data | evento | account | iscrizione | note`.
@@ -758,6 +792,27 @@ if (SOLO_RILIEVI) {
   process.exit(0);
 }
 
+if (SOLO_LABRADOR) {
+  /* Una riga per ACCOUNT, col rinnovo più vicino: è il brief di un account che si chiede,
+     non di una riga di contratto. Output vuoto = niente da rinfrescare. */
+  const visti = new Map<string, Rinnovo[]>();
+  for (const r of rinnoviVicini) visti.set(r.account, [...(visti.get(r.account) ?? []), r]);
+  const da = [...visti.entries()]
+    .filter(([acc]) => { const e = etaBrief(acc); return e === undefined || e > GIORNI_BRIEF; })
+    // prima chi ha un rinnovo che conta per il piano, poi per data: il budget va dove muove M2
+    .sort(([, a], [, b]) => (+!a.some((r) => r.eleggibile) - +!b.some((r) => r.eleggibile)) || (+a[0].quando - +b[0].quando))
+    .slice(0, MAX_BRIEF_GIRO);
+  for (const [acc, rr] of da) {
+    const e = etaBrief(acc);
+    const sid = subId.get(norm(acc));
+    const prodotti = [...new Set(rr.map((r) => r.prodotto))].join(', ');
+    console.log(`RINFRESCA ${acc} · Sub ${sid ?? 'da risolvere'} · rinnovo ${iso(rr[0].quando)} ${taglia(prodotti, 40)} · brief ${e === undefined ? 'mai fatto' : `di ${e} gg`}`);
+  }
+  if (visti.size > da.length + [...visti.keys()].filter((a) => (etaBrief(a) ?? 9e9) <= GIORNI_BRIEF).length)
+    console.log(`e altri ${visti.size - da.length - [...visti.keys()].filter((a) => (etaBrief(a) ?? 9e9) <= GIORNI_BRIEF).length} al prossimo giro`);
+  process.exit(0);
+}
+
 if (SOLO_CROSS) {
   /* La mappa, non un elenco di cose da fare. Si legge così: a sinistra quello che
      l'account ha fra i prodotti che contano per il piano, a destra quello che non ha.
@@ -811,6 +866,7 @@ if (radar.presente) {
   if (eta !== undefined && eta > GIORNI_SNAPSHOT_VECCHIO) {
     console.log(`  ⚠️  Lo snapshot ha ${eta} giorni: i rinnovi e la priorità qui sotto sono vecchi di altrettanto.`);
     console.log('      Si rinfresca coi prompt in Radar/Mappa_Account/_PROMPT_PanoAI.md (~10 minuti).');
+    console.log('      Per i soli rinnovi vicini basta Labrador: `/accounts rinfresca` (brief per account).');
   }
   for (const a of radar.avvisi) console.log(`  ⚠️  ${a}`);
 } else {
@@ -849,12 +905,20 @@ if (rinnoviVicini.length) {
   const conta = rinnoviVicini.filter((r) => r.eleggibile);
   console.log(`\nRINNOVI entro ${GIORNI_RINNOVO} gg: ${rinnoviVicini.length}` +
     (radar.eleggibili.length ? ` · di cui ${conta.length} su prodotti che contano per il piano` : ''));
+  const conBrief = new Set<string>();
   for (const r of rinnoviVicini) {
     const c = contoDi(r.account);
     const stato = !c ? '· NESSUNA CARTELLA' : c.senzaRegistro ? '· senza registro' : '';
+    // l'età del brief una volta per account, sulla sua prima riga: ripeterla è rumore
+    let br = '';
+    if (!conBrief.has(r.account)) {
+      conBrief.add(r.account);
+      const e = etaBrief(r.account);
+      br = e === undefined ? ' · senza brief' : e > GIORNI_BRIEF ? ` · brief di ${e} gg` : ` · brief ✓ ${e} gg`;
+    }
     const peso = r.eleggibile === undefined ? ' ' : r.eleggibile ? '€' : '·';
     const rischio = /not at risk|^n\/a$|^$/i.test(r.rischio) ? '' : ` · ${r.rischio}`;
-    console.log(`  ${peso} ${iso(r.quando)}  ${taglia(r.account, 24).padEnd(24)} ${taglia(r.prodotto, 26).padEnd(26)} ${soldi(r.rbob).padStart(7)} ${stato}${rischio}`);
+    console.log(`  ${peso} ${iso(r.quando)}  ${taglia(r.account, 24).padEnd(24)} ${taglia(r.prodotto, 26).padEnd(26)} ${soldi(r.rbob).padStart(7)} ${stato}${rischio}${br}`);
   }
   if (radar.eleggibili.length) console.log('  («€» = il prodotto conta per M1/M2 del Goal Sheet · «·» = relazione, non attainment)');
 }

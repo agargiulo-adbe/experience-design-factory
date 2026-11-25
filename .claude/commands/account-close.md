@@ -69,6 +69,27 @@ Se il prodotto **non è eleggibile** per il piano (Goal Sheet), scrivilo nella r
 un'occasione di relazione o uno spunto per un collega, non attainment. Confonderli porta a
 lavorare su cose che non contano.
 
+**Prima di proporla, il controllo col CRM.** Apri la cache di Labrador che l'apertura ha
+lasciato (`docs/Adobe/Radar/Labrador/<account del book>_*-chat.md` o `-brief.md`) e guarda
+se in Dynamics esiste già una trattativa su quel prodotto. In chiusura **non si chiama
+Labrador**: si usa la cache, e se manca, la riga si propone senza il controllo e lo si dice.
+- **C'è già** → la riga non nasce come nuova: si aggancia a quella trattativa, con nome,
+  stage e data di chiusura nello Stato e il link Dynamics in `Fonte`. Una seconda riga sullo
+  stesso prodotto è un doppione, e l'AE lo legge come se non avessimo guardato il CRM;
+- **non c'è**, e il brief non lo vede (uno sforamento, un concorrente, un bisogno detto in
+  riunione) → è esattamente il segnale che il Registro esiste per raccogliere, e la riga lo
+  dichiara: «non in CRM al <data della cache>».
+
+## 5ter — Se un numero del Radar è risultato sbagliato, proponi la correzione
+
+Se in apertura Labrador ha dato un numero **più recente e diverso** da quello del Radar
+(una riga di ARR, un prodotto che lo snapshot non aveva, una data di contratto), proponi la
+correzione nel file del Radar che lo possiede — `Anagrafica_account.md` per ARR e prodotti,
+`Panorama_*.md` per rinnovi e rischi — con la fonte accanto: `Labrador <tipo> <data>`.
+**Proponi, non scrivere**, e non copiarlo nel registro: il numero vive in un posto solo.
+Un rischio o una salute che Labrador dà vuoti **non** cancellano quelli del Radar: vuoto
+vuol dire «non lo sa», non «non c'è».
+
 ## 5bis — Le aperture a cui è stato detto SÌ: chiedi l'esito
 
 Nel `Registro_opportunita.md` le righe con id `A-AAAAMMGG-N` sono le **aperture** proposte

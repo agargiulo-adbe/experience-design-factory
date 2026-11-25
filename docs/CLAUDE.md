@@ -44,7 +44,7 @@ Dentro una sessione, tutti e tre si trovano con `/acc` + TAB:
 | --- | --- |
 | `/account-open [<Account>]` | legge il Radar, poi il registro, poi le cinque fonti; **riferisce senza scrivere** |
 | `/account-close [<Account>]` | deposita lo stato, diff prima di salvare |
-| `/accounts [fermi]` | la vista d'insieme su tutti gli account |
+| `/accounts [fermi\|rinfresca]` | la vista d'insieme su tutti gli account; `rinfresca` chiede a Labrador i renewal brief dei rinnovi vicini |
 
 Più due modi che non sono comandi di sessione ma si usano ogni giorno:
 `accounts --apertura` (a chi scrivere oggi) e `accounts --decidi <id> si|no|dopo` (la risposta).
@@ -200,12 +200,38 @@ I file del Radar:
 - `eventi.md` — eventi e occasioni di relazione, a mano. Il giro non legge il calendario
   (costerebbe token, e un invito non dice chi è iscritto a un evento): legge questo file e
   avvisa quando una data è entro 14 giorni o un'iscrizione chiude entro 3
+- `Labrador/` — la **cache** delle risposte di Labrador, una per file
+  (`<account del book>_AAAAMMGG-<tipo>.md`), più `sub_id.md` con i Sub ID già risolti. Vedi
+  sotto «Labrador: i numeri di oggi, un account alla volta»
 - `Sintesi_Task_storico/` — **storia, non si continua.** Era una scansione a mano dei task
   da email, si è fermata dopo due giri: faceva lo stesso mestiere del `ACCOUNT.md`, e due
   posti per «cosa devo a questo cliente» divergono. Quel lavoro lo fa ora `/accounts`.
 
 **Lo snapshot invecchia.** Oltre un mese e mezzo i numeri si citano come datati, mai come
 correnti: `pnpm accounts` stampa l'età in testa.
+
+### Labrador: i numeri di oggi, un account alla volta (25 nov 2026)
+
+Labrador è un insieme di agenti interni Adobe (MCP `labrador`) che leggono CRM, Panorama e il
+SUM dashboard e rispondono in giornata. **Non sostituisce PanoAI nel rinfresco del book**: la
+vista sul portafoglio intero dal MCP non c'è (provato: elenco degli account assegnati,
+panoramica, rinnovi del book — tre rifiuti). Quindi i prompt P0–P5 restano, e Labrador copre
+lo spazio fra uno snapshot e l'altro, **per account**:
+
+| Dove | Che cosa fa con Labrador |
+| --- | --- |
+| `/account-open` | una chiamata (renewal brief se c'è un rinnovo entro 180 gg, altrimenti la chat), o la cache se ha ≤ 7 giorni; riferisce ciò che è nuovo e gli scarti col Radar |
+| `/account-close` | **nessuna chiamata**: prima di proporre una riga al Registro guarda nella cache se il CRM ha già la trattativa, e propone le correzioni del Radar |
+| `/accounts rinfresca` | `accounts --labrador` sceglie a zero token fino a sei account con un rinnovo entro 120 gg e il brief assente o più vecchio di 30 gg; la sessione chiama, una alla volta |
+| giro del mattino | **niente**: resta a zero token, e `pnpm accounts` mostra solo l'età dei brief accanto ai rinnovi |
+
+**Che posto ha nella gerarchia delle fonti.** Le **tabelle** (entitlement, ARR, trattative,
+utilizzo, casi) valgono come il Radar: numeri di sistema, con la data della risposta. Il
+**testo** (AI Summary, strategia, innovazioni, profilo dal web) vale come un riassunto
+automatico: spunto da verificare, mai un fatto nel registro. Un campo vuoto in Labrador
+vuol dire «non lo sa», non «non c'è»: non cancella un rischio o una salute del Radar. I
+limiti misurati sul primo account provato — non vede gli sforamenti, i concorrenti né il
+team giusto — stanno in `/account-open`, passo 1bis.
 
 ## Che cos'è un `ACCOUNT.md`
 

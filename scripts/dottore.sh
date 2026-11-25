@@ -158,6 +158,28 @@ else
   ok 'centralino-adobe' "registrato, sessione salvata il $(stat -f '%Sm' -t '%Y-%m-%d' "$CA_PROFILO/Default")"
 fi
 
+# labrador: agenti interni Adobe (CRM, Panorama, SUM) per /account-open e /accounts rinfresca.
+# È registrato a livello di PROGETTO, non di utente: il ciclo «user scope» qui sopra non lo
+# vede. Il login OAuth non si verifica da fuori — si rifà con /mcp in sessione. Giallo, non
+# rosso: senza Labrador i comandi d'account funzionano lo stesso, con lo snapshot del Radar.
+LAB_OK=$(python3 - "$HOME/.claude.json" "$(git rev-parse --show-toplevel 2>/dev/null)" <<'PY'
+import json, sys
+try:
+    d = json.load(open(sys.argv[1]))
+except Exception:
+    sys.exit(0)
+srv = (d.get('mcpServers') or {}) | ((d.get('projects', {}).get(sys.argv[2]) or {}).get('mcpServers') or {})
+print('si' if 'labrador' in srv else '')
+PY
+)
+LAB_CACHE="$(git rev-parse --show-toplevel 2>/dev/null)/docs/Adobe/Radar/Labrador"
+if [ -z "$LAB_OK" ]; then
+  warn 'labrador' 'non registrato: /account-open e /accounts rinfresca restano sullo snapshot del Radar'
+else
+  ULTIMO_BRIEF=$(ls -t "$LAB_CACHE"/*_*-brief.md 2>/dev/null | head -1)
+  ok 'labrador' "registrato (login: /mcp)${ULTIMO_BRIEF:+ · ultimo brief $(stat -f '%Sm' -t '%Y-%m-%d' "$ULTIMO_BRIEF")}"
+fi
+
 # ── Esito ──────────────────────────────────────────────────────────────────
 printf '\n'
 if [ "$ROSSI" -gt 0 ]; then

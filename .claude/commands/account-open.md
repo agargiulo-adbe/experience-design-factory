@@ -1,5 +1,5 @@
 ---
-description: "Apre un account: legge il registro, poi Outlook, Teams, le trascrizioni Plaud, WhatsApp e la cartella da dove era rimasto, e riferisce cosa è cambiato e chi ha la palla. NON scrive. Uso: /account-open [<Account>]"
+description: "Apre un account: legge il Radar e Labrador, poi il registro, poi Outlook, Teams, le trascrizioni Plaud, WhatsApp e la cartella da dove era rimasto, e riferisce cosa è cambiato e chi ha la palla. NON scrive. Uso: /account-open [<Account>]"
 argument-hint: "[<Account>]"
 ---
 
@@ -40,6 +40,58 @@ registro**. Prendi la data del campo `aggiornato`.
 > Il registro **non ricopia** ARR, date di rinnovo, nomi del team e identificativi: li
 > citerebbe vecchi, e due copie a mano degli stessi numeri divergono sempre. Se un numero
 > del Radar è sbagliato si corregge **nel Radar**, non nel registro.
+
+## 1bis — Labrador: i numeri freschi, con una chiamata
+
+Lo snapshot del Radar si rinfresca a mano una volta al mese; Labrador (MCP `labrador`,
+agenti interni Adobe su CRM, Panorama e SUM dashboard) risponde **oggi**, ma **un account
+alla volta**: la vista sul book intero non la dà (provato il 25 nov 2026, tre domande e tre
+rifiuti). Per questo sta qui, nell'apertura del singolo account, e non nel giro del mattino.
+Vale solo per gli account **del book**; `Adobe` e gli account fuori dai 25 lo saltano.
+
+1. **Prima la cache**: `docs/Adobe/Radar/Labrador/<account come nel book>_AAAAMMGG-brief.md`
+   (o `-chat.md`). Se ha **7 giorni o meno**, si usa quella e non si chiama niente.
+2. **Il Sub ID** sta in `Radar/Labrador/sub_id.md`. Se manca, la prima chiamata col solo nome
+   restituisce una lista di omonimi: si sceglie quello giusto (geo, nome esatto), **si scrive
+   in `sub_id.md`** e da lì in poi ogni domanda porta `<nome>, Sub ID <id>, EMEA`. L'ECC ID
+   dell'anagrafica **non** è il Sub ID.
+3. **Una chiamata, scelta così**:
+   - c'è un rinnovo entro **180 giorni** → `ask_renewal_brief` («Renewal brief for
+     <nome>, Sub ID <id>, EMEA»);
+   - altrimenti → `ask_labrador_chat` («<nome>, Sub ID <id>, EMEA: Adobe products used, with
+     ARR and open opportunities»).
+   Più entità del book nella stessa cartella: una chiamata per entità **con un rinnovo
+   vicino**, al massimo tre. Il budget delle chiamate è **unico e condiviso** fra i cinque
+   strumenti: niente chiamate in parallelo, e un `rate_limited` vuol dire aspettare
+   `retry_after_seconds`, non che lo strumento è rotto.
+4. **La risposta si salva grezza** in cache, con in testa domanda, strumento e data
+   (formato in `Radar/Labrador/LEGGIMI.md`). È una fonte scaricata, come un allegato: la
+   regola «l'apertura non scrive» riguarda il **registro**, che resta intatto.
+
+**Che cosa se ne prende**: quattro cose che il Radar non ha —
+- le **righe di entitlement in scadenza** con SKU, volume, prezzo unitario e Deal Registration;
+- l'**utilizzo rispetto al commit** (dal SUM dashboard), con l'adoption score;
+- le **trattative in CRM** con stage, data di chiusura e link Dynamics;
+- i **casi di supporto aperti** per soluzione;
+- più l'**ARR per prodotto**, che si confronta riga per riga col Radar.
+
+**Che cosa non se ne prende**, misurato sul primo account provato il 25 nov 2026:
+- **non vede gli sforamenti degli add-on**: l'entitlement c'era, lo sforamento oltre il
+  doppio che stava nel Registro opportunità no. È lo stesso punto cieco di PanoAI;
+- **non vede rischio né concorrente**: la salute era vuota, e il rinnovo che Panorama dava
+  «At Risk» per un concorrente dichiarato nel brief era senza rischio;
+- **il team non si legge da lì**: «Account Management» è la colonna del SAM, non l'AE, e
+  almeno un ruolo era sbagliato. Il team resta quello del Radar e della posta;
+- **l'AI Summary, la Recommended Strategy e le Product Innovations sono testo di un modello**:
+  sul primo brief la sintesi deduceva un uso «oltre l'entitlement» su un prodotto che la
+  tabella dello **stesso** brief mostrava coperto. Valgono come un riassunto automatico:
+  spunto, mai fatto. Le innovazioni non vanno in un deck senza le release notes.
+
+`ask_account_research` e `ask_sales_play_strategy` **non** si usano in apertura: la prima,
+senza Sub ID, restituisce solo il profilo dal web (ZoomInfo e simili) con le sezioni interne
+vuote; la seconda dà le play dell'ICP, generiche, che ignorano i segnali dell'account.
+Servono, al più, nel **primo registro** (research, con il Sub ID) o per usare con l'AE il
+nome della play che sta guardando.
 
 ## 2 — Cerca cosa è cambiato, in cinque fonti
 
@@ -180,6 +232,11 @@ cambiate si mostrano come diff, e il verdetto di ogni riga porta il suo motivo.
 ## 3 — Riferisci in chat, in poche righe
 - **il quadro dal Radar**: ARR, prossimo rinnovo con la data, se conta per il piano,
   opportunità aperte, salute — e l'età dello snapshot;
+- **Labrador, con la data della risposta**: solo ciò che è **nuovo** rispetto al Radar
+  (utilizzo sotto o sopra il commit, trattative in CRM che il Radar non ha, casi aperti,
+  righe in scadenza) e gli **scarti**. Uno scarto fra Labrador e Radar è un conflitto fra
+  due fonti con due date: si riporta, e se il numero di Labrador è il più recente si
+  **propone** di correggere il Radar, non lo si corregge da qui;
 - cosa è cambiato dall'ultimo aggiornamento,
 - cosa è bloccato e **da quanto**,
 - chi ha la palla,
@@ -204,6 +261,10 @@ conferma. Chiudi chiedendo che cosa si fa. Per scrivere c'è **`/account-close`*
 1. Guarda cosa c'è: `ls` della cartella, i `.md` già presenti (`DOSSIER-`, `RESEARCH-`,
    `RIUNIONE-`, `PANEL-`), il footprint o il `data.xlsx` se c'è.
 2. Cerca negli ultimi mesi: posta, Teams, trascrizioni `/Plaud`, WhatsApp.
+   Se l'account è nel book, il passo 1bis vale anche qui; in più, **una** chiamata
+   `ask_account_research` col Sub ID dà profilo, footprint e pipeline in un colpo. Il
+   profilo dal web che porta con sé sta in fondo alla gerarchia delle fonti: nessuna riga
+   del registro nasce da lì.
 3. Controlla la memoria: spesso un cliente ha già un file di memoria con i vincoli.
 4. Compila il template di `docs/CLAUDE.md`. **Ogni riga porta la sua fonte.** Quello che
    non si sa si scrive `da chiedere`: non si inventa e non si lascia vuoto.
