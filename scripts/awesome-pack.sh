@@ -36,6 +36,14 @@ if grep -rl "experience-design-factory/" "$D" --include=*.html | head -1 | grep 
 fi
 [ -f "$D/index.html" ] || { echo "✗ manca index.html"; exit 1; }
 
+# Awesome inietta i suoi analytics in ogni pagina, accesi di default (pagine viste,
+# visitatori). La pagina non dichiara misure, e la regola è che la telemetria non
+# si accende su un link cliente senza dirlo: si spengono le pagine viste
+# automatiche con la config documentata, prima dello script iniettato.
+SPEGNI='<script>window.adtechAnalyticsConfig={autoPageviews:false};</script>'
+find "$D" -name '*.html' -print0 | xargs -0 perl -0pi -e "s|<head>|<head>$SPEGNI|i unless /adtechAnalyticsConfig/"
+[ "$(grep -rL adtechAnalyticsConfig "$D" --include='*.html' | wc -l | tr -d ' ')" = 0 ] || { echo "✗ config analytics mancante in qualche pagina"; exit 1; }
+
 mkdir -p "$DEST"; rm -f "$ZIP"
 (cd "$D" && zip -qr "$OLDPWD/$ZIP" .)
 echo "✓ $ZIP  ($(du -h "$ZIP" | cut -f1), $(find "$D" -name '*.html' | wc -l | tr -d ' ') pagine)"
