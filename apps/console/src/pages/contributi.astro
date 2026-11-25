@@ -102,6 +102,9 @@ import { FUNZIONI, LIVELLI } from '@edf/core/utils/contributi';
         return;
       }
       sel.innerHTML = riep.map((r) => `<option value="${esc(r.progetto)}">${esc(r.progetto)}</option>`).join('');
+      // `?p=<progetto>`: chi arriva dalla console di un'experience atterra sul suo progetto.
+      const pDaUrl = new URLSearchParams(location.search).get('p');
+      if (pDaUrl && riep.some((r) => r.progetto === pDaUrl)) sel.value = pDaUrl;
       let filtro = 'nuovo';
       let righe: C[] = [];
 
