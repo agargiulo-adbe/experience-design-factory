@@ -12,11 +12,19 @@ const LETTURA = (process.env.PUBLIC_EDF_EDIZIONE ?? '').trim().toLowerCase() ===
    e il referente confrontano le due versioni dal vivo. */
 const INSIEME = LETTURA && (process.env.PUBLIC_EDF_VERSIONE ?? '').trim().toLowerCase() === 'insieme';
 
+/* Una copia ospitata altrove (25 nov 2026): la rete di Deloitte, e la stessa
+   AdobeCorp, bloccano *.github.io a livello DNS. EDF_SITE / EDF_BASE / EDF_OUT
+   spostano dominio, percorso e cartella senza toccare le tre build di sempre;
+   vuote, non cambiano niente. Vedi `scripts/awesome-pack.sh`. */
+const SITE_ALTROVE = (process.env.EDF_SITE ?? '').trim();
+const BASE_ALTROVE = (process.env.EDF_BASE ?? '').trim();
+const OUT_ALTROVE = (process.env.EDF_OUT ?? '').trim();
+
 export default defineConfig({
-  site: 'https://agargiulo-adbe.github.io',
-  base: INSIEME ? '/experience-design-factory/intesa-storia-insieme'
-    : LETTURA ? '/experience-design-factory/intesa-storia' : '/experience-design-factory/intesa-esperienza-cliente',
-  outDir: INSIEME ? './dist-insieme' : LETTURA ? './dist-lettura' : './dist',
+  site: SITE_ALTROVE || 'https://agargiulo-adbe.github.io',
+  base: BASE_ALTROVE || (INSIEME ? '/experience-design-factory/intesa-storia-insieme'
+    : LETTURA ? '/experience-design-factory/intesa-storia' : '/experience-design-factory/intesa-esperienza-cliente'),
+  outDir: OUT_ALTROVE || (INSIEME ? './dist-insieme' : LETTURA ? './dist-lettura' : './dist'),
   output: 'static',
   trailingSlash: 'always',
   integrations: [

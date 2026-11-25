@@ -38,6 +38,17 @@ export const VERSIONE: Versione = parseVersione(
   EDIZIONE,
 );
 
+/**
+ * Il contatore delle aperture è acceso solo se la build ha le chiavi di
+ * Supabase. Una copia ospitata altrove (Awesome, 25 nov 2026) si costruisce
+ * senza: allora anche la frase «Contiamo quante volte…» deve sparire, se no
+ * la pagina dichiara una misura che non fa.
+ */
+export function conContatore(): boolean {
+  const env = (import.meta as unknown as { env?: Record<string, string | undefined> }).env ?? {};
+  return Boolean(env.PUBLIC_SUPABASE_URL && env.PUBLIC_SUPABASE_ANON_KEY);
+}
+
 export function conContributi(): boolean {
   return VERSIONE === 'insieme';
 }
