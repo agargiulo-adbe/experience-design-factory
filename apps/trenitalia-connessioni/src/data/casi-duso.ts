@@ -91,9 +91,9 @@ export interface Config {
   agisceL: string[];
 }
 export const CONFIG: Config[] = [
-  { id: 'a', nome: 'Fase 0 · Vista unica', quando: 'Si parte da qui', legge: 'i due Analytics, per giorno e per tratta', agisce: 'trenitalia.com, con prove per tutti', serve: 'i due Analytics in CJA e il via libera di chi amministra Le Frecce', breve: 'prove per tutti', leggeL: ['trenitalia.com', 'Le Frecce e app, aggregati'], agisceL: ['trenitalia.com'] },
-  { id: 'b', nome: 'Fase 1 · La conferma', quando: 'Con un campo in più', legge: 'chi ha cercato e poi ha comprato', agisce: 'trenitalia.com, con i pubblici', serve: 'il campo in più verso Le Frecce, il partner e il parere del DPO', breve: 'pubblici, sul venduto', leggeL: ['trenitalia.com', 'Le Frecce e app, aggregati', 'L’acquisto, legato alla ricerca'], agisceL: ['trenitalia.com'] },
-  { id: 'c', nome: 'Fase 2 · Il login', quando: 'Con il login sul sito', legge: 'la stessa persona sui due siti, con lo status', agisce: 'trenitalia.com, Le Frecce e app', serve: 'il login su trenitalia.com e, per Le Frecce e l’app, il nuovo portale', breve: 'la persona, anche fuori dal sito', leggeL: ['trenitalia.com', 'Le Frecce e app, aggregati', 'L’acquisto, legato alla ricerca', 'CRM e fedeltà', 'Le Frecce, il percorso'], agisceL: ['trenitalia.com', 'Le Frecce', 'App Trenitalia'] },
+  { id: 'a', nome: 'Fase 0 · Vista unica', quando: 'Si parte da qui', legge: 'i due Analytics, per giorno e per tratta', agisce: 'trenitalia.com, con prove per tutti', serve: 'i due Analytics in CJA; il via libera di FS Technology, di Le Frecce e del DPO', breve: 'prove senza pubblici', leggeL: ['trenitalia.com', 'Le Frecce e app, aggregati'], agisceL: ['trenitalia.com'] },
+  { id: 'b', nome: 'Fase 1 · La conferma', quando: 'Dopo le prime letture', legge: 'chi ha cercato e poi ha comprato', agisce: 'trenitalia.com, con i pubblici', serve: 'prima la conferma legata, misurata in CJA senza licenze nuove; poi i pubblici verso Target, con Real-Time CDP o Journey Optimizer', breve: 'pubblici, fino alla conferma', leggeL: ['trenitalia.com', 'Le Frecce e app, aggregati', 'L’acquisto, legato alla ricerca'], agisceL: ['trenitalia.com'] },
+  { id: 'c', nome: 'Fase 2 · Il login', quando: 'Con il login sul sito', legge: 'la stessa persona sui due siti, con lo status', agisce: 'trenitalia.com, Le Frecce e app', serve: 'il login su trenitalia.com e, per Le Frecce e l’app, il nuovo portale: decisioni del Gruppo', breve: 'la persona, anche fuori dal sito', leggeL: ['trenitalia.com', 'Le Frecce e app, aggregati', 'L’acquisto, legato alla ricerca', 'CRM e fedeltà', 'Le Frecce, il percorso'], agisceL: ['trenitalia.com', 'Le Frecce', 'App Trenitalia'] },
 ];
 
 /** I passi sono in fila: un caso vale dal suo passo in poi. */
@@ -234,7 +234,7 @@ export const CASI: Caso[] = [
     leva: 'conversione',
     config: 'a',
     superfici: ['tcom'],
-    titolo: 'La home sa da dove parti',
+    titolo: 'La home con le tratte più cercate dall’area',
     punto: 'Target riconosce da sé l’area; CJA aggiunge le tratte più cercate da chi parte da lì.',
     // Esempio portato da loro il 27 ott; una prima versione con la
     // geolocalizzazione è già in produzione su trenitalia.com (dall'account, 16
@@ -247,12 +247,11 @@ export const CASI: Caso[] = [
       { chi: 'utente', t: 'Crea un gruppo per chi si collega dall’area di Verona e mostragli le tratte più cercate da lì.' },
       { chi: 'coworker', t: 'Ho letto le ricerche partite da quell’area su trenitalia.com. Preparo la bozza dell’attività?' },
       { chi: 'utente', t: 'Sì, in cima alla home, contro la home di oggi.' },
-      { chi: 'coworker', t: 'Bozza pronta, con la durata calcolata sul traffico dell’area. La approva il marketing, la pubblica il team Target.' },
+      { chi: 'coworker', t: 'Bozza pronta; la durata la stimiamo con il calcolatore di Target sul traffico dell’area. La approva il marketing, la pubblica il team Target.' },
     ],
     profilo: [
       { k: 'Area', v: 'Verona' },
       { k: 'Dispositivo', v: 'computer' },
-      { k: 'Ultima ricerca', v: 'Milano' },
     ],
     varianti: [
       { t: 'La home di oggi', n: 'offerta nazionale' },
@@ -270,7 +269,7 @@ export const CASI: Caso[] = [
     ],
     schermo: {
       dove: 'trenitalia.com',
-      titolo: 'Da Verona Porta Nuova',
+      titolo: 'Da Verona',
       tessere: [
         { t: 'Milano Centrale', n: 'la più cercata' },
         { t: 'Venezia Santa Lucia', n: 'seconda' },
@@ -283,10 +282,10 @@ export const CASI: Caso[] = [
       { t: 'Che cosa vede: le tratte da quella stazione', dove: 'Target', skill: 'target-vec' },
       { t: 'La misura: quanti passano all’acquisto', dove: 'CJA', skill: 'target-activity-verdict' },
     ],
-    kpi: ['Ricerche avviate dalla home', 'Clic verso l’acquisto', 'Venduto per area, dalla fase 1'],
+    kpi: ['Ricerche avviate dalla home', 'Clic verso l’acquisto', 'Conversione per area, dalla fase 1'],
     giudizio: {
       misura: 'Ricerche avviate e clic verso l’acquisto di chi ha visto la variante, contro chi ha visto la home di oggi.',
-      conAcquisto: 'Gli acquisti su Le Frecce dei due gruppi, e le tratte più comprate al posto delle più cercate.',
+      conAcquisto: 'Quante visite dei due gruppi arrivano alla conferma su Le Frecce.',
     },
     origine: 'cliente',
   },
@@ -329,14 +328,14 @@ export const CASI: Caso[] = [
       { k: 'Le fonti', v: 'trenitalia.com', e: 'apertura del dettaglio «Abbonamento mensile» · ricerca Bologna → Firenze' },
       { k: 'Customer Journey Analytics', v: 'tiene insieme le visite dello stesso browser su trenitalia.com', e: 'ha aperto il dettaglio, non ha comprato · tratta: Bologna → Firenze' },
       { k: 'Adobe Target', v: 'riceve il gruppo e sceglie fra le varianti', e: 'alla visita dopo, in cima: l’abbonamento su Bologna → Firenze' },
-      { k: 'E torna indietro', v: 'il risultato si legge in CJA, nello stesso report', e: 'quanti comprano su Le Frecce l’abbonamento proposto' },
+      { k: 'E torna indietro', v: 'il risultato si legge in CJA, nello stesso report', e: 'quante visite del gruppo arrivano alla conferma su Le Frecce' },
     ],
     schermo: {
       dove: 'trenitalia.com',
       titolo: 'Bologna → Firenze, ogni giorno',
       tessere: [
         { t: 'Abbonamento mensile', n: 'sulla tua tratta' },
-        { t: 'Viaggi in un mese', n: 'senza limiti' },
+        { t: 'Sulla tratta cercata', n: 'il mese intero' },
         { t: 'Rinnovo', n: 'online' },
       ],
     },
@@ -346,9 +345,9 @@ export const CASI: Caso[] = [
       { t: 'Che cosa vede: l’abbonamento sulla sua tratta', dove: 'Target', skill: 'target-vec' },
       { t: 'La misura: quanti passano all’acquisto', dove: 'CJA', skill: 'target-activity-verdict' },
     ],
-    kpi: ['Clic verso l’acquisto', 'Abbonamenti venduti', 'Ritorno sulla stessa tratta'],
+    kpi: ['Clic verso l’acquisto', 'Visite che arrivano alla conferma', 'Ritorno sulla stessa tratta'],
     giudizio: {
-      misura: 'Gli abbonamenti comprati su Le Frecce dal gruppo esposto, contro un gruppo di controllo fisso; chi li ha già comprati esce dal gruppo.',
+      misura: 'Le visite del gruppo esposto che arrivano alla conferma, contro un gruppo di controllo fisso. Quale abbonamento, solo se la conferma porta anche il prodotto.',
     },
     origine: 'cliente',
   },
@@ -385,8 +384,7 @@ export const CASI: Caso[] = [
     ],
     varianti: [
       { t: 'Sconto sul biglietto', n: '−10%' },
-      { t: 'I vantaggi del suo status', n: 'FrecciaLounge, Fast Track', match: true },
-      { t: 'Invito a iscriversi', n: 'già socio' },
+      { t: 'I vantaggi del suo status', n: 'come da regolamento 2027', match: true },
     ],
     push: '',
     ponte: 'il pubblico passa a Target, con lo status',
@@ -395,7 +393,7 @@ export const CASI: Caso[] = [
     flusso: [
       { k: 'Le fonti', v: 'trenitalia.com, il login e il CRM', e: 'il login su trenitalia.com porta il codice cliente: «status Oro»' },
       { k: 'Customer Journey Analytics', v: 'porta lo status accanto al comportamento sul sito', e: 'status Oro · tratta abituale Roma → Milano' },
-      { k: 'Adobe Target', v: 'riceve il gruppo e sceglie fra le varianti', e: 'mostra FrecciaLounge e Fast Track, prima di uno sconto' },
+      { k: 'Adobe Target', v: 'riceve il gruppo e sceglie fra le varianti', e: 'mostra i vantaggi del suo livello, prima di uno sconto' },
       { k: 'E torna indietro', v: 'il risultato si legge in CJA, nello stesso report', e: 'ritorno nel tempo, e clic sui vantaggi' },
     ],
     schermo: {
@@ -403,8 +401,8 @@ export const CASI: Caso[] = [
       titolo: 'I vantaggi dello status Oro',
       tessere: [
         { t: 'Ingresso FrecciaLounge', n: 'con lo status' },
-        { t: 'Upgrade gratuiti', n: 'dell’anno' },
-        { t: 'Fast Track', n: 'Termini e Centrale' },
+        { t: 'I vantaggi del livello', n: 'dal regolamento 2027' },
+        { t: 'Prima di uno sconto', n: 'non al suo posto' },
       ],
     },
     fonti: ['tcom', 'crm'],
@@ -413,9 +411,9 @@ export const CASI: Caso[] = [
       { t: 'Che cosa vede: i servizi compresi', dove: 'Target', skill: 'target-design' },
       { t: 'La misura: ritorno e clic sui vantaggi', dove: 'CJA', skill: 'segmenti in Coworker Chat' },
     ],
-    kpi: ['Clic sui vantaggi compresi', 'Ritorno nel tempo', 'Ricavo per cliente Oro'],
+    kpi: ['Clic sui vantaggi compresi', 'Ritorno nel tempo', 'Ricavo netto per cliente, al netto dei benefici'],
     giudizio: {
-      misura: 'Ritorno e ricavo dei clienti Oro esposti, dagli acquisti su Le Frecce, contro un gruppo di controllo fisso.',
+      misura: 'Ricavo incrementale netto dei clienti esposti rispetto al controllo, al netto del costo dei benefici; i vantaggi si allineano al regolamento 2027.',
     },
     origine: 'adobe',
   },
@@ -436,7 +434,7 @@ export const CASI: Caso[] = [
     conversazione: [
       { chi: 'utente', t: 'Chi viaggia in Standard due volte al mese: mostragli l’upgrade che il revenue management ha prezzato.' },
       { chi: 'coworker', t: 'Trovato il gruppo. Uso solo i treni e il prezzo del feed di vendita?' },
-      { chi: 'utente', t: 'Sì, con un tetto di frequenza da configurare.' },
+      { chi: 'utente', t: 'Sì, con un tetto di frequenza costruito con uno script di profilo in Target.' },
       { chi: 'coworker', t: 'Bozza pronta per Le Frecce e l’app. La approva il revenue management, la pubblica il team Target.' },
     ],
     profilo: [
@@ -473,9 +471,9 @@ export const CASI: Caso[] = [
       { t: 'Che cosa vede: l’upgrade già prezzato', dove: 'Target', skill: 'target-design' },
       { t: 'La misura: ricavo in più, contro un controllo', dove: 'CJA', skill: 'target-test-calculator' },
     ],
-    kpi: ['Ricavo in più per cliente esposto', 'Ricavo per posto-km', 'Ricavo medio per biglietto'],
+    kpi: ['Ricavo netto per posto-km', 'Riempimento della Business', 'Posti in upgrade, sotto il tetto del revenue management'],
     giudizio: {
-      misura: 'Ricavo in più per cliente esposto, contro chi vede la proposta di oggi; posto-km e prezzo medio restano il vincolo del revenue management.',
+      misura: 'Ricavo netto per posto-km e riempimento della Business, fra treni con l’offerta e treni senza; il tetto di posti lo fissa il revenue management.',
     },
     origine: 'cliente',
   },
@@ -512,7 +510,7 @@ export const CASI: Caso[] = [
       { k: 'Le fonti', v: 'trenitalia.com e l’app Trenitalia', e: 'ricerca sul computer: «Bologna → Firenze»' },
       { k: 'Customer Journey Analytics', v: 'lega il web e l’app della stessa persona, con il login', e: 'ha cercato, non ha comprato · stessa persona sull’app' },
       { k: 'Adobe Target', v: 'riceve il gruppo e sceglie la variante, in app', e: 'in cima all’app: la tratta cercata' },
-      { k: 'Richiede in più', v: 'Target nell’app e l’Analytics dell’app, da confermare', e: 'il pubblico si aggiorna a intervalli: vale dalle aperture successive' },
+      { k: 'Richiede in più', v: 'Target nell’app: versione dell’SDK mobile ed eventuale rilascio dell’app, da confermare', e: 'il pubblico si aggiorna a intervalli: vale dalle aperture successive' },
     ],
     schermo: {
       dove: 'app Trenitalia',
@@ -580,9 +578,10 @@ export const FONTI_CAPITOLO = [
 export const RIFERIMENTO = {
   nome: 'Brightline',
   cosa: 'Operatore ferroviario ad alta velocità che legge il viaggio con Customer Journey Analytics. Target non fa parte del suo insieme di prodotti.',
-  numeri: [
-    { v: '95%', l: 'della crescita dei ricavi dai canali digitali, con Real-Time CDP, CJA, Journey Optimizer e AEM' },
-  ],
+  // Dal panel del 26 nov 2026: la cifra del 95% è una quota della crescita, non un
+  // effetto dei prodotti, e Brightline non usa Target. Resta come esempio di
+  // prodotto, senza numeri.
+  numeri: [] as { v: string; l: string }[],
   url: 'https://business.adobe.com/customer-success-stories/brightline.html',
   // Verificato il 28 ott 2026 sulla pagina stessa: «70% reduction in time to
   // book in-app», «95% of revenue growth now comes from digital channels»,

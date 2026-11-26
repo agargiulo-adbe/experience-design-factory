@@ -34,7 +34,7 @@ import GraficoLinea from '../../components/figure/GraficoLinea.astro';
 import GraficoFunnel from '../../components/figure/GraficoFunnel.astro';
 import { href } from '@edf/core/utils/url.js';
 import { rotte } from '../../data/percorso';
-import { FONTI, TEMPI, CAMPI, SERIE, LINEE, TRATTE, ANALISI, DESTINATARI, CICLO } from '../../data/vista-unica';
+import { FONTI, TEMPI, PRIMA, CAMPI, SERIE, LINEE, TRATTE, ANALISI, DESTINATARI, CICLO } from '../../data/vista-unica';
 
 const base = import.meta.env.BASE_URL;
 const { next, prev } = rotte('trenitalia/vista-unica');
@@ -62,7 +62,7 @@ const h2 = 'font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-heig
         eyebrow="Capitolo 04 · La fase 0"
         numeral="04"
         title="Vista unica del funnel"
-        lead="Gli Analytics di trenitalia.com e di Le Frecce, app compresa, letti insieme. Senza toccare i siti."
+        lead="Gli Analytics di trenitalia.com e di Le Frecce, app compresa, letti insieme. Senza rilasci sui siti."
         size="phase"
         signature={false}
       />
@@ -100,7 +100,32 @@ const h2 = 'font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-heig
         <DiagFasi fasi={TEMPI.map((t) => ({ ...t, esito: lega(t.esito) }))} />
       </div>
       <p class="fs-panel-src text-center mt-5" data-reveal data-reveal-delay="0.3">
-        Ipotesi di Adobe, da confermare con voi e con chi governa Le Frecce. La mappatura fra organizzazioni si chiede ad Adobe; il connettore porta fino a 13&nbsp;mesi di storico.
+        Ipotesi di Adobe, da confermare con voi e con chi governa Le Frecce. La mappatura fra organizzazioni è una funzione prevista: si chiede tramite Adobe, con l’approvazione scritta degli amministratori di ciascuna organizzazione ·
+        <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/compare-aa-cja/cja-aa-comparison/mapping-data-ims-orgs" target="_blank" rel="noopener noreferrer">Experience League</a>. Fino a 13&nbsp;mesi di storico, da confermare per la report suite di Le&nbsp;Frecce.
+      </p>
+    </Slide>
+
+    <!-- ── Prima di accendere, e prima di passare alla fase 1 ──────────── -->
+    {/* Nasce dal panel del 26 nov 2026: le licenze, il DPO già in fase 0 e un
+        cancello prima della fase 1 erano le tre condizioni del sì. Nessuna cifra:
+        la proposta economica arriva a parte. */}
+    <Slide id="slide-prima" bg="secondary" align="center" data-solution="cja">
+      <div slot="backdrop" class="absolute inset-0"><div class="fs-bg-soft"></div><div class="fs-grid"></div></div>
+      <Sfondo slot="backdrop" id="tc-quiete" forza="forte" />
+      <p class="fs-panel-tag text-center mb-3" data-reveal>LA FASE 0 · LE CONDIZIONI</p>
+      <h2 class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]" style={h2} data-reveal data-reveal-delay="0.08">
+        Tre cose da decidere prima, e una regola per&nbsp;proseguire.
+      </h2>
+      <div class="vu-prima" data-stagger>
+        {PRIMA.map((c) => (
+          <div class="vu-pr">
+            <p class="vu-pr-k">{c.k}</p>
+            <ul>{c.v.map((x) => <li>{lega(x)}</li>)}</ul>
+          </div>
+        ))}
+      </div>
+      <p class="fs-panel-src text-center mt-5" data-reveal data-reveal-delay="0.3">
+        {lega('La proposta economica arriva a parte, con le voci per fase. Le soglie non sono nostre: si fissano insieme sui valori delle prime due settimane.')}
       </p>
     </Slide>
 
@@ -129,7 +154,7 @@ const h2 = 'font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-heig
         Ricerche, arrivi e conferme sulla stessa linea del&nbsp;tempo.
       </h2>
       <p class="vu-lead text-center fs-card-body max-w-3xl mx-auto mb-5" data-reveal data-reveal-delay="0.14">
-        Il giorno in cui le conferme calano e le ricerche no si vede il giorno&nbsp;stesso.
+        Il giorno in cui le conferme calano e le ricerche no compare sulla stessa linea, senza affiancare due&nbsp;report.
       </p>
       <div class="w-full" data-reveal data-reveal-delay="0.2">
         <GraficoLinea serie={serie} previsione={SERIE.previsione} anomalia={SERIE.anomalia}
@@ -149,7 +174,7 @@ const h2 = 'font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-heig
         Dove si perde la vendita dice anche a chi&nbsp;parlarne.
       </h2>
       <p class="vu-lead text-center fs-card-body max-w-3xl mx-auto mb-5" data-reveal data-reveal-delay="0.14">
-        {lega('Un calo nel passaggio fra i siti è un tema d’acquisto; un calo dopo il prezzo è un tema di prezzo.')}
+        {lega('Un calo nel passaggio fra i siti è un tema d’acquisto; un calo dopo il prezzo si legge con il revenue management.')}
       </p>
       <div class="w-full" data-reveal data-reveal-delay="0.2">
         <GraficoFunnel righe={TRATTE}
@@ -164,7 +189,7 @@ const h2 = 'font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-heig
       <Sfondo slot="backdrop" id="tc-quiete" forza="forte" />
       <p class="fs-panel-tag text-center mb-3" data-reveal>CHE COSA CAMBIA RISPETTO A OGGI</p>
       <h2 class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]" style={h2} data-reveal data-reveal-delay="0.08">
-        Cinque analisi che oggi chiedono due report&nbsp;affiancati.
+        Cinque analisi che oggi si fanno a mano, o su due&nbsp;report.
       </h2>
       <div class="vu-analisi" data-stagger>
         {ANALISI.map((a) => (
@@ -204,7 +229,7 @@ const h2 = 'font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-heig
         <i class="vu-chi-m" data-substep data-p="b" aria-hidden="true"></i>
       </div>
       <p class="fs-panel-src text-center mt-4" data-reveal data-reveal-delay="0.3">
-        {lega('E per FS Technology, una connessione che si riusa: altre report suite del Gruppo possono entrare dopo, con il parere del DPO.')}
+        {lega('Una domanda per FS Technology: la stessa connessione può accogliere altre report suite del Gruppo, con il parere del DPO. Ha senso nel vostro piano?')}
       </p>
     </Slide>
 
@@ -244,6 +269,15 @@ const h2 = 'font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-heig
   [data-slide] .gf-tratta { text-wrap: balance; }
   [data-slide] .vu-analisi p, [data-slide] .vu-chi p, [data-slide] .vu-ciclo p { margin: 0; max-width: none; text-align: left; }
 
+  .vu-prima { width: 100%; max-width: 80rem; margin-inline: auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.8rem, 1.4vw, 1.4rem); text-align: left; }
+  .vu-pr { padding: clamp(0.9rem, 1.8vh, 1.3rem) clamp(1rem, 1.2vw, 1.3rem); border-radius: 0.7rem; border: 1px solid rgba(255, 255, 255, 0.22); background: rgba(27, 34, 48, 0.55); }
+  .vu-pr:last-child { border-color: rgba(79, 189, 180, 0.6); box-shadow: inset 0.28rem 0 0 var(--color-verde-chiaro); }
+  [data-slide] .vu-pr-k { margin: 0 0 0.6rem; font-family: var(--font-display); font-weight: 600; font-size: clamp(1.1rem, 1.25vw, 1.35rem); color: var(--ink-primary); text-align: left; max-width: none; }
+  .vu-pr ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.45rem; }
+  .vu-pr li { text-wrap: balance; position: relative; padding-left: 1rem; font-size: clamp(0.98rem, 1.04vw, 1.1rem); line-height: 1.35; color: var(--ink-secondary); }
+  .vu-pr li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 0.4rem; height: 0.4rem; border-radius: 50%; background: var(--color-rosso-chiaro); }
+  .vu-pr:last-child li::before { background: var(--color-verde-chiaro); }
+  @media (max-width: 900px) { .vu-prima { grid-template-columns: minmax(0, 1fr); } }
   .vu-analisi { width: 100%; max-width: 84rem; margin-inline: auto; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(0.6rem, 1vw, 1rem); }
   .vu-an { display: grid; grid-template-rows: auto auto 1fr auto auto; gap: 0.45rem; padding: 0.95rem 1rem; border-radius: 0.7rem; background: rgba(27, 34, 48, 0.6); border: 1px solid rgba(255, 255, 255, 0.16); }
   .vu-an-f { justify-self: start; padding: 0.15rem 0.6rem; border-radius: 999px; border: 1px solid rgba(79, 189, 180, 0.7); font-size: clamp(0.78rem, 0.82vw, 0.88rem); font-weight: 700; letter-spacing: 0.04em; color: var(--color-verde-chiaro); }

@@ -36,7 +36,7 @@ export const FONTI = {
     nome: 'La report suite di Le Frecce',
     sotto: 'nell’organizzazione di Le Frecce',
     fonti: [
-      { nome: 'Le Frecce, sul web', dettaglio: 'i risultati, la scelta, la conferma' },
+      { nome: 'Le Frecce, sul web', dettaglio: 'all’arrivo e alla conferma; i passaggi in mezzo da verificare' },
       { nome: 'L’app', dettaglio: 'la stessa report suite, dall’SDK mobile' },
     ],
     freccia: 'connettore Analytics, con la mappatura fra organizzazioni',
@@ -46,17 +46,37 @@ export const FONTI = {
     sotto: 'una connessione, due dataset, un data view',
     funzioni: ['campi derivati', 'metriche fra i due siti', 'previsione e anomalie', 'Coworker'],
   },
-  resta: 'Nessun tag cambia. Nessuna persona si lega: si leggono giorni e tratte.',
+  resta: 'Nessun tag cambia. Nessuna persona si lega: si leggono giorni e tratte. Le righe di visita entrano con identificativi pseudonimi, ed è un trattamento che il DPO vede già qui.',
 };
 
 /* L'ipotesi sui tempi: è nostra e lo dice. La mappatura fra organizzazioni si
    chiede ad Adobe; il connettore porta indietro fino a 13 mesi (Experience League,
    «Connect Adobe Analytics to Experience Platform»). */
 export const TEMPI = [
-  { n: '0', nome: 'Prima del via', durata: 'contratto', esito: 'CJA ed Experience Platform attivi; il via libera di chi amministra Le Frecce' },
-  { n: '1', nome: 'Le due fonti', durata: '1–2 settimane', esito: 'mappatura fra organizzazioni, connettori, 13 mesi di storico' },
+  { n: '0', nome: 'Prima del via', durata: 'contratto', esito: 'CJA a contratto; il via libera di FS Technology, di chi amministra Le Frecce e del DPO' },
+  { n: '1', nome: 'Le due fonti', durata: '1–2 settimane', esito: 'mappatura fra organizzazioni, connettori, lo storico' },
   { n: '2', nome: 'La rimappatura', durata: '2 settimane', esito: 'campi resi uguali, data view, controlli sui numeri' },
   { n: '3', nome: 'Le prime letture', durata: '2 settimane', esito: 'le analisi di questo capitolo, con il vostro team' },
+];
+
+/* ── Prima di accendere, e prima di proseguire ───────────────────────── */
+/* Dal panel del 26 nov 2026. La licenza si dice per quello che è (CJA non è nel
+   contratto di oggi; la destinazione Target chiede Real-Time CDP o Journey
+   Optimizer, e serve solo dalla fase 1). Il DPO vede già la fase 0, perché il
+   connettore porta righe di visita con identificativi pseudonimi. E la fase 1 si
+   sviluppa solo dopo le prime letture: è un cancello, non un parallelo. */
+export const PRIMA = [
+  { k: 'A contratto',
+    v: ['Customer Journey Analytics, che oggi non è nel vostro contratto: il pacchetto si fissa insieme.',
+        'La fase 1 ha due tempi: la conferma legata si misura in CJA senza licenze nuove; i pubblici verso Target chiedono Real-Time CDP o Journey Optimizer.'] },
+  { k: 'Al DPO e a FS Technology',
+    v: ['I campi che entrano e quelli esclusi, la conservazione, la regione dell’istanza, la finalità di consenso.',
+        'La connessione, gli accessi e la sicurezza, che autorizza FS Technology.',
+        'Per Target in home: nessuna finalità nuova, da verificare con il gestore del consenso; gli spazi li assegna il marketing.'] },
+  { k: 'Per passare alla fase 1',
+    v: ['La perdita fra i due siti, tratta per tratta.',
+        'La quota di conferme che arrivano da trenitalia.com: è quella che la fase 1 può legare.',
+        'La quota di Safari e iOS. Se non si prosegue, connessione, dati, data view e mappatura si cancellano, con una conferma scritta.'] },
 ];
 
 /* ── La stessa tratta, scritta due volte ─────────────────────────────── */
@@ -116,12 +136,12 @@ export const TRATTE = [
   { tratta: 'Napoli Centrale → Roma Termini', ricerche: 100, arrivi: 38, conferme: 21,
     lettura: 'si perde nel passaggio fra i due siti', chi: 'Customer Operations' },
   { tratta: 'Milano Centrale → Venezia Santa Lucia', ricerche: 100, arrivi: 66, conferme: 17,
-    lettura: 'arriva, vede il prezzo, si ferma', chi: 'Marketing e Revenue Management' },
+    lettura: 'arriva, vede il prezzo, si ferma: si legge con riempimento e ricavo per posto-km', chi: 'il revenue management' },
   /* La terza lettura è della call del 26 nov: su una tratta le conferme possono
      superare gli arrivi da trenitalia.com, perché lì si entra direttamente da Le
      Frecce. Dice qualcosa sul ruolo del sito, tratta per tratta. */
   { tratta: 'Firenze S.M.N. → Roma Termini', ricerche: 100, arrivi: 41, conferme: 47,
-    lettura: 'si compra più di quanto arrivi: si entra da Le Frecce', chi: 'chi decide il ruolo di trenitalia.com' },
+    lettura: 'si compra più di quanto arrivi: si entra da Le Frecce', chi: 'Sales e digitale insieme' },
 ];
 
 /* ── Le analisi del primo giorno: oggi, e con la vista unica ─────────── */
@@ -138,7 +158,7 @@ export const ANALISI = [
     funzione: 'anomalie' },
   { nome: 'Il web o l’app, per tratta',
     domanda: 'Su quali tratte la conferma passa di più dall’app?',
-    oggi: 'Sta in un’altra report suite, che si apre a parte.',
+    oggi: 'Il dato dell’app sta nella report suite di Le Frecce, separata da quella di trenitalia.com.',
     con: 'Web e app nello stesso data view, divisi per tratta e per giorno.',
     funzione: 'una connessione' },
   { nome: 'Le settimane che arrivano',
@@ -146,11 +166,15 @@ export const ANALISI = [
     oggi: 'Si ragiona sullo storico, a mano.',
     con: 'La previsione disegnata sulla curva, tratta per tratta.',
     funzione: 'previsione' },
-  { nome: 'La domanda a parole',
-    domanda: '«Perché la settimana scorsa Napoli–Roma ha confermato meno?»',
-    oggi: 'Si chiede a un analista.',
-    con: 'Coworker risponde sui due siti insieme, con il grafico.',
-    funzione: 'Coworker' },
+  /* Chiesta dal panel del 26 nov per il revenue management: la curva delle
+     prenotazioni ce l'ha già, la domanda respinta no. Vale solo se la ricerca
+     senza disponibilità è tracciata: la condizione sta nella card. Prende il
+     posto della domanda a parole, perché Coworker ha la sua slide in Convergenza. */
+  { nome: 'La domanda respinta',
+    domanda: 'Quante ricerche trovano treni pieni o senza la classe cercata, per tratta e anticipo?',
+    oggi: 'Non si vede accanto alla vendita.',
+    con: 'Per tratta, se la ricerca senza posti è tracciata; se no, è un campo da aggiungere dopo la fase 0.',
+    funzione: 'campi derivati' },
 ];
 
 /* ── A chi serve, oltre al digitale ──────────────────────────────────── */
@@ -159,7 +183,7 @@ export const ANALISI = [
 export const DESTINATARI = [
   { chi: 'Marketing e Revenue Management', legge: 'la domanda cercata per tratta e anticipo, prima che si veda un prezzo', leva: 'il prezzo e i tempi delle promozioni', p: 'a' },
   { chi: 'Customer Operations', legge: 'dove il percorso cala fra il passaggio e la conferma, sul web e sull’app', leva: 'il percorso d’acquisto', p: 'a' },
-  { chi: 'Sales', legge: 'la domanda dall’estero, per paese e per lingua', leva: 'i mercati e i canali', p: 'a' },
+  { chi: 'Sales', legge: 'la domanda cercata dall’estero per paese e lingua, accanto alla quota che arriva alla conferma', leva: 'i mercati e i canali', p: 'a' },
   { chi: 'Chi gestisce l’app', legge: 'su quali tratte l’app conta di più', leva: 'i contenuti e le card della home', p: 'b' },
   { chi: 'Chi manda SMS e notifiche', legge: 'in che giorni e su quali tratte si cerca di più', leva: 'il momento delle offerte, come l’upgrade', p: 'b' },
   { chi: 'Media e campagne', legge: 'quali campagne portano ricerche che arrivano alla conferma', leva: 'il budget, tratta per tratta', p: 'b' },
@@ -170,5 +194,5 @@ export const CICLO = [
   { nome: 'Si legge', cosa: 'Napoli–Roma: molte ricerche il venerdì sera, pochi arrivi su Le Frecce.' },
   { nome: 'Si fa un’ipotesi', cosa: 'Chi cerca il venerdì vuole il ritorno della domenica, e non lo trova subito.' },
   { nome: 'Si prova su Target', cosa: 'Un test A/B in home: la variante propone anche il ritorno.' },
-  { nome: 'Si misura', cosa: 'Subito sul «Cerca»; sull’acquisto, nella vista unica, per tratta e per giorno.' },
+  { nome: 'Si misura', cosa: 'Sul «Cerca», per variante; l’acquisto resta aggregato fino alla fase 1.' },
 ];

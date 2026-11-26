@@ -71,17 +71,17 @@ const { next, prev } = rotte('trenitalia/convergenza');
 const currentPath = Astro.url.pathname;
 
 const orizzonti: Orizzonte[] = [
-  { id: 'a', quando: 'Fase 0 · da subito', nome: 'Vista unica, i due siti come sono',
-    casi: ['La home sa da dove parti', 'Dove si perde la vendita', 'Le settimane che arrivano', 'Una prova su Target per lettura'],
-    serve: 'i due Analytics in CJA e il via libera di Le Frecce',
-    muove: 'Adobe e chi amministra Le Frecce' },
-  { id: 'b', quando: 'Fase 1 · con un campo in più', nome: 'La conferma d’acquisto',
+  { id: 'a', quando: 'Fase 0 · circa sei settimane', nome: 'Vista unica, i due siti come sono',
+    casi: ['Le tratte più cercate dall’area', 'Dove si perde la vendita', 'Le settimane che arrivano', 'Una prova su Target per lettura'],
+    serve: 'i due Analytics in CJA; il via libera di FS Technology, di Le Frecce e del DPO',
+    muove: 'Adobe, FS Technology e chi amministra Le Frecce' },
+  { id: 'b', quando: 'Fase 1 · dopo le prime letture', nome: 'La conferma d’acquisto',
     casi: ['La home riconosce chi ha già cercato', 'Quale campagna vende davvero', 'Non rincorrere chi ha già comprato'],
-    serve: 'un campo in più verso Le Frecce; il parere del DPO',
+    serve: 'prima la conferma legata, senza licenze nuove; poi i pubblici, con Real-Time CDP o Journey Optimizer',
     muove: 'chi gestisce la vendita, il vostro team, il partner' },
   { id: 'c', quando: 'Fase 2 · con il login', nome: 'La persona, anche sull’app',
     casi: ['Lo status fedeltà, al ritorno', 'L’upgrade a chi lo compra davvero', 'La stessa proposta sul sito e nell’app', 'L’abbandono, recuperato'],
-    serve: 'il login sul sito; per Le Frecce e l’app, il nuovo portale',
+    serve: 'login e nuovo portale: decisioni del Gruppo, non di Adobe',
     muove: 'Trenitalia e chi sviluppa i portali' },
 ];
 
@@ -89,43 +89,58 @@ const orizzonti: Orizzonte[] = [
    è la parte che risponde al dubbio di chi decide: la fase 0 non porta pubblici. */
 const anelli: Parameters<typeof FiguraConvergenza>[0]['anelli'] = [
   { n: '0', nome: 'Il fenomeno', legge: 'ricerche, arrivi e conferme, per giorno e per tratta',
-    attiva: 'una prova per tutti su Target', casi: ['La home sa da dove parti', 'Dove si perde la vendita'] },
+    attiva: 'prove su Target senza pubblici, anche per area', casi: ['Le tratte più cercate dall’area', 'Dove si perde la vendita'] },
   { n: '1', nome: 'La visita che compra', legge: 'chi ha cercato e poi ha comprato, senza un nome',
-    attiva: 'pubblici di visitatori, sul venduto', casi: ['La home riconosce chi ha già cercato', 'Non rincorrere chi ha già comprato'] },
+    attiva: 'pubblici di visitatori, misurati fino alla conferma', casi: ['La home riconosce chi ha già cercato', 'Non rincorrere chi ha già comprato'] },
   { n: '2', nome: 'La persona', legge: 'la stessa persona sui due siti, con lo status',
     attiva: 'la proposta per persona, anche nell’app', casi: ['Lo status fedeltà, al ritorno', 'La stessa proposta sul sito e nell’app'] },
 ];
 
+/* Chi decide, chi firma, chi fa: dal panel del 26 nov 2026. FS Technology la
+   leggeva come la condizione d'accesso; titolarità e accordi fra le due
+   organizzazioni restano «da chiedere» finché il DPO non li dice. */
+const governo = [
+  { f: '0', entra: 'le righe di visita dei due Analytics, con identificativi pseudonimi',
+    decide: 'FS Technology e chi amministra Le Frecce; il DPO dà il parere',
+    fa: 'Adobe: mappatura e rimappatura; FS Technology: accessi, connessione, sicurezza' },
+  { f: '1', entra: 'un identificativo in più nel passaggio a Le Frecce, e la conferma per visitatore',
+    decide: 'Customer Operations per il campo, da confermare; il DPO; FS Technology',
+    fa: 'il partner sulla libreria, il vostro team sul tag della conferma' },
+  { f: '2', entra: 'il login su trenitalia.com e un attributo dal CRM',
+    decide: 'il Gruppo, su login e portale; il DPO, per il CRM; marketing e revenue management, per offerte e status',
+    fa: 'chi sviluppa i portali; Adobe sul profilo in CJA' },
+];
+
 const verifica = [
-  { k: 'Che cosa si verifica', v: 'Che la traccia della ricerca passi a Le Frecce in un campo in più, e che il tag della conferma la riporti con l’acquisto.' },
+  { k: 'Che cosa si verifica', v: 'Che l’identificativo del visitatore di trenitalia.com passi a Le Frecce in un campo in più, fuori da referrer e log, e che il tag della conferma lo riporti con l’acquisto.' },
   { k: 'Chi si raggiunge', v: 'Chi passa da trenitalia.com a Le Frecce con il consenso. Restano fuori chi arriva diretto su Le Frecce e, su Safari, chi torna dopo una settimana.' },
   { k: 'Chi decide', v: 'Chi gestisce la vendita, per il campo in più; il vostro team, per il tag della conferma; il partner, per la libreria.' },
 ];
 
 const catena = [
   { k: 'Adobe Analytics', v: 'raccoglie come oggi, su trenitalia.com' },
-  { k: 'Il connettore', v: 'porta in Experience Platform le visite del sito, poi l’acquisto; con il login, lo status', nuovo: true },
+  { k: 'Il connettore', v: 'porta le visite e l’acquisto; lo status, con il login, da un’estrazione del CRM', nuovo: true },
   { k: 'Customer Journey Analytics', v: 'legge il viaggio e costruisce il pubblico', nuovo: true },
-  { k: 'La destinazione Target', v: 'passa il pubblico a Target; si abilita con una voce dedicata', nuovo: true },
+  { k: 'La destinazione Target', v: 'passa il pubblico a Target; serve Real-Time CDP o Journey Optimizer', nuovo: true },
   { k: 'Adobe Target', v: 'su trenitalia.com, dalle visite successive' },
 ];
 
 const catenaNote = [
-  { k: 'Ogni quanto si aggiorna', v: 'Ogni qualche ora. Con at.js 2, che gira oggi sul sito, il pubblico vale dalle visite successive e la libreria non cambia.' },
+  { k: 'Ogni quanto si aggiorna', v: 'Al più ogni 4 ore. Con at.js 2, già sul sito, vale dalla visita dopo; se il pubblico non arriva, resta la home di oggi.' },
   { k: 'Le Frecce, dopo', v: 'L’acquisto entra con la conferma, nella fase 1; lo status del cliente con il login, nella fase 2.' },
-  { k: 'Come si spegne', v: 'Ogni attività ha un interruttore in Target, e una soglia sui tempi di caricamento della home.' },
+  { k: 'Come si spegne', v: 'Un interruttore per attività in Target; at.js nasconde la parte che cambia fino alla variante, con una soglia in millisecondi da fissare con il vostro team.' },
 ];
 
 const crm = [
-  { k: 'Prima, un file', v: 'Un attributo per cliente, come lo status CartaFreccia o un livello di valore, con un’estrazione periodica. Nessun dato anagrafico.' },
+  { k: 'Prima, un file', v: 'Un attributo per cliente, come lo status del programma fedeltà, che dal 2027 sta in Salesforce, o un livello di valore, con un’estrazione periodica. Nessun dato anagrafico.' },
   { k: 'Poi, dal vostro gateway', v: 'A regime il dato parte dallo strato di integrazione del Gruppo verso Adobe, in uscita. Il come si studia con la sicurezza IT.' },
-  { k: 'Per tutte e due', v: 'Il parere del DPO e della sicurezza IT, anche per un solo attributo. Il connettore diretto passa da internet: resta fuori.' },
+  { k: 'Per tutte e due', v: 'Il parere del DPO e della sicurezza IT, anche per un solo attributo. Il connettore diretto passa da internet: lo valutiamo con la sicurezza IT.' },
 ];
 
 const letture = [
   { metric: 'Cosa cerca', label: 'chi poi compra, e chi no', sub: 'La ricerca su un sito, l’acquisto sull’altro, nella stessa riga' },
   { metric: 'Dove si ferma', label: 'e quante volte torna', sub: 'Sul sito per passaggi; su Le Frecce, con il login' },
-  { metric: 'Su che cosa', label: 'si misura una proposta', sub: 'Prima sui clic verso l’acquisto, poi sul venduto' },
+  { metric: 'Su che cosa', label: 'si misura una proposta', sub: 'Prima sui clic verso l’acquisto, poi fino alla conferma' },
 ];
 ---
 <BaseLayout
@@ -193,10 +208,10 @@ const letture = [
         style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal data-reveal-delay="0.08"
       >
-        Più si sa di chi compra, più la proposta si fa&nbsp;precisa.
+        Ogni fase aggiunge una chiave, e l’attivazione si fa più&nbsp;mirata.
       </h2>
       <p class="text-center fs-card-body max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.14">
-        Ogni fase tiene quello che ha costruito la precedente: non si rifà niente.
+        Ogni fase riusa la connessione e i campi della precedente.
       </p>
       <div class="w-full" data-reveal data-reveal-delay="0.2">
         <FiguraConvergenza anelli={anelli} centro="la persona" />
@@ -218,16 +233,49 @@ const letture = [
         style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal data-reveal-delay="0.08"
       >
-        La prima fase non tocca i siti; le altre due chiedono una&nbsp;chiave.
+        La prima fase non chiede rilasci; le altre due, una&nbsp;chiave.
       </h2>
       <p class="text-center fs-card-body max-w-3xl mx-auto mb-6" style="text-wrap: balance;" data-reveal data-reveal-delay="0.14">
         La conferma aggiunge un campo verso Le Frecce; il login sul sito dà la&nbsp;persona.
       </p>
       <div class="w-full" data-reveal data-reveal-delay="0.2">
         <DiagOrizzonti orizzonti={orizzonti} primo={1}
-          gruppi={['Senza toccare i siti', 'Con una chiave fra i due siti']}
+          gruppi={['Senza rilasci sui siti', 'Con una chiave fra i due siti']}
           asse={['il fenomeno', 'la persona']} />
       </div>
+    </Slide>
+
+    <!-- ── Chi decide, chi firma, chi fa ────────────────────────────────── -->
+    <Slide id="slide-governo" bg="primary" align="center" data-solution="cja">
+      <div slot="backdrop" class="absolute inset-0">
+        <div class="fs-bg"></div>
+        <div class="fs-grid"></div>
+      </div>
+      <Sfondo slot="backdrop" id="tc-acciaio" forza="forte" />
+      <p class="fs-panel-tag text-center mb-3" data-reveal>CHI DECIDE, CHI FA</p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal data-reveal-delay="0.08"
+      >
+        Chi decide e chi lavora, fase per&nbsp;fase.
+      </h2>
+      <div class="cv-gov" role="table" aria-label="Chi decide e chi fa, fase per fase" data-reveal data-reveal-delay="0.16">
+        <div class="cv-gov-r cv-gov-t" role="row">
+          <span role="columnheader">Fase</span><span role="columnheader">Che cosa entra</span><span role="columnheader">Chi decide</span><span role="columnheader">Chi fa</span>
+        </div>
+        {governo.map((g) => (
+          <div class="cv-gov-r" role="row">
+            <span role="cell" class="cv-gov-f">{g.f}</span>
+            <span role="cell">{lega(g.entra)}</span>
+            <span role="cell">{lega(g.decide)}</span>
+            <span role="cell">{lega(g.fa)}</span>
+          </div>
+        ))}
+      </div>
+      <p class="fs-panel-src text-center mt-5" data-reveal data-reveal-delay="0.3">
+        {lega('Sponsor e firma: la direzione dei canali digitali, con chi tiene il budget, da confermare. Titolarità del dato e accordi fra le due organizzazioni: da chiedere al DPO.')}
+      </p>
     </Slide>
 
     <!-- ── Il disegno che si costruisce ─────────────────────────────── -->
@@ -278,7 +326,7 @@ const letture = [
         La ricerca e l’acquisto si incontrano sulla pagina di&nbsp;conferma.
       </h2>
       <p class="text-center fs-card-body max-w-3xl mx-auto mb-7" data-reveal data-reveal-delay="0.14">
-        La traccia della ricerca passa a Le Frecce in un campo in più; su quella pagina un tag vostro la riporta negli Analytics di trenitalia.com.
+        La traccia della ricerca passa a Le Frecce in un campo in più; sulla&nbsp;conferma, un tag vostro da configurare la riporta negli&nbsp;Analytics.
       </p>
       {/* Il ponte fra i due siti: tratteggiato, perché è quello che si verifica. */}
       <div class="cv-ponte" data-reveal data-reveal-delay="0.18" aria-hidden="true">
@@ -298,7 +346,7 @@ const letture = [
         ))}
       </div>
       <p class="text-center fs-card-body max-w-3xl mx-auto mt-6" data-reveal data-reveal-delay="0.3">
-        Si sa se la visita ha comprato, non quale biglietto né il percorso in mezzo. Qui il dato è per visitatore: serve il parere del&nbsp;DPO.
+        Si sa se la visita ha comprato; biglietto e importo solo se la conferma porta anche quei campi. Il dato è per visitatore: serve il parere del&nbsp;DPO.
       </p>
     </Slide>
 
@@ -322,7 +370,7 @@ const letture = [
         La raccolta resta com’è; il pubblico passa da Experience Platform.
       </h2>
       <p class="text-center fs-card-body max-w-3xl mx-auto mb-7" style="text-wrap: balance;" data-reveal data-reveal-delay="0.14">
-        Nella fase 0 non passa nessun pubblico. Dalla&nbsp;fase 1, dal&nbsp;dato raccolto alla&nbsp;proposta in&nbsp;pagina.
+        Nella fase 0 non passa nessun pubblico; dalla fase 1, passa&nbsp;così.
       </p>
       <ol class="cv-catena" data-reveal data-reveal-delay="0.2">
         {catena.map((c, i) => (
@@ -425,7 +473,7 @@ const letture = [
         Il pubblico si chiede a parole, invece di costruirlo a mano.
       </h2>
       <p class="text-center fs-card-body max-w-3xl mx-auto mb-7" data-reveal data-reveal-delay="0.14">
-        Coworker prepara il pubblico e la bozza della prova; la approva e la pubblica il team Target.
+        {lega('Coworker prepara il segmento in CJA e la bozza dell’attività in Target; il team Target la controlla e la pubblica.')}
       </p>
       <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-5" data-stagger>
         <div class="fs-card text-left">
@@ -438,7 +486,7 @@ const letture = [
         </div>
       </div>
       <p class="fs-panel-src text-center mt-6" data-reveal data-reveal-delay="0.3">
-        Disponibile da giugno 2026, attivato per gradi; dentro CJA è ancora in prova limitata, e la risposta può mescolare l’inglese. I casi reggono anche senza ·
+        Disponibile da giugno 2026; per voi si accende con l’approvazione delle condizioni sull’IA generativa. Dentro CJA è ancora in prova limitata, e la risposta può mescolare l’inglese. I casi reggono anche senza ·
         <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-workspace/coworker" target="_blank" rel="noopener noreferrer">Coworker in Customer Journey Analytics</a>
       </p>
       <div class="mt-6 text-center" data-reveal data-reveal-delay="0.38">
@@ -460,6 +508,16 @@ const letture = [
 <style is:global>
   /* Le code di frase nel lead di copertina: si bilancia (26 nov 2026). */
   #slide-cover [data-cover] p { text-wrap: balance; }
+  .cv-gov { width: 100%; max-width: 78rem; margin-inline: auto; display: grid; gap: 0.5rem; text-align: left; }
+  .cv-gov-r {
+    display: grid; grid-template-columns: 3.2rem minmax(0, 1.2fr) minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(0.8rem, 1.4vw, 1.4rem);
+    align-items: start; padding: clamp(0.7rem, 1.4vh, 1rem) clamp(0.9rem, 1.2vw, 1.2rem);
+    border-radius: 0.6rem; border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(27, 34, 48, 0.55);
+    font-size: clamp(1rem, 1.06vw, 1.12rem); line-height: 1.35; color: var(--ink-primary);
+  }
+  .cv-gov-t { background: none; border: none; padding-block: 0 0.2rem; font-size: clamp(0.82rem, 0.88vw, 0.94rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-tertiary); }
+  .cv-gov-f { display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; border: 1.5px solid var(--color-rosso-chiaro); font-weight: 700; }
+  @media (max-width: 900px) { .cv-gov-r { grid-template-columns: minmax(0, 1fr); } .cv-gov-t { display: none; } }
   .cv-apri { margin-top: clamp(1rem, 2.6vh, 1.8rem); text-align: center; }
   .cv-apri-b {
     min-height: 2.75rem; padding: 0.6rem 1.4rem; border-radius: 0.4rem;
