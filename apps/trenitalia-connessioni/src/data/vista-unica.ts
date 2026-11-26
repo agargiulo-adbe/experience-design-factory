@@ -53,7 +53,7 @@ export const FONTI = {
    chiede ad Adobe; il connettore porta indietro fino a 13 mesi (Experience League,
    «Connect Adobe Analytics to Experience Platform»). */
 export const TEMPI = [
-  { n: '0', nome: 'Prima del via', durata: 'contratto', esito: 'Customer Journey Analytics ed Experience Platform attivi' },
+  { n: '0', nome: 'Prima del via', durata: 'contratto', esito: 'CJA ed Experience Platform attivi; il via libera di chi amministra Le Frecce' },
   { n: '1', nome: 'Le due fonti', durata: '1–2 settimane', esito: 'mappatura fra organizzazioni, connettori, 13 mesi di storico' },
   { n: '2', nome: 'La rimappatura', durata: '2 settimane', esito: 'campi resi uguali, data view, controlli sui numeri' },
   { n: '3', nome: 'Le prime letture', durata: '2 settimane', esito: 'le analisi di questo capitolo, con il vostro team' },
@@ -110,14 +110,18 @@ export const LINEE = [
 
 /* ── Dove si perde, tratta per tratta ────────────────────────────────── */
 /* Indici: le ricerche della tratta valgono 100. Le tratte sono vere, i valori
-   no. Due righe portano la lettura che decide a chi parlarne. */
+   no. Tre righe portano la lettura che decide a chi parlarne. */
 export const TRATTE = [
   { tratta: 'Roma Termini → Milano Centrale', ricerche: 100, arrivi: 64, conferme: 35 },
   { tratta: 'Napoli Centrale → Roma Termini', ricerche: 100, arrivi: 38, conferme: 21,
     lettura: 'si perde nel passaggio fra i due siti', chi: 'Customer Operations' },
   { tratta: 'Milano Centrale → Venezia Santa Lucia', ricerche: 100, arrivi: 66, conferme: 17,
     lettura: 'arriva, vede il prezzo, si ferma', chi: 'Marketing e Revenue Management' },
-  { tratta: 'Firenze S.M.N. → Roma Termini', ricerche: 100, arrivi: 61, conferme: 33 },
+  /* La terza lettura è della call del 26 nov: su una tratta le conferme possono
+     superare gli arrivi da trenitalia.com, perché lì si entra direttamente da Le
+     Frecce. Dice qualcosa sul ruolo del sito, tratta per tratta. */
+  { tratta: 'Firenze S.M.N. → Roma Termini', ricerche: 100, arrivi: 41, conferme: 47,
+    lettura: 'si compra più di quanto arrivi: si entra da Le Frecce', chi: 'chi decide il ruolo di trenitalia.com' },
 ];
 
 /* ── Le analisi del primo giorno: oggi, e con la vista unica ─────────── */

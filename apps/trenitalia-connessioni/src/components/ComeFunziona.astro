@@ -1,6 +1,11 @@
 ---
 /**
- * «COME FUNZIONA IL PRIMO PASSO» — un pop-in a passi, sopra la slide del disegno.
+ * «COME FUNZIONA, DALLA FASE 0 ALLA FASE 1» — un pop-in a passi, sopra la slide del disegno.
+ *
+ * RISCRITTO IL 26 NOV 2026 sulle tre fasi: prima i due siti letti insieme per
+ * giorno e per tratta, con una prova per tutti su Target (fase 0); poi il pubblico,
+ * quando la conferma d'acquisto porta la traccia della ricerca (fase 1); il login
+ * e il CRM restano nella nota dell'ultimo passo (fase 2).
  *
  * La meccanica è quella di `apps/trenitalia-prospettiva-sales/src/components/ProdottoPop.astro`
  * (22 nov 2026): stessa pelle, stesso cliente, quindi lo stesso gesto. Copiata e non
@@ -22,12 +27,12 @@ import '../styles/pop.css';
 import { lega } from '../utils/lega';
 
 const passi = [
-  'Adobe Analytics raccoglie come oggi su trenitalia.com, e il connettore porta le visite in Customer Journey Analytics.',
-  'CJA legge il viaggio sul sito. Su trenitalia.com non si fa login: qui si lavora sul visitatore, non ancora sul cliente.',
-  'Dentro CJA nasce un pubblico: chi ha cercato una tratta e non è passato all’acquisto.',
+  'Adobe Analytics raccoglie come oggi sui due siti, e il connettore porta trenitalia.com e Le Frecce, app compresa, in Customer Journey Analytics.',
+  'CJA legge ricerche, arrivi e conferme per giorno e per tratta. Nessuna persona si lega: è la fase 0.',
+  'Dalla lettura nasce un’ipotesi, e Target la prova sulla home di trenitalia.com: un test per tutti, metà e metà.',
+  'Con la fase 1 la conferma d’acquisto porta la traccia della ricerca, e in CJA nasce un pubblico: chi ha cercato e non ha comprato.',
   'Il pubblico passa a Target: la home di trenitalia.com cambia dalle visite dopo l’aggiornamento, entro qualche ora.',
-  'La misura torna in CJA: quanti cliccano verso l’acquisto, contro un gruppo di controllo.',
-  'Poi si lega l’acquisto su Le Frecce, e con lui lo status dal CRM; con il nuovo portale, Target arriva anche su Le Frecce e sull’app.',
+  'La misura torna in CJA, sul venduto. Con il login, nella fase 2, arrivano la persona e lo status dal CRM.',
 ];
 
 const fonti = [
@@ -35,49 +40,49 @@ const fonti = [
   { label: 'I pubblici di CJA', url: 'https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-components/audiences/audiences-overview' },
 ];
 ---
-<dialog class="pp" data-pp data-deck-nochrome data-audit-skip data-tot={passi.length} data-scena="primo-passo" aria-label="Come funziona il primo passo">
+<dialog class="pp" data-pp data-deck-nochrome data-audit-skip data-tot={passi.length} data-scena="primo-passo" aria-label="Come funziona, dalla fase 0 alla fase 1">
   <div class="pp-in">
     <header class="pp-testa">
       <div class="pp-testa-t">
         <p class="pp-k">Come funziona</p>
-        <h3 class="pp-h">Il primo passo</h3>
+        <h3 class="pp-h">Dalla fase 0 alla fase 1</h3>
       </div>
-      <p class="pp-cosa">Il viaggio sul sito letto in CJA, e una proposta che cambia su trenitalia.com.</p>
+      <p class="pp-cosa">I due siti letti insieme in CJA, poi una proposta che cambia su trenitalia.com.</p>
       <button type="button" class="pp-x" data-pp-chiudi aria-label="Chiudi">×</button>
     </header>
 
     <div class="pp-scena">
       <div class="pp-pila">
         <div class="pp-cja">
-          <div class="pp-target" data-da="4">
+          <div class="pp-target" data-da="3">
             <p class="pp-target-k">Adobe Target</p>
-            <div class="pp-f" data-on><small>Dal primo passo</small><strong>trenitalia.com</strong></div>
-            <div class="pp-f pp-f--poi" data-da="6"><small>Poi</small><strong>Le Frecce</strong></div>
-            <div class="pp-f pp-f--poi" data-da="6"><small>Poi</small><strong>App Trenitalia</strong></div>
+            <div class="pp-f" data-on><small>Dalla fase 0</small><strong>trenitalia.com</strong></div>
+            <div class="pp-f pp-f--poi" data-da="6"><small>Con il login</small><strong>Le Frecce</strong></div>
+            <div class="pp-f pp-f--poi" data-da="6"><small>Con il login</small><strong>App Trenitalia</strong></div>
           </div>
           <div class="pp-fili" style="height: clamp(1.4rem, 3.6vh, 2.6rem);">
-            <span class="pp-filo" data-da="4"></span>
+            <span class="pp-filo" data-da="3"></span>
           </div>
           <div class="pp-strato" data-da="2">
-            <div class="pp-strato-t"><strong>Customer Journey Analytics</strong><span>legge le visite e le ricerche sul sito</span></div>
+            <div class="pp-strato-t"><strong>Customer Journey Analytics</strong><span>legge i due siti, per giorno e per tratta</span></div>
             <ol class="pp-viaggio" data-da="3">
-              <li><small>Lunedì · trenitalia.com</small><strong>Cerca Roma–Napoli</strong></li>
-              <li><small>Martedì · trenitalia.com</small><strong>Torna, non compra</strong></li>
-              <li><small>Il pubblico</small><strong>Ha cercato, non ha comprato</strong></li>
-              <li data-on data-da="5"><small>Giovedì · trenitalia.com</small><strong>Il clic su Acquista si misura</strong></li>
+              <li><small>Venerdì · trenitalia.com</small><strong>Molte ricerche Napoli–Roma</strong></li>
+              <li><small>Venerdì · Le Frecce</small><strong>Pochi arrivi</strong></li>
+              <li data-da="4"><small>Fase 1 · il pubblico</small><strong>Ha cercato, non ha comprato</strong></li>
+              <li data-on data-da="6"><small>Sul venduto</small><strong>Quanti comprano, per gruppo</strong></li>
             </ol>
           </div>
           <div class="pp-fili">
             <span class="pp-filo" data-da="2"></span>
-            <span class="pp-filo pp-filo--poi" data-da="6"></span>
-            <span class="pp-filo pp-filo--poi" data-da="6"></span>
+            <span class="pp-filo" data-da="2"></span>
+            <span class="pp-filo pp-filo--poi" data-da="4"></span>
             <span class="pp-filo pp-filo--poi" data-da="6"></span>
           </div>
           <ul class="pp-fonti">
             <li class="pp-f" data-gia><small>Analytics</small><strong>trenitalia.com</strong></li>
-            <li class="pp-f pp-f--poi" data-da="6"><small>Poi, in parallelo</small><strong>Acquisto su Le Frecce</strong></li>
-            <li class="pp-f pp-f--poi" data-da="6"><small>Con l’acquisto</small><strong>CRM e fedeltà</strong></li>
-            <li class="pp-f pp-f--poi" data-da="6"><small>Con il nuovo portale</small><strong>App Trenitalia</strong></li>
+            <li class="pp-f" data-gia><small>Analytics, app compresa</small><strong>Le Frecce</strong></li>
+            <li class="pp-f pp-f--poi" data-da="4"><small>Fase 1</small><strong>L’acquisto, legato</strong></li>
+            <li class="pp-f pp-f--poi" data-da="6"><small>Fase 2, con il login</small><strong>CRM e fedeltà</strong></li>
           </ul>
         </div>
       </div>
@@ -93,7 +98,7 @@ const fonti = [
         <button type="button" class="pp-b-n pp-b-n--av" data-pp-next>Avanti →</button>
       </div>
       <p class="pp-nota">
-        Esempio illustrativo. Nel primo passo la misura si ferma al clic verso l’acquisto; l’acquisto su Le Frecce e lo status si legano con il secondo passo
+        Esempio illustrativo. Nella fase 0 si misura per giorno e per tratta; dalla fase 1 sul venduto; con il login, nella fase 2, sulla persona
         {fonti.map((f) => <> · <a href={f.url} target="_blank" rel="noopener noreferrer">{f.label}</a></>)}
       </p>
     </footer>

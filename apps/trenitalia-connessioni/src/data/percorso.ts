@@ -40,20 +40,20 @@ export const TAPPE: Tappa[] = [
   { slug: 'trenitalia/fondamenta', kind: 'Capitolo', attiva: true, label: 'Fondamenta',
     sub: 'Gli Analytics e il CRM già in casa' },
   { slug: 'trenitalia/convergenza', kind: 'Capitolo', attiva: true, label: 'Convergenza',
-    sub: 'Un disegno, tre passi', solution: 'cja' },
+    sub: 'Un disegno, tre fasi', solution: 'cja' },
+
+  // Nasce il 25 nov 2026: l'approfondimento della fase 0, che porta i due
+  // Analytics in CJA senza legare le persone. Dal 26 nov sta subito dopo
+  // Convergenza: la fase 0 è la prima delle tre, e i casi su Target vengono dopo.
+  { slug: 'trenitalia/vista-unica', kind: 'Capitolo', attiva: true, label: 'Vista unica',
+    sub: 'La fase 0: due Analytics in una lettura sola', solution: 'cja' },
 
   // Chiesto dal Direttore dei canali digitali il 27 ott 2026: «va bene la parte
   // tecnologica, io mi aspetterei dei casi d'uso interessanti». Sta dopo
   // Convergenza perché quella dice che cos'è lo strato e questo che cosa ci si
   // fa — e perché il suo vincolo è «se mi dai il pezzo di ferro non so che fare».
   { slug: 'trenitalia/casi-duso', kind: 'Capitolo', attiva: true, label: 'Casi d’uso',
-    sub: 'Cinque casi su Target, passo per passo', solution: 'cja' },
-
-  // Nasce il 25 nov 2026: l'approfondimento della fase 0, che porta i due
-  // Analytics in CJA senza legare le persone. Sta dopo i casi d'uso perché ne
-  // dice la lettura che c'è dal primo giorno, e a chi serve oltre al digitale.
-  { slug: 'trenitalia/vista-unica', kind: 'Capitolo', attiva: true, label: 'Vista unica',
-    sub: 'La fase 0: due Analytics in una lettura sola', solution: 'cja' },
+    sub: 'Cinque casi su Target, fase per fase', solution: 'cja' },
 
   // Tutto il capitolo poggia su FS Park e sulla clean room: segue il bivio.
   { slug: 'trenitalia/meta-invisibile', kind: 'Capitolo', attiva: false, label: 'Metà invisibile',

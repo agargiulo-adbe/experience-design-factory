@@ -25,19 +25,34 @@ export interface Orizzonte {
   serve: string;
   muove: string;
 }
-interface Props { orizzonti: Orizzonte[]; class?: string }
+/* Dal 26 nov 2026 i gruppi e l'asse si passano: con le tre fasi il primo gruppo è
+   una colonna sola (la fase 0 non tocca i siti), il secondo due. */
+interface Props {
+  orizzonti: Orizzonte[];
+  gruppi?: [string, string];
+  /** Quante colonne prende il primo gruppo. */
+  primo?: 1 | 2;
+  asse?: [string, string];
+  class?: string;
+}
 import { lega } from '../../utils/lega';
-const { orizzonti, class: className } = Astro.props as Props;
+const {
+  orizzonti,
+  gruppi = ['Senza toccare Le Frecce', 'Con Le Frecce nel disegno'],
+  primo = 2,
+  asse = ['oggi', 'con il nuovo portale'],
+  class: className,
+} = Astro.props as Props;
 const etichetta = orizzonti
   .map((o) => `${o.quando}, ${o.nome}: ${o.casi.join('; ')}. Serve ${o.serve}. Chi muove: ${o.muove}.`)
   .join(' ');
 ---
 <div class:list={['do', className]} data-orizzonti role="img"
-     aria-label={`I casi d'uso nel tempo, in due gruppi. Senza toccare Le Frecce: le prime due colonne. Con Le Frecce nel disegno: la terza. ${etichetta}`}>
+     aria-label={`I casi d'uso nel tempo, in due gruppi. ${gruppi[0]}: ${primo === 2 ? 'le prime due colonne' : 'la prima colonna'}. ${gruppi[1]}: ${primo === 2 ? 'la terza' : 'le altre due'}. ${etichetta}`}>
 
-  <div class="do-gruppi" aria-hidden="true">
-    <p class="do-g do-g--1"><span>Senza toccare Le Frecce</span></p>
-    <p class="do-g do-g--2 do-c"><span>Con Le Frecce nel disegno</span></p>
+  <div class:list={['do-gruppi', primo === 1 && 'do-gruppi--1']} aria-hidden="true">
+    <p class="do-g do-g--1"><span>{gruppi[0]}</span></p>
+    <p class:list={['do-g do-g--2', primo === 1 ? 'do-b' : 'do-c']}><span>{gruppi[1]}</span></p>
   </div>
 
   <div class="do-cols" aria-hidden="true">
@@ -56,7 +71,7 @@ const etichetta = orizzonti
     ))}
   </div>
 
-  <p class="do-asse" aria-hidden="true"><span>oggi</span><span class="do-asse-l"></span><span>con il nuovo portale</span></p>
+  <p class="do-asse" aria-hidden="true"><span>{asse[0]}</span><span class="do-asse-l"></span><span>{asse[1]}</span></p>
 
   <i class="do-m" data-substep data-p="b" aria-hidden="true"></i>
   <i class="do-m" data-substep data-p="c" aria-hidden="true"></i>
@@ -67,6 +82,7 @@ const etichetta = orizzonti
   [data-slide] .do p { margin: 0; max-width: none; text-align: left; }
 
   .do-gruppi { display: grid; grid-template-columns: 2fr 1fr; gap: clamp(0.6rem, 1.2vw, 1.2rem); }
+  .do-gruppi--1 { grid-template-columns: 1fr 2fr; }
   .do-g {
     padding-bottom: 0.45rem; border-bottom: 2px solid rgba(255, 255, 255, 0.55);
     font-size: clamp(0.82rem, 0.88vw, 0.95rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;

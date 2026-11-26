@@ -1,0 +1,126 @@
+---
+/**
+ * FiguraConvergenza — FIGURA XD: tre cerchi concentrici, dal fenomeno alla persona.
+ *
+ * NASCE IL 26 NOV 2026 da un'idea della consulente dati nella call con il partner:
+ * le fasi non sono una linea del tempo (che sa di piano di progetto), sono una
+ * convergenza. Il cerchio largo è il dato aggregato, quello di mezzo la visita che
+ * compra senza un nome, il centro la persona con lo status. Più si stringe, più
+ * l'attivazione si fa precisa. I casi stanno accanto al loro anello.
+ *
+ * La figura è HTML, non testo dentro un SVG: gli anelli sono tre dischi annidati e
+ * le righe a destra ne riprendono il colore. Il numero sull'anello è il ponte fra
+ * le due metà, così non servono raggi disegnati.
+ *
+ * I PASSI: l'anello esterno e la sua riga sono lo stato iniziale; il primo marcatore
+ * accende l'anello di mezzo, il secondo il centro. Senza JavaScript o con «Riduci
+ * movimento» è tutto acceso.
+ */
+import { lega } from '../../utils/lega';
+
+interface Anello {
+  n: string;
+  nome: string;
+  legge: string;
+  attiva: string;
+  casi: string[];
+}
+interface Props { anelli: [Anello, Anello, Anello]; centro: string; class?: string }
+const { anelli, centro, class: className } = Astro.props as Props;
+const passo = ['a', 'b', 'c'];
+const etichetta = anelli.map((a) =>
+  `Fase ${a.n}, ${a.nome}: si legge ${a.legge}; si attiva ${a.attiva}. Casi: ${a.casi.join('; ')}.`).join(' ');
+---
+<div class:list={['fcv', className]} role="img"
+     aria-label={`Tre cerchi concentrici, dal dato aggregato al centro, ${centro}. ${etichetta}`}>
+  <div class="fcv-bersaglio" aria-hidden="true">
+    <div class="fcv-disco fcv-disco--0"><span class="fcv-n">0</span></div>
+    <div class="fcv-disco fcv-disco--1 fcv-b"><span class="fcv-n">1</span></div>
+    <div class="fcv-disco fcv-disco--2 fcv-c"><span class="fcv-n">2</span></div>
+  </div>
+
+  <ol class="fcv-righe" aria-hidden="true">
+    {anelli.map((a, i) => (
+      <li class:list={['fcv-riga', `fcv-riga--${i}`, i > 0 && `fcv-${passo[i]}`]}>
+        <p class="fcv-testa"><span class="fcv-bollo">{a.n}</span>{lega(a.nome)}</p>
+        <dl class="fcv-meta">
+          <dt>Si legge</dt><dd>{lega(a.legge)}</dd>
+          <dt>Si attiva</dt><dd>{lega(a.attiva)}</dd>
+        </dl>
+        <p class="fcv-casi">{a.casi.map((c) => <span>{lega(c)}</span>)}</p>
+      </li>
+    ))}
+  </ol>
+
+  <i class="fcv-m" data-substep data-p="b" aria-hidden="true"></i>
+  <i class="fcv-m" data-substep data-p="c" aria-hidden="true"></i>
+</div>
+
+<style is:global>
+  .fcv {
+    width: 100%; max-width: 78rem; margin-inline: auto;
+    display: grid; grid-template-columns: minmax(16rem, 0.8fr) minmax(0, 1.6fr);
+    gap: clamp(1.2rem, 2.6vw, 2.8rem); align-items: center; text-align: left;
+  }
+  [data-slide] .fcv p { margin: 0; max-width: none; text-align: left; }
+
+  /* Il bersaglio: tre dischi annidati, centrati. */
+  .fcv-bersaglio { position: relative; width: 100%; max-width: clamp(14rem, 42vh, 27rem); aspect-ratio: 1; justify-self: center; }
+  .fcv-disco {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    border-radius: 50%; display: grid; justify-items: center; align-content: start;
+  }
+  .fcv-disco--0 { width: 100%; height: 100%; border: 2px dashed rgba(255, 255, 255, 0.6); background: rgba(255, 255, 255, 0.06); }
+  .fcv-disco--1 { width: 66%; height: 66%; border: 2px solid var(--color-verde-chiaro); background: rgba(0, 102, 102, 0.42); }
+  .fcv-disco--2 { width: 32%; height: 32%; border: 2px solid var(--color-rosso-chiaro); background: var(--color-rosso); align-content: center; }
+  .fcv-n {
+    margin-top: 0.35rem; font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(0.95rem, 1.05vw, 1.15rem); line-height: 1; color: var(--ink-primary);
+  }
+  .fcv-disco--1 .fcv-n { margin-top: 0.4rem; }
+  .fcv-disco--2 .fcv-n { margin: 0; }
+
+  /* Le righe: una per anello, con il suo colore a sinistra. */
+  .fcv-righe { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(0.5rem, 1.1vh, 0.8rem); }
+  .fcv-riga {
+    display: grid; grid-template-columns: minmax(10rem, 0.7fr) minmax(0, 1.4fr) minmax(0, 1.2fr);
+    gap: 0.4rem clamp(0.8rem, 1.2vw, 1.2rem); align-items: start;
+    padding: clamp(0.55rem, 1.2vh, 0.95rem) clamp(0.8rem, 1vw, 1.1rem);
+    border-radius: 0.65rem; border: 1px solid rgba(255, 255, 255, 0.22); background: rgba(27, 34, 48, 0.5);
+    box-shadow: inset 0.3rem 0 0 var(--fcv-c);
+  }
+  .fcv-riga--0 { --fcv-c: rgba(255, 255, 255, 0.7); }
+  .fcv-riga--1 { --fcv-c: var(--color-verde-chiaro); }
+  .fcv-riga--2 { --fcv-c: var(--color-rosso-chiaro); }
+  .fcv-testa {
+    display: flex; align-items: baseline; gap: 0.55rem;
+    font-family: var(--font-display); font-weight: 600; font-size: clamp(1.05rem, 1.2vw, 1.3rem); line-height: 1.2; color: var(--ink-primary);
+  }
+  .fcv-bollo {
+    flex: none; display: inline-grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 50%;
+    border: 1.5px solid var(--fcv-c); font-size: 0.95rem; font-weight: 700; color: var(--ink-primary);
+  }
+  .fcv-meta { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.2rem 0.6rem; }
+  .fcv-meta dt { font-size: clamp(0.78rem, 0.84vw, 0.9rem); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-tertiary); padding-top: 0.15em; }
+  .fcv-meta dd { margin: 0; font-size: clamp(0.95rem, 1vw, 1.06rem); line-height: 1.3; color: var(--ink-primary); }
+  .fcv-casi { display: grid; gap: 0.25rem; }
+  .fcv-casi span {
+    position: relative; padding-left: 0.95rem;
+    font-size: clamp(0.95rem, 1vw, 1.06rem); line-height: 1.3; color: var(--ink-secondary);
+  }
+  .fcv-casi span::before { content: ''; position: absolute; left: 0; top: 0.5em; width: 0.42rem; height: 0.42rem; border-radius: 50%; background: var(--fcv-c); }
+  .fcv-m { display: block; width: 0; height: 0; }
+
+  /* ── I passi ─────────────────────────────────────────────────────── */
+  .fcv .fcv-b, .fcv .fcv-c { opacity: 0; visibility: hidden; transition: opacity 420ms ease, visibility 420ms; }
+  .fcv:has(.fcv-m[data-p='b'][data-substep-active]) .fcv-b,
+  .fcv:has(.fcv-m[data-p='c'][data-substep-active]) .fcv-c { opacity: 1; visibility: visible; }
+  @media (prefers-reduced-motion: reduce) { .fcv .fcv-b, .fcv .fcv-c { opacity: 1; visibility: visible; transition: none; } }
+  html:not(.js) .fcv .fcv-b, html:not(.js) .fcv .fcv-c { opacity: 1; visibility: visible; }
+
+  @media (max-width: 1100px) { .fcv-riga { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .fcv-testa { grid-column: 1 / -1; } }
+  @media (max-width: 900px) {
+    .fcv { grid-template-columns: minmax(0, 1fr); }
+    .fcv-riga { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
