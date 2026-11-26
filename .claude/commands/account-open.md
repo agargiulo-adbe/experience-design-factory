@@ -85,7 +85,14 @@ Vale solo per gli account **del book**; `Adobe` e gli account fuori dai 25 lo sa
 - **l'AI Summary, la Recommended Strategy e le Product Innovations sono testo di un modello**:
   sul primo brief la sintesi deduceva un uso «oltre l'entitlement» su un prodotto che la
   tabella dello **stesso** brief mostrava coperto. Valgono come un riassunto automatico:
-  spunto, mai fatto. Le innovazioni non vanno in un deck senza le release notes.
+  spunto, mai fatto. Le innovazioni non vanno in un deck senza le release notes;
+- **una riga «in scadenza» non è per forza un rinnovo**: un pluriennale a righe annuali
+  mostra la riga dell'anno in corso come se scadesse (26 nov 2026: un triennale 2025–2027
+  dava «rinnovo da mezzo milione fra 35 giorni»). Prima di scrivere una scadenza nuova si
+  guarda il Sales Order nella cartella `01-contratti/`;
+- **l'ARR è per famiglia, non per contratto**: Labrador somma AA in CJA e AAM in RTCDP, e un
+  prodotto con più contratti (un Select su una controllata, un Ultimate sulla capogruppo) è
+  una cifra sola. Lo scarto col Radar si spiega contratto per contratto, non a occhio.
 
 `ask_account_research` e `ask_sales_play_strategy` **non** si usano in apertura: la prima,
 senza Sub ID, restituisce solo il profilo dal web (ZoomInfo e simili) con le sezioni interne
