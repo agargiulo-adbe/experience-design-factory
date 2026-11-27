@@ -39,6 +39,22 @@ const { next, prev } = rotte('trenitalia/appendice');
 const currentPath = Astro.url.pathname;
 const h2 = 'font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;';
 
+/* Per il DPO e la sicurezza IT: solo ciò che le pagine pubbliche di Adobe dicono,
+   lette il 27 nov 2026. La regione specifica non la dà il Trust Center: si sceglie
+   all'attivazione, e per questo in slide è una scelta e non un valore. */
+const dati = [
+  { k: 'La regione', v: 'Si sceglie all’attivazione, fra le sedi europee di Experience Platform, e i dati non si spostano dopo.',
+    fonte: 'Sedi di Customer Journey Analytics', url: 'https://experienceleague.adobe.com/en/docs/analytics-platform/using/technotes/data-centers' },
+  { k: 'La cifratura', v: 'In transito con TLS 1.2; a riposo, in un archivio isolato per organizzazione.',
+    fonte: 'Cifratura in Experience Platform', url: 'https://experienceleague.adobe.com/en/docs/experience-platform/landing/governance-privacy-security/encryption' },
+  { k: 'La conservazione', v: 'In Customer Journey Analytics, una finestra in mesi sulla connessione; nel data lake, una scadenza sul dataset, da fissare con il DPO. Le richieste degli interessati passano dal servizio privacy di Adobe.',
+    fonte: 'Privacy in Customer Journey Analytics', url: 'https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-privacy/privacy-overview' },
+  { k: 'I ruoli', v: 'Il cliente è titolare, Adobe responsabile del trattamento. A fine contratto i dati si cancellano o si restituiscono, a scelta del cliente.',
+    fonte: 'Accordo sul trattamento dei dati', url: 'https://www.adobe.com/content/dam/cc/en/legal/terms/enterprise/pdfs/DPA-WW.pdf' },
+  { k: 'I fornitori', v: 'L’elenco dei sub-responsabili è pubblico, con un preavviso per ogni nuovo ingresso.',
+    fonte: 'Sub-responsabili di Adobe', url: 'https://www.adobe.com/privacy/sub-processors.html' },
+];
+
 const SFONDI: Record<string, string> = { interesse: 'rl-binari', oro: 'tc-quiete', upgrade: 'tc-acciaio', app: 'rl-pensilina' };
 const altriCasi = CASI.slice(1);
 
@@ -58,7 +74,7 @@ const catena = [
   { k: 'Adobe Analytics', v: 'raccoglie come oggi, su trenitalia.com' },
   { k: 'Il connettore', v: 'porta le visite e l’acquisto; lo status, con il login, da un’estrazione del CRM', nuovo: true },
   { k: 'Customer Journey Analytics', v: 'legge il viaggio e costruisce il pubblico', nuovo: true },
-  { k: 'La destinazione Target', v: 'passa il pubblico a Target; serve una licenza di Real-Time CDP', nuovo: true },
+  { k: 'La destinazione Target', v: 'passa il pubblico a Target; serve Real-Time CDP, nella stessa organizzazione di Target', nuovo: true },
   { k: 'Adobe Target', v: 'su trenitalia.com, dalle visite successive' },
 ];
 
@@ -128,7 +144,7 @@ const crm = [
         ))}
       </div>
       <p class="fs-panel-src text-center mt-5" data-reveal data-reveal-delay="0.3">
-        {lega('Sponsor e firma: la direzione dei canali digitali, con chi tiene il budget, da confermare. Titolarità del dato e accordi fra le due organizzazioni: da chiedere al DPO.')}
+        {lega('Committente: la direzione dei canali digitali. Verifiche tecniche e budget: FS Technology. L’ordine segue il percorso d’acquisto del Gruppo, da confermare. Titolarità del dato e accordi fra le due organizzazioni: da chiedere al DPO.')}
       </p>
     </Slide>
 
@@ -153,7 +169,31 @@ const crm = [
       <p class="fs-panel-src text-center mt-5" data-reveal data-reveal-delay="0.3">
         {lega('Le righe di visita entrano con identificativi pseudonimi: è un trattamento, e per questo il parere del DPO serve subito.')}
         La mappatura fra organizzazioni si chiede tramite Adobe, con l’approvazione scritta degli amministratori di ciascuna ·
-        <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/compare-aa-cja/cja-aa-comparison/mapping-data-ims-orgs" target="_blank" rel="noopener noreferrer">Experience League</a>. Fino a 13&nbsp;mesi di storico, da confermare per Le&nbsp;Frecce · <a href="https://experienceleague.adobe.com/en/docs/experience-platform/sources/connectors/adobe-applications/analytics" target="_blank" rel="noopener noreferrer">il connettore Analytics</a>.
+        <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/compare-aa-cja/cja-aa-comparison/mapping-data-ims-orgs" target="_blank" rel="noopener noreferrer">Experience League</a>. Il connettore copia nel data lake fino a 13&nbsp;mesi di storico; in Customer Journey Analytics se ne leggono tre, con una finestra mobile. Quanto resta nel data lake si fissa con una scadenza sul dataset, da decidere con il&nbsp;DPO · <a href="https://experienceleague.adobe.com/en/docs/experience-platform/sources/connectors/adobe-applications/analytics" target="_blank" rel="noopener noreferrer">il connettore Analytics</a>.
+      </p>
+    </Slide>
+
+    <!-- ── Dove stanno i dati, e come si cancellano ───────────────────── -->
+    {/* Chiesta dal panel del 27 nov 2026: il via libera sui dati non aveva oggetto.
+        Qui stanno solo i fatti letti nelle pagine pubbliche di Adobe quel giorno,
+        ognuno con il suo link. Quello che le pagine non dicono resta domanda. */}
+    <Slide id="slide-dati" bg="primary" align="center" data-solution="cja">
+      <div slot="backdrop" class="absolute inset-0"><div class="fs-bg"></div><div class="fs-grid"></div></div>
+      <Sfondo slot="backdrop" id="tc-acciaio" forza="forte" />
+      <p class="fs-panel-tag text-center mb-3" data-reveal>PER IL DPO E LA SICUREZZA IT</p>
+      <h2 class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]" style={h2} data-reveal data-reveal-delay="0.08">
+        Dove stanno i dati, e come si&nbsp;cancellano.
+      </h2>
+      <dl class="ap-dati" data-stagger>
+        {dati.map((d) => (
+          <div>
+            <dt>{d.k}</dt>
+            <dd>{lega(d.v)} <a href={d.url} target="_blank" rel="noopener noreferrer">{d.fonte}</a></dd>
+          </div>
+        ))}
+      </dl>
+      <p class="fs-panel-src text-center mt-5" data-reveal data-reveal-delay="0.3">
+        {lega('Pagine pubbliche di Adobe, lette il 27 novembre 2026. Restano da definire insieme: i campi che entrano e quelli esclusi, chi ha accesso, la durata della conservazione.')}
       </p>
     </Slide>
 
@@ -383,6 +423,12 @@ const crm = [
     .cv-anello:not(:first-child)::before { display: none; }
     .cv-anello:not(:first-child) { padding-left: 1rem; }
   }
+  .ap-dati { width: 100%; max-width: 78rem; margin: 0 auto; display: grid; gap: 0.5rem; text-align: left; }
+  .ap-dati > div { display: grid; grid-template-columns: minmax(9rem, 0.3fr) minmax(0, 1fr); gap: clamp(0.8rem, 1.4vw, 1.5rem); align-items: baseline; padding: clamp(0.65rem, 1.5vh, 0.95rem) clamp(0.9rem, 1.2vw, 1.3rem); border-radius: 0.6rem; border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(27, 34, 48, 0.58); }
+  .ap-dati dt { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.08rem, 1.22vw, 1.32rem); color: var(--ink-primary); }
+  .ap-dati dd { margin: 0; font-size: clamp(1rem, 1.06vw, 1.14rem); line-height: 1.4; color: var(--ink-primary); text-wrap: pretty; }
+  .ap-dati a { color: var(--color-verde-chiaro); text-decoration: underline; text-underline-offset: 0.18em; white-space: nowrap; }
+  @media (max-width: 900px) { .ap-dati > div { grid-template-columns: minmax(0, 1fr); } }
   .ap-card--nota { border: 1.5px solid rgba(255, 141, 157, 0.6) !important; }
   .vu-prima { width: 100%; max-width: 68rem; margin-inline: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(0.8rem, 1.4vw, 1.4rem); text-align: left; }
   .vu-pr { padding: clamp(0.9rem, 1.8vh, 1.3rem) clamp(1rem, 1.2vw, 1.3rem); border-radius: 0.7rem; border: 1px solid rgba(255, 255, 255, 0.22); background: rgba(27, 34, 48, 0.55); }
