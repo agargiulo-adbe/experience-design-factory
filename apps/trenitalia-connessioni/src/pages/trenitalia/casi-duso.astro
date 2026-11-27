@@ -29,19 +29,18 @@ import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
 import DiagMatrice from '../../components/diagrammi/DiagMatrice.astro';
-import DiagScambio from '../../components/diagrammi/DiagScambio.astro';
-import DiagAssistenti from '../../components/diagrammi/DiagAssistenti.astro';
 import SchermoCaso from '../../components/casi/SchermoCaso.astro';
 import FlussoCaso from '../../components/casi/FlussoCaso.astro';
 import { href } from '@edf/core/utils/url.js';
 import { rotte } from '../../data/percorso';
-import { CASI, FONTI, CONFIG, RIFERIMENTO, FONTI_CAPITOLO } from '../../data/casi-duso';
+import { CASI, CONFIG } from '../../data/casi-duso';
 
 const base = import.meta.env.BASE_URL;
 const { next, prev } = rotte('trenitalia/casi-duso');
 const currentPath = Astro.url.pathname;
 
 const nomeConfig = (id: string) => CONFIG.find((k) => k.id === id)?.nome ?? id;
+const serveA = (id: string) => CONFIG.find((k) => k.id === id)?.serveBreve ?? '';
 
 
 /**
@@ -72,10 +71,10 @@ const SFONDI: Record<string, string> = {
         <div class="fs-grid"></div>
       </div>
       <CoverHero
-        eyebrow="Capitolo 05 · Casi d’uso"
-        numeral="05"
+        eyebrow="Capitolo 03 · I casi"
+        numeral="03"
         title="I casi su Target, e quando si fanno"
-        lead="Cinque casi, in ordine di fase, sul canale digitale diretto: trenitalia.com, Le Frecce e l’app. La rete intermediata si guarda a parte, per vedere se una vendita è solo spostata."
+        lead={lega('Cinque casi sul canale digitale diretto, in ordine di fase. Per capire se una vendita è nuova o spostata serve il dato di agenzie e rivenditori: lo porta Sales, e si legge insieme.')}
         size="phase"
         signature={false}
       />
@@ -97,37 +96,16 @@ const SFONDI: Record<string, string> = {
         style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal data-reveal-delay="0.08"
       >
-        Un caso dalla prima fase, uno con la conferma, tre con il&nbsp;login.
+        Un caso parte dalla fase 0, uno dalla fase 1, tre dalla fase&nbsp;2.
       </h2>
       <div class="w-full" data-reveal data-reveal-delay="0.2">
         <DiagMatrice casi={CASI} />
       </div>
       <p class="fs-panel-src text-center mt-3" data-reveal data-reveal-delay="0.26">
-        Tre casi dal vostro elenco, due nostri · scenari da scegliere insieme
+        <span class="cs-leg"><i class="cs-leg-qui"></i>parte da questa fase</span>
+        <span class="cs-leg"><i></i>resta valido nelle fasi dopo</span>
+        <span class="cs-leg">Tre casi dal vostro elenco, due nostri</span>
       </p>
-    </Slide>
-
-    <!-- ── Che cosa serve a ogni fase ─────────────────────────────────── -->
-    <Slide id="slide-configurazioni" bg="primary" align="center">
-      <div slot="backdrop" class="absolute inset-0">
-        <div class="fs-bg"></div>
-        <div class="fs-grid"></div>
-      </div>
-      <Sfondo slot="backdrop" id="rl-binari" forza="forte" />
-      <p class="fs-panel-tag text-center mb-3" data-reveal>DA CHE COSA DIPENDE OGNI FASE</p>
-      <h2
-        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-        data-reveal data-reveal-delay="0.08"
-      >
-        La conferma aspetta un campo in più; lo status, il&nbsp;login.
-      </h2>
-      <p class="text-center fs-card-body max-w-3xl mx-auto mb-5" style="text-wrap: balance;" data-reveal data-reveal-delay="0.14">
-        La fase 0 parte con i due Analytics come&nbsp;sono; la conferma si specifica intanto e si sviluppa dopo le prime&nbsp;letture.
-      </p>
-      <div class="w-full" data-reveal data-reveal-delay="0.2">
-        <DiagScambio />
-      </div>
     </Slide>
 
     <!-- ── I cinque casi ──────────────────────────────────────────────── -->
@@ -173,9 +151,17 @@ const SFONDI: Record<string, string> = {
             <p class="cx-cap">{lega(c.viaggiatore)}</p>
           </figure>
         </div>
+        {/* Che cosa serve e su che cosa si giudica: prima stava in una slide a parte
+            per ogni caso, cinque volte lo stesso schema. Il percorso del dato si
+            mostra una volta, sul primo caso; gli altri stanno in appendice. */}
+        <dl class="cs-fascia" data-reveal data-reveal-delay="0.28">
+          <div><dt>Serve</dt><dd>{lega(serveA(c.config))}</dd></div>
+          <div><dt>Si misura su</dt><dd>{lega(c.kpi.slice(0, 2).join(' · '))}</dd></div>
+        </dl>
       </Slide>
 
       {/* ── Dietro le quinte: il dato, e che cosa muove il caso ───────────── */}
+      {i === 0 && (
       <Slide id={`slide-dietro-${c.id}`} bg={i % 2 === 0 ? 'primary' : 'secondary'} align="center">
         <div slot="backdrop" class="absolute inset-0">
           <div class="fs-bg-soft"></div>
@@ -195,85 +181,34 @@ const SFONDI: Record<string, string> = {
         <div class="w-full" data-reveal data-reveal-delay="0.14">
           <FlussoCaso caso={c} />
         </div>
+        <p class="fs-panel-src text-center mt-4" data-reveal data-reveal-delay="0.3">
+          Il percorso del dato è lo stesso negli altri quattro casi: sta nell’appendice per il team tecnico.
+        </p>
       </Slide>
+      )}
       </>
     ))}
 
-    <!-- ── Il canale conversazionale ──────────────────────────────────── -->
-    {/* Nella riunione del 27 ott i motori conversazionali erano la prima
-        priorità dichiarata. Qui stanno dopo il percorso sulla vista unica, non
-        prima: il contesto che serve a rispondere bene è lo stesso che serve ai
-        cinque casi sopra. Restano due cose, distinte di proposito. */}
-    <Slide id="slide-conversazionale" bg="primary" align="center">
+    <!-- ── Che cosa viene dopo ────────────────────────────────────────── -->
+    <Slide id="slide-scelta" bg="primary" align="center">
       <div slot="backdrop" class="absolute inset-0">
-        <div class="fs-bg-soft"></div>
+        <div class="fs-bg"></div>
         <div class="fs-grid"></div>
       </div>
-      <Sfondo slot="backdrop" id="rl-banchina" forza="forte" />
-      <p class="fs-panel-tag text-center mb-3" data-reveal>IL CANALE CHE CRESCE · SI LEGGE GIÀ DALLA FASE 0</p>
-      <h2
-        class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-        data-reveal data-reveal-delay="0.08"
-      >
-        Prima si misura quanto pesa il traffico dagli assistenti.
-      </h2>
-      <p class="text-center fs-card-body max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.14">
-        Come vi nominano e che cosa sa di chi vi scrive sono due lavori diversi. In&nbsp;mezzo, il&nbsp;numero
-        che ancora manca.
-      </p>
-
-      <div class="w-full" data-reveal data-reveal-delay="0.2">
-        <DiagAssistenti />
-      </div>
-      <p class="fs-panel-src text-center mt-5" data-reveal data-reveal-delay="0.3">
-        Se un domani l’assistente usasse il profilo, servirebbe una valutazione privacy a sé: qui non si propone.
-      </p>
-    </Slide>
-
-    <!-- ── La referenza, e il passo ───────────────────────────────────── -->
-    <Slide id="slide-riferimento" bg="secondary" align="center">
-      <div slot="backdrop" class="absolute inset-0">
-        <div class="fs-bg-soft"></div>
-        <div class="fs-grid"></div>
-      </div>
-      <Sfondo slot="backdrop" id="tr-tetto" forza="forte" />
-      <p class="fs-panel-tag text-center mb-3" data-reveal>UN’ALTRA FERROVIA CHE LEGGE IL VIAGGIO</p>
-      <h2
-        class="text-center text-[var(--ink-primary)] mb-4 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-        data-reveal data-reveal-delay="0.08"
-      >
-        {RIFERIMENTO.nome}
-      </h2>
-      <p class="text-center fs-card-body max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.14">
-        {RIFERIMENTO.cosa}
-      </p>
-
-      <div class="w-full max-w-md mx-auto grid grid-cols-1 gap-4" data-stagger>
-        {RIFERIMENTO.numeri.map((n) => (
-          <div class="fs-card text-center !py-5">
-            <p
-              class="mx-auto mb-2 font-[family-name:var(--font-display)] text-[var(--ink-primary)]"
-              style="font-size: clamp(1.8rem, 2.8vw, 2.5rem); font-weight: 600; line-height: 1.04; letter-spacing: -0.03em;"
-              data-display
-            >{n.v}</p>
-            <p class="fs-card-body">{lega(n.l)}</p>
-          </div>
-        ))}
-      </div>
-
-      <p class="fs-panel-src text-center mt-5" data-reveal data-reveal-delay="0.3">
-        Caso pubblicato da Adobe ·
-        <a href={RIFERIMENTO.url} target="_blank" rel="noopener noreferrer">business.adobe.com</a>
-      </p>
-
-      <div class="fs-panel fs-panel--alt w-full max-w-5xl mx-auto text-left mt-4 !py-3.5" data-reveal data-reveal-delay="0.36">
-        <p class="fs-panel-src">
-          Fonti del capitolo, aperte il 22 novembre 2026: {FONTI_CAPITOLO.map((f, i) => (
-            <>{i > 0 ? ' · ' : ''}<a href={f.url} target="_blank" rel="noopener noreferrer">{f.cosa}</a></>
-          ))}
+      <Sfondo slot="backdrop" id="rl-binari" forza="forte" />
+      <div class="w-full max-w-4xl mx-auto text-center flex flex-col items-center gap-7">
+        <p class="fs-panel-tag" data-reveal>DA DOVE SI COMINCIA</p>
+        <h2
+          class="font-[family-name:var(--font-display)] text-[var(--color-chiaro)]"
+          style="font-size: clamp(2rem, 3.8vw, 3.3rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.025em; text-wrap: balance;"
+          data-display data-reveal data-reveal-delay="0.1"
+        >
+          Il primo caso che proponiamo non aspetta la fase 0.
+        </h2>
+        <p class="fs-card-body max-w-2xl" style="text-wrap: balance;" data-reveal data-reveal-delay="0.2">
+          {lega('La home per area si può provare con Target già oggi, e la fase 0 la rende più precisa. La scelta si conferma con l’analisi su Target in corso; metrica, effetto minimo e durata si fissano prima di partire.')}
         </p>
+        <a href={href(base, next)} class="edf-sig-cta" data-reveal data-reveal-delay="0.3">La fase 0, da vicino →</a>
       </div>
     </Slide>
 
@@ -351,6 +286,19 @@ const SFONDI: Record<string, string> = {
     .cx { grid-template-columns: minmax(0, 1fr); }
     .cx-freccia { display: none; }
   }
+
+  /* La legenda della matrice e la fascia sotto ogni caso. */
+  .cs-leg { display: inline-flex; align-items: center; gap: 0.45rem; margin-inline: 0.7rem; }
+  .cs-leg i { width: 0.8rem; height: 0.8rem; border-radius: 50%; background: rgba(255, 255, 255, 0.55); }
+  .cs-leg .cs-leg-qui { background: var(--color-rosso); }
+  .cs-fascia {
+    width: 100%; max-width: 84rem; margin: clamp(0.8rem, 2vh, 1.3rem) auto 0;
+    display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(0.8rem, 1.6vw, 1.8rem); text-align: left;
+  }
+  .cs-fascia > div { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.2rem 0.8rem; align-items: baseline; padding-top: 0.7rem; border-top: 1px solid rgba(255, 255, 255, 0.28); }
+  .cs-fascia dt { font-size: clamp(0.86rem, 0.92vw, 0.98rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-secondary); }
+  .cs-fascia dd { margin: 0; font-size: clamp(1rem, 1.06vw, 1.14rem); line-height: 1.38; color: var(--ink-primary); text-wrap: pretty; }
+  @media (max-width: 900px) { .cs-fascia { grid-template-columns: minmax(0, 1fr); } }
 
   /* ── Le tre configurazioni ───────────────────────────────────────── */
   .cs-cfg--on { border-color: rgba(255, 141, 157, 0.6) !important; box-shadow: inset 0.28rem 0 0 var(--color-rosso); }

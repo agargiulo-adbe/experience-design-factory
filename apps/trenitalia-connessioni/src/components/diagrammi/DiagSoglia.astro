@@ -13,15 +13,20 @@ interface Props {
   dopo: { titolo: string; voci: string[] };
   /** La riga sulla freccia di ritorno. Senza, la freccia non si disegna. */
   ritorno?: string;
+  /** Quando il «prima» è quello che c'è già e il «dopo» quello che manca: il
+   *  pieno passa a sinistra e il tratteggio, che vuol dire «non ancora», a destra. */
+  inverti?: boolean;
   class?: string;
 }
-const { prima, soglia, dopo, ritorno, class: className } = Astro.props as Props;
+const { prima, soglia, dopo, ritorno, inverti = false, class: className } = Astro.props as Props;
+const cPrima = inverti ? 'dg-sg-voce--piena' : 'dg-sg-voce--vuota';
+const cDopo = inverti ? 'dg-sg-voce--vuota' : 'dg-sg-voce--piena';
 ---
 <div class:list={["dg-soglia", className]} role="img"
      aria-label={`${prima.titolo}: ${prima.voci.join(', ')}. Soglia: ${soglia}. ${dopo.titolo}: ${dopo.voci.join(', ')}.${ritorno ? ' ' + ritorno : ''}`}>
   <div class="dg-sg-lato dg-sg-lato--prima" aria-hidden="true">
     <p class="dg-sg-tit">{prima.titolo}</p>
-    {prima.voci.map((v) => <span class="dg-sg-voce dg-sg-voce--vuota">{v}</span>)}
+    {prima.voci.map((v) => <span class:list={['dg-sg-voce', cPrima]}>{v}</span>)}
   </div>
   <div class="dg-sg-soglia" aria-hidden="true">
     <span class="dg-sg-asta"></span>
@@ -30,7 +35,7 @@ const { prima, soglia, dopo, ritorno, class: className } = Astro.props as Props;
   </div>
   <div class="dg-sg-lato dg-sg-lato--dopo" aria-hidden="true">
     <p class="dg-sg-tit">{dopo.titolo}</p>
-    {dopo.voci.map((v) => <span class="dg-sg-voce dg-sg-voce--piena">{v}</span>)}
+    {dopo.voci.map((v) => <span class:list={['dg-sg-voce', cDopo]}>{v}</span>)}
   </div>
   {ritorno && (
     <div class="dg-sg-ritorno" aria-hidden="true">

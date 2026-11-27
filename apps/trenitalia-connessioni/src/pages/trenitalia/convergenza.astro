@@ -1,57 +1,29 @@
 ---
 /**
- * Capitolo 03 — Convergenza: il disegno d'insieme, in tre passi.
+ * Capitolo 02 — Le tre fasi: dal totale per tratta al cliente riconosciuto.
  *
- * RISCRITTO IL 22 NOV 2026 per l'incontro con il responsabile dei canali digitali,
- * che ha chiesto un piano di casi d'uso su Adobe Target. RIORDINATO IL 23 NOV dopo la
- * call con il partner. I passi sono tre, in fila:
- *   · il primo passo — CJA su trenitalia.com e sullo status del cliente, estratto dal
- *     CRM; Target su trenitalia.com. Aspetta il DPO e la sicurezza IT;
- *   · l'acquisto su Le Frecce — si lavora da subito, in parallelo: lega la vendita
- *     alla ricerca sulla pagina di conferma, senza toccare la piattaforma di vendita;
- *   · Le Frecce e l'app — il percorso intero, e Target anche lì: con il nuovo portale.
- * Il motivo del riordino: su Le Frecce il partner misura solo la pagina di conferma,
- * e la piattaforma di vendita non rilascia prima del nuovo portale.
- *
- * IL LEGAME FRA I DUE SITI (due organizzazioni Adobe, due identità) è il lavoro del
- * secondo passo, con il partner, FS Technology e il DPO. Qui si dice per quello che è
- * per il cliente: che cosa si verifica, quale pubblico si raggiunge e perché gli altri
- * restano fuori, chi decide. I vincoli stanno come cose da decidere, senza numeri del
- * partner. Il dettaglio tecnico sta nel documento di riconciliazione, fuori dal deck.
- *
- * RIPENSATO IL 25 NOV 2026, dopo le due call del 24 (con il partner e con il
- * Customer Success). Tre fatti nuovi:
- *   · trenitalia.com più il CRM, da solo, non lega niente: sul sito non si fa login;
- *   · il primo legame è la pagina di conferma su Le Frecce, dove gira già un tag
- *     del team del cliente che scrive nella report suite di trenitalia.com: la
- *     traccia della ricerca ci arriva dentro un parametro, e l'acquisto si lega;
- *   · il CRM entra come un attributo, con il DPO; il connettore diretto esce,
- *     perché passa da internet e la sicurezza del Gruppo vuole tutto dal gateway.
- * E una scelta di racconto: prima i casi a valore nel perimetro che ha dato il
- * cliente (gli Analytics dei due siti e il CRM), poi i due gruppi — senza toccare
- * Le Frecce / con Le Frecce nel disegno — poi i tempi. La slide «i casi nel tempo»
- * sta subito dopo la copertina. Il dettaglio, con fonti, sta nella
- * cartella d’analisi dell’account (git-ignorata).
- *
- * RINUMERATO IL 26 NOV 2026 IN TRE FASI, dopo la call con il partner e l'AE:
+ * LA STORIA, in breve. Il capitolo nasce il 22 nov 2026 come piano di casi su Adobe
+ * Target; il 26 nov, dopo la call con il partner e l'AE, i passi diventano tre fasi:
  *   · fase 0, Vista unica: i due Analytics in CJA come sono, letti per giorno e per
- *     tratta; Target prova varianti per tutti. Ha il suo capitolo, subito dopo;
- *   · fase 1, la conferma: la traccia della ricerca passa a Le Frecce in un campo
- *     in più del passaggio fra i siti, e la conferma la riporta. Nascono i pubblici;
- *   · fase 2, il login su trenitalia.com: l'unico identificativo persistente, e
- *     solo da qui il CRM (decisione dell'owner). Il login si dice come condizione,
- *     in chiaro: lo chiede il partner, e il team digitale lo vuole.
- * La slide nuova dopo la copertina, i tre cerchi, è l'idea della consulente dati:
- * le fasi come convergenza dal fenomeno alla persona, non come piano di progetto.
- * Ogni fase dice che cosa dà e che cosa non dà ancora: è il dubbio dell'AE, che il
- * cliente si aspetti dalla fase 0 più di quello che porta.
+ *     tratta; Target prova varianti per tutti;
+ *   · fase 1, la conferma: la traccia della ricerca passa a Le Frecce in un campo in
+ *     più del passaggio fra i siti, e la conferma la riporta. Nascono i gruppi;
+ *   · fase 2, il login su trenitalia.com: l'unico identificativo persistente, e solo
+ *     da qui il CRM (decisione dell'owner).
  *
- * Usciti dal capitolo: «CJA non è una CDP», «i casi in tabella» (stanno nel capitolo
- * dopo), Content Analytics (prodotto a parte, fuori dal piano) e la tabella a tre
- * fasi con Real-Time CDP. I pubblici da CJA a Target passano da una licenza di
- * Real-Time CDP, che si chiede solo per questo (27 nov 2026, decisione dell'owner:
- * Journey Optimizer nel Gruppo è di FS News e non si considera). Lo username come
- * chiave della fase 2 è un'ipotesi, e in pagina si dice così.
+ * RIDISEGNATO IL 27 NOV 2026, dopo la critica di design. Tre cose:
+ *   · i tre cerchi concentrici lasciano il posto al binario (`FiguraBinario`): gli
+ *     stessi due siti ripetuti tre volte, e cambia solo il filo nel passaggio. I
+ *     cerchi dicevano l'importanza al contrario e non mostravano i due siti;
+ *   · la slide «i casi nel tempo» diventa una tabella a tre righe (si legge, Target
+ *     può, serve). I casi hanno il loro capitolo, e undici voci qui contro cinque là
+ *     era un conto che non tornava;
+ *   · quello che serve a FS Technology e al DPO — chi decide e chi lavora, come
+ *     arriva un gruppo a Target, il CRM — sta nell'appendice per il team tecnico.
+ * La slide con la schermata di CJA esce: annunciava un esempio che in pagina non c'era.
+ *
+ * IL COLORE vale una cosa sola: rosso è quello che si fa adesso (la fase 0), verde
+ * acqua quello che arriva dopo, il tratteggio «non ancora».
  */
 import { lega } from '../../utils/lega';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -60,10 +32,8 @@ import TreniNavigation from '../../components/TreniNavigation.astro';
 import DeckContainer from '@edf/core/blocks/immersive/DeckContainer.astro';
 import Slide from '@edf/core/blocks/immersive/Slide.astro';
 import CoverHero from '@edf/core/blocks/CoverHero.astro';
-import MediaDemoSlot from '@edf/core/blocks/immersive/MediaDemoSlot.astro';
 import DiagDisegno from '../../components/diagrammi/DiagDisegno.astro';
-import DiagOrizzonti, { type Orizzonte } from '../../components/diagrammi/DiagOrizzonti.astro';
-import FiguraConvergenza from '../../components/figure/FiguraConvergenza.astro';
+import FiguraBinario from '../../components/figure/FiguraBinario.astro';
 import ComeFunziona from '../../components/ComeFunziona.astro';
 import { href } from '@edf/core/utils/url.js';
 import { rotte } from '../../data/percorso';
@@ -71,83 +41,44 @@ import { rotte } from '../../data/percorso';
 const base = import.meta.env.BASE_URL;
 const { next, prev } = rotte('trenitalia/convergenza');
 const currentPath = Astro.url.pathname;
+const h2 = 'font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;';
 
-const orizzonti: Orizzonte[] = [
-  { id: 'a', quando: 'Fase 0 · circa sei settimane', nome: 'Vista unica, i due siti come sono',
-    casi: ['Le tratte più cercate dall’area', 'Dove si perde la vendita', 'Le settimane che arrivano', 'Una prova su Target per lettura'],
-    serve: 'i due Analytics in CJA; il via libera di FS Technology, di Le Frecce e del DPO',
-    muove: 'Adobe, FS Technology e IBM per Le Frecce' },
-  { id: 'b', quando: 'Fase 1 · dopo le prime letture', nome: 'La conferma d’acquisto',
-    casi: ['La home riconosce chi ha già cercato', 'Quale campagna vende davvero', 'Non rincorrere chi ha già comprato'],
-    serve: 'prima la conferma legata, senza licenze nuove; poi i pubblici, con Real-Time CDP',
-    muove: 'chi gestisce la vendita, il vostro team, il partner' },
-  { id: 'c', quando: 'Fase 2 · con il login', nome: 'La persona, anche sull’app',
-    casi: ['Lo status fedeltà, al ritorno', 'L’upgrade a chi lo compra davvero', 'La stessa proposta sul sito e nell’app', 'L’abbandono, recuperato'],
-    serve: 'login e nuovo portale: decisioni del Gruppo, non di Adobe',
-    muove: 'Trenitalia e chi sviluppa i portali' },
+/* Il binario: una riga per fase, e nel passaggio fra i due siti cambia il filo. */
+const fasi: Parameters<typeof FiguraBinario>[0]['fasi'] = [
+  { n: '0', nome: 'Vista unica', quando: 'circa sei settimane dal via',
+    filo: 'nessun legame: si leggono i totali', beneficio: 'Si vede dove si perde la vendita.' },
+  { n: '1', nome: 'La conferma', quando: 'dopo le prime letture',
+    filo: 'una visita, senza un nome', beneficio: 'Si sa quale visita ha comprato.' },
+  { n: '2', nome: 'Il login', quando: 'con il login sul sito',
+    filo: 'il cliente, con il suo status', beneficio: 'Si riconosce il cliente, anche nell’app.' },
 ];
 
-/* I tre cerchi: che cosa si legge e che cosa si attiva, fase per fase. «Si attiva»
-   è la parte che risponde al dubbio di chi decide: la fase 0 non porta pubblici. */
-const anelli: Parameters<typeof FiguraConvergenza>[0]['anelli'] = [
-  { n: '0', nome: 'Il fenomeno', legge: 'ricerche, arrivi e conferme, per giorno e per tratta',
-    attiva: 'prove su Target senza pubblici, anche per area', casi: ['Le tratte più cercate dall’area', 'Dove si perde la vendita'] },
-  { n: '1', nome: 'La visita che compra', legge: 'chi ha cercato e poi ha comprato, senza un nome',
-    attiva: 'pubblici di visitatori, misurati fino alla conferma', casi: ['La home riconosce chi ha già cercato', 'Non rincorrere chi ha già comprato'] },
-  { n: '2', nome: 'La persona', legge: 'la stessa persona sui due siti, con lo status',
-    attiva: 'la proposta per persona, anche nell’app', casi: ['Lo status fedeltà, al ritorno', 'La stessa proposta sul sito e nell’app'] },
-];
-
-/* Chi decide, chi firma, chi fa: dal panel del 26 nov 2026. FS Technology la
-   leggeva come la condizione d'accesso; titolarità e accordi fra le due
-   organizzazioni restano «da chiedere» finché il DPO non li dice. */
-const governo = [
-  { f: '0', entra: 'le righe di visita dei due Analytics, con identificativi pseudonimi',
-    decide: 'FS Technology e chi amministra Le Frecce; il DPO dà il parere',
-    fa: 'Adobe: mappatura e rimappatura; FS Technology: accessi e sicurezza; IBM: gli Analytics di Le Frecce' },
-  { f: '1', entra: 'un identificativo in più nel passaggio a Le Frecce, e la conferma per visitatore',
-    decide: 'Customer Operations per il campo, da confermare; il DPO; FS Technology',
-    fa: 'il partner sulla libreria, il vostro team sul tag della conferma' },
-  { f: '2', entra: 'il login su trenitalia.com, con lo username come chiave (un’ipotesi), e un attributo dal CRM',
-    decide: 'il Gruppo, su login e portale; il DPO, per il CRM; marketing e revenue management, per offerte e status',
-    fa: 'chi sviluppa i portali; Adobe sul profilo in CJA' },
+/* Le tre fasi in tabella: che cosa si legge, che cosa può fare Target, che cosa
+   serve. Niente nomi di caso: quelli stanno nel capitolo dopo, e sono cinque. */
+const tabella = [
+  { k: 'Si legge',
+    v: ['Ricerche, arrivi e conferme, per giorno e per tratta',
+        'Quale visita ha poi comprato, senza sapere chi è',
+        'Lo stesso cliente sui due siti, con lo status fedeltà'] },
+  { k: 'Target può',
+    v: ['Provare una variante per tutti, o per area',
+        'Parlare a gruppi di visitatori, e misurare fino alla conferma',
+        'Fare una proposta al singolo cliente, anche su Le Frecce e in app'] },
+  { k: 'Serve',
+    v: ['I due Analytics in Customer Journey Analytics. Nessun rilascio sui siti',
+        'Per misurare: un campo in più nel passaggio, nessuna licenza nuova. Per i gruppi verso Target: Real-Time CDP',
+        'Il login su trenitalia.com e il nuovo portale: decisioni del Gruppo. Target su Le Frecce e in app, da quotare'] },
 ];
 
 const verifica = [
-  { k: 'Che cosa si verifica', v: 'Che l’identificativo del visitatore di trenitalia.com passi a Le Frecce in un campo in più, fuori da referrer e log, e che il tag della conferma lo riporti con l’acquisto.' },
-  { k: 'Chi si raggiunge', v: 'Chi passa da trenitalia.com a Le Frecce con il consenso. Restano fuori chi arriva diretto su Le Frecce e, su Safari, chi torna dopo una settimana.' },
-  { k: 'Chi decide', v: 'Chi gestisce la vendita, per il campo in più; il vostro team, per il tag della conferma; il partner, per la libreria.' },
-];
-
-const catena = [
-  { k: 'Adobe Analytics', v: 'raccoglie come oggi, su trenitalia.com' },
-  { k: 'Il connettore', v: 'porta le visite e l’acquisto; lo status, con il login, da un’estrazione del CRM', nuovo: true },
-  { k: 'Customer Journey Analytics', v: 'legge il viaggio e costruisce il pubblico', nuovo: true },
-  { k: 'La destinazione Target', v: 'passa il pubblico a Target; serve una licenza di Real-Time CDP', nuovo: true },
-  { k: 'Adobe Target', v: 'su trenitalia.com, dalle visite successive' },
-];
-
-const catenaNote = [
-  { k: 'Ogni quanto si aggiorna', v: 'Al più ogni 4 ore. Con at.js 2, già sul sito, vale dalla visita dopo; se il pubblico non arriva, resta la home di oggi.' },
-  { k: 'Le Frecce, dopo', v: 'L’acquisto entra con la conferma, nella fase 1; lo status del cliente con il login, nella fase 2.' },
-  { k: 'Come si spegne', v: 'Un interruttore per attività in Target; at.js nasconde la parte che cambia fino alla variante, con una soglia in millisecondi da fissare con il vostro team.' },
-];
-
-const crm = [
-  { k: 'Prima, un file', v: 'Un attributo per cliente, come lo status del programma fedeltà, che dal 2027 sta in Salesforce, o un livello di valore, con un’estrazione periodica. Nessun dato anagrafico.' },
-  { k: 'Poi, dal vostro gateway', v: 'A regime il dato parte dallo strato di integrazione del Gruppo verso Adobe, in uscita. Il come si studia con la sicurezza IT.' },
-  { k: 'Per tutte e due', v: 'Il parere del DPO e della sicurezza IT, anche per un solo attributo. Il connettore diretto passa da internet: lo valutiamo con la sicurezza IT.' },
-];
-
-const letture = [
-  { metric: 'Cosa cerca', label: 'chi poi compra, e chi no', sub: 'La ricerca su un sito, l’acquisto sull’altro, nella stessa riga' },
-  { metric: 'Dove si ferma', label: 'e quante volte torna', sub: 'Sul sito per passaggi; su Le Frecce, con il login' },
-  { metric: 'Su che cosa', label: 'si misura una proposta', sub: 'Prima sui clic verso l’acquisto, poi fino alla conferma' },
+  { k: 'Che cosa cambia', v: 'Nel passaggio a Le Frecce viaggerebbe un identificativo di visita, senza nome. Sulla pagina di conferma, il tag che c’è già lo riporterebbe con l’acquisto.' },
+  { k: 'Chi si riconosce', v: 'Chi passa da trenitalia.com a Le Frecce e ha dato il consenso. Resta fuori chi entra diretto su Le Frecce.' },
+  { k: 'Che cosa si sa', v: 'Che quella visita ha comprato. Quale biglietto e a che prezzo, solo se la conferma porta anche quei campi.' },
 ];
 ---
 <BaseLayout
-  title="Un disegno, tre fasi"
-  description="Tre fasi, dal fenomeno alla persona: i due Analytics letti insieme senza toccare i siti, poi la conferma d’acquisto legata alla ricerca, poi il login su trenitalia.com con lo status dal CRM."
+  title="Le tre fasi"
+  description="Tre fasi: i due Analytics letti insieme senza toccare i siti, poi la conferma d’acquisto legata alla ricerca, poi il login su trenitalia.com con lo status dal CRM."
   pageSolutions={['cja']}
   branch="trenitalia"
 >
@@ -168,137 +99,80 @@ const letture = [
         <div class="fs-grid"></div>
       </div>
       <CoverHero
-        eyebrow="Capitolo 03 · Convergenza"
-        numeral="03"
-        title="Un disegno, tre fasi"
-        lead={lega('Che cosa si legge subito, che cosa si sblocca con la conferma d’acquisto e che cosa con il login.')}
+        eyebrow="Capitolo 02 · Le tre fasi"
+        numeral="02"
+        title="Tre fasi, un passo alla volta"
+        lead={lega('Che cosa si legge subito, che cosa arriva con la conferma d’acquisto e che cosa con il login.')}
         size="phase"
         tone="ink"
         signature={false}
       />
-
-      <div class="relative w-full max-w-3xl mx-auto mt-9 mb-1" data-reveal data-reveal-delay="0.3">
-        <div class="fs-line-h" style="top: 1.45rem; left: 8%; right: 8%;"></div>
-        <div class="relative flex justify-between items-start px-[4%]">
-          <div class="flex flex-col items-center gap-2.5 text-center">
-            <span class="fs-node" data-active>AA</span>
-            <span class="fs-node-label">Il sito, come oggi</span>
-          </div>
-          <div class="flex flex-col items-center gap-2.5 text-center">
-            <span class="fs-node fs-node--alt" data-active>CJA</span>
-            <span class="fs-node-label">Legge il viaggio</span>
-          </div>
-          <div class="flex flex-col items-center gap-2.5 text-center">
-            <span class="fs-node" data-active>AT</span>
-            <span class="fs-node-label">Agisce sul sito</span>
-          </div>
-        </div>
-      </div>
     </Slide>
 
-    <!-- ── Dal fenomeno alla persona ────────────────────────────────────── -->
-    {/* I tre cerchi. Il primo ↓ accende la fase 1, il secondo la fase 2. */}
-    <Slide id="slide-cerchi" bg="primary" align="center" data-solution="cja">
+    <!-- ── Lo stesso binario, tre volte ──────────────────────────────── -->
+    {/* Il primo ↓ accende la fase 1, il secondo la fase 2. */}
+    <Slide id="slide-binario" bg="primary" align="center" data-solution="cja">
       <div slot="backdrop" class="absolute inset-0">
         <div class="fs-bg"></div>
         <div class="fs-grid"></div>
       </div>
       <Sfondo slot="backdrop" id="tc-strati" forza="forte" />
-      <p class="fs-panel-tag text-center mb-3" data-reveal>DAL FENOMENO ALLA PERSONA</p>
-      <h2
-        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-        data-reveal data-reveal-delay="0.08"
-      >
-        Ogni fase aggiunge una chiave, e l’attivazione si fa più&nbsp;mirata.
+      <p class="fs-panel-tag text-center mb-3" data-reveal>LO STESSO PERCORSO, TRE VOLTE</p>
+      <h2 class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]" style={h2} data-reveal data-reveal-delay="0.08">
+        A ogni fase si riconosce meglio chi visita il&nbsp;sito.
       </h2>
-      <p class="text-center fs-card-body max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.14">
-        Ogni fase riusa la connessione e i campi della precedente.
-      </p>
-      <div class="w-full" data-reveal data-reveal-delay="0.2">
-        <FiguraConvergenza anelli={anelli} centro="la persona" />
+      <div class="w-full" data-reveal data-reveal-delay="0.16">
+        <FiguraBinario fasi={fasi}
+          sinistra={['trenitalia.com', 'dove si cerca']}
+          destra={['Le Frecce e l’app', 'dove si compra']} />
       </div>
     </Slide>
 
-    <!-- ── I casi nel tempo ──────────────────────────────────────────── -->
-    {/* Prima i casi, poi la macchina: è l'ordine che ha chiesto il cliente. Il primo
-        ↓ accende la seconda colonna, il secondo quella con Le Frecce. */}
-    <Slide id="slide-orizzonti" bg="secondary" align="center" data-solution="cja">
+    <!-- ── Le tre fasi, in tabella ───────────────────────────────────── -->
+    <Slide id="slide-fasi" bg="secondary" align="center" data-solution="cja">
       <div slot="backdrop" class="absolute inset-0">
         <div class="fs-bg-soft"></div>
         <div class="fs-grid"></div>
       </div>
       <Sfondo slot="backdrop" id="tc-quiete" forza="forte" />
-      <p class="fs-panel-tag text-center mb-3" data-reveal>I CASI NEL TEMPO</p>
-      <h2
-        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-        data-reveal data-reveal-delay="0.08"
-      >
-        La prima fase non chiede rilasci; le altre due, una&nbsp;chiave.
+      <p class="fs-panel-tag text-center mb-3" data-reveal>CHE COSA DÀ OGNI FASE, E CHE COSA CHIEDE</p>
+      <h2 class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]" style={h2 + ' text-wrap: balance;'} data-reveal data-reveal-delay="0.08">
+        La fase 0 parte senza toccare i siti. Le&nbsp;altre due aspettano un&nbsp;collegamento.
       </h2>
-      <p class="text-center fs-card-body max-w-3xl mx-auto mb-6" style="text-wrap: balance;" data-reveal data-reveal-delay="0.14">
-        La conferma aggiunge un campo verso Le Frecce; il login sul sito dà la&nbsp;persona.
-      </p>
-      <div class="w-full" data-reveal data-reveal-delay="0.2">
-        <DiagOrizzonti orizzonti={orizzonti} primo={1}
-          gruppi={['Senza rilasci sui siti', 'Con una chiave fra i due siti']}
-          asse={['il fenomeno', 'la persona']} />
-      </div>
-    </Slide>
-
-    <!-- ── Chi decide, chi firma, chi fa ────────────────────────────────── -->
-    <Slide id="slide-governo" bg="primary" align="center" data-solution="cja">
-      <div slot="backdrop" class="absolute inset-0">
-        <div class="fs-bg"></div>
-        <div class="fs-grid"></div>
-      </div>
-      <Sfondo slot="backdrop" id="tc-acciaio" forza="forte" />
-      <p class="fs-panel-tag text-center mb-3" data-reveal>CHI DECIDE, CHI FA</p>
-      <h2
-        class="text-center text-[var(--ink-primary)] mb-6 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-        data-reveal data-reveal-delay="0.08"
-      >
-        Chi decide e chi lavora, fase per&nbsp;fase.
-      </h2>
-      <div class="cv-gov" role="table" aria-label="Chi decide e chi fa, fase per fase" data-reveal data-reveal-delay="0.16">
-        <div class="cv-gov-r cv-gov-t" role="row">
-          <span role="columnheader">Fase</span><span role="columnheader">Che cosa entra</span><span role="columnheader">Chi decide</span><span role="columnheader">Chi fa</span>
+      <div class="cv-tab" role="table" aria-label="Le tre fasi: che cosa si legge, che cosa può fare Target, che cosa serve" data-reveal data-reveal-delay="0.16">
+        <div class="cv-tab-r cv-tab-t" role="row">
+          <span role="columnheader"></span>
+          <span role="columnheader" class="cv-tab-f cv-tab-f--ora"><b>0</b>Vista unica</span>
+          <span role="columnheader" class="cv-tab-f"><b>1</b>La conferma</span>
+          <span role="columnheader" class="cv-tab-f"><b>2</b>Il login</span>
         </div>
-        {governo.map((g) => (
-          <div class="cv-gov-r" role="row">
-            <span role="cell" class="cv-gov-f">{g.f}</span>
-            <span role="cell">{lega(g.entra)}</span>
-            <span role="cell">{lega(g.decide)}</span>
-            <span role="cell">{lega(g.fa)}</span>
+        {tabella.map((r) => (
+          <div class="cv-tab-r" role="row">
+            <span role="rowheader" class="cv-tab-k">{r.k}</span>
+            {r.v.map((x, i) => <span role="cell" class:list={[i === 0 && 'cv-tab-ora']}>{lega(x)}</span>)}
           </div>
         ))}
       </div>
       <p class="fs-panel-src text-center mt-5" data-reveal data-reveal-delay="0.3">
-        {lega('Sponsor e firma: la direzione dei canali digitali, con chi tiene il budget, da confermare. Titolarità del dato e accordi fra le due organizzazioni: da chiedere al DPO.')}
+        {lega('Ogni fase riusa la connessione e i campi della precedente. Il CRM e il consenso del cliente restano in Salesforce. I tempi della fase 2 dipendono dal Gruppo.')}
       </p>
     </Slide>
 
-    <!-- ── Il disegno che si costruisce ─────────────────────────────── -->
-    {/* Il primo stato è il primo passo. Con ↓ entra l'acquisto su Le Frecce, con ↓
-        ancora Le Frecce e l'app. Il pulsante apre il «come funziona» a passi. */}
+    <!-- ── I prodotti dietro le fasi ─────────────────────────────────── -->
+    {/* Il primo stato è la fase 0. Con ↓ entra la conferma, con ↓ ancora il login.
+        Il pulsante apre il «come funziona» a passi. */}
     <Slide id="slide-disegno" bg="primary" align="center" data-solution="cja">
       <div slot="backdrop" class="absolute inset-0">
         <div class="fs-bg"></div>
         <div class="fs-grid"></div>
       </div>
       <Sfondo slot="backdrop" id="tc-strati" forza="forte" />
-      <p class="fs-panel-tag text-center mb-3" data-reveal>IL DISEGNO D’INSIEME</p>
-      <h2
-        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-        data-reveal data-reveal-delay="0.08"
-      >
-        I due Analytics entrano dalla prima fase; Target cresce con&nbsp;loro.
+      <p class="fs-panel-tag text-center mb-3" data-reveal>I PRODOTTI DIETRO LE FASI</p>
+      <h2 class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]" style={h2} data-reveal data-reveal-delay="0.08">
+        Due prodotti li avete già. Due si aggiungono, uno per&nbsp;fase.
       </h2>
-      <p class="text-center fs-card-body max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.14">
-        Nella fase 0 Target prova varianti per tutti su trenitalia.com, dove c’è già una prima geolocalizzazione. Dalla fase 1 riceve pubblici; con il login, la&nbsp;persona.
+      <p class="text-center fs-card-body max-w-3xl mx-auto mb-6" style="text-wrap: balance;" data-reveal data-reveal-delay="0.14">
+        {lega('Customer Journey Analytics per la fase 0, Real-Time CDP dalla fase 1. Le righe di visita entrano in copia in Experience Platform.')}
       </p>
       <div class="w-full" data-reveal data-reveal-delay="0.2">
         <DiagDisegno />
@@ -309,10 +183,7 @@ const letture = [
       </div>
     </Slide>
 
-    <!-- ── La fase 1, preparata in parallelo ───────────────────────────── -->
-    {/* Calma, e con il ripiego in vista. Il primo passo non aspetta il legame fra i
-        due siti; il pubblico raggiungibile si definisce insieme, e si dice perché gli
-        altri restano fuori. Nessun numero del partner: il consenso si misura. */}
+    <!-- ── La fase 1, in concreto ────────────────────────────────────── -->
     <Slide id="slide-verifica" bg="secondary" align="center" data-solution="cja">
       <div slot="backdrop" class="absolute inset-0">
         <div class="fs-bg-soft"></div>
@@ -320,143 +191,29 @@ const letture = [
       </div>
       <Sfondo slot="backdrop" id="tc-quiete" forza="media" />
       <p class="fs-panel-tag text-center mb-3" data-reveal>LA FASE 1 · LA CONFERMA D’ACQUISTO</p>
-      <h2
-        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-        data-reveal data-reveal-delay="0.08"
-      >
+      <h2 class="text-center text-[var(--ink-primary)] mb-7 font-[family-name:var(--font-display)]" style={h2} data-reveal data-reveal-delay="0.08">
         La ricerca e l’acquisto si incontrano sulla pagina di&nbsp;conferma.
       </h2>
-      <p class="text-center fs-card-body max-w-3xl mx-auto mb-7" data-reveal data-reveal-delay="0.14">
-        La traccia della ricerca passa a Le Frecce in un campo in più; sulla&nbsp;conferma, un tag vostro da configurare la riporta negli&nbsp;Analytics.
-      </p>
       {/* Il ponte fra i due siti: tratteggiato, perché è quello che si verifica. */}
       <div class="cv-ponte" data-reveal data-reveal-delay="0.18" aria-hidden="true">
         <span class="cv-ponte-s"><small>la ricerca</small>trenitalia.com</span>
         <span class="cv-ponte-l">
           <svg viewBox="0 0 200 8" preserveAspectRatio="none"><line x1="0" y1="4" x2="200" y2="4" stroke="currentColor" stroke-width="2" stroke-dasharray="6 6" vector-effect="non-scaling-stroke"/></svg>
-          <em>la stessa persona?</em>
+          <em>la stessa visita?</em>
         </span>
         <span class="cv-ponte-s"><small>l’acquisto</small>Le Frecce</span>
       </div>
       <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-5" data-stagger>
-        {verifica.map((c, i) => (
-          <div class:list={['fs-card text-left h-full', i === 1 && 'cv-card--ok']}>
-            <p class="fs-card-title mb-2" style="font-size: 1.1rem;">{c.k}</p>
-            <p class="fs-card-body">{lega(c.v)}</p>
-          </div>
-        ))}
-      </div>
-      <p class="text-center fs-card-body max-w-3xl mx-auto mt-6" data-reveal data-reveal-delay="0.3">
-        Si sa se la visita ha comprato; biglietto e importo solo se la conferma porta anche quei campi. Il dato è per visitatore: serve il parere del&nbsp;DPO.
-      </p>
-    </Slide>
-
-    <!-- ── Come arriva un pubblico a Target ─────────────────────────────── -->
-    {/* Chiesta dal panel del 22 nov 2026: «Target lo riceve» taceva il come. Il
-        passaggio usa la destinazione Adobe Target di Experience Platform, che si
-        abilita nella proposta: al cliente non si propone una piattaforma da gestire.
-        La latenza e la residenza dei dati si dicono «da confermare» finché non lo sono. */}
-    <Slide id="slide-catena" bg="primary" align="center" data-solution="cja">
-      <div slot="backdrop" class="absolute inset-0">
-        <div class="fs-bg"></div>
-        <div class="fs-grid"></div>
-      </div>
-      <Sfondo slot="backdrop" id="tc-acciaio" forza="forte" />
-      <p class="fs-panel-tag text-center mb-3" data-reveal>DALLA FASE 1 · COME ARRIVA UN PUBBLICO A TARGET</p>
-      <h2
-        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-        data-reveal data-reveal-delay="0.08"
-      >
-        La raccolta resta com’è; il pubblico passa da Experience Platform.
-      </h2>
-      <p class="text-center fs-card-body max-w-3xl mx-auto mb-7" style="text-wrap: balance;" data-reveal data-reveal-delay="0.14">
-        Nella fase 0 non passa nessun pubblico; dalla fase 1, passa&nbsp;così.
-      </p>
-      <ol class="cv-catena" data-reveal data-reveal-delay="0.2">
-        {catena.map((c, i) => (
-          <li class:list={['cv-anello', c.nuovo && 'cv-anello--nuovo']} data-substep={i > 0 ? '' : undefined}>
-            <span class="cv-anello-k">{c.k}</span>
-            <span class="cv-anello-v">{lega(c.v)}</span>
-          </li>
-        ))}
-      </ol>
-      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-5 mt-7" data-stagger>
-        {catenaNote.map((c) => (
+        {verifica.map((c) => (
           <div class="fs-card text-left h-full">
-            <p class="fs-card-title mb-2" style="font-size: 1.05rem;">{c.k}</p>
+            <p class="fs-card-title mb-2" style="font-size: 1.15rem;">{c.k}</p>
             <p class="fs-card-body">{lega(c.v)}</p>
           </div>
         ))}
       </div>
-    </Slide>
-
-    <!-- ── Con il CRM ─────────────────────────────────────────────────── -->
-    {/* Fino alla sera del 23 nov stava nel primo passo. Verificato in Chromium: su
-        trenitalia.com non si fa login, quindi lo status si lega sulla conferma
-        d'acquisto, ed entra con il secondo passo. Dal 26 nov 2026 sta nella fase 2:
-        senza il login nessun dato del CRM si lega a una visita (decisione dell'owner). */}
-    <Slide id="slide-dove-sta-il-dato" bg="primary" align="center" data-solution="cja">
-      <div slot="backdrop" class="absolute inset-0">
-        <div class="fs-bg"></div>
-        <div class="fs-grid"></div>
-      </div>
-      <Sfondo slot="backdrop" id="rl-quiete" forza="media" />
-      <p class="fs-panel-tag text-center mb-3" data-reveal>LA FASE 2 · IL CRM, CON IL LOGIN</p>
-      <h2
-        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-        data-reveal data-reveal-delay="0.08"
-      >
-        Il CRM resta in Salesforce; entra un attributo, non il&nbsp;profilo.
-      </h2>
-      <p class="text-center fs-card-body max-w-3xl mx-auto mb-7" data-reveal data-reveal-delay="0.14">
-        Oggi su trenitalia.com non si fa login, e senza una chiave nessun dato del&nbsp;CRM si lega a una visita. Il login è la condizione della fase&nbsp;2.
+      <p class="fs-panel-src text-center mt-6" data-reveal data-reveal-delay="0.3">
+        {lega('È una proposta, da collaudare con chi gestisce la piattaforma di vendita: se chiede un rilascio, lo si saprà dal collaudo. Chi decide e chi lavora sta nell’appendice per il team tecnico.')}
       </p>
-      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-5" data-stagger>
-        {crm.map((c, i) => (
-          <div class:list={['fs-card text-left h-full', i === 2 && 'cv-card--nota']}>
-            <p class="fs-card-title mb-2" style="font-size: 1.1rem;">{c.k}</p>
-            <p class="fs-card-body">{lega(c.v)}</p>
-          </div>
-        ))}
-      </div>
-    </Slide>
-
-    <!-- ── Che cosa si vede in CJA ─────────────────────────────────────── -->
-    <Slide id="slide-demo-cja" bg="secondary" align="center" data-solution="cja">
-      <div slot="backdrop" class="absolute inset-0">
-        <div class="fs-bg-soft"></div>
-        <div class="fs-grid"></div>
-      </div>
-      <Sfondo slot="backdrop" id="rl-quiete" forza="media" />
-      <div data-demo-flex class="w-full flex items-start gap-8">
-        <div class="flex-1 min-w-0 flex flex-col items-center">
-          <p class="fs-panel-tag mb-3" data-reveal>ADOBE CUSTOMER JOURNEY ANALYTICS</p>
-          <h2
-            class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
-            style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-            data-reveal data-reveal-delay="0.08"
-          >
-            Dalla fase 1, chi ha cercato e chi ha comprato si leggono&nbsp;insieme.
-          </h2>
-          <p class="text-center fs-card-body max-w-3xl mx-auto mb-6" data-reveal data-reveal-delay="0.14">
-            La ricerca su trenitalia.com e l’acquisto su Le&nbsp;Frecce stanno in una lettura sola; il percorso in mezzo arriva con il&nbsp;login.
-          </p>
-          <div class="w-full max-w-4xl mx-auto grid md:grid-cols-3 gap-3 mb-4" data-stagger>
-            {letture.map((m) => (
-              <div class="fs-card text-center !py-5">
-                <p class="fs-stat-value mb-1.5" style="font-size: clamp(1.8rem, 3vw, 2.6rem);">{m.metric}</p>
-                <p class="fs-card-title mb-1" style="font-size: 1rem;">{lega(m.label)}</p>
-                <p class="fs-card-body" style="font-size: 0.95rem;">{lega(m.sub)}</p>
-              </div>
-            ))}
-          </div>
-          <p class="fs-panel-src text-center">Esempio illustrativo su dati simulati · Adobe Customer Journey Analytics</p>
-        </div>
-        <MediaDemoSlot id="cja-workspace-demo" label="CJA Workspace — Demo FS Journey" />
-      </div>
     </Slide>
 
     <!-- ── Coworker: chiedere perché ───────────────────────────────────── -->
@@ -466,29 +223,25 @@ const letture = [
         <div class="fs-grid"></div>
       </div>
       <Sfondo slot="backdrop" id="tc-strati" forza="media" />
-      <p class="fs-panel-tag text-center mb-3" data-reveal>ADOBE CX ENTERPRISE COWORKER</p>
-      <h2
-        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-        data-reveal data-reveal-delay="0.08"
-      >
-        Il pubblico si chiede a parole, invece di costruirlo a mano.
+      <p class="fs-panel-tag text-center mb-3" data-reveal>ADOBE CX ENTERPRISE COWORKER · FACOLTATIVO</p>
+      <h2 class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]" style={h2} data-reveal data-reveal-delay="0.08">
+        Il segmento si chiede a parole, e il team lo&nbsp;controlla.
       </h2>
       <p class="text-center fs-card-body max-w-3xl mx-auto mb-7" data-reveal data-reveal-delay="0.14">
-        {lega('Coworker prepara il segmento in CJA e la bozza dell’attività in Target; il team Target la controlla e la pubblica.')}
+        {lega('Coworker prepara il segmento in Customer Journey Analytics e la bozza dell’attività in Target. La pubblica il team Target.')}
       </p>
       <div class="w-full max-w-5xl mx-auto grid md:grid-cols-2 gap-5" data-stagger>
         <div class="fs-card text-left">
-          <p class="fs-card-title mb-2" style="font-size: 1.1rem;">Oggi</p>
-          <p class="fs-card-body">Una regola scritta a mano da chi conosce il modello dati, e un’ipotesi alla volta.</p>
+          <p class="fs-card-title mb-2" style="font-size: 1.15rem;">Oggi</p>
+          <p class="fs-card-body">{lega('Una regola scritta a mano da chi conosce il modello dati, e un’ipotesi alla volta.')}</p>
         </div>
-        <div class="fs-card cv-card--ok text-left">
-          <p class="fs-card-title mb-2" style="font-size: 1.1rem;">Con Coworker</p>
-          <p class="fs-card-body">«Perché su questa tratta si perde più gente?» Lo strumento cerca dove il dato si discosta, poi le cause.</p>
+        <div class="fs-card cv-card--dopo text-left">
+          <p class="fs-card-title mb-2" style="font-size: 1.15rem;">Con Coworker</p>
+          <p class="fs-card-body">{lega('«Perché su questa tratta si perde più gente?» Lo strumento cerca dove il dato si discosta, poi le cause.')}</p>
         </div>
       </div>
       <p class="fs-panel-src text-center mt-6" data-reveal data-reveal-delay="0.3">
-        Disponibile da giugno 2026; per voi si accende con l’approvazione delle condizioni sull’IA generativa. Dentro CJA è ancora in prova limitata, e la risposta può mescolare l’inglese. I casi reggono anche senza ·
+        L’accesso oggi passa da una prova concessa da Adobe, dall’attivazione di un vostro amministratore e dal parere della sicurezza IT: non è compreso nella proposta. Dentro Customer Journey Analytics è in prova limitata, e la risposta può mescolare l’inglese. I casi reggono anche senza ·
         <a href="https://experienceleague.adobe.com/en/docs/analytics-platform/using/cja-workspace/coworker" target="_blank" rel="noopener noreferrer">Coworker in Customer Journey Analytics</a>
       </p>
       <div class="mt-6 text-center" data-reveal data-reveal-delay="0.38">
@@ -496,7 +249,7 @@ const letture = [
           href={href(base, next)}
           class="inline-flex items-center gap-3 px-8 py-3.5 text-base font-semibold tracking-wide bg-[var(--accent-primary)] text-white hover:opacity-90 transition-opacity duration-300 font-[family-name:var(--font-display)] rounded-sm"
         >
-          La fase 0, da vicino
+          I casi, uno per uno
           <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -508,18 +261,24 @@ const letture = [
 </BaseLayout>
 
 <style is:global>
-  /* Le code di frase nel lead di copertina: si bilancia (26 nov 2026). */
   #slide-cover [data-cover] p { text-wrap: balance; }
-  .cv-gov { width: 100%; max-width: 78rem; margin-inline: auto; display: grid; gap: 0.5rem; text-align: left; }
-  .cv-gov-r {
-    display: grid; grid-template-columns: 3.2rem minmax(0, 1.2fr) minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(0.8rem, 1.4vw, 1.4rem);
-    align-items: start; padding: clamp(0.7rem, 1.4vh, 1rem) clamp(0.9rem, 1.2vw, 1.2rem);
-    border-radius: 0.6rem; border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(27, 34, 48, 0.55);
-    font-size: clamp(1rem, 1.06vw, 1.12rem); line-height: 1.35; color: var(--ink-primary);
+
+  /* La tabella delle fasi: tre colonne, la prima è quella di adesso. */
+  .cv-tab { width: 100%; max-width: 80rem; margin-inline: auto; display: grid; gap: 0.55rem; text-align: left; }
+  .cv-tab-r {
+    display: grid; grid-template-columns: minmax(7rem, 0.42fr) repeat(3, minmax(0, 1fr)); gap: clamp(0.8rem, 1.4vw, 1.5rem);
+    align-items: start; padding: clamp(0.8rem, 1.9vh, 1.2rem) clamp(0.9rem, 1.2vw, 1.3rem);
+    border-radius: 0.6rem; border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(27, 34, 48, 0.58);
+    font-size: clamp(1.02rem, 1.1vw, 1.18rem); line-height: 1.38; color: var(--ink-primary);
   }
-  .cv-gov-t { background: none; border: none; padding-block: 0 0.2rem; font-size: clamp(0.82rem, 0.88vw, 0.94rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-tertiary); }
-  .cv-gov-f { display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; border: 1.5px solid var(--color-rosso-chiaro); font-weight: 700; }
-  @media (max-width: 900px) { .cv-gov-r { grid-template-columns: minmax(0, 1fr); } .cv-gov-t { display: none; } }
+  .cv-tab-r > span { text-wrap: pretty; }
+  .cv-tab-t { background: none; border: none; padding-block: 0 0.1rem; align-items: center; }
+  .cv-tab-f { display: flex; align-items: center; gap: 0.6rem; font-family: var(--font-display); font-weight: 600; font-size: clamp(1.12rem, 1.3vw, 1.4rem); }
+  .cv-tab-f b { flex: none; display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; border: 2px solid var(--color-verde-chiaro); font-weight: 700; font-size: 1.05rem; }
+  .cv-tab-f--ora b { border-color: var(--color-rosso); background: var(--color-rosso); }
+  .cv-tab-k { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.05rem, 1.2vw, 1.3rem); color: var(--ink-secondary); }
+  @media (max-width: 900px) { .cv-tab-r { grid-template-columns: minmax(0, 1fr); } .cv-tab-t { display: none; } }
+
   .cv-apri { margin-top: clamp(1rem, 2.6vh, 1.8rem); text-align: center; }
   .cv-apri-b {
     min-height: 2.75rem; padding: 0.6rem 1.4rem; border-radius: 0.4rem;
@@ -528,30 +287,8 @@ const letture = [
     color: var(--ink-primary); cursor: pointer;
   }
   .cv-apri-b:hover { background: rgba(217, 24, 53, 0.22); }
-  .cv-catena {
-    list-style: none; margin: 0 auto; padding: 0; width: 100%; max-width: 76rem;
-    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(0.5rem, 1vw, 1rem);
-  }
-  .cv-anello {
-    position: relative; display: grid; gap: 0.3rem; align-content: start;
-    padding: 0.9rem 1rem; border-radius: 0.6rem;
-    border: 1.5px solid rgba(255, 255, 255, 0.5); background: rgba(255, 255, 255, 0.07); text-align: left;
-  }
-  .cv-anello--nuovo { border-color: rgba(79, 189, 180, 0.8); background: rgba(0, 102, 102, 0.26); }
-  .cv-anello:not(:first-child) { padding-left: 2rem; }
-  .cv-anello:not(:first-child)::before {
-    content: '→'; position: absolute; left: 0.6rem; top: 0.9rem;
-    color: var(--color-verde-chiaro); font-size: 1.1rem; line-height: 1.2;
-  }
-  .cv-anello-k { font-family: var(--font-display); font-weight: 600; font-size: clamp(1rem, 1.1vw, 1.2rem); line-height: 1.2; color: var(--ink-primary); }
-  .cv-anello-v { font-size: clamp(0.92rem, 0.98vw, 1.02rem); line-height: 1.4; color: var(--ink-secondary); }
-  @media (max-width: 900px) {
-    .cv-catena { grid-template-columns: minmax(0, 1fr); }
-    .cv-anello:not(:first-child)::before { display: none; }
-    .cv-anello:not(:first-child) { padding-left: 1rem; }
-  }
   .cv-ponte {
-    width: 100%; max-width: 52rem; margin: 0 auto clamp(1.2rem, 3vh, 2rem);
+    width: 100%; max-width: 52rem; margin: 0 auto clamp(1.4rem, 3.4vh, 2.2rem);
     display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1rem;
   }
   .cv-ponte-s {
@@ -559,10 +296,9 @@ const letture = [
     border: 1.5px solid rgba(255, 255, 255, 0.5); background: rgba(255, 255, 255, 0.07);
     font-family: var(--font-display); font-weight: 600; font-size: clamp(1.05rem, 1.2vw, 1.3rem); color: var(--ink-primary);
   }
-  .cv-ponte-s small { font-family: var(--font-body); font-weight: 500; font-size: clamp(0.82rem, 0.88vw, 0.92rem); color: var(--ink-tertiary); }
+  .cv-ponte-s small { font-family: var(--font-body); font-weight: 500; font-size: clamp(0.88rem, 0.92vw, 0.98rem); color: var(--ink-secondary); }
   .cv-ponte-l { display: grid; justify-items: center; gap: 0.35rem; color: var(--color-verde-chiaro); }
   .cv-ponte-l svg { width: 100%; height: 8px; }
-  .cv-ponte-l em { font-style: normal; font-size: clamp(0.9rem, 0.95vw, 1rem); font-weight: 600; color: var(--color-verde-chiaro); }
-  .cv-card--ok { border-color: rgba(79, 189, 180, 0.55) !important; box-shadow: inset 0.28rem 0 0 var(--color-verde-chiaro); }
-  .cv-card--nota { border-color: rgba(255, 141, 157, 0.5) !important; box-shadow: inset 0.28rem 0 0 var(--color-rosso-chiaro); }
+  .cv-ponte-l em { font-style: normal; font-size: clamp(0.95rem, 1vw, 1.06rem); font-weight: 600; color: var(--color-verde-chiaro); }
+  .cv-card--dopo { border: 1.5px solid rgba(79, 189, 180, 0.7) !important; }
 </style>

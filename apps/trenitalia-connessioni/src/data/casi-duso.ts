@@ -82,6 +82,8 @@ export interface Config {
   agisce: string;
   /** Da che cosa dipende. */
   serve: string;
+  /** La stessa cosa in una riga, per la fascia sotto ogni caso. */
+  serveBreve: string;
   /** Dove agisce Target, in breve: la testata della matrice. */
   breve: string;
   /** Quando: la riga sopra il nome della stazione, nello scambio. */
@@ -91,9 +93,9 @@ export interface Config {
   agisceL: string[];
 }
 export const CONFIG: Config[] = [
-  { id: 'a', nome: 'Fase 0 · Vista unica', quando: 'Si parte da qui', legge: 'i due Analytics, per giorno e per tratta', agisce: 'trenitalia.com, con prove per tutti', serve: 'i due Analytics in CJA; il via libera di FS Technology, di Le Frecce e del DPO', breve: 'prove senza pubblici', leggeL: ['trenitalia.com', 'Le Frecce e app, aggregati'], agisceL: ['trenitalia.com'] },
-  { id: 'b', nome: 'Fase 1 · La conferma', quando: 'Dopo le prime letture', legge: 'chi ha cercato e poi ha comprato', agisce: 'trenitalia.com, con i pubblici', serve: 'prima la conferma legata, misurata in CJA senza licenze nuove; poi i pubblici verso Target, con una licenza di Real-Time CDP', breve: 'pubblici, fino alla conferma', leggeL: ['trenitalia.com', 'Le Frecce e app, aggregati', 'L’acquisto, legato alla ricerca'], agisceL: ['trenitalia.com'] },
-  { id: 'c', nome: 'Fase 2 · Il login', quando: 'Con il login sul sito', legge: 'la stessa persona sui due siti, con lo status', agisce: 'trenitalia.com, Le Frecce e app', serve: 'il login su trenitalia.com e, per Le Frecce e l’app, il nuovo portale: decisioni del Gruppo', breve: 'la persona, anche fuori dal sito', leggeL: ['trenitalia.com', 'Le Frecce e app, aggregati', 'L’acquisto, legato alla ricerca', 'CRM e fedeltà', 'Le Frecce, il percorso'], agisceL: ['trenitalia.com', 'Le Frecce', 'App Trenitalia'] },
+  { id: 'a', nome: 'Fase 0 · Vista unica', quando: 'Si parte da qui', legge: 'i due Analytics, per giorno e per tratta', agisce: 'trenitalia.com, con prove per tutti', serve: 'i due Analytics in CJA; il via libera di FS Technology, di Le Frecce e del DPO', breve: 'prove per tutti', serveBreve: 'Si prova già oggi con Target. La lista delle tratte la approva il revenue management.', leggeL: ['trenitalia.com', 'Le Frecce e app, aggregati'], agisceL: ['trenitalia.com'] },
+  { id: 'b', nome: 'Fase 1 · La conferma', quando: 'Dopo le prime letture', legge: 'chi ha cercato e poi ha comprato', agisce: 'trenitalia.com, con i pubblici', serve: 'prima la conferma legata, misurata in CJA senza licenze nuove; poi i pubblici verso Target, con una licenza di Real-Time CDP', breve: 'gruppi di visitatori', serveBreve: 'Un campo in più nel passaggio a Le Frecce, e Real-Time CDP per i gruppi.', leggeL: ['trenitalia.com', 'Le Frecce e app, aggregati', 'L’acquisto, legato alla ricerca'], agisceL: ['trenitalia.com'] },
+  { id: 'c', nome: 'Fase 2 · Il login', quando: 'Con il login sul sito', legge: 'la stessa persona sui due siti, con lo status', agisce: 'trenitalia.com, Le Frecce e app', serve: 'il login su trenitalia.com e, per Le Frecce e l’app, il nuovo portale: decisioni del Gruppo', breve: 'il cliente, anche in app', serveBreve: 'Il login su trenitalia.com. Per Le Frecce e l’app, il nuovo portale.', leggeL: ['trenitalia.com', 'Le Frecce e app, aggregati', 'L’acquisto, legato alla ricerca', 'CRM e fedeltà', 'Le Frecce, il percorso'], agisceL: ['trenitalia.com', 'Le Frecce', 'App Trenitalia'] },
 ];
 
 /** I passi sono in fila: un caso vale dal suo passo in poi. */
@@ -235,14 +237,14 @@ export const CASI: Caso[] = [
     config: 'a',
     superfici: ['tcom'],
     titolo: 'La home con le tratte più cercate dall’area',
-    punto: 'Target riconosce da sé l’area; CJA aggiunge le tratte più cercate da chi parte da lì.',
+    punto: 'Target riconosce l’area da sé. La fase 0 aggiunge che cosa si cerca da lì.',
     // Esempio portato da loro il 27 ott; una prima versione con la
     // geolocalizzazione è già in produzione su trenitalia.com (dall'account, 16
     // nov). Il 27 nov, in Chromium, il pop-up non compariva e Target in home non
     // consegnava offerte: si dice che c'è stato, non che c'è. Nel primo passo le tratte sono le più CERCATE su trenitalia.com; le
     // più comprate arrivano con l'acquisto su Le Frecce (23 nov).
-    oggi: 'Una prima versione, con un pop-up sopra la pagina, è già andata in linea. Il seguito è che si adattino i componenti della home.',
-    viaggiatore: 'La prima schermata porta le tratte più cercate da dove si trova, con il link alla ricerca.',
+    oggi: 'Il pop‑up per area è andato in linea? Con che esito?',
+    viaggiatore: 'In cima, le tratte più cercate da lì, fra quelle con posti.',
     marketer: 'Una regola per area di partenza, e le tratte più cercate da lì. Si prepara una volta e vale per tutte le città.',
     conversazione: [
       { chi: 'utente', t: 'Crea un gruppo per chi si collega dall’area di Verona e mostragli le tratte più cercate da lì.' },
@@ -283,7 +285,7 @@ export const CASI: Caso[] = [
       { t: 'Che cosa vede: le tratte da quella stazione', dove: 'Target', skill: 'target-vec' },
       { t: 'La misura: quanti passano all’acquisto', dove: 'CJA', skill: 'target-activity-verdict' },
     ],
-    kpi: ['Ricerche avviate dalla home', 'Clic verso l’acquisto', 'Conversione per area, dalla fase 1'],
+    kpi: ['Ricerche avviate dalla home', 'Conferme per area, prima e dopo', 'Conversione per area, dalla fase 1'],
     giudizio: {
       misura: 'Ricerche avviate e clic verso l’acquisto di chi ha visto la variante, contro chi ha visto la home di oggi.',
       conAcquisto: 'Quante visite dei due gruppi arrivano alla conferma su Le Frecce.',
@@ -304,7 +306,7 @@ export const CASI: Caso[] = [
     titolo: 'La home riconosce chi ha già cercato',
     punto: 'La tratta cercata e il dettaglio aperto dicono che cosa interessa, anche senza login.',
     oggi: 'Chi apre il dettaglio di un abbonamento e se ne va, alla visita dopo ritrova la home di chiunque.',
-    viaggiatore: 'Alla visita dopo trova in cima l’abbonamento sulla tratta che cercava, e quanto spende in meno al mese.',
+    viaggiatore: 'Alla visita dopo trova in cima l’abbonamento sulla tratta che cercava.',
     marketer: 'Un gruppo costruito su un gesto preciso, l’apertura del dettaglio, e sulla tratta cercata. Si prepara una volta.',
     conversazione: [
       { chi: 'utente', t: 'Trova chi ha aperto il dettaglio di un abbonamento e non l’ha comprato.' },
@@ -384,7 +386,7 @@ export const CASI: Caso[] = [
       { k: 'Tratta abituale', v: 'Roma → Milano' },
     ],
     varianti: [
-      { t: 'Sconto sul biglietto', n: '−10%' },
+      { t: 'Un’offerta uguale per tutti', n: 'esempio' },
       { t: 'I vantaggi del suo status', n: 'come da regolamento 2027', match: true },
     ],
     push: '',
@@ -412,7 +414,7 @@ export const CASI: Caso[] = [
       { t: 'Che cosa vede: i servizi compresi', dove: 'Target', skill: 'target-design' },
       { t: 'La misura: ritorno e clic sui vantaggi', dove: 'CJA', skill: 'segmenti in Coworker Chat' },
     ],
-    kpi: ['Clic sui vantaggi compresi', 'Ritorno nel tempo', 'Ricavo netto per cliente, al netto dei benefici'],
+    kpi: ['Ricavo in più dei clienti esposti, al netto dei benefici', 'Ritorno nel tempo', 'Clic sui vantaggi compresi'],
     giudizio: {
       misura: 'Ricavo incrementale netto dei clienti esposti rispetto al controllo, al netto del costo dei benefici; i vantaggi si allineano al regolamento 2027.',
     },
@@ -429,7 +431,7 @@ export const CASI: Caso[] = [
     // Dalla sintesi d'account del 27 ott: oggi la proposta di passaggio a
     // classe superiore va a tutti i viaggiatori, non su base propensione. Si
     // mostra dopo l'acquisto, quindi su Le Frecce e sull'app.
-    oggi: 'Il passaggio di classe si propone a tutti i viaggiatori, non a chi è più propenso a prenderlo.',
+    oggi: 'Il passaggio al livello di servizio superiore si propone a tutti i viaggiatori: è ancora così?',
     viaggiatore: 'Chi viaggia spesso in Standard trova, dopo l’acquisto, l’offerta di upgrade già prezzata.',
     marketer: 'Il gruppo esce dagli acquisti, Standard e alta frequenza. L’offerta, il prezzo e i treni li fissa il revenue management.',
     conversazione: [
@@ -450,7 +452,7 @@ export const CASI: Caso[] = [
     push: '',
     ponte: 'il pubblico passa a Target, su Le Frecce e in app',
     oggiSchermo: { titolo: 'Passa in Business', nota: 'la stessa proposta a ogni viaggiatore' },
-    arricchimento: 'frequenza di viaggio e classe abituale',
+    arricchimento: 'frequenza di viaggio e livello di servizio abituale',
     flusso: [
       { k: 'Le fonti', v: 'gli acquisti su Le Frecce e il feed delle offerte', e: 'biglietti Standard su Roma → Milano · upgrade prezzato dal revenue management' },
       { k: 'Customer Journey Analytics', v: 'mette in fila gli acquisti e ricava l’abitudine', e: 'due viaggi al mese, sempre in Standard' },
@@ -472,7 +474,7 @@ export const CASI: Caso[] = [
       { t: 'Che cosa vede: l’upgrade già prezzato', dove: 'Target', skill: 'target-design' },
       { t: 'La misura: ricavo in più, contro un controllo', dove: 'CJA', skill: 'target-test-calculator' },
     ],
-    kpi: ['Ricavo netto per posto-km', 'Riempimento della Business', 'Posti in upgrade, sotto il tetto del revenue management'],
+    kpi: ['Ricavo in più per cliente, contro un gruppo di controllo', 'Quota di chi avrebbe comprato comunque', 'Posti in upgrade, sotto il tetto del revenue management'],
     giudizio: {
       misura: 'Ricavo netto per posto-km e riempimento della Business, fra treni con l’offerta e treni senza; il tetto di posti lo fissa il revenue management.',
     },

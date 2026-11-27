@@ -1,4 +1,5 @@
 ---
+import { lega } from '../../utils/lega';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Sfondo from '../../components/Sfondo.astro';
 import TreniNavigation from '../../components/TreniNavigation.astro';
@@ -25,15 +26,15 @@ const currentPath = Astro.url.pathname;
 // al più sono le attività a concentrarsi lì. Il numero di siti e di istanze è
 // informazione del cliente: sta fra le domande della prima sessione.
 const strati = [
-  { nome: 'Piattaforma di esecuzione email', nota: 'Attiva · CartaFreccia, X-GO, alta frequenza di invio — fuori dalla prima fase, fornitore da confermare con voi' },
+  { nome: 'Piattaforma di esecuzione email', nota: 'Attiva · CartaFreccia, X-GO · fuori dalla prima fase, fornitore da confermare con voi' },
   { nome: 'Salesforce CRM, Data Cloud, MuleSoft', nota: 'Foundation 2026 · il backbone operativo del Gruppo' },
   { nome: 'AEM Sites (as a Cloud Service)', nota: 'Attivo · trenitalia.com e le property di Gruppo' },
   // Il vincolo di tempo entra nella fotografia dell'ecosistema: strumentare un
   // funnel che sta per essere rifatto è lavoro che si butta.
-  { nome: 'Piattaforma di vendita', nota: 'Fuori perimetro · in rifacimento dentro il piano, strumentarla adesso è lavoro che si butta' },
+  { nome: 'Piattaforma di vendita', nota: 'Sappiamo che è in evoluzione: è così? La fase 0 non la tocca; la fase 1 le chiede un solo campo nel passaggio' },
   { nome: 'Adobe Analytics', nota: 'Attivo · due istanze, tutte e due in CJA dalla fase 0; l’acquisto si lega alla ricerca dalla fase 1' },
   { nome: 'Adobe Target', nota: 'Attivo su trenitalia.com · le prime prove partono da qui, Le Frecce e app con il login e il nuovo portale' },
-  { nome: 'Customer Journey Analytics', nota: 'Da aggiungere · legge trenitalia.com, poi l’acquisto su Le Frecce e lo status dal CRM', evidenza: true },
+  { nome: 'Customer Journey Analytics', nota: 'Da aggiungere · legge i due Analytics dalla fase 0; lega l’acquisto alla ricerca dalla fase 1; lo status dal CRM con il login', evidenza: true },
 ];
 
 // Le cinque misure della prima sessione. Nessuna è nostra: stanno nei sistemi
@@ -86,10 +87,10 @@ const misure = [
       <Sfondo slot="backdrop" id="rl-pensilina" forza="leggera" />
       <div slot="backdrop" class="fs-grid"></div>
       <CoverHero
-        eyebrow="Capitolo 02 · Fondamenta"
-        numeral="02"
-        title="Le fondamenta che avete già"
-        lead="Ciò che funziona resta al suo posto. Il lavoro è collegare i sistemi che avete già e aggiungere lo strato di intelligence che oggi manca."
+        eyebrow="Appendice · Lo stack di oggi"
+        numeral="B"
+        title="Quello che avete già"
+        lead={lega('I sistemi in esercizio restano dove sono. Si aggiunge uno strato che li legge insieme.')}
         size="phase"
         tone="ink"
         signature={false}
@@ -138,46 +139,6 @@ const misure = [
       </div>
     </Slide>
 
-    <!-- ── SLIDE 1b: Cosa misuriamo ───────────────────────────────── -->
-    <Slide id="slide-misure" bg="secondary" align="center">
-      <div slot="backdrop" class="fs-bg-soft"></div>
-      <Sfondo slot="backdrop" id="tc-quiete" forza="media" />
-      <div slot="backdrop" class="fs-grid"></div>
-
-      <p class="fs-panel-tag text-center mb-3" data-reveal>
-        COSA MISURIAMO · PRIMA DI PROMETTERE QUALSIASI COSA
-      </p>
-      <h2
-        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.55rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-        data-reveal
-        data-reveal-delay="0.08"
-      >
-        Cinque numeri, da leggere insieme.
-      </h2>
-
-      <div class="w-full max-w-6xl mx-auto flex flex-col gap-2.5" data-reveal data-reveal-delay="0.2">
-        {/* Le intestazioni stanno sulla stessa ascissa delle celle: stesso
-            padding orizzontale del pannello, e a bandiera come il contenuto. */}
-        <div class="grid md:grid-cols-[13rem_1fr_1fr] gap-x-6 text-left" style="padding-left: 1.75rem; padding-right: 1.75rem;">
-          <span class="fs-panel-tag">LA MISURA</span>
-          <span class="fs-panel-tag">OGGI, DA LEGGERE INSIEME</span>
-          <span class="fs-panel-tag" style="color: rgba(var(--sig2-rgb), 0.98);">COSA VORREMMO VEDERE</span>
-        </div>
-        {misure.map((m) => (
-          <div class="fs-panel text-left grid md:grid-cols-[13rem_1fr_1fr] gap-x-6 gap-y-1.5 items-baseline" style="padding-top: 0.8rem; padding-bottom: 0.8rem;">
-            <p class="fs-card-title" style="font-size: 1.02rem; margin-inline: 0;">{m.nome}</p>
-            <p class="fs-card-body" style="margin-inline: 0;">{m.oggi}</p>
-            <p class="fs-card-body" style="margin-inline: 0; color: rgba(241, 243, 244, 0.95);">{m.direzione}</p>
-          </div>
-        ))}
-      </div>
-
-      <p class="mx-auto mt-4 text-center text-[var(--color-grigio-300)]" style="font-size: 0.85rem; line-height: 1.5; max-width: 64rem;" data-reveal data-reveal-delay="0.32">
-        Nessuno di questi numeri è nostro: la base si rileva nella fase 0, gli obiettivi si fissano insieme.
-      </p>
-    </Slide>
-
     <!-- ── SLIDE 2: Salesforce Foundation — il nuovo backbone ─────── -->
     <Slide id="slide-salesforce" bg="secondary" align="center">
       <Sfondo slot="backdrop" id="tc-acciaio" forza="forte" />
@@ -187,15 +148,12 @@ const misure = [
         <div class="fs-panel fs-panel--alt mb-5" data-reveal>
           <p class="fs-panel-tag">FS TECHNOLOGY + SALESFORCE · Q1 2026</p>
           <h2 class="fs-panel-head mt-1 mb-3" style="font-size: clamp(1.5rem, 2.3vw, 2.1rem);">
-            La foundation agentica è partita.<br/>Adobe si collega a quella base.
+            Da marzo 2026 il CRM di Gruppo è su Salesforce.
           </h2>
           <p class="fs-panel-body max-w-4xl" style="font-size: clamp(0.98rem, 1.1vw, 1.08rem); line-height: 1.62;">
             A marzo 2026 FSTechnology ha lanciato con Salesforce una piattaforma agentica che unisce
             Trenitalia, Busitalia, FS Park e FS Logistix in un unico backbone CRM, con MuleSoft come
-            integration engine e Data Cloud come layer dati. Il confine è scritto una volta e vale
-            per tutto il percorso: <strong class="text-[var(--ink-primary)]">Salesforce Data Cloud resta
-            master del dato CRM e del consenso; Adobe lavora sul profilo di esperienza e non duplica
-            il profilo operativo.</strong>
+            integration engine e Data Cloud come layer dati. <strong class="text-[var(--ink-primary)]">Il CRM resta lì. Se e come Adobe ci si collega si decide con FSTechnology, nella fase 2.</strong>
           </p>
         </div>
 
@@ -209,19 +167,19 @@ const misure = [
               n: '01',
               prodotto: 'Salesforce CRM',
               ruolo: 'Backbone operativo',
-              adobe: 'CJA porta gli attributi che servono all\'analisi accanto al comportamento sul sito',
+              adobe: 'Dalla fase 2, un attributo per cliente accanto a quello che fa sul sito. Prima, nulla',
             },
             {
               n: '02',
               prodotto: 'MuleSoft',
               ruolo: 'Integration engine',
-              adobe: 'Già in campo: alimenta AEP e CJA senza aggiungere infrastruttura',
+              adobe: 'È lo strato di integrazione del Gruppo. Un eventuale flusso verso Adobe è della fase 2, e si disegna con la sicurezza IT',
             },
             {
               n: '03',
               prodotto: 'Salesforce Data Cloud',
-              ruolo: 'Master del profilo e del consenso',
-              adobe: 'CJA legge le letture che servono all\'analisi; il profilo operativo e le liste di soppressione restano qui',
+              ruolo: 'Il cuore del dato CRM',
+              adobe: 'Il profilo operativo resta qui. Il consenso di tracciamento del browser sta invece nel gestore del consenso dei siti',
             },
           ].map((item) => (
             <div class="fs-card flex flex-col">
@@ -229,11 +187,11 @@ const misure = [
                 <span class="fs-mark" aria-hidden="true">{item.n}</span>
                 <div>
                   <p class="fs-card-title" style="font-size: 1.1rem;">{item.prodotto}</p>
-                  <p class="text-[0.78rem] text-[var(--accent-secondary)] font-semibold uppercase tracking-wide">{item.ruolo}</p>
+                  <p class="text-[0.78rem] text-[var(--color-verde-chiaro)] font-semibold uppercase tracking-wide">{item.ruolo}</p>
                 </div>
               </div>
               <p class="fs-card-body" style="font-size: 0.95rem;">
-                <strong class="text-[var(--accent-secondary)]">Adobe:</strong> {item.adobe}
+                <strong class="text-[var(--color-verde-chiaro)]">Adobe:</strong> {item.adobe}
               </p>
             </div>
           ))}
@@ -260,7 +218,7 @@ const misure = [
             class="fs-quote-text text-[var(--color-chiaro)] font-[family-name:var(--font-display)]"
             style="font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 700; line-height: 1.0; letter-spacing: -0.03em;"
           >
-            Non si sostituisce:<br/>si connette.
+            Quello che avete resta dov’è.
           </h2>
         </div>
         <p
@@ -269,9 +227,8 @@ const misure = [
           data-reveal
           data-reveal-delay="0.16"
         >
-          la piattaforma di esecuzione email continua a eseguire le campagne, Salesforce a gestire i profili,
-          AEM a consegnare i contenuti. CJA si appoggia sopra e li legge tutti, restituendo una
-          vista del journey che nessuno dei tre, da solo, è in grado di dare.
+          La piattaforma email continua a mandare le campagne, Salesforce a gestire i profili,
+          AEM a pubblicare i contenuti. Customer Journey Analytics si appoggia sopra e li legge insieme.
         </p>
 
         <div
@@ -283,7 +240,7 @@ const misure = [
             href={href(base, next)}
             class="flex-1 inline-flex items-center justify-center gap-3 px-8 py-4 text-base font-semibold tracking-wide bg-[var(--color-chiaro)] text-[var(--color-ardesia-notte)] hover:bg-white transition-colors duration-300 font-[family-name:var(--font-display)]"
           >
-            CJA: il layer di convergenza
+            Torna all’inizio
             <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>

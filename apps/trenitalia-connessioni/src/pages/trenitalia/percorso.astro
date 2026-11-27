@@ -1,6 +1,11 @@
 ---
 /**
- * Capitolo 06 — Percorso: da dicembre, un passo alla volta.
+ * Capitolo 05 — Prossimi passi: tre decisioni a dicembre.
+ *
+ * RIDISEGNATO IL 27 NOV 2026: il capitolo diceva le tappe ma non chi decide che
+ * cosa. Ora apre sulle tre decisioni, poi le tappe, la regola per passare alla
+ * fase 1, le licenze. I tre obiettivi (misurare, conoscere, condividere) escono:
+ * erano tre parole che non decidevano nulla. Quello che segue è la storia di prima.
  *
  * RISCRITTO IL 22 NOV 2026. Prima il capitolo proponeva due fasi di prodotto
  * (CJA, poi Real-Time CDP e Journey Optimizer; dal 27 nov Journey Optimizer
@@ -38,17 +43,36 @@ const base = import.meta.env.BASE_URL;
 const { next, prev } = rotte('trenitalia/percorso');
 const currentPath = Astro.url.pathname;
 
-const tappe = [
-  { quando: 'Dicembre', cosa: 'Si scelgono i casi', dettaglio: 'Le prime letture della fase 0. Intanto si chiedono il via libera di Le Frecce e il parere del DPO per la conferma.' },
-  { quando: 'Dopo il sì', cosa: 'CJA si accende', dettaglio: 'Qualche settimana per la mappatura, i connettori e lo storico, poi la prima prova su trenitalia.com.' },
-  { quando: 'Dopo la prova', cosa: 'La prima misura', dettaglio: 'La durata si calcola sul traffico di ciascun caso, con un gruppo di controllo fisso.' },
-  { quando: 'In parallelo, poi', cosa: 'Si aggiunge il resto', dettaglio: 'Da subito si prepara la conferma legata alla ricerca, la fase 1. Il login sul sito porta lo status e, con il nuovo portale, Target su Le Frecce.' },
+/* Le tre decisioni di dicembre. È la slide che mancava: prima il capitolo diceva
+   «chi fa che cosa» con cinque attori per riga e nessun responsabile, e le
+   decisioni vere stavano sepolte nel capitolo sulla fase 0 (27 nov 2026). */
+const decisioni = [
+  { n: '1', cosa: 'Customer Journey Analytics a contratto, con i primi sei mesi senza costo',
+    decide: 'La direzione dei canali digitali, con chi tiene il budget',
+    lavora: 'Adobe prepara la proposta', quando: 'Dicembre' },
+  { n: '2', cosa: 'Il via libera a leggere insieme i due Analytics',
+    decide: 'FS Technology, chi amministra Le Frecce e il DPO',
+    lavora: 'Adobe e FS Technology; chi gestisce gli Analytics di Le Frecce (IBM, da confermare)', quando: 'Dicembre' },
+  { n: '3', cosa: 'Il primo caso da provare in home',
+    decide: 'I canali digitali, con il marketing',
+    lavora: 'Il vostro team Target, con Adobe', quando: 'Entro la sesta settimana' },
 ];
 
-const obiettivi = [
-  { verbo: 'Misurare', domanda: 'Quale proposta fa crescere il ricavo, senza abbassare il prezzo medio?' },
-  { verbo: 'Conoscere', domanda: 'Dove si perde la vendita, fra la ricerca e l’acquisto?' },
-  { verbo: 'Condividere', domanda: 'Su quale definizione di vendita si mettono d’accordo marketing, vendite e IT?' },
+/* Dal sì al login: le prime due tappe sono di adesso (rosso), le altre arrivano
+   dopo (verde acqua). I tempi della fase 2 non sono nostri, e si dice. */
+const tappe = [
+  { quando: 'Dicembre', cosa: 'Due decisioni', dettaglio: 'Il contratto e il via libera sui dati. Quanto dura il via libera si stima insieme.' },
+  { quando: 'Settimane 1–6', cosa: 'La fase 0', dettaglio: 'I due siti si leggono insieme. Alla sesta settimana, le prime letture e il primo test in home.' },
+  { quando: 'Dopo le prime letture', cosa: 'La fase 1', dettaglio: 'Si decide con tre numeri della fase 0. Intanto si prepara il campo in più.', poi: true },
+  { quando: 'Con il login', cosa: 'La fase 2', dettaglio: 'Dipende dal login su trenitalia.com e dal nuovo portale: i tempi sono del Gruppo.', poi: true },
+];
+
+/* La regola per passare alla fase 1, e che cosa succede se non si prosegue. Viene
+   dal panel del 26 nov: senza una regola d'uscita la fase 0 sembrava un impegno. */
+const regola = [
+  { k: 'La perdita fra i due siti', v: 'tratta per tratta: dice dove la fase 1 rende di più' },
+  { k: 'Le conferme che arrivano da trenitalia.com', v: 'è la quota che la fase 1 può collegare' },
+  { k: 'Safari e iOS', v: 'su quei browser il collegamento dura meno: quanto pesano?' },
 ];
 
 // Che cosa c'è già e che cosa si aggiunge. Nessuna cifra: la quotazione sta nella
@@ -57,20 +81,14 @@ const obiettivi = [
 const licenze = [
   { stato: 'Già a contratto', cosa: 'Adobe Analytics e Adobe Target' },
   { stato: 'Si aggiunge', cosa: 'Customer Journey Analytics, senza costo per i primi sei mesi', nuovo: true },
-  { stato: 'Dalla fase 1', cosa: 'Real-Time CDP, solo per passare i pubblici a Target: voce a parte', nuovo: true },
-  { stato: 'Facoltativo', cosa: 'CX Enterprise Coworker: la fase 0 funziona anche senza' },
+  { stato: 'Dalla fase 1', cosa: 'Real-Time CDP, solo per passare i gruppi di visitatori a Target: voce a parte', nuovo: true },
+  { stato: 'Fuori dalla proposta', cosa: 'CX Enterprise Coworker: la fase 0 funziona anche senza' },
 ];
 
-const serve = [
-  { cosa: 'Scegliere uno o due casi', chi: 'Canali digitali, Direzione Sales, marketing e revenue management, con FS Technology' },
-  { cosa: 'Legare l’acquisto e lo status, in parallelo', chi: 'Il partner, FS Technology e Adobe; il pubblico raggiungibile si definisce insieme' },
-  { cosa: 'Valutazione privacy, da subito', chi: 'DPO e sicurezza IT: consenso, estrazione dal CRM, chi vede quali dati' },
-  { cosa: 'Amministrare CJA ed Experience Platform', chi: 'FS Technology e il partner, con Adobe nei primi mesi' },
-];
 ---
 <BaseLayout
-  title="Da dicembre, un passo alla volta"
-  description="Si accende la fase 0 con i due Analytics in CJA; in parallelo si prepara la conferma legata alla ricerca; il login su trenitalia.com porta lo status dal CRM, e con il nuovo portale Le Frecce e l’app."
+  title="Prossimi passi"
+  description="Tre decisioni a dicembre: Customer Journey Analytics a contratto, il via libera sui dati e il primo caso da provare. Poi sei settimane per le prime letture."
   pageSolutions={['cja']}
   branch="trenitalia"
 >
@@ -89,36 +107,66 @@ const serve = [
       <Sfondo slot="backdrop" id="tr-tetto" forza="leggera" />
       <div slot="backdrop" class="fs-grid"></div>
       <CoverHero
-        eyebrow="Capitolo 06 · Percorso"
-        numeral="06"
-        title="Da dicembre, un passo alla volta"
-        lead="A dicembre si scelgono i casi; la prima misura arriva dopo la durata della prova."
+        eyebrow="Capitolo 05 · Prossimi passi"
+        numeral="05"
+        title="Due decisioni a dicembre, una alla sesta settimana"
+        lead={lega('Da quando contratto e via libera ci sono, le prime letture arrivano in circa sei settimane.')}
         size="phase"
         tone="ink"
         signature={false}
       />
     </Slide>
 
+    <!-- ── Che cosa si decide adesso ──────────────────────────────────── -->
+    <Slide id="slide-decisioni" bg="primary" align="center">
+      <div slot="backdrop" class="fs-bg"></div>
+      <Sfondo slot="backdrop" id="tc-acciaio" forza="forte" />
+      <div slot="backdrop" class="fs-grid"></div>
+      <p class="fs-panel-tag text-center mb-3" data-reveal>CHE COSA SI DECIDE ADESSO</p>
+      <h2
+        class="text-center text-[var(--ink-primary)] mb-7 font-[family-name:var(--font-display)]"
+        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
+        data-reveal data-reveal-delay="0.08"
+      >
+        Tre decisioni, ognuna con chi la&nbsp;prende.
+      </h2>
+      <div class="pc-dec" role="table" aria-label="Le tre decisioni di dicembre" data-reveal data-reveal-delay="0.16">
+        <div class="pc-dec-r pc-dec-t" role="row">
+          <span role="columnheader"></span><span role="columnheader">La decisione</span><span role="columnheader">Chi decide</span><span role="columnheader">Chi lavora</span><span role="columnheader">Quando</span>
+        </div>
+        {decisioni.map((d) => (
+          <div class="pc-dec-r" role="row">
+            <span role="cell" class="pc-dec-n">{d.n}</span>
+            <span role="cell" class="pc-dec-c">{lega(d.cosa)}</span>
+            <span role="cell">{lega(d.decide)}</span>
+            <span role="cell">{lega(d.lavora)}</span>
+            <span role="cell" class="pc-dec-q">{d.quando}</span>
+          </div>
+        ))}
+      </div>
+      <p class="fs-panel-src text-center mt-5" data-reveal data-reveal-delay="0.3">
+        {lega('Nomi e ruoli sono da confermare insieme. Il caso si sceglie a partire dall’analisi su Target già in corso fra FS Technology e il partner.')}
+      </p>
+    </Slide>
+
     <!-- ── Le tappe ──────────────────────────────────────────────────── -->
-    {/* Una tappa per ↓: chi presenta racconta il calendario, non lo legge. */}
+    {/* Tutte e quattro in vista da subito: a passi chiusi la slide era una card su
+        quattro, con il vuoto accanto. */}
     <Slide id="slide-tappe" bg="primary" align="center">
       <div slot="backdrop" class="fs-bg"></div>
       <Sfondo slot="backdrop" id="rl-binari" forza="forte" />
       <div slot="backdrop" class="fs-grid"></div>
       <p class="fs-panel-tag text-center mb-3" data-reveal>LE TAPPE</p>
       <h2
-        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
+        class="text-center text-[var(--ink-primary)] mb-8 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal data-reveal-delay="0.08"
       >
-        Dalla scelta dei casi alla prima misura.
+        Dal via alle prime letture, in circa sei&nbsp;settimane.
       </h2>
-      <p class="text-center fs-card-body max-w-3xl mx-auto mb-8" data-reveal data-reveal-delay="0.14">
-        Con il sì a dicembre, la prima attività parte dopo il blocco dei rilasci di fine anno.
-      </p>
-      <ol class="pc-linea" data-reveal data-reveal-delay="0.2">
-        {tappe.map((t, i) => (
-          <li class:list={['pc-tappa', i === tappe.length - 1 && 'pc-tappa--poi']} data-substep={i > 0 ? '' : undefined}>
+      <ol class="pc-linea" data-stagger>
+        {tappe.map((t) => (
+          <li class:list={['pc-tappa', t.poi && 'pc-tappa--poi']}>
             <span class="pc-punto" aria-hidden="true"></span>
             <p class="pc-quando">{t.quando}</p>
             <p class="pc-cosa">{lega(t.cosa)}</p>
@@ -126,32 +174,38 @@ const serve = [
           </li>
         ))}
       </ol>
+      <p class="fs-panel-src text-center mt-6" data-reveal data-reveal-delay="0.3">
+        {lega('Sei settimane è un’ipotesi di Adobe, e parte da quando contratto e via libera ci sono.')}
+      </p>
     </Slide>
 
-    <!-- ── Che cosa vi portate a casa ─────────────────────────────────── -->
-    <Slide id="slide-obiettivi" bg="secondary" align="center">
+    <!-- ── La regola per passare alla fase 1 ──────────────────────────── -->
+    <Slide id="slide-regola" bg="secondary" align="center">
       <div slot="backdrop" class="fs-bg-soft"></div>
       <Sfondo slot="backdrop" id="tc-quiete" forza="media" />
       <div slot="backdrop" class="fs-grid"></div>
-      <p class="fs-panel-tag text-center mb-3" data-reveal>DOPO IL PRIMO PASSO</p>
+      <p class="fs-panel-tag text-center mb-3" data-reveal>DOPO LE PRIME LETTURE</p>
       <h2
         class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
         style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal data-reveal-delay="0.08"
       >
-        La fase dopo si decide con i numeri della prima.
+        Alla fase 1 si passa con tre numeri della fase&nbsp;0.
       </h2>
-      <p class="text-center fs-card-body max-w-3xl mx-auto mb-8" data-reveal data-reveal-delay="0.14">
-        Per ogni caso si fissano prima il valore di oggi, l’effetto minimo che basta e la durata.
+      <p class="text-center fs-card-body max-w-3xl mx-auto mb-7" style="text-wrap: balance;" data-reveal data-reveal-delay="0.14">
+        {lega('Le soglie si fissano insieme, sui valori delle prime due settimane.')}
       </p>
-      <div class="w-full max-w-6xl mx-auto grid md:grid-cols-3 gap-5" data-stagger>
-        {obiettivi.map((o, i) => (
-          <div class="fs-card text-left h-full pc-ob">
-            <p class="pc-ob-n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</p>
-            <p class="pc-ob-v">{o.verbo}</p>
-            <p class="fs-card-body pc-ob-d">{lega(o.domanda)}</p>
-          </div>
+      <ol class="pc-regola" data-stagger>
+        {regola.map((r, i) => (
+          <li>
+            <span class="pc-regola-n" aria-hidden="true">{i + 1}</span>
+            <p class="pc-regola-k">{lega(r.k)}</p>
+            <p class="pc-regola-v">{lega(r.v)}</p>
+          </li>
         ))}
+      </ol>
+      <div class="pc-uscita" data-reveal data-reveal-delay="0.3">
+        <p><strong>Se non si prosegue.</strong> {lega('Connessione, dati e mappatura si cancellano, con una conferma scritta.')}</p>
       </div>
     </Slide>
 
@@ -166,10 +220,10 @@ const serve = [
         style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
         data-reveal data-reveal-delay="0.08"
       >
-        Per la fase 0 si aggiunge CJA; i pubblici verso Target servono dalla fase&nbsp;1.
+        Per la fase 0 basta un prodotto in&nbsp;più. Il&nbsp;secondo serve dalla fase&nbsp;1.
       </h2>
       <p class="text-center fs-card-body max-w-3xl mx-auto mb-7" data-reveal data-reveal-delay="0.14">
-        La quotazione è nella proposta, con i volumi e i mesi di storico. CJA legge i&nbsp;percorsi; il confronto anno su anno resta in Analytics.
+        La quotazione è nella proposta, con i volumi e i mesi di storico. Il confronto anno su anno resta in&nbsp;Analytics.
       </p>
       <ul class="pc-lic" data-stagger>
         {licenze.map((l) => (
@@ -179,35 +233,6 @@ const serve = [
           </li>
         ))}
       </ul>
-    </Slide>
-
-    <!-- ── Che cosa serve per partire ─────────────────────────────────── -->
-    <Slide id="slide-serve" bg="primary" align="center">
-      <div slot="backdrop" class="fs-bg"></div>
-      <Sfondo slot="backdrop" id="tc-acciaio" forza="media" />
-      <div slot="backdrop" class="fs-grid"></div>
-      <p class="fs-panel-tag text-center mb-3" data-reveal>CHI FA CHE COSA</p>
-      <h2
-        class="text-center text-[var(--ink-primary)] mb-5 font-[family-name:var(--font-display)]"
-        style="font-size: clamp(1.7rem, 2.7vw, 2.4rem); font-weight: 600; line-height: 1.06; letter-spacing: -0.02em;"
-        data-reveal data-reveal-delay="0.08"
-      >
-        Chi fa che cosa, da confermare insieme a dicembre.
-      </h2>
-      <p class="text-center fs-card-body max-w-3xl mx-auto mb-7" data-reveal data-reveal-delay="0.14">
-        Si prepara a dicembre; il legame con Le Frecce si lavora intanto, in parallelo.
-      </p>
-      <ul class="pc-serve" data-stagger>
-        {serve.map((s) => (
-          <li class="pc-serve-r">
-            <span class="pc-serve-c">{lega(s.cosa)}</span>
-            <span class="pc-serve-chi">{lega(s.chi)}</span>
-          </li>
-        ))}
-      </ul>
-      <p class="text-center fs-card-body max-w-3xl mx-auto mt-6" data-reveal data-reveal-delay="0.3">
-        I casi si scelgono partendo dall’analisi su Target in corso fra FS Technology e il partner, e li scelgono insieme Trenitalia e FS Technology.
-      </p>
     </Slide>
 
     <!-- ── Chiusura ──────────────────────────────────────────────────── -->
@@ -224,10 +249,10 @@ const serve = [
           data-reveal
           data-reveal-delay="0.1"
         >
-          A dicembre, uno o due casi<br/>e chi li firma.
+          A dicembre: il sì alla fase 0.<br/>Alla sesta settimana, il primo caso.
         </h2>
         <CoBrand brand="Trenitalia" variant="hero" data-reveal data-reveal-delay="0.28" />
-        <a href={href(base, '/trenitalia/partenza')} class="edf-sig-cta" data-reveal data-reveal-delay="0.4">Rivedi il percorso →</a>
+        <a href={href(base, '/trenitalia/percorso') + '#slide-decisioni'} class="edf-sig-cta" data-reveal data-reveal-delay="0.4">Le tre decisioni →</a>
       </div>
     </Slide>
 
@@ -266,15 +291,31 @@ const serve = [
   }
   .pc-det { font-size: clamp(0.95rem, 1vw, 1.05rem); line-height: 1.5; color: var(--ink-secondary); }
 
-  /* ── I tre obiettivi ──────────────────────────────────────────────── */
-  [data-slide] .pc-ob p { text-align: left; margin-inline: 0; max-width: none; }
-  .pc-ob-n { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.12em; color: var(--color-rosso-chiaro); margin: 0 0 0.5rem; }
-  .pc-ob-v {
-    font-family: var(--font-display); font-weight: 600;
-    font-size: clamp(1.6rem, 2.2vw, 2.2rem); line-height: 1.05; letter-spacing: -0.02em;
-    color: var(--ink-primary); margin: 0 0 0.7rem;
+  /* ── Le tre decisioni ─────────────────────────────────────────────── */
+  .pc-dec { width: 100%; max-width: 80rem; margin-inline: auto; display: grid; gap: 0.6rem; text-align: left; }
+  .pc-dec-r {
+    display: grid; grid-template-columns: 2.6rem minmax(0, 1.35fr) minmax(0, 1.1fr) minmax(0, 1.1fr) minmax(7.5rem, 0.6fr); gap: clamp(0.8rem, 1.4vw, 1.5rem);
+    align-items: center; padding: clamp(0.9rem, 2.2vh, 1.35rem) clamp(0.9rem, 1.2vw, 1.3rem);
+    border-radius: 0.6rem; border: 1px solid rgba(255, 255, 255, 0.22); background: rgba(27, 34, 48, 0.6);
+    font-size: clamp(1.02rem, 1.08vw, 1.16rem); line-height: 1.36; color: var(--ink-primary);
   }
-  .pc-ob-d { font-size: clamp(1rem, 1.1vw, 1.15rem) !important; }
+  .pc-dec-r > span { text-wrap: pretty; }
+  .pc-dec-t { background: none; border: none; padding-block: 0 0.1rem; font-size: clamp(0.86rem, 0.92vw, 0.98rem); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-secondary); }
+  .pc-dec-n { display: inline-grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 50%; background: var(--color-rosso); font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; }
+  .pc-dec-c { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.1rem, 1.25vw, 1.36rem); line-height: 1.25; }
+  .pc-dec-q { font-weight: 700; color: var(--color-rosso-chiaro); }
+  @media (max-width: 900px) { .pc-dec-r { grid-template-columns: minmax(0, 1fr); } .pc-dec-t { display: none; } }
+
+  /* ── La regola per passare alla fase 1 ────────────────────────────── */
+  .pc-regola { list-style: none; margin: 0 auto; padding: 0; width: 100%; max-width: 76rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.8rem, 1.4vw, 1.5rem); text-align: left; }
+  .pc-regola li { display: grid; gap: 0.45rem; align-content: start; padding: clamp(1rem, 2.2vh, 1.4rem) clamp(1rem, 1.3vw, 1.4rem); border-radius: 0.7rem; border: 1px solid rgba(255, 255, 255, 0.22); background: rgba(27, 34, 48, 0.6); }
+  [data-slide] .pc-regola p { margin: 0; max-width: none; text-align: left; }
+  .pc-regola-n { display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; border: 2px solid var(--color-verde-chiaro); font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; color: var(--ink-primary); }
+  .pc-regola-k { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.15rem, 1.35vw, 1.45rem); line-height: 1.2; color: var(--ink-primary); }
+  .pc-regola-v { font-size: clamp(1.02rem, 1.08vw, 1.16rem); line-height: 1.4; color: var(--ink-secondary); }
+  .pc-uscita { width: 100%; max-width: 76rem; margin: clamp(1rem, 2.4vh, 1.5rem) auto 0; padding: clamp(0.8rem, 1.8vh, 1.1rem) clamp(1rem, 1.4vw, 1.5rem); border-radius: 0.7rem; border: 1.5px dashed rgba(255, 255, 255, 0.55); text-align: left; }
+  [data-slide] .pc-uscita p { margin: 0; max-width: none; text-align: left; font-size: clamp(1.02rem, 1.1vw, 1.18rem); line-height: 1.42; color: var(--ink-primary); }
+  @media (max-width: 900px) { .pc-regola { grid-template-columns: minmax(0, 1fr); } }
 
   /* ── Licenze ──────────────────────────────────────────────────────── */
   .pc-lic { list-style: none; margin: 0 auto; padding: 0; width: 100%; max-width: 60rem; display: grid; gap: 0.7rem; }
@@ -283,25 +324,14 @@ const serve = [
     padding: 1.1rem 1.3rem; border-radius: 0.6rem; text-align: left;
     background: rgba(27, 34, 48, 0.6); border: 1px solid var(--line-subtle);
   }
-  .pc-lic-r--nuovo { border-color: rgba(79, 189, 180, 0.7); box-shadow: inset 0.28rem 0 0 var(--color-verde-chiaro); }
+  .pc-lic-r--nuovo { border: 1.5px solid rgba(79, 189, 180, 0.75); }
   .pc-lic-s { font-size: clamp(0.84rem, 0.9vw, 0.96rem); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-rosso-chiaro); }
   .pc-lic-r--nuovo .pc-lic-s { color: var(--color-verde-chiaro); }
   .pc-lic-c { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.1rem, 1.25vw, 1.35rem); line-height: 1.3; color: var(--ink-primary); }
   @media (max-width: 900px) { .pc-lic-r { grid-template-columns: minmax(0, 1fr); gap: 0.3rem; } }
 
-  /* ── Che cosa serve ───────────────────────────────────────────────── */
-  .pc-serve { list-style: none; margin: 0 auto; padding: 0; width: 100%; max-width: 60rem; display: grid; gap: 0.6rem; }
-  .pc-serve-r {
-    display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 1.2rem; align-items: center;
-    padding: 0.9rem 1.2rem; border-radius: 0.6rem;
-    background: rgba(27, 34, 48, 0.6); border: 1px solid var(--line-subtle); text-align: left;
-  }
-  .pc-serve-c { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.05rem, 1.2vw, 1.3rem); line-height: 1.25; color: var(--ink-primary); }
-  .pc-serve-chi { font-size: clamp(0.95rem, 1vw, 1.05rem); line-height: 1.4; color: var(--ink-secondary); }
-
   @media (max-width: 900px) {
     .pc-linea { grid-template-columns: minmax(0, 1fr); }
     .pc-linea::before { display: none; }
-    .pc-serve-r { grid-template-columns: minmax(0, 1fr); gap: 0.3rem; }
   }
 </style>

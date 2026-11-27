@@ -1,0 +1,174 @@
+---
+/**
+ * FiguraBinario — FIGURA XD: le tre fasi come tre viste dello stesso binario.
+ *
+ * NASCE IL 27 NOV 2026 e prende il posto dei tre cerchi concentrici. I cerchi
+ * dicevano bene che le fasi stanno una dentro l'altra, ma l'area diceva
+ * l'importanza al contrario (il punto d'arrivo occupava un decimo della figura) e
+ * non si vedevano né i due siti né il vuoto che li separa, che è il problema.
+ *
+ * Qui il binario è quello che chi legge ha in testa: a sinistra trenitalia.com,
+ * dove si cerca; a destra Le Frecce, dove si compra; in mezzo il passaggio. La
+ * riga si ripete tre volte e cambia una cosa sola, il filo nel passaggio:
+ *   · fase 0 — non c'è: i due siti si leggono affiancati, come totali;
+ *   · fase 1 — c'è, e lega una visita senza nome;
+ *   · fase 2 — porta un nome, e prosegue fino all'app.
+ *
+ * IL COLORE vale una cosa sola in tutto il deck: rosso è quello che si fa adesso,
+ * verde acqua quello che arriva dopo. Il tratteggio vuol dire «non ancora».
+ *
+ * I PASSI: tutte e tre le righe hanno il binario in vista da subito, in grigio, così
+ * a passi chiusi la slide non è un titolo col vuoto sotto. Il primo marcatore
+ * accende la fase 1, il secondo la fase 2: il filo si tende da sinistra a destra.
+ * Il testo di una fase non accesa è assente, non trasparente. Senza JavaScript o
+ * con «Riduci movimento» è tutto acceso.
+ */
+import { lega } from '../../utils/lega';
+
+interface Fase {
+  n: string;
+  nome: string;
+  quando: string;
+  /** Che cosa passa nel tratto fra i due siti. */
+  filo: string;
+  /** Il beneficio, in una frase. */
+  beneficio: string;
+}
+interface Props { fasi: [Fase, Fase, Fase]; sinistra: [string, string]; destra: [string, string]; class?: string }
+const { fasi, sinistra, destra, class: className } = Astro.props as Props;
+const passo = ['a', 'b', 'c'];
+const etichetta = `Tre viste dello stesso percorso, da ${sinistra[0]} (${sinistra[1]}) a ${destra[0]} (${destra[1]}). ` +
+  fasi.map((f) => `Fase ${f.n}, ${f.nome}, ${f.quando}: fra i due siti ${f.filo}; ${f.beneficio}.`).join(' ');
+---
+<div class:list={['fbn', className]} role="img" aria-label={etichetta}>
+  <div class="fbn-testa" aria-hidden="true">
+    <span></span>
+    <span class="fbn-stazioni">
+      <span class="fbn-staz"><b>{sinistra[0]}</b>{sinistra[1]}</span>
+      <span class="fbn-staz fbn-staz--dx"><b>{destra[0]}</b>{destra[1]}</span>
+    </span>
+    <span></span>
+  </div>
+
+  {fasi.map((f, i) => (
+    <div class:list={['fbn-riga', `fbn-riga--${i}`, i > 0 && `fbn-${passo[i]}`]} aria-hidden="true">
+      <p class="fbn-fase"><span class="fbn-bollo">{f.n}</span><span class="fbn-nome">{lega(f.nome)}<small>{lega(f.quando)}</small></span></p>
+      <div class="fbn-binario">
+        <span class="fbn-nodo"></span>
+        <span class="fbn-tratto fbn-tratto--sx"></span>
+        <span class="fbn-passaggio"><i class="fbn-filo"></i><em class="fbn-testo">{lega(f.filo)}</em></span>
+        <span class="fbn-tratto fbn-tratto--dx"></span>
+        <span class="fbn-nodo"></span>
+      </div>
+      <p class="fbn-ben fbn-testo">{lega(f.beneficio)}</p>
+    </div>
+  ))}
+
+  <i class="fbn-m" data-substep data-p="b" aria-hidden="true"></i>
+  <i class="fbn-m" data-substep data-p="c" aria-hidden="true"></i>
+</div>
+
+<style is:global>
+  .fbn {
+    --fbn-col: minmax(11rem, 0.72fr) minmax(0, 2fr) minmax(13rem, 0.95fr);
+    width: 100%; max-width: 80rem; margin-inline: auto; text-align: left;
+    display: grid; gap: clamp(0.55rem, 1.4vh, 1rem);
+  }
+  [data-slide] .fbn p { margin: 0; max-width: none; text-align: left; }
+
+  /* Le due stazioni, una volta sola, sopra i tre binari. */
+  .fbn-testa { display: grid; grid-template-columns: var(--fbn-col); gap: 0 clamp(0.9rem, 1.6vw, 1.8rem); padding-inline: clamp(0.9rem, 1.2vw, 1.3rem); }
+  .fbn-stazioni { display: flex; justify-content: space-between; align-items: end; gap: 1rem; }
+  .fbn-staz { display: grid; gap: 0.05rem; font-size: clamp(0.92rem, 0.98vw, 1.04rem); color: var(--ink-secondary); }
+  .fbn-staz b { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.1rem, 1.3vw, 1.4rem); color: var(--ink-primary); }
+  .fbn-staz--dx { text-align: right; justify-items: end; }
+
+  .fbn-riga {
+    --fbn-c: var(--color-verde-chiaro);
+    display: grid; grid-template-columns: var(--fbn-col); align-items: center;
+    gap: 0 clamp(0.9rem, 1.6vw, 1.8rem);
+    padding: clamp(0.8rem, 2vh, 1.35rem) clamp(0.9rem, 1.2vw, 1.3rem);
+    border-radius: 0.7rem; border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(27, 34, 48, 0.55);
+  }
+  .fbn-riga--0 { --fbn-c: var(--color-rosso-chiaro); border-color: rgba(255, 141, 157, 0.6); }
+
+  .fbn-fase { display: flex; align-items: center; gap: 0.7rem; }
+  .fbn-bollo {
+    flex: none; display: inline-grid; place-items: center; width: 2.3rem; height: 2.3rem; border-radius: 50%;
+    border: 2px solid var(--fbn-c); font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(1.1rem, 1.25vw, 1.35rem); color: var(--ink-primary);
+  }
+  .fbn-riga--0 .fbn-bollo { background: var(--color-rosso); border-color: var(--color-rosso); }
+  .fbn-nome { display: grid; gap: 0.05rem; font-family: var(--font-display); font-weight: 600; font-size: clamp(1.1rem, 1.3vw, 1.4rem); line-height: 1.15; color: var(--ink-primary); }
+  .fbn-nome small { font-family: var(--font-body); font-weight: 500; font-size: clamp(0.88rem, 0.92vw, 0.98rem); color: var(--ink-secondary); }
+
+  /* Il binario: nodo, tratto, passaggio, tratto, nodo. */
+  .fbn-binario { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr) auto; align-items: center; }
+  .fbn-nodo { width: 0.95rem; height: 0.95rem; border-radius: 50%; background: var(--ink-primary); }
+  .fbn-tratto { height: 4px; background: rgba(255, 255, 255, 0.82); }
+  .fbn-passaggio { position: relative; display: grid; justify-items: center; align-items: center; height: clamp(2.6rem, 6vh, 3.4rem); }
+  /* Il vuoto fra i due siti: tratteggiato, in ogni riga. È il «non ancora». */
+  .fbn-passaggio::before {
+    content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 0; margin-top: -1px;
+    border-top: 2px dashed rgba(255, 255, 255, 0.45);
+  }
+  /* Il filo che lega: pieno, nel colore della fase, teso da sinistra. */
+  .fbn-filo {
+    position: absolute; left: 0; right: 0; top: 50%; height: 4px; margin-top: -2px;
+    background: var(--fbn-c); transform-origin: left center; transform: scaleX(1);
+    transition: transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .fbn-riga--0 .fbn-filo { display: none; }
+  .fbn-riga--2 .fbn-filo { height: 6px; margin-top: -3px; }
+  .fbn-passaggio em {
+    position: relative; font-style: normal; font-weight: 600; text-align: center;
+    padding: 0.28rem 0.8rem; border-radius: 999px;
+    font-size: clamp(0.92rem, 0.98vw, 1.04rem); line-height: 1.25;
+    color: var(--ink-primary); background: var(--color-ardesia-notte); border: 1.5px solid var(--fbn-c);
+  }
+  .fbn-riga--0 .fbn-passaggio em { border-style: dashed; border-color: rgba(255, 255, 255, 0.6); }
+
+  .fbn-ben { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.08rem, 1.28vw, 1.38rem); line-height: 1.22; color: var(--ink-primary); text-wrap: balance; }
+  .fbn-m { display: block; width: 0; height: 0; }
+
+  /* ── I passi ─────────────────────────────────────────────────────── */
+  .fbn .fbn-b, .fbn .fbn-c { border-color: rgba(255, 255, 255, 0.12); background: rgba(27, 34, 48, 0.3); transition: border-color 360ms ease-out, background-color 360ms ease-out; }
+  .fbn .fbn-b .fbn-testo, .fbn .fbn-c .fbn-testo, .fbn .fbn-b .fbn-nome, .fbn .fbn-c .fbn-nome { opacity: 0; visibility: hidden; transition: opacity 360ms ease-out, visibility 360ms; }
+  .fbn .fbn-b .fbn-filo, .fbn .fbn-c .fbn-filo { transform: scaleX(0); }
+  .fbn .fbn-b .fbn-bollo, .fbn .fbn-c .fbn-bollo { border-color: rgba(255, 255, 255, 0.4); transition: border-color 360ms ease-out; }
+  .fbn .fbn-b .fbn-tratto, .fbn .fbn-c .fbn-tratto { background: rgba(255, 255, 255, 0.35); transition: background-color 360ms ease-out; }
+  .fbn .fbn-b .fbn-nodo, .fbn .fbn-c .fbn-nodo { background: rgba(255, 255, 255, 0.45); transition: background-color 360ms ease-out; }
+
+  .fbn:has(.fbn-m[data-p='b'][data-substep-active]) .fbn-b,
+  .fbn:has(.fbn-m[data-p='c'][data-substep-active]) .fbn-c { border-color: rgba(79, 189, 180, 0.6); background: rgba(27, 34, 48, 0.55); }
+  .fbn:has(.fbn-m[data-p='b'][data-substep-active]) .fbn-b :is(.fbn-testo, .fbn-nome),
+  .fbn:has(.fbn-m[data-p='c'][data-substep-active]) .fbn-c :is(.fbn-testo, .fbn-nome) { opacity: 1; visibility: visible; }
+  .fbn:has(.fbn-m[data-p='b'][data-substep-active]) .fbn-b .fbn-filo,
+  .fbn:has(.fbn-m[data-p='c'][data-substep-active]) .fbn-c .fbn-filo { transform: scaleX(1); }
+  .fbn:has(.fbn-m[data-p='b'][data-substep-active]) .fbn-b .fbn-bollo,
+  .fbn:has(.fbn-m[data-p='c'][data-substep-active]) .fbn-c .fbn-bollo { border-color: var(--fbn-c); }
+  .fbn:has(.fbn-m[data-p='b'][data-substep-active]) .fbn-b .fbn-tratto,
+  .fbn:has(.fbn-m[data-p='c'][data-substep-active]) .fbn-c .fbn-tratto { background: rgba(255, 255, 255, 0.82); }
+  .fbn:has(.fbn-m[data-p='b'][data-substep-active]) .fbn-b .fbn-nodo,
+  .fbn:has(.fbn-m[data-p='c'][data-substep-active]) .fbn-c .fbn-nodo { background: var(--ink-primary); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fbn .fbn-b, .fbn .fbn-c { border-color: rgba(79, 189, 180, 0.6); background: rgba(27, 34, 48, 0.55); transition: none; }
+    .fbn .fbn-b :is(.fbn-testo, .fbn-nome), .fbn .fbn-c :is(.fbn-testo, .fbn-nome) { opacity: 1; visibility: visible; transition: none; }
+    .fbn .fbn-b .fbn-filo, .fbn .fbn-c .fbn-filo { transform: scaleX(1); transition: none; }
+    .fbn .fbn-b .fbn-bollo, .fbn .fbn-c .fbn-bollo { border-color: var(--fbn-c); }
+    .fbn .fbn-b .fbn-tratto, .fbn .fbn-c .fbn-tratto { background: rgba(255, 255, 255, 0.82); }
+    .fbn .fbn-b .fbn-nodo, .fbn .fbn-c .fbn-nodo { background: var(--ink-primary); }
+  }
+  html:not(.js) .fbn .fbn-b, html:not(.js) .fbn .fbn-c { border-color: rgba(79, 189, 180, 0.6); background: rgba(27, 34, 48, 0.55); }
+  html:not(.js) .fbn :is(.fbn-b, .fbn-c) :is(.fbn-testo, .fbn-nome) { opacity: 1; visibility: visible; }
+  html:not(.js) .fbn :is(.fbn-b, .fbn-c) .fbn-filo { transform: scaleX(1); }
+  html:not(.js) .fbn :is(.fbn-b, .fbn-c) .fbn-bollo { border-color: var(--fbn-c); }
+  html:not(.js) .fbn :is(.fbn-b, .fbn-c) .fbn-tratto { background: rgba(255, 255, 255, 0.82); }
+  html:not(.js) .fbn :is(.fbn-b, .fbn-c) .fbn-nodo { background: var(--ink-primary); }
+
+  @media (max-width: 900px) {
+    .fbn-testa { display: none; }
+    .fbn-riga { grid-template-columns: minmax(0, 1fr); gap: 0.7rem; }
+  }
+</style>

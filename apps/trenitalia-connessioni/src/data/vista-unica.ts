@@ -43,20 +43,20 @@ export const FONTI = {
   },
   cja: {
     nome: 'Customer Journey Analytics',
-    sotto: 'una connessione, due dataset, un data view',
-    funzioni: ['campi derivati', 'metriche fra i due siti', 'previsione e anomalie', 'Coworker'],
+    sotto: 'i due siti in un’unica vista',
+    funzioni: ['la stessa tratta, scritta uguale', 'un numero fra i due siti', 'previsione e anomalie'],
   },
-  resta: 'Nessun tag cambia. Nessuna persona si lega: si leggono giorni e tratte. Le righe di visita entrano con identificativi pseudonimi, ed è un trattamento che il DPO vede già qui.',
+  resta: 'Non cambia nessun tag e non si collega nessuna persona: si leggono i totali per giorno e per tratta. Il parere del DPO serve già in questa fase.',
 };
 
 /* L'ipotesi sui tempi: è nostra e lo dice. La mappatura fra organizzazioni si
    chiede ad Adobe; il connettore porta indietro fino a 13 mesi (Experience League,
    «Connect Adobe Analytics to Experience Platform»). */
 export const TEMPI = [
-  { n: '0', nome: 'Prima del via', durata: 'contratto', esito: 'CJA a contratto; il via libera di FS Technology, di chi amministra Le Frecce e del DPO' },
+  { n: '0', nome: 'Prima del via', durata: 'da stimare insieme', esito: 'CJA a contratto; il via libera di FS Technology, di chi amministra Le Frecce e del DPO' },
   { n: '1', nome: 'Le due fonti', durata: '1–2 settimane', esito: 'mappatura fra organizzazioni, connettori, lo storico' },
   { n: '2', nome: 'La rimappatura', durata: '2 settimane', esito: 'campi resi uguali, data view, controlli sui numeri' },
-  { n: '3', nome: 'Le prime letture', durata: '2 settimane', esito: 'le analisi di questo capitolo, con il vostro team' },
+  { n: '3', nome: 'Le prime letture', durata: '2 settimane', esito: 'prima i numeri che devono tornare: avvii del «Cerca» contro arrivi da trenitalia.com. Poi le analisi' },
 ];
 
 /* ── Prima di accendere, e prima di proseguire ───────────────────────── */
@@ -136,9 +136,9 @@ export const LINEE = [
 export const TRATTE = [
   { tratta: 'Roma Termini → Milano Centrale', ricerche: 100, arrivi: 64, conferme: 35 },
   { tratta: 'Napoli Centrale → Roma Termini', ricerche: 100, arrivi: 38, conferme: 21,
-    lettura: 'si perde nel passaggio fra i due siti', chi: 'Customer Operations' },
+    lettura: 'cala nel passaggio fra i due siti', chi: 'chi governa il percorso d’acquisto' },
   { tratta: 'Milano Centrale → Venezia Santa Lucia', ricerche: 100, arrivi: 66, conferme: 17,
-    lettura: 'arriva, vede il prezzo, si ferma: si legge con riempimento e ricavo per posto-km', chi: 'il revenue management' },
+    lettura: 'cala dopo l’arrivo: prezzo, disponibilità o percorso?', chi: 'il revenue management' },
   /* La terza lettura è della call del 26 nov: su una tratta le conferme possono
      superare gli arrivi da trenitalia.com, perché lì si entra direttamente da Le
      Frecce. Dice qualcosa sul ruolo del sito, tratta per tratta. */
@@ -148,22 +148,22 @@ export const TRATTE = [
 
 /* ── Le analisi del primo giorno: oggi, e con la vista unica ─────────── */
 export const ANALISI = [
-  { nome: 'La domanda prima del prezzo',
+  { nome: 'La domanda prima del prezzo', primo: false,
     domanda: 'Quali tratte e quali date si cercano su trenitalia.com, e con quanto anticipo?',
     oggi: 'Si legge nel solo Analytics di Gruppo, senza sapere che cosa succede dopo.',
     con: 'Accanto, quanti arrivano su Le Frecce e confermano, per la stessa tratta e lo stesso giorno.',
     funzione: 'campi derivati' },
-  { nome: 'Il giorno che non torna',
+  { nome: 'Il giorno che non torna', primo: true,
     domanda: 'Un giorno le conferme calano e le ricerche no: dove è successo?',
     oggi: 'Due report da affiancare a mano, quando qualcuno se ne accorge.',
-    con: 'Una metrica sola fra i due siti, con il rilevamento delle anomalie sopra.',
+    con: 'Un numero solo fra i due siti, e un avviso quando si discosta dal solito.',
     funzione: 'anomalie' },
-  { nome: 'Il web o l’app, per tratta',
+  { nome: 'Il web o l’app, per tratta', primo: true,
     domanda: 'Su quali tratte la conferma passa di più dall’app?',
-    oggi: 'Il dato dell’app sta nella report suite di Le Frecce, separata da quella di trenitalia.com.',
-    con: 'Web e app nello stesso data view, divisi per tratta e per giorno.',
+    oggi: 'Il dato dell’app sta negli Analytics di Le Frecce, separati da quelli di trenitalia.com.',
+    con: 'Web e app nella stessa vista, divisi per tratta e per giorno.',
     funzione: 'una connessione' },
-  { nome: 'Le settimane che arrivano',
+  { nome: 'Le settimane che arrivano', primo: false,
     domanda: 'Quali settimane, su quali tratte, porteranno più ricerche?',
     oggi: 'Si ragiona sullo storico, a mano.',
     con: 'La previsione disegnata sulla curva, tratta per tratta.',
@@ -172,10 +172,10 @@ export const ANALISI = [
      prenotazioni ce l'ha già, la domanda respinta no. Vale solo se la ricerca
      senza disponibilità è tracciata: la condizione sta nella card. Prende il
      posto della domanda a parole, perché Coworker ha la sua slide in Convergenza. */
-  { nome: 'La domanda respinta',
+  { nome: 'La domanda respinta', primo: true,
     domanda: 'Quante ricerche trovano treni pieni o senza la classe cercata, per tratta e anticipo?',
     oggi: 'Non si vede accanto alla vendita.',
-    con: 'Per tratta, se la ricerca senza posti è tracciata; se no, è un campo da aggiungere dopo la fase 0.',
+    con: 'Per tratta, se la ricerca senza posti è già tracciata. Se non lo è, si aggiunge dopo la fase 0.',
     funzione: 'campi derivati' },
 ];
 
@@ -183,12 +183,12 @@ export const ANALISI = [
 /* Le direzioni si nominano per la leva che governano, e la leva resta loro: la
    lettura la porta il digitale. Decisione del 25 nov 2026. */
 export const DESTINATARI = [
-  { chi: 'Marketing e Revenue Management', legge: 'la domanda cercata per tratta e anticipo, prima che si veda un prezzo', leva: 'il prezzo e i tempi delle promozioni', p: 'a' },
-  { chi: 'Customer Operations', legge: 'dove il percorso cala fra il passaggio e la conferma, sul web e sull’app', leva: 'il percorso d’acquisto', p: 'a' },
-  { chi: 'Sales', legge: 'la domanda cercata dall’estero per paese e lingua, accanto alla quota che arriva alla conferma', leva: 'i mercati e i canali', p: 'a' },
-  { chi: 'Chi gestisce l’app', legge: 'su quali tratte l’app conta di più', leva: 'i contenuti e le card della home', p: 'b' },
-  { chi: 'Chi manda SMS e notifiche', legge: 'in che giorni e su quali tratte si cerca di più', leva: 'il momento delle offerte, come l’upgrade', p: 'b' },
-  { chi: 'Media e campagne', legge: 'quali campagne portano ricerche che arrivano alla conferma', leva: 'il budget, tratta per tratta', p: 'b' },
+  { chi: 'Marketing e Revenue Management', primo: true, legge: 'la domanda cercata per tratta e anticipo, prima che si veda un prezzo', leva: 'il prezzo e i tempi delle promozioni', p: 'a' },
+  { chi: 'Chi governa il percorso d’acquisto', primo: true, legge: 'dove il percorso cala fra il passaggio e la conferma, sul web e sull’app', leva: 'il percorso d’acquisto', p: 'a' },
+  { chi: 'Sales', primo: true, legge: 'la domanda dall’estero che arriva su trenitalia.com, per paese e lingua. I canali dei partner esteri restano fuori', leva: 'i mercati e i canali', p: 'a' },
+  { chi: 'Chi gestisce l’app', primo: false, legge: 'su quali tratte l’app conta di più', leva: 'i contenuti e le card della home', p: 'b' },
+  { chi: 'Chi manda SMS e notifiche', primo: false, legge: 'in che giorni e su quali tratte si cerca di più', leva: 'il momento delle offerte, come l’upgrade', p: 'b' },
+  { chi: 'Media e campagne', primo: true, legge: 'quali campagne portano ricerche che arrivano alla conferma', leva: 'il budget, tratta per tratta', p: 'b' },
 ];
 
 /* ── Dalla lettura al test ───────────────────────────────────────────── */
@@ -196,5 +196,5 @@ export const CICLO = [
   { nome: 'Si legge', cosa: 'Napoli–Roma: molte ricerche il venerdì sera, pochi arrivi su Le Frecce.' },
   { nome: 'Si fa un’ipotesi', cosa: 'Chi cerca il venerdì vuole il ritorno della domenica, e non lo trova subito.' },
   { nome: 'Si prova su Target', cosa: 'Un test A/B in home: la variante propone anche il ritorno.' },
-  { nome: 'Si misura', cosa: 'Sul «Cerca», per variante; l’acquisto resta aggregato fino alla fase 1.' },
+  { nome: 'Si misura', cosa: 'Sul «Cerca», variante per variante. L’acquisto si lega dalla fase 1.' },
 ];

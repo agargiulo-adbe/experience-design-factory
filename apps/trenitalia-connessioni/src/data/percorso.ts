@@ -18,16 +18,25 @@ export interface Tappa {
   label: string;
   /** Una riga che dice al cliente cosa trova lì. Va nelle card della home. */
   sub: string;
-  /** Tronco = contesto comune; Capitolo = la serie numerata 01–04. */
-  kind: 'Tronco' | 'Capitolo';
+  /** Tronco = contesto comune; Capitolo = la serie numerata; Appendice = per il
+   *  team tecnico, in coda e senza numero. */
+  kind: 'Tronco' | 'Capitolo' | 'Appendice';
   /** Fuori percorso ma raggiungibile: non appare in nav, home e frecce. */
   attiva: boolean;
   /** Id soluzione per il gating runtime dell'Admin. */
   solution?: string;
 }
 
+/*
+ * RIORDINATO IL 27 NOV 2026, dopo la critica di design sul deck intero. Il lettore
+ * è chi dirige i canali digitali: arrivava alla proposta alla slide 18 e alla
+ * richiesta all'ultima. Ora l'ordine è il suo — la sintesi, le tre fasi, i casi, la
+ * fase 0 da vicino, i prossimi passi — e quello che serve a FS Technology e al DPO
+ * sta in due appendici, in coda. Lo scenario con la persona esce dal percorso: è
+ * una storia di fase 2, e in apertura prometteva quello che arriva per ultimo.
+ */
 export const TAPPE: Tappa[] = [
-  { slug: 'scenario', kind: 'Tronco', attiva: true, label: 'Scenario',
+  { slug: 'scenario', kind: 'Tronco', attiva: false, label: 'Scenario',
     sub: 'Il lunedì di Davide, visto dai sistemi' },
 
   // Il bivio apre il confronto FS Park × Trenitalia: è il racconto di Gruppo,
@@ -35,32 +44,32 @@ export const TAPPE: Tappa[] = [
   { slug: 'bivio', kind: 'Tronco', attiva: false, label: 'Il bivio',
     sub: 'Due società, due sguardi sullo stesso percorso' },
 
-  { slug: 'trenitalia/partenza', kind: 'Capitolo', attiva: true, label: 'Partenza',
-    sub: 'Cosa si vede di chi compra, e cosa no' },
-  { slug: 'trenitalia/fondamenta', kind: 'Capitolo', attiva: true, label: 'Fondamenta',
-    sub: 'Gli Analytics e il CRM già in casa' },
-  { slug: 'trenitalia/convergenza', kind: 'Capitolo', attiva: true, label: 'Convergenza',
-    sub: 'Un disegno, tre fasi', solution: 'cja' },
-
-  // Nasce il 25 nov 2026: l'approfondimento della fase 0, che porta i due
-  // Analytics in CJA senza legare le persone. Dal 26 nov sta subito dopo
-  // Convergenza: la fase 0 è la prima delle tre, e i casi su Target vengono dopo.
-  { slug: 'trenitalia/vista-unica', kind: 'Capitolo', attiva: true, label: 'Vista unica',
-    sub: 'La fase 0: due Analytics in una lettura sola', solution: 'cja' },
+  { slug: 'trenitalia/partenza', kind: 'Capitolo', attiva: true, label: 'In sintesi',
+    sub: 'Che cosa proponiamo, e che cosa serve per partire' },
+  { slug: 'trenitalia/convergenza', kind: 'Capitolo', attiva: true, label: 'Le tre fasi',
+    sub: 'Dal totale per tratta al cliente riconosciuto', solution: 'cja' },
 
   // Chiesto dal Direttore dei canali digitali il 27 ott 2026: «va bene la parte
-  // tecnologica, io mi aspetterei dei casi d'uso interessanti». Sta dopo
-  // Convergenza perché quella dice che cos'è lo strato e questo che cosa ci si
-  // fa — e perché il suo vincolo è «se mi dai il pezzo di ferro non so che fare».
-  { slug: 'trenitalia/casi-duso', kind: 'Capitolo', attiva: true, label: 'Casi d’uso',
+  // tecnologica, io mi aspetterei dei casi d'uso interessanti».
+  { slug: 'trenitalia/casi-duso', kind: 'Capitolo', attiva: true, label: 'I casi',
     sub: 'Cinque casi su Target, fase per fase', solution: 'cja' },
+
+  // Nasce il 25 nov 2026: l'approfondimento della fase 0, che porta i due
+  // Analytics in CJA senza legare le persone.
+  { slug: 'trenitalia/vista-unica', kind: 'Capitolo', attiva: true, label: 'La fase 0',
+    sub: 'I due siti in una lettura sola, in circa sei settimane', solution: 'cja' },
 
   // Tutto il capitolo poggia su FS Park e sulla clean room: segue il bivio.
   { slug: 'trenitalia/meta-invisibile', kind: 'Capitolo', attiva: false, label: 'Metà invisibile',
     sub: 'La collaborazione fra società, in una clean room', solution: 'data-collab' },
 
-  { slug: 'trenitalia/percorso', kind: 'Capitolo', attiva: true, label: 'Percorso',
-    sub: 'Da dicembre, un passo alla volta' },
+  { slug: 'trenitalia/percorso', kind: 'Capitolo', attiva: true, label: 'Prossimi passi',
+    sub: 'Due decisioni a dicembre, una alla sesta settimana' },
+
+  { slug: 'trenitalia/appendice', kind: 'Appendice', attiva: true, label: 'Per il team tecnico',
+    sub: 'Dati, ruoli, licenze e sicurezza, fase per fase', solution: 'cja' },
+  { slug: 'trenitalia/fondamenta', kind: 'Appendice', attiva: true, label: 'Lo stack di oggi',
+    sub: 'Gli Analytics e il CRM già in casa' },
 ];
 
 /** Le tappe nel percorso di default, in ordine. */

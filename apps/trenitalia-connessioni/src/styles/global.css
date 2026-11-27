@@ -511,8 +511,11 @@
   border-radius: 3px; box-shadow: 0 0 10px rgba(var(--sig-rgb), 0.4); }
 .fs-panel--alt::before { background: linear-gradient(180deg, rgba(var(--sig2-rgb), 1), rgba(var(--sig2-rgb), 0.25));
   box-shadow: 0 0 10px rgba(var(--sig2-rgb), 0.4); }
-.fs-panel-tag { font-family: var(--font-body); font-size: 0.73rem; letter-spacing: 0.16em;
+/* Gli occhielli a 13 px non si leggevano proiettati (critica del 27 nov 2026). */
+.fs-panel-tag { font-family: var(--font-body); font-size: clamp(0.84rem, 0.86vw, 0.95rem); font-weight: 600; letter-spacing: 0.14em;
   text-transform: uppercase; color: rgba(var(--sig-rgb), 0.98); }
+/* Più grande, l'occhiello entra nella misura del ritmo verticale: gli serve aria sotto. */
+[data-slide] .fs-panel-tag { margin-bottom: 1.15rem; }
 .fs-panel-head { font-family: var(--font-display); font-weight: 600; font-size: 1.55rem;
   line-height: 1.16; color: rgba(241, 243, 244, 0.99); margin-top: 0.35rem; letter-spacing: -0.01em; }
 .fs-panel-figure { font-family: var(--font-display); font-weight: 600; font-size: 2.5rem;
@@ -852,3 +855,10 @@ html[data-hiw-open] [data-deck] [data-deck-controls] {
   [data-substep] { opacity: 1; transform: none; transition: none; }
 }
 html:not(.js) [data-substep] { opacity: 1; transform: none; }
+
+/* ── Gli a capo nel ramo Trenitalia (27 nov 2026) ─────────────────────────
+   Titoli, lead, celle e note si bilanciano: la coda di una frase non resta
+   sola sull'ultima riga. Le parole di servizio le lega `lega()`. */
+html[data-branch='trenitalia'] [data-slide] :is(h2, .fs-card-body, .fs-panel-src, .fs-panel-body, [data-cover] p,
+  .pt-col li, .cv-tab-r > span, .pc-dec-r > span, .fbn-ben, .vu-an p, .vu-chi p, .pc-det, .pc-regola p,
+  .pc-lic-c, .journey-card p, .cs-fascia dd, .fbn-passaggio em) { text-wrap: balance; }
