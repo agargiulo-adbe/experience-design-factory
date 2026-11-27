@@ -92,7 +92,7 @@ export interface Config {
 }
 export const CONFIG: Config[] = [
   { id: 'a', nome: 'Fase 0 · Vista unica', quando: 'Si parte da qui', legge: 'i due Analytics, per giorno e per tratta', agisce: 'trenitalia.com, con prove per tutti', serve: 'i due Analytics in CJA; il via libera di FS Technology, di Le Frecce e del DPO', breve: 'prove senza pubblici', leggeL: ['trenitalia.com', 'Le Frecce e app, aggregati'], agisceL: ['trenitalia.com'] },
-  { id: 'b', nome: 'Fase 1 · La conferma', quando: 'Dopo le prime letture', legge: 'chi ha cercato e poi ha comprato', agisce: 'trenitalia.com, con i pubblici', serve: 'prima la conferma legata, misurata in CJA senza licenze nuove; poi i pubblici verso Target, con Real-Time CDP o Journey Optimizer', breve: 'pubblici, fino alla conferma', leggeL: ['trenitalia.com', 'Le Frecce e app, aggregati', 'L’acquisto, legato alla ricerca'], agisceL: ['trenitalia.com'] },
+  { id: 'b', nome: 'Fase 1 · La conferma', quando: 'Dopo le prime letture', legge: 'chi ha cercato e poi ha comprato', agisce: 'trenitalia.com, con i pubblici', serve: 'prima la conferma legata, misurata in CJA senza licenze nuove; poi i pubblici verso Target, con una licenza di Real-Time CDP', breve: 'pubblici, fino alla conferma', leggeL: ['trenitalia.com', 'Le Frecce e app, aggregati', 'L’acquisto, legato alla ricerca'], agisceL: ['trenitalia.com'] },
   { id: 'c', nome: 'Fase 2 · Il login', quando: 'Con il login sul sito', legge: 'la stessa persona sui due siti, con lo status', agisce: 'trenitalia.com, Le Frecce e app', serve: 'il login su trenitalia.com e, per Le Frecce e l’app, il nuovo portale: decisioni del Gruppo', breve: 'la persona, anche fuori dal sito', leggeL: ['trenitalia.com', 'Le Frecce e app, aggregati', 'L’acquisto, legato alla ricerca', 'CRM e fedeltà', 'Le Frecce, il percorso'], agisceL: ['trenitalia.com', 'Le Frecce', 'App Trenitalia'] },
 ];
 
@@ -238,9 +238,10 @@ export const CASI: Caso[] = [
     punto: 'Target riconosce da sé l’area; CJA aggiunge le tratte più cercate da chi parte da lì.',
     // Esempio portato da loro il 27 ott; una prima versione con la
     // geolocalizzazione è già in produzione su trenitalia.com (dall'account, 16
-    // nov). Nel primo passo le tratte sono le più CERCATE su trenitalia.com; le
+    // nov). Il 27 nov, in Chromium, il pop-up non compariva e Target in home non
+    // consegnava offerte: si dice che c'è stato, non che c'è. Nel primo passo le tratte sono le più CERCATE su trenitalia.com; le
     // più comprate arrivano con l'acquisto su Le Frecce (23 nov).
-    oggi: 'Una prima versione c’è già, con un pop-up sopra la pagina. Il seguito è che si adattino i componenti della home.',
+    oggi: 'Una prima versione, con un pop-up sopra la pagina, è già andata in linea. Il seguito è che si adattino i componenti della home.',
     viaggiatore: 'La prima schermata porta le tratte più cercate da dove si trova, con il link alla ricerca.',
     marketer: 'Una regola per area di partenza, e le tratte più cercate da lì. Si prepara una volta e vale per tutte le città.',
     conversazione: [

@@ -61,14 +61,16 @@ export const TEMPI = [
 
 /* ── Prima di accendere, e prima di proseguire ───────────────────────── */
 /* Dal panel del 26 nov 2026. La licenza si dice per quello che è (CJA non è nel
-   contratto di oggi; la destinazione Target chiede Real-Time CDP o Journey
-   Optimizer, e serve solo dalla fase 1). Il DPO vede già la fase 0, perché il
+   contratto di oggi, e i primi sei mesi di licenza sono senza costo; la destinazione
+   Target chiede Real-Time CDP, e serve solo dalla fase 1. Decisioni dell'owner del
+   27 nov 2026: Journey Optimizer nel Gruppo è di FS News, il pacchetto CJA non è un
+   tema del cliente). Il DPO vede già la fase 0, perché il
    connettore porta righe di visita con identificativi pseudonimi. E la fase 1 si
    sviluppa solo dopo le prime letture: è un cancello, non un parallelo. */
 export const PRIMA = [
   { k: 'A contratto',
-    v: ['Customer Journey Analytics, che oggi non è nel vostro contratto: il pacchetto si fissa insieme.',
-        'La fase 1 ha due tempi: la conferma legata si misura in CJA senza licenze nuove; i pubblici verso Target chiedono Real-Time CDP o Journey Optimizer.'] },
+    v: ['Customer Journey Analytics, che oggi non è nel vostro contratto: i primi sei mesi di licenza sono senza costo.',
+        'La fase 1 ha due tempi: la conferma legata si misura in CJA senza licenze nuove; i pubblici verso Target chiedono una licenza di Real-Time CDP.'] },
   { k: 'Al DPO e a FS Technology',
     v: ['I campi che entrano e quelli esclusi, la conservazione, la regione dell’istanza, la finalità di consenso.',
         'La connessione, gli accessi e la sicurezza, che autorizza FS Technology.',
