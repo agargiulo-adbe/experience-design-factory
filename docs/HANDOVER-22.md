@@ -1,4 +1,4 @@
-# Handover — Parte 22 di 25
+# Handover — Parte 22 di 26
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---

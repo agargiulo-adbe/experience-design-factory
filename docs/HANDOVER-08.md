@@ -1,4 +1,4 @@
-# Handover — Parte 8 di 25
+# Handover — Parte 8 di 26
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
@@ -377,3 +377,53 @@ copy-audit 29 come prima, `audit:deck` solo `a`/`i`, a capo corretti dove introd
 documento di riconciliazione è alla v1.3 (git-ignorato). ⚠️ Panel non rilanciato: P0 in Parte 2.
 Restano da applicare, se l'owner li vuole: nel disegno d'insieme meno peso al colore del passo
 finale e la fascia di CJA che cresce con i passi.
+
+### 36.12 Tre fasi, la Vista unica e il deck riordinato — 25-27 novembre 2026 (`4d94e054`…`b7cf148f`)
+
+**Il piano.** Dopo le call del 24 nov (sessione tecnica col partner) e del 26 (partner e AE), i
+tre «passi» diventano **tre fasi**, e il CRM entra solo all'ultima:
+- **fase 0 — Vista unica**: gli Analytics di trenitalia.com e di Le Frecce (app compresa) in
+  Customer Journey Analytics così come sono, letti per giorno e per tratta, senza legare persone
+  e senza toccare i tag; prove per tutti su Target. Circa sei settimane, dichiarate come ipotesi;
+- **fase 1 — la conferma d'acquisto**: la traccia della ricerca passa a Le Frecce in un campo in
+  più. Lì gira già un tag del cliente che scrive nella report suite di trenitalia.com, quindi non
+  si aspetta un legame fra i due siti. Due tempi: la conferma legata si misura in CJA senza
+  licenze nuove, i pubblici verso Target chiedono **Real-Time CDP**;
+- **fase 2 — il login su trenitalia.com**, l'unico identificativo persistente: da qui il CRM,
+  prima con un file e poi dal gateway del Gruppo, sempre col parere del DPO. Lo username come
+  chiave è un'ipotesi dichiarata.
+
+**Il capitolo «Vista unica del funnel»** (`b310afb6`, nove slide) nasce dalla call interna del
+25 nov: la stessa tratta scritta due volte con i campi visti nei beacon di produzione (eVar51-55
+contro eVar36-39 + eVar44: lo stesso numero ha significati diversi, ed è il motivo della
+rimappatura), linea del tempo con previsione e anomalia, funnel per tratta. Le eVar sono state
+riverificate sui beacon il 27 e non cambiano.
+
+**Le decisioni dell'owner** (`a46eadec`): Journey Optimizer esce, perché nel Gruppo la licenza è
+di un'altra società; il pacchetto CJA non è un tema del cliente e al suo posto ci sono i primi
+sei mesi di licenza senza costo, come nell'iniziativa commerciale; IBM entra per nome sugli
+Analytics di Le Frecce; il pop-up geolocalizzato, che in Chromium il 27 non compariva, «è andato
+in linea», non «c'è»; la slide sul canale conversazionale resta e dice che il traffico dagli
+assistenti si legge già dalla fase 0. Il 27 (`b7cf148f`): chi decide è scritto com'è (la
+direzione dei canali digitali committente, FS Technology verifica e gestisce il budget, l'ordine
+segue il percorso d'acquisto del Gruppo); nessuna cifra sul dopo-sei-mesi; Coworker resta come
+il componente che accorcia il tempo fra la lettura e il test.
+
+**Il riordino** (`d2156d77`). Una critica di design sul deck intero ha misurato che la proposta
+arrivava alla slide 18, il primo beneficio alla 32 e la richiesta all'ultima, con una trentina di
+slide su cinquanta scritte per il team tecnico. Ora: sintesi in una pagina, tre fasi, casi, fase
+0 da vicino, prossimi passi; FS Technology e DPO in due appendici, la seconda nuova e fatta solo
+di fatti letti nelle pagine pubbliche Adobe, con il link. I tre cerchi concentrici (che dicevano
+l'importanza al contrario e non mostravano i due siti) lasciano il posto al **binario**
+(`FiguraBinario`): gli stessi due siti ripetuti tre volte, cambia solo il filo. Rosso «adesso»,
+verde acqua «dopo», tratteggio «non ancora».
+
+**Panel review.** 26 nov, tre fasi, due giri, cinque lettori (responsabile dei canali digitali,
+direzione Sales, referente tecnica in FS Technology, marketing e revenue management, raccordo
+IT-business): al giro 2 credibilità 4,0 · rilevanza 3,6 · chiarezza 3,8 · rischio 3,0 ·
+azionabilità 3,2. 27 nov, deck riordinato, due giri: giro 1 credibilità 3,4 · rilevanza 3,6 ·
+chiarezza 3,6 · rischio 2,6 · azionabilità 2,8 (7 P0, corretti); **giro 2 credibilità 3,8 ·
+rilevanza 3,8 · chiarezza 4,0 · rischio 3,0 · azionabilità 3,2**. Il giro 2 ha trovato una frase
+smentita dalla pagina linkata (il connettore copia tredici mesi nel data lake; i tre mesi sono la
+finestra di lettura), corretta in `b7cf148f`. Verdetti in `docs/Ferrovie/PANEL-VERDICT-2026-11-2{6,7}-*`
+(git-ignorati). Quello che sopravvive non è di copia: sta nel P1 in Parte 2.

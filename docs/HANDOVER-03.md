@@ -1,9 +1,27 @@
-# Handover — Parte 3 di 25
+# Handover — Parte 3 di 26
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ---
 
 ## 11. Change log recente
+
+### 2026-11-27/28 · `centralino-adobe` diventa un server condiviso: nessun login a mano, nessun «profilo occupato»
+Lavoro nel repo **`~/dev/centralino`** (ramo `adobe-m365`, **non committato**: P1 in Parte 2). Un solo processo, il LaunchAgent `com.centralino.adobe` (`centralino-adobe installa`), possiede il profilo Chrome di Outlook web; il server MCP di ogni sessione Claude è un cliente sottile su un socket Unix (`~/Library/Application Support/Centralino-Adobe/demone.sock`, 0600), e se il server è spento lo riaccende. Ricarica Outlook web ogni due ore se nessuno lo usa (i cookie si rinnovano), e quando la sessione scade il rinnovo parte da solo in una finestra visibile (single sign-on, al più un'approvazione Okta Verify; se nessuno approva, pausa di 30 minuti). La fonte la sceglie il router (`instradamento.py`): Outlook web → attesa del rinnovo → **cache locale `HxStore.hxd`** (blocchi LZ4, letti con `pread`, mai `mmap`: SIGBUS sul file vivo; ~13 s per una scansione intera, **senza date**). La risposta dalla cache lo dichiara in prima riga e porta la domanda per l'utente «scavo in profondità o mi baso su quello che c'è?», che si risponde col parametro `profondita`. Teams non ha riserva locale. Dal telefono si lavora via Remote Control in una sessione del MacBook, non dalla chat di claude.ai. In questo repo: `/account-open` non chiede più login né comandi, `scripts/dottore.sh` controlla plist e socket (**non committati**). 31 test del modulo verdi; sei test di altri moduli del Centralino falliscono anche senza queste modifiche. ⚠️ Il 27 il profilo era ancora tenuto dal vecchio server del 25 nov (pid 81052): finché non esce si legge dalla cache.
+
+### 2026-11-27 · «Connessioni Intelligenti» riordinato per chi decide, e il secondo giro di panel (`d2156d77`, `b7cf148f`)
+La proposta arrivava alla slide 18 e la richiesta all'ultima: ora sintesi in una pagina → tre fasi → casi → fase 0 da vicino → prossimi passi, e quello che serve a FS Technology e al DPO in due appendici (una nuova, solo fatti dalle pagine pubbliche Adobe con il link). Il binario (`FiguraBinario`) sostituisce i tre cerchi. Prima, le decisioni dell'owner (`a46eadec`): Journey Optimizer esce (licenza di un'altra società del Gruppo), i pubblici CJA → Target passano da Real-Time CDP, sei mesi di licenza senza costo al posto del pacchetto CJA. Il secondo giro ha trovato una frase smentita dalla pagina linkata (il connettore copia tredici mesi, i tre mesi sono la finestra di lettura). Dettaglio §36.12 (Parte 8); punti aperti nel P1 in Parte 2.
+
+### 2026-11-25/26 · «Connessioni Intelligenti»: i casi nel tempo, la Vista unica, tre fasi e il panel (`4d94e054`, `b310afb6`, `664ec2d1`, `3f060b62`)
+Dopo le call del 24-26 nov il piano passa da tre passi a **tre fasi**: 0 Vista unica (i due Analytics in CJA, senza legare persone né toccare i tag), 1 la conferma d'acquisto su Le Frecce (dove gira già un tag che scrive nella report suite di trenitalia.com), 2 il login, unico identificativo persistente, da cui entra il CRM. Nuovo capitolo «Vista unica del funnel» a nove slide, con le eVar dei due siti lette sui beacon di produzione. Panel a due giri con cinque lettori, azionabilità +0,8. Dettaglio §36.12 (Parte 8).
+
+### 2026-11-26 · Labrador nei comandi d'account (`08069cd5`, `cc689be1`)
+Labrador (MCP interno Adobe) risponde un account alla volta per Sub ID: non dà il book, quindi **non sostituisce PanoAI**. `/account-open` fa una chiamata (renewal brief entro 180 giorni, altrimenti la chat) o usa la cache se ha ≤7 giorni; `/account-close` non chiama, ma prima di proporre una riga al Registro guarda se il CRM ha già la trattativa; `/accounts rinfresca` (+ `pnpm accounts --labrador`) sceglie a zero token fino a sei account con rinnovo entro 120 giorni. Limiti misurati: niente sforamenti né concorrenti, team spesso sbagliato, una riga annuale di un pluriennale sembra «in scadenza», ARR per famiglia di prodotto e non per contratto. Memoria `labrador-mcp`.
+
+### 2026-11-25 · Storia di Intesa: una copia per Awesome, fuori da github.io (`58da03b4`, `3b4e3fb9`, `4a0f61a5`, `08ffe9f9`)
+La rete del partner (e AdobeCorp) risponde NXDOMAIN su `*.github.io`: `scripts/awesome-pack.sh` costruisce la versione A alla radice del dominio e la impacchetta per Awesome (`EDF_SITE`/`EDF_BASE`/`EDF_OUT` spostano la build senza toccare le tre di sempre). Senza chiavi Supabase spariscono contatore e frase che lo annuncia (`conContatore` nel motore). Awesome inietta i suoi analytics accesi: `adtechAnalyticsConfig` con `autoPageviews:false` in testa a ogni pagina, verificato sul sito. Su decisione dell'owner `--insieme` porta anche «Fateci una domanda», che scrive su Supabase come la versione B. La console di Intesa ora rimanda alle domande del modulo (`?p=intesa-storia-insieme`). Memoria `github-io-bloccato-dns-aziendale`.
+
+### 2026-11-23 · `account-tidy` non sposta un file che un generatore dell'account scrive per nome (`d336ee49`), e Outlook passa da `centralino-adobe` (`487b570a`)
+Chiudendo Ferrovie lo script aveva spostato in `03-analisi` il seed `0037` che `strato-deck/genera.py` scrive in radice: alla generazione dopo si sarebbe sdoppiato. Ora un file in radice citato nei sorgenti dell'account resta dov'è, e `.bak.` nel nome va in `_superato/`. Lo stesso giorno il connettore Microsoft 365 di claude.ai smette di collegarsi al tenant Adobe: `/account-open` e la guida operativa puntano a `centralino-adobe` (Outlook web, casella intera e archivio; date solo via `since`/`until`).
 
 ### 2026-11-23 · «Connessioni Intelligenti»: casi su Target in tre passi in fila, il CRM con l'acquisto
 Tre configurazioni e panel a due giri, rischio da 2,0 a 3,4 (`e4513ce4`…`29fb2a3c`); casi e slide-muro in figure (`09e0f764`, `622d0000`); passi in fila dopo la call col partner (`b79aa76d`); la sera lo status del CRM scende al secondo passo, perché sul sito non si fa login (`41433c59`). Dettaglio §36.10-11 (Parte 8).
@@ -293,99 +311,4 @@ preso `audit:taglio` leggendola come un numero orfano.
 `audit:ink` PULITO su 806 blocchi · `audit:taglio` ALLINEATO · `audit:wrap` 17 contro 18 di
 baseline · `astro check` 0 errori.
 
-### Change log — i tre livelli, i quattro giri di `/umanizza`, la fisarmonica nel motore e la referenza che mancava (2026-11-06) → §37.15 (Parte 16)
-
-**Sette commit** (`04a718d` `06435dd` `1e36957` `d0f4a57` `062f210` `6a99e9c` `f466943`), quasi
-tutti su `apps/trenitalia-prospettiva-sales`, due anche su `packages/core` e sul template.
-
-**I tre livelli — idea, capability, prodotto.** Il rilievo del dry run del 5 novembre era «dove
-sta Adobe? Non l'ho vista: siamo troppo sullo sfondo», e si misurava: **tutte e sei le istanze di
-`CheServe` stavano in `slot="nota"` di un drill-down**, cioè i nomi dei prodotti vivevano nello
-strato della profondità mentre quella stanza li vuole in quello che si proietta. `idee.ts` porta
-ora `capability` e `gruppi`, che **referenziano** i gruppi di `SERVE`: gli stati dei prodotti
-restano letti dal contratto e vivono in un posto solo. Nuovi `MappaIdee.astro` (la mappa intera),
-`PezziPerStato.astro` e `Bussola.astro` (il «siamo qui» sul divisore dei quattro capitoli che
-*sono* un'idea). Via lo stato «prezzo già fissato»: l'accordo si rinegozia.
-
-**`/umanizza`, tutti e quattro i giri.** Giro 0 (`06435dd`): nove slide su 36 riscritte. Il
-difetto più grave non era un titolo debole — `ricerca/slide-canale` diceva «oggi la risposta manda
-altrove a comprare» e **la nostra misura, tre slide prima, dice il contrario** (su ChatGPT il link
-è «prenota con Trenitalia»). Giri 1-3 (`1e36957`): i telai sono rimasti **18, identici uno per
-uno**, quindi nessun marcatore è stato spostato invece che tolto; su `rete` i perni retorici sono
-passati da 7 per 100 stringhe a **0**. ⚠️ Il Giro 3 ha riaperto **le due referenze che
-`audit:fonti` non riesce ad aprire** (business.adobe.com blocca gli accessi automatici), quindi le
-uniche mai verificate da un gate: Telmore regge e meglio di come lo dicevamo (classifica a mano
-9%, del sistema 11%), ma **«con la stessa vetrina di prima» nella pagina non c'è** — era una
-nostra deduzione dentro una referenza; e la cifra di Santander **diceva più della fonte**.
-
-**Il motore — due drill-down sulla stessa slide non stanno più aperti insieme.** `HowItWorks`
-prende **`gruppo`**: due blocchi con lo stesso nome si escludono a fisarmonica. Serviva perché una
-slide può portare due viste **alternative** della stessa cosa, e aperte insieme sommano le
-altezze: misurato **105 px oltre il fondo** a 1920×1080, più uno scroll nascosto (check `k`,
-HARD). ⚠️ **Il gate non lo vedeva**: `exp` apre una disclosure per volta, quindi la slide passava
-tutti e tre i viewport e si rompeva solo in mano a chi le apriva tutte e due. L'ha trovata una
-persona, guardando.
-
-**Il motore — lo zoom del deck.** `zoom` sul `DeckContainer`: due comandi − e +, `+`/`-`/`0` da
-tastiera, sei gradini da 85% a 140%, la scelta ricordata in `localStorage['edf:zoom']`. Scala la
-**radice** e non il browser, così la composizione resta quella verificata dall'audit (lo zoom del
-browser cambia la larghezza del viewport e con lei la safe-area). ⚠️ La base della radice si
-**legge a runtime**, non si assume: non è un valore solo (18px in proiezione, 20/24/28 sopra i
-2000 con `wallScale`), e una base scritta a memoria cambiava la scala anche a zoom 100%. ⚠️
-**Opt-in, acceso SOLO nel template**: lo ereditano le experience nuove, le attuali restano spente
-— ogni gradino è una composizione diversa e andrebbe ripassata con `audit:deck`. Verificato
-inerte dove è spento.
-
-**I prodotti, a colpo d'occhio.** Ogni prodotto ha il suo colore stabile (`COLORE_PEZZO`), così la
-ricorrenza si vede: Analytics e Target tornano nel viaggio e nelle agenzie. ⚠️ Il colore sta nel
-**punto**, non nel nome — colorare i nomi entra in conflitto col colore che dice lo stato, chiede
-due palette per chiaro e scuro, e a corpo piccolo porta metà dei nomi sotto AA. Via anche la
-legenda «già vostro, nel contratto · si aggiunge, oggi non c'è» da tutte le slide: spiegava due
-simboli che ora si spiegano da soli.
-
-**Le note per chi presenta** (`/relatore/`, linkata dalla console del deck). Per un collega che
-apre il deck un'ora prima di entrare in sala: una riga per slide, sempre nello stesso ordine —
-*Dillo così · Il fatto · Se chiedono · Attenzione*, incolonnate e colorate per famiglia. **Si
-genera dal registro delle slide**, quindi una slide senza nota compare in rosso invece di passare
-inosservata. ⚠️ È pubblica come il deck: niente dati di contratto, niente nomi, niente misure
-interne, e **nessuna indicazione su che cosa non si nomina in quella stanza** — quella parte resta
-nel dossier riservato.
-
-**I divisori che si aprono.** Il problema non erano i prompt: la famiglia `ink` rimappa la
-luminanza fra `#141a25` e `#7c8aa3`, quindi il punto più chiaro restava un'ardesia media e
-**nessuna immagine poteva uscire luminosa**, «at night» nel prompt o no. Tre slot nuovi (`alba`,
-estremo chiaro `#cfd7e4`) per i tre capitoli che aprono una possibilità. ⚠️ Al primo giro erano
-stati schiariti **sul posto**: ma `bg-journey` fa da fondo anche a sei slide di contenuto, e
-**nove blocchi di testo sono scesi sotto AA**. Ora sono asset separati. ⚠️ `build-assets`
-**riscrive `provenance.json` con i soli slot generati**: dopo un giro parziale va ricomposto a
-mano.
-
-**Il taglio da dieci minuti, allineato al 100%.** La mappa delle idee rientra nella slide dei
-quattro punti come terzo strato dietro «Scopri come» (regola dei due registri: i prodotti sono
-profondità); nel taglio invece **diventa una slide**, perché come drill-down non entrava e perché
-quella è la versione che l'interlocutore gira al suo capo. Otto slide invece di sette, dichiarate
-in `cut-routes.ts` col motivo. Trovata e rimossa a mano una **versione breve orfana**
-(`RETE.dopoBreve`): non rendeva più da nessuna parte, ed è il modo esatto in cui i due percorsi
-ricominciano a divergere — `audit:taglio` non la vede, perché guarda quello che è reso.
-
-**La referenza che mancava sul canale agenziale** (`f466943`). L'idea sulle agenzie era l'unica
-delle quattro senza referenza, ed è quella su cui si fa la richiesta. Ora porta **Unipol**: la
-scala dalle **loro pagine** col link («+2.000 agenzie sul territorio», «17,6 milioni di clienti»,
-lette il 6 nov), il meccanismo dall'**intervento ad Adobe Summit 2026, sessione CP16**, citato
-come intervento e **senza link** perché una sessione non è una pagina che si apre. Tre cose tenute
-fuori, e il perché conta più di quello che c'è: le cifre del deck del Summit (2.100 agenzie, 16,8
-milioni di clienti) **hanno un anno e sono superate dalle loro stesse pagine**; le metriche della
-sessione (−20% troubleshooting, 2× root cause, −90% tempo di analisi) **misurano la velocità
-dell'analisi, non il venduto per rete** e sotto una frase sulle agenzie sarebbero la prova
-sbagliata; e la **quotazione in agenzia non si dice**, perché nei materiali il preventivo compare
-solo sui flussi digitali del sito. Nessun ruolo e nessun nome: il repo è pubblico, e sul titolo di
-chi ha parlato il registro d'account segnala un **conflitto fra la sua firma e il profilo
-pubblico**, da chiarire prima di usarlo in un documento.
-
-**Gate a fine giornata:** `copy-audit` **0 HARD e 0 SOFT** su 512 stringhe · `audit:wrap` **1**,
-falso positivo («IT», codice di mercato in uno `<span>`) · `audit:deck` **0 HARD** su 129 misure
-(soft 79, fisiologici su un deck ad ancore) · `audit:ink` **pulito** su 737 blocchi e 14
-«Scopri come» aperti · `audit:taglio` **allineato** · `audit:fonti` nessun link rotto, **1 SOFT
-dichiarato col motivo** (la homepage di Unipol è davvero il posto dove quelle cifre stanno) ·
-`audit:og` PASS · `audit:docs` pulito · `pnpm build` verde su tutte le app · `astro check` 0.
 

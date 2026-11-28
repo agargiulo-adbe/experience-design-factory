@@ -1,4 +1,4 @@
-# Handover — Parte 25 di 25
+# Handover — Parte 25 di 26
 > Torna all'indice: [HANDOVER.md](./HANDOVER.md) · [README.md](./README.md)
 
 ## 42.26 Storia di Intesa · il 18 sera e il 19 novembre, la slide Forrester, la copia offline, il video di Coworker, il momento 04
