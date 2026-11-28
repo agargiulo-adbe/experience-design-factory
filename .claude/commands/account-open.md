@@ -112,8 +112,11 @@ l'identificativo** che permette di ritrovarla.
    collega più al tenant Adobe: `centralino-adobe` legge la stessa casella dal server, via la
    sessione di Outlook web, **archivio online compreso e senza limite di anni**. Il periodo si
    passa con `since`/`until` (mai `received<=` dentro `query`: il server lo ignora); un
-   dominio intero con `from_addr: "<dominio>"`. Se risponde «sessione scaduta», l'utente
-   esegue `! centralino-adobe login`: la fonte va dichiarata cieca, non vuota.
+   dominio intero con `from_addr: "<dominio>"`. **Non si chiede mai all'utente un login o un
+   comando**: dal 27 nov 2026 la sessione la tiene viva e la rinnova il server condiviso. Se la
+   risposta comincia con «Fonte: cache locale», Outlook web in quel momento non c'era: la fonte
+   è **parziale e senza date** e va dichiarata così; se porta la «DOMANDA PER L'UTENTE», la si
+   fa e si ripete la ricerca con `profondita` come dice la domanda.
 2. **Teams**, via lo **stesso** server (`adobe_teams_search`, poi
    `adobe_teams_get_conversation` con il `chat=` del risultato). Molte decisioni operative vivono in chat e non arrivano mai in una mail:
    una quota, un «ok» a un prezzo, un cambio di proprietario.

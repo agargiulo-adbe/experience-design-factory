@@ -15,7 +15,7 @@
 > che lavora da solo** (change log, Parte 3 · §36.12, Parte 8). Trenitalia ha due giri di panel sul
 > deck riordinato (giro 2: chiarezza 4,0, rischio 3,0). Il centralino Adobe è un server condiviso
 > sotto launchd: nessun login a mano, nessun «profilo occupato», cache locale di Outlook quando
-> Outlook web non risponde. ⚠️ Niente di `centralino-adobe` è committato: P1 in Parte 2.
+> Outlook web non risponde; verificato dal vivo il 28 (`9875e59` nel repo del centralino).
 >
 > 📚 Le notizie in testa più vecchie (dal 6 novembre all'indietro) stanno nella **Parte 26**.
 >

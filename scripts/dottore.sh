@@ -143,17 +143,21 @@ else
 fi
 
 # centralino-adobe: posta e Teams Adobe dal server, via Outlook web (dal 23 nov 2026 il
-# connettore Microsoft 365 non regge più il tenant Adobe). Qui NON si apre il browser:
-# il profilo Chrome regge un processo alla volta, e un server MCP acceso lo sta usando.
-# Si controlla che i pezzi ci siano; la sessione la dice `adobe_stato` dentro Claude.
+# connettore Microsoft 365 non regge più il tenant Adobe). Il browser lo possiede il server
+# condiviso (LaunchAgent com.centralino.adobe, dal 27 nov 2026): qui si controlla che sia
+# installato e in ascolto; la sessione la dice `adobe_stato` dentro Claude.
 CA_BIN="$HOME/dev/centralino/.venv/bin/centralino-adobe"
 CA_PROFILO="$HOME/Library/Application Support/Centralino-Adobe/profilo"
 if [ ! -x "$CA_BIN" ]; then
   bad 'centralino-adobe' "eseguibile assente ($CA_BIN): Outlook e Teams Adobe restano ciechi"
 elif ! grep -q '"centralino-adobe"' "$HOME/.claude.json" 2>/dev/null; then
   bad 'centralino-adobe' 'non registrato in Claude Code (claude mcp add --scope user centralino-adobe -- … mcp)'
+elif [ ! -f "$HOME/Library/LaunchAgents/com.centralino.adobe.plist" ]; then
+  warn 'centralino-adobe' 'server condiviso non affidato a launchd: `centralino-adobe installa` (una volta)'
+elif [ ! -S "$HOME/Library/Application Support/Centralino-Adobe/demone.sock" ]; then
+  warn 'centralino-adobe' 'server condiviso non in ascolto: si accende alla prima richiesta (log ~/Library/Logs/centralino-adobe.log)'
 elif [ ! -d "$CA_PROFILO/Default" ]; then
-  warn 'centralino-adobe' 'nessuna sessione salvata: eseguire `centralino-adobe login`'
+  warn 'centralino-adobe' 'nessuna sessione salvata: alla prima richiesta si apre la finestra di accesso'
 else
   ok 'centralino-adobe' "registrato, sessione salvata il $(stat -f '%Sm' -t '%Y-%m-%d' "$CA_PROFILO/Default")"
 fi
